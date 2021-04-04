@@ -3,8 +3,8 @@
 // const address = 'http://localhost:3000/admin';
 
 
-// const address = 'https://node-v12-ubyor.run-eu-central1.goorm.io';
-const address = 'http://localhost:3000';
+const address = 'https://node-v12-ubyor.run-eu-central1.goorm.io';
+// const address = 'http://localhost:3000';
 const socket = io(address)
 
 
@@ -12,6 +12,10 @@ const socket = io(address)
 const connFunctions = [];
 let availableFunctions = {}
 
+
+connFunctions.messageServer = (data) => {	
+	socket.emit('message_server', data)
+}
 
 
 connFunctions.checkMessages = (socket) => {
@@ -30,7 +34,8 @@ connFunctions.checkMessages = (socket) => {
             password: document.querySelector('#password').value,
 
         }
-        socket.emit('message_server', data)
+        // socket.emit('message_server', data)
+		connFunctions.messageServer(data)
     })
 
     $(document).on('click', '#join', (event) => {         
@@ -47,9 +52,9 @@ connFunctions.checkMessages = (socket) => {
             password: document.querySelector('#password').value,
 
         }
-        socket.emit('message_server', data)
+        // socket.emit('message_server', data)
+		connFunctions.messageServer(data)
     })
-
 
 
     socket.on('message_client', (data) => {
@@ -58,13 +63,37 @@ connFunctions.checkMessages = (socket) => {
 
 }        
 
-connFunctions.Test = (data) => {
+connFunctions.test = (data) => {
   console.log(data.message)
 }
 
+
 connFunctions.sceneTransition = (data) => {
     console.log(data.message)
-    gameFunctions.game.scene.start(data.scene)
+
+	//IF THERE'S A CURRENT FORM LOADED, TWEEN IT AWAY BEFORE TRANSITIONING
+	if (gameFunctions.current_form){
+	
+		gameFunctions.current_scene.tweens.add({
+			targets: gameFunctions.current_form,
+			alpha: 0,
+			duration: 500,
+			ease: 'Power3',
+			onComplete: function ()
+			{
+				gameFunctions.current_form.setVisible(false);
+				gameFunctions.current_scene.scene.start(data.scene);
+				
+				gameFunctions.current_form = null;
+				gameFunctions.current_scene = null;				
+			}
+			});    				
+		
+	}
+	else{
+		//ELSE JUST TRANSITION THE SCENE
+    	gameFunctions.current_scene.scene.start(data.scene)		
+	}
   }
 
 

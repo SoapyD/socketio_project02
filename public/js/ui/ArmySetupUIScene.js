@@ -1,4 +1,4 @@
-var UIScene = new Phaser.Class({
+var ArmySetupUIScene = new Phaser.Class({
 
     Extends: Phaser.Scene,
 
@@ -6,7 +6,7 @@ var UIScene = new Phaser.Class({
 
     function UIScene ()
     {
-        Phaser.Scene.call(this, { key: 'UIScene', active: true });
+        Phaser.Scene.call(this, { key: 'ArmySetupUIScene' });
     },
 
     preload: function()
@@ -16,7 +16,11 @@ var UIScene = new Phaser.Class({
 
     create: function()
     {
-        // this.input.mouse.disableContextMenu();
+        let startOption = this.add.text((gameFunctions.config.width / 2) - 300, 150, "Setup Army UI", {
+            color: '#fcd498',
+            fontSize: 30,
+            align: 'center',
+        }).setFixedSize(600, 50);
     },
 
     update: function (time, delta)

@@ -2,7 +2,7 @@
 gameFunctions = []
 
 
-var config = {
+gameFunctions.config = {
     type: Phaser.AUTO,
     // width: gameFunctions.config.cardSize * gameFunctions.config.tableWidth, //800,
 	// height: gameFunctions.config.cardSize * gameFunctions.config.tableHeight, //600,
@@ -25,7 +25,7 @@ var config = {
         mode: Phaser.Scale.FIT,
       },
     //   scene: [ MainMenuScene, GameScene, UIScene ]  
-    scene: [ MainMenuScene, ArmySelectMenuScene ]     
+    scene: [ MainMenuScene, ArmySelectMenuScene, GameScene, ArmySetupUIScene ]     
 };
 
-gameFunctions.game = new Phaser.Game(config);
+gameFunctions.game = new Phaser.Game(gameFunctions.config);

@@ -51,16 +51,19 @@ exports.checkMessages = (io,namespace) => {
 
 exports.test = async(network, data)  => {
 
+	
     let return_data = {
         functionGroup: "connFunctions",
-        function: "Test",
-        message: "Test Passed"
+        function: "test",
+        message: data.message
     }
     network.io.of(network.namespace).emit("message_client", return_data)
 }
 
 
-
+// ##################################################################################
+// ##################################################################################
+// ##################################################################################
 //    #    ######  #     # ### #     # 
 //   # #   #     # ##   ##  #  ##    # 
 //  #   #  #     # # # # #  #  # #   # 
@@ -68,6 +71,9 @@ exports.test = async(network, data)  => {
 // ####### #     # #     #  #  #   # # 
 // #     # #     # #     #  #  #    ## 
 // #     # ######  #     # ### #     # 
+// ##################################################################################
+// ##################################################################################
+// ##################################################################################
 
 exports.createRoom = async(network, data)  => {
 
@@ -88,7 +94,7 @@ exports.createRoom = async(network, data)  => {
 
             let return_data = {
                 functionGroup: "connFunctions",
-                function: "Test",
+                function: "test",
                 message: ""
             }
 
@@ -146,7 +152,7 @@ exports.joinRoom = async(network, data)  => {
 
         let return_data = {
             functionGroup: "connFunctions",
-            function: "Test",
+            function: "test",
             message: ""
         }
 
@@ -204,13 +210,42 @@ exports.joinRoom = async(network, data)  => {
 
 
 
+// ##################################################################################
+// ##################################################################################
+// ##################################################################################
+//  #####  ####### ####### #     # ######  
+// #     # #          #    #     # #     # 
+// #       #          #    #     # #     # 
+//  #####  #####      #    #     # ######  
+//       # #          #    #     # #       
+// #     # #          #    #     # #       
+//  #####  #######    #     #####  #   
+// ##################################################################################
+// ##################################################################################
+// ##################################################################################
 
+exports.selectArmy = (network, data) => {
 
+	let return_data = {
+		functionGroup: "connFunctions",
+		function: "test",
+		message: "Army Selected"
+	}	
+	
+	network.io.of(network.namespace).emit("message_client", return_data)     	
+}
 
+exports.sceneTransition = (network, data) => {
 
-
-
-
+	let return_data = {
+		functionGroup: "connFunctions",
+		function: "sceneTransition",
+		scene: data.scene,
+		message: data.message
+	}	
+	
+	network.io.of(network.namespace).emit("message_client", return_data)     	
+}
 
 
 
