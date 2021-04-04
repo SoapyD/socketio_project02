@@ -1,0 +1,146 @@
+
+
+26-03-2021
+-DONE -Players still can't end their turn
+-nothing stops a player from placing more than 1 card down
+-cards aren't snapping to the hand bar anymore
+    -this only happens if the game is started by player 1 then player 2 enters.
+    -The game gets confused about who should be controlling the "snap to hand" function
+    -The snap to function isn't working on the second player screen when a card is drawn
+-DONE -When a player rejoins a room, the game setup menus needs to be skipped
+
+
+
+
+-Add in step to the socket util that checks for reconnections and automatically tries to rejoin room
+-Maybe have it that if the author gets kicked out of the room, everyone is kicked out too?
+-"request change player" doesn't do anything
+-Add in a deck generator when the game starts (Needs to be on server)
+
+
+CHARACTER SELECT
+//////////////////////////////////////////////////////////////////////
+-When selections have been made on both sides, only player 1 can then end the selection and start the game
+
+
+
+SERVER SOCKET FUNCTIONS
+//////////////////////////////////////////////////////////////////////
+
+
+
+DECK
+//////////////////////////////////////////////////////////////////////
+
+
+
+RELOAD
+//////////////////////////////////////////////////////////////////////
+-load current player, live and armour totals
+
+
+TWEENS
+//////////////////////////////////////////////////////////////////////
+-Add tween for card going back into the hand bar
+
+
+DATABASE
+//////////////////////////////////////////////////////////////////////
+
+
+
+CLIENT
+//////////////////////////////////////////////////////////////////////
+-Upgrade version of bootstrap to v5
+
+
+
+
+ROOM PROCESS
+//////////////////////////////////////////////////////////////////////
+
+
+
+
+BUGS
+//////////////////////////////////////////////////////////////////////
+
+-There's no current way of limiting the number of players in the room
+-Palming "max height" check doesn't work. Won't allow cards to be placed in bottom 2 rows of grid
+-picking up card from scrollbar always ends up making the center point move upwards, making the card annoying to place
+
+
+
+
+	
+
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+DONE
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+-DONE -Save game info (like lives) to DB
+
+-DONE -Setting a password on a room doesn't have any effect at the moment
+-DONE -When a player rejoins a room, it doesn't reload any of the assets that've already been placed in said room. Need to keep track of them
+-DONE -Seems that when there's a second player added in this setup the drawn card doesn't snap into the hand bar on player 1's screen but does on the non-current player 2 screen.
+	-There's a lot of oddities here as now the second player, when it joins room 1, doesn't have the ui generate
+
+-DONE -Got the menu selection screen to appear which was a long standing problem
+-DONE -modify the code so the character menu pops up in the regular game loop
+-DONE -Make the selection update via sockets so both players can see who the other has selected
+-DONE -Add in a more generic "request gamestate advance" to move the gamestate on when needed, like when the start game button is selected
+-DONE -Need to fade the character screen on both sides as currently it doesn't
+
+-DONE -Fix the "last card" not flashing when the game is rejoined
+-DONE -Load card angle, orientation, position and load status
+
+-DONE -when a player attempts to create a room:
+    -Check to see if the room exists already
+        -If the room belongs to the user
+            -if the users socket belongs to the room, say they're already in it
+            -else, say the room exists, the user just needs to rejoin room
+        -Else send message to say "room name in use, choose another"
+
+-DONE -when a player leaves the room:
+    -Remove them from the socket list
+
+
+-DONE -Have the rotate function calculate on the server and save the orientation onto the card list there
+
+-DONE -Need to add in "card_arr_pos" to cards array on server
+-DONE -Need to add "card orientation" to cards array
+
+-DONE -When max player is set to 1 and the player leaves and reenters room, they can't draw any cards
+	-DONE -The problem comes from the "room info" request appearing after the game "start message" so when the create card buttons are made, they don't set with the correct room info.	Fixed by assigning the adding the room name and id when the connection function is run, instead of pre-loading the values.
+	
+-DONE -Save drawn deck to game info in DB
+-DONE -Save board layout to DB
+-DONE -Pass room ID back to players to use later
+
+-DONE -create a deck array (for drawing cards) and add it to the room model
+-DONE -create a board matrix array and add it to the room model
+
+-DONE -Have cards data on the server
+	-DONE -Card X and Y pos
+	-DONE -Card grid X and Y pos
+
+-DONE -BUG -It's now difficult to get the card off of the scrollbar. It eventually can be pulled from it but only after the bar is revisited a number of times
+	-The selected card function needs to be run as the card is moved, otherwise the "held" status is revoked
+
+-DONE -update "update board matrix" function
+-DONE -update "check board matrix" function
+
+-DONE -Add tween for cards changing sizes
+-DONE -Add tween for card rotation
+
+-DONE -Drawing a card doesn't take a card from a deck, it's just a set value at the moment
+-DONE -Set grid set function x and y positions on the server then pass it back.
+-DONE -Replace instances of card_id where it's actually "cards_array_id" to make things clear
+
+-DONE -Handle "check card lock" process on the server instead of the client
+    -DONE -Need to have the following vars on the server:
+        -DONE -last card
+        -DONE -cards array
