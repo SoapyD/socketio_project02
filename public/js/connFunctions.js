@@ -97,6 +97,10 @@ connFunctions.sceneTransition = (data) => {
   }
 
 
+connFunctions.uiSceneTransition = (data) => {
+	console.log(data.message)
+	gameFunctions.current_uiscene.scene.stop()	
+}
 
 
 availableFunctions = {

@@ -51,7 +51,7 @@ exports.checkMessages = (io,namespace) => {
 
 exports.test = async(network, data)  => {
 
-	
+	console.log(data.message)
     let return_data = {
         functionGroup: "connFunctions",
         function: "test",
@@ -223,6 +223,19 @@ exports.joinRoom = async(network, data)  => {
 // ##################################################################################
 // ##################################################################################
 // ##################################################################################
+
+exports.messageAll = (network, data) => {
+
+	let return_data = {
+		functionGroup: data.returnFunctionGroup,
+		function: data.returnFunction,
+		parameters: data.returnParameters,
+		message: data.message,
+	}	
+	
+	network.io.of(network.namespace).emit("message_client", return_data)     	
+}
+
 
 exports.selectArmy = (network, data) => {
 

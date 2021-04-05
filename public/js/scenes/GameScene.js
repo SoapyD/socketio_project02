@@ -31,7 +31,7 @@ var GameScene = new Phaser.Class({
             0x00b9f2).setAltFillStyle(0x016fce).setOutlineStyle(0x000000);
             
             
-        let startOption = this.add.text((gameFunctions.config.width / 2) - 300, 100, "Setup Army", {
+        let startOption = this.add.text((gameFunctions.config.width / 2) - 300, 100, "Game Scene", {
             color: '#fcd498',
             fontSize: 30,
             align: 'center',

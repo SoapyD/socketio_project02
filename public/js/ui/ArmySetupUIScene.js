@@ -11,7 +11,8 @@ var ArmySetupUIScene = new Phaser.Class({
 
     preload: function()
     {
-
+        this.load.spritesheet("buttons", "./img/buttons3.jpg", 
+        { frameWidth: 100, frameHeight: 50, endFrame: 3 });	
     },
 
     create: function()
@@ -21,6 +22,26 @@ var ArmySetupUIScene = new Phaser.Class({
             fontSize: 30,
             align: 'center',
         }).setFixedSize(600, 50);
+		
+		let callbackParams = {
+            functionGroup: "socketFunctions",  
+            function: "messageAll",
+			message: "end setup",
+            returnFunctionGroup: "connFunctions",  
+            returnFunction: "uiSceneTransition",		
+		};
+		
+		gameFunctions.btn_sprite = [];
+		
+		gameFunctions.createButton(this, gameFunctions.config.width - 50, 25, "end setup", connFunctions.messageServer, callbackParams, gameFunctions.btn_sprite);					
+		
+		gameFunctions.btn_sprite.forEach(btn => {
+			gameFunctions.buttonPress(btn, btn.clickAction, btn.callbackParams);                    
+		})		
+		
+		gameFunctions.current_uiscene = this.scene.get('ArmySetupUIScene');
+		
+		
     },
 
     update: function (time, delta)

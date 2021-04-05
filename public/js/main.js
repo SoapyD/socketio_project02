@@ -1,5 +1,6 @@
 
 gameFunctions = []
+gameFunctions.btn_sprite = [];
 
 
 gameFunctions.config = {
