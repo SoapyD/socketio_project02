@@ -1,6 +1,6 @@
 const Room = require("../models/room");
 // const deckController = require('../controllers/deck');
-
+const boardController = require('../controllers/board');
 
 exports.findRoom = (id) => {
     try{
@@ -45,7 +45,7 @@ exports.createRoom = (data, socket_id) => {
 		,tableHeight: 5 //5
 	}	
 	
-    // let boardmatrix = deckController.setupBoardMatrix(config);	
+    let boardmatrix = boardController.setupBoardMatrix(config);	
 	
     let max_players = 1
 
@@ -68,7 +68,7 @@ exports.createRoom = (data, socket_id) => {
 		,max_players: max_players
 		,config: config
         // ,decks: decks
-        // ,matrix: boardmatrix
+        ,matrix: boardmatrix
     })
 }
 
