@@ -25,6 +25,7 @@
                         <input class="form-control" type="text" id="password">
                     </div>
         
+					<% if(user) { %>
                     <div class="form-group">
                         <!-- <p>User Name:</p> -->
                         <input class="form-control" type="hidden" id="userName" value="<%= user.username %>" disabled>
@@ -34,7 +35,7 @@
                         <!-- <p>User ID:</p> -->
                         <input class="form-control" type="hidden" id="userID" value="<%= user.id %>" disabled>
                     </div>				
-        
+        			<% } %>
         
         
                     <div class="form-group left float-left width-50-percent">					
@@ -81,7 +82,9 @@
 
 
 <script src="/js/main.js"></script>
+<script src="/js/easystar.js"></script>
 <script src="/js/functions.js"></script>
+
 
 
 <%- include("partials/footer") %>
