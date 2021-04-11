@@ -28,49 +28,32 @@ var GameScene = new Phaser.Class({
 		
         //Create a camera controller using the arraow keys
         var cursors = this.input.keyboard.createCursorKeys();		
-		
-
+				
+				
 		
 		// Handles the clicks on the map to make the character move
-
 		this.input.on('pointerup',GameScene.handleClick);
 
 
 		GameScene.camera = this.cameras.main;
 		GameScene.camera.setBounds(0, 0, 20*32, 20*32);
 
-		
 		GameScene.selected = 0
-		this.input.keyboard.on('keydown-SPACE', function (event) {
-			if (GameScene.players){
-				GameScene.selected++;
-				if (GameScene.selected >= GameScene.players.length){
-					GameScene.selected = 0
-				}
-			}
-		});		
-		
+		// this.input.keyboard.on('keydown-SPACE', function (event) {
+		// 	if (GameScene.players){
+		// 		GameScene.selected++;
+		// 		if (GameScene.selected >= GameScene.players.length){
+		// 			GameScene.selected = 0
+		// 		}
+		// 	}
+		// });				
 
-		
-		GameScene.players = []		
-		var phaserGuy;
-		
-		phaserGuy = this.add.image(32,32,'phaserguy');
-		phaserGuy.setDepth(1);
-		phaserGuy.setOrigin(0,0.5);
-		// GameScene.camera.startFollow(phaserGuy);		
-		GameScene.players.push(phaserGuy);
 
-		phaserGuy = this.add.image(32,32,'phaserguy');
-		phaserGuy.setDepth(1);
-		phaserGuy.setOrigin(0,0.5);		
-		GameScene.players.push(phaserGuy);
+		GameScene.scene = this.scene.get('GameScene')		
 
-		
-		
 		
 		// Display map
-		GameScene.scene = this.scene.get('GameScene')
+
 		// console.log(scene)
 		GameScene.map = GameScene.scene.make.tilemap({ key: 'map'});
 		// The first parameter is the name of the tileset in Tiled and the second parameter is the key
@@ -119,9 +102,11 @@ var GameScene = new Phaser.Class({
 		
 		
 		gameFunctions.current_scene = this.scene.get('GameScene');		
-		
-		gameFunctions.graphics = this.add.graphics();
 
+		
+		GameScene.players = []		
+		GameScene.players.push(new player(this, "phaserguy", 32, 32));		
+		GameScene.players.push(new player(this, "phaserguy", 32, 320));
 		
     	text = this.add.text(10, 10, '', { fill: '#00ff00' }).setDepth(1);		
     },
@@ -140,10 +125,38 @@ var GameScene = new Phaser.Class({
 		
 		var pointer = this.input.activePointer;
 
+		// if(GameScene.left_click === true){
+		// 	GameScene.selected += 1;
+		// }
 		
 		text.setText([
 			'selected: ' + GameScene.selected
-		]);				
+		]);			
+		
+		
+		if(GameScene.selected_player){
+			GameScene.selected_player.findPath(GameScene, pointer);
+
+			if(GameScene.left_click === true){
+				GameScene.left_click_state = GameScene.advanceClickState(GameScene.left_click_state, 1)				
+			}
+
+			if(GameScene.left_click_state === 0){
+				GameScene.selected_player = undefined;
+			}		
+		}
+
+		if(GameScene.right_click === true){
+			
+			GameScene.players.forEach((player) => {
+				if(player.path){
+					player.move();		
+				}
+			})
+		}
+		
+		GameScene.left_click = false;
+		GameScene.right_click = false;		
     }
 });
 
@@ -158,85 +171,35 @@ GameScene.checkCollision = function(x,y){
 	}
 };
 
+
+GameScene.selected_player;
+GameScene.left_click = false;
+GameScene.left_click_state = 0;
+GameScene.right_click = false;
+GameScene.right_click_state = 0;
+GameScene.advanceClickState = (state, max) => {
+	state += 1
+	if(state > max){
+		state = 0
+	}
+	
+	return state;
+}
+
+
 GameScene.getTileID = function(x,y){
     var tile = GameScene.map.getTileAt(x, y);
     return tile.index;
 };
 
 GameScene.handleClick = function(pointer){
-	
+
 	if (pointer.leftButtonReleased())
 	{	
-		let player = GameScene.players[GameScene.selected]
-		var x = GameScene.camera.scrollX + pointer.x;
-		var y = GameScene.camera.scrollY + pointer.y;
-		var toX = Math.floor(x/32);
-		var toY = Math.floor(y/32);
-
-
-		var fromX = Math.floor(player.x/32);
-		var fromY = Math.floor(player.y/32);
-		// console.log('going from ('+fromX+','+fromY+') to ('+toX+','+toY+')');
-
-		GameScene.finder.findPath(fromX, fromY, toX, toY, function( path ) {
-		if (path === null) {
-		console.warn("Path was not found.");
-		} else {		
-			player.path = path.slice(0,9)
-
-			gameFunctions.graphics.clear()
-			gameFunctions.graphics.lineStyle(10, 0x2ECC40);	
-			gameFunctions.graphics.beginPath();
-			GameScene.players.forEach((player) => {
-				//IF THERE'S A PATH, DRAW IT
-				if(player.path){
-					player.path.forEach((pos, i) => {
-						if (i !== 0){
-							gameFunctions.graphics.lineTo(pos.x * 32 + 16, pos.y * 32 + 16);
-						}
-						else{
-							gameFunctions.graphics.moveTo(pos.x * 32 + 16, pos.y * 32 + 16);
-						}
-					})			
-				}
-
-			})
-			gameFunctions.graphics.strokePath();					
-		}
-		});
-		GameScene.finder.calculate(); // don't forget, otherwise nothing happens		
-	}
-	
-	
+		GameScene.left_click = true;
+	}		
 	if (pointer.rightButtonReleased())
-	{
-		GameScene.players.forEach((player) =>{
-			if(player.path){
-				GameScene.moveCharacter(player, player.path);							
-			}
-		})
-	}	
-	
-};
-
-GameScene.moveCharacter = function(player, path){
-    // Sets up a list of tweens, one for each tile to walk, that will be chained by the timeline
-    var tweens = [];
-    for(var i = 0; i < path.length-1; i++){
-        var ex = path[i+1].x;
-        var ey = path[i+1].y;
-        tweens.push({
-            targets: player,
-            x: {value: ex*GameScene.map.tileWidth, duration: 200},
-            y: {value: ey*GameScene.map.tileHeight, duration: 200},
-			onComplete: function ()
-			{
-				// 
-			}			
-        });
-    }
-
-	GameScene.scene.tweens.timeline({
-        tweens: tweens
-    });
+	{	
+		GameScene.right_click = true;
+	}			
 };
