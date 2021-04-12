@@ -8,10 +8,19 @@ const player = class {
 		
 		this.x = x;
 		this.y = y;
+		
+		
+		
 		this.sprite = scene.add.image(this.x,this.y,spritesheet).setInteractive();
 		this.sprite.setDepth(1);
 		this.sprite.setOrigin(0,0.5);		
 		this.sprite.parent = this
+		
+		this.sprite_base = scene.add.image(this.x,this.y,"base");
+		this.sprite_base.setOrigin(-0,0.4);	
+		this.sprite_base.setDepth(0.5);
+		// this.sprite_base.setVisible(false);
+		
 		
 		this.sprite.on('pointerup', this.selectHander)		
 
@@ -32,6 +41,7 @@ const player = class {
 			// console.log(this)
 			GameScene.selected_player = this.parent;
 			GameScene.left_click = false;
+			// this.parent.sprite_base.setVisible(true);			
 		}
 	}
 	
@@ -79,8 +89,10 @@ const player = class {
 			for(let i = 0; i < this.path.length-1; i++){
 				let ex = this.path[i+1].x;
 				let ey = this.path[i+1].y;
-				tweens.push({
-					targets: this.sprite,
+				
+				let tween_data = {
+					// targets: this.sprite,
+					targets: [this.sprite, this.sprite_base],
 					x: {value: ex*GameScene.map.tileWidth, duration: 200},
 					y: {value: ey*GameScene.map.tileHeight, duration: 200},
 					onComplete: function ()
@@ -95,7 +107,12 @@ const player = class {
 							this.path = undefined;
 						}
 					}.bind(this)			
-				});
+				}
+				
+				tweens.push(tween_data);
+				
+				// tween_data.targets = this.sprite_base;
+				// tweens.push(tween_data);
 			}
 
 			GameScene.scene.tweens.timeline({

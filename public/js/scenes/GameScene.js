@@ -15,7 +15,8 @@ var GameScene = new Phaser.Class({
     {
 		this.load.image('tileset', './img/gridtiles.png');
 		this.load.tilemapTiledJSON('map', '../../img/map.json');
-		this.load.image('phaserguy', '../../img/phaserguy.png');		
+		this.load.image('phaserguy', '../../img/phaserguy.png');
+		this.load.image('base', '../../img/base.png');
 		
 		
 		this.scene.launch("ArmySetupUIScene");
@@ -37,16 +38,7 @@ var GameScene = new Phaser.Class({
 
 		GameScene.camera = this.cameras.main;
 		GameScene.camera.setBounds(0, 0, 20*32, 20*32);
-
-		GameScene.selected = 0
-		// this.input.keyboard.on('keydown-SPACE', function (event) {
-		// 	if (GameScene.players){
-		// 		GameScene.selected++;
-		// 		if (GameScene.selected >= GameScene.players.length){
-		// 			GameScene.selected = 0
-		// 		}
-		// 	}
-		// });				
+		
 
 
 		GameScene.scene = this.scene.get('GameScene')		
@@ -124,14 +116,7 @@ var GameScene = new Phaser.Class({
 		GameScene.marker.setVisible(!GameScene.checkCollision(pointerTileX,pointerTileY));  
 		
 		var pointer = this.input.activePointer;
-
-		// if(GameScene.left_click === true){
-		// 	GameScene.selected += 1;
-		// }
-		
-		text.setText([
-			'selected: ' + GameScene.selected
-		]);			
+	
 		
 		
 		if(GameScene.selected_player){
@@ -142,6 +127,7 @@ var GameScene = new Phaser.Class({
 			}
 
 			if(GameScene.left_click_state === 0){
+				// GameScene.selected_player.sprite_base.setVisible(false);
 				GameScene.selected_player = undefined;
 			}		
 		}
