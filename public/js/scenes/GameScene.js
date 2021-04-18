@@ -18,6 +18,7 @@ var GameScene = new Phaser.Class({
 		this.load.image('phaserguy', '../../img/phaserguy.png');
 		this.load.image('base', '../../img/base.png');
 		
+		this.load.image('bullet', '../../img/bullet.png');		
 		
 		this.scene.launch("ArmySetupUIScene");
     },
@@ -96,11 +97,13 @@ var GameScene = new Phaser.Class({
 		gameFunctions.current_scene = this.scene.get('GameScene');		
 
 		
-		GameScene.players = []		
-		GameScene.players.push(new player(this, "phaserguy", 32, 32));		
-		GameScene.players.push(new player(this, "phaserguy", 32, 320));
+		GameScene.units = []		
+		GameScene.units.push(new unit(this, "phaserguy", 32, 32));		
+		GameScene.units.push(new unit(this, "phaserguy", 32, 320));
 		
     	text = this.add.text(10, 10, '', { fill: '#00ff00' }).setDepth(1);		
+		
+		new bullet(this, "bullet", 32, 320)
     },
 
     update: function (time, delta)
@@ -119,24 +122,23 @@ var GameScene = new Phaser.Class({
 	
 		
 		
-		if(GameScene.selected_player){
-			GameScene.selected_player.findPath(GameScene, pointer);
+		if(GameScene.selected_unit){
+			GameScene.selected_unit.findPath(GameScene, pointer);
 
 			if(GameScene.left_click === true){
 				GameScene.left_click_state = GameScene.advanceClickState(GameScene.left_click_state, 1)				
 			}
 
 			if(GameScene.left_click_state === 0){
-				// GameScene.selected_player.sprite_base.setVisible(false);
-				GameScene.selected_player = undefined;
+				GameScene.selected_unit.unselectHandler();
 			}		
 		}
 
 		if(GameScene.right_click === true){
 			
-			GameScene.players.forEach((player) => {
-				if(player.path){
-					player.move();		
+			GameScene.units.forEach((unit) => {
+				if(unit.path){
+					unit.move();		
 				}
 			})
 		}
@@ -158,7 +160,7 @@ GameScene.checkCollision = function(x,y){
 };
 
 
-GameScene.selected_player;
+GameScene.selected_unit;
 GameScene.left_click = false;
 GameScene.left_click_state = 0;
 GameScene.right_click = false;

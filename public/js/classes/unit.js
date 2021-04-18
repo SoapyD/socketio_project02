@@ -1,5 +1,5 @@
 
-const player = class {
+const unit = class {
 	constructor(scene, spritesheet, x, y) {
 		// this.selected = false;
 		this.moves = 0;
@@ -37,14 +37,22 @@ const player = class {
 		// console.log(this.parent)
 		if (pointer.leftButtonReleased())
 		{
-			// this.parent.selected = true;
-			// console.log(this)
-			GameScene.selected_player = this.parent;
+			if(GameScene.selected_unit){
+				GameScene.selected_unit.sprite_base.setTint(0xffffff)
+			}		
+			
+			this.parent.sprite_base.setTint(0xff0000);
+			
+			GameScene.selected_unit = this.parent;
 			GameScene.left_click = false;
 			// this.parent.sprite_base.setVisible(true);			
 		}
 	}
 	
+	unselectHandler() {
+		this.sprite_base.setTint(0xffffff)
+		GameScene.selected_unit = undefined;
+	}
 	
 	findPath(scene, pointer) {
 		var x = scene.camera.scrollX + pointer.x;
@@ -119,7 +127,7 @@ const player = class {
 				tweens: tweens
 			});					
 			
-			GameScene.selected_player = undefined;
+			GameScene.selected_unit = undefined;
 		}
 	}
 }
