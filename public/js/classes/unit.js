@@ -135,7 +135,43 @@ const unit = class {
 	}
 	
 	shoot (scene, pointer) {
-		let angle = Phaser.Math.Angle.BetweenPoints(this.sprite, pointer);
-		GameScene.bullets.push(new bullet(scene, "bullet", this.x, this.y, angle))
+		// console.log(this.sprite.x,this.sprite.y,pointer.x,pointer.y)
+		
+		//GET BASE POSITIONAL DATA
+		let pos = {
+			start_x: Math.floor(this.sprite.x / gameFunctions.tile_size),
+			start_y: Math.floor(this.sprite.y / gameFunctions.tile_size),			
+			end_x: Math.floor(pointer.x / gameFunctions.tile_size),
+			end_y: Math.floor(pointer.y / gameFunctions.tile_size),					
+		}
+		//GET DIFFERENCE INFO
+		pos.x_diff = pos.end_x - pos.start_x;
+		pos.y_diff = pos.end_y - pos.start_y;
+		pos.x_dir = (pos.x_diff < 0) ? -1:1;
+		pos.y_dir = (pos.y_diff < 0) ? -1:1;		
+
+		//FIND OUT WHICH NORMALISED DIFF IS HIGHER
+		pos.x_norm = (pos.x_diff < 0) ? pos.x_diff * -1:pos.x_diff;
+		pos.y_norm = (pos.y_diff < 0) ? pos.y_diff * -1:pos.y_diff;
+		// pos.itts = (pos.x_norm > pos.y_norm) ? pos.x_norm*2:pos.y_norm*2;
+		pos.itts = (pos.x_norm > pos.y_norm) ? pos.x_norm:pos.y_norm;		
+		pos.itt_value = gameFunctions.tile_size // / pos.itts
+
+		pos.cells = [];
+		for(let i=0; i<=pos.itts ;i++){
+			let cell = {
+				x: (pos.start_x * gameFunctions.tile_size) + (i * pos.itt_value * pos.x_dir) + (gameFunctions.tile_size / 2),
+				y: (pos.start_y * gameFunctions.tile_size) + (i * pos.itt_value * pos.y_dir) + (gameFunctions.tile_size / 2),
+			}
+			pos.cells.push(cell)
+		}
+		
+		pos.cells.forEach((cell) => {
+			scene.physics.add.image(cell.x,cell.y,"bullet")
+		})
+		console.log(pos)		
+		
+		// let angle = Phaser.Math.Angle.BetweenPoints(this.sprite, pointer);
+		// GameScene.bullets.push(new bullet(scene, "bullet", this.x, this.y, angle))
 	}
 }
