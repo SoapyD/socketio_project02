@@ -1,7 +1,7 @@
 
 gameFunctions = []
 gameFunctions.btn_sprite = [];
-
+gameFunctions.tile_size = 32;
 
 gameFunctions.config = {
     type: Phaser.AUTO,
@@ -12,7 +12,7 @@ gameFunctions.config = {
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { y: 200 }
+            debug: false
         }
     },
 	

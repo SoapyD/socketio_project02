@@ -38,7 +38,7 @@ var GameScene = new Phaser.Class({
 
 
 		GameScene.camera = this.cameras.main;
-		GameScene.camera.setBounds(0, 0, 20*32, 20*32);
+		GameScene.camera.setBounds(0, 0, 20*gameFunctions.tile_size, 20*gameFunctions.tile_size);
 		
 
 
@@ -74,6 +74,7 @@ var GameScene = new Phaser.Class({
 			}
 			grid.push(col);
 		}
+		GameScene.grid = grid;
 		GameScene.finder.setGrid(grid);
 
 		var tileset = GameScene.map.tilesets[0];
@@ -95,15 +96,13 @@ var GameScene = new Phaser.Class({
 		
 		
 		gameFunctions.current_scene = this.scene.get('GameScene');		
-
 		
 		GameScene.units = []		
-		GameScene.units.push(new unit(this, "phaserguy", 32, 32));		
-		GameScene.units.push(new unit(this, "phaserguy", 32, 320));
+		GameScene.units.push(new unit(this, "phaserguy", gameFunctions.tile_size, gameFunctions.tile_size));		
+		GameScene.units.push(new unit(this, "phaserguy", gameFunctions.tile_size * 10, gameFunctions.tile_size * 10));
 		
     	text = this.add.text(10, 10, '', { fill: '#00ff00' }).setDepth(1);		
 		
-		new bullet(this, "bullet", 32, 320)
     },
 
     update: function (time, delta)
@@ -126,12 +125,16 @@ var GameScene = new Phaser.Class({
 			GameScene.selected_unit.findPath(GameScene, pointer);
 
 			if(GameScene.left_click === true){
-				GameScene.left_click_state = GameScene.advanceClickState(GameScene.left_click_state, 1)				
+				GameScene.left_click_state = GameScene.advanceClickState(GameScene.left_click_state, 1)	
 			}
 
 			if(GameScene.left_click_state === 0){
+				GameScene.selected_unit.shoot(this, pointer);
 				GameScene.selected_unit.unselectHandler();
 			}		
+			
+			// let angle = Phaser.Math.Angle.BetweenPoints(GameScene.selected_unit.sprite, pointer);
+			// console.log(angle);
 		}
 
 		if(GameScene.right_click === true){
@@ -145,6 +148,12 @@ var GameScene = new Phaser.Class({
 		
 		GameScene.left_click = false;
 		GameScene.right_click = false;		
+		
+		if(GameScene.bullets){
+			GameScene.bullets.forEach((bullet) => {
+				bullet.checkRange();
+			})
+		}
     }
 });
 
@@ -160,6 +169,7 @@ GameScene.checkCollision = function(x,y){
 };
 
 
+GameScene.bullets = [];
 GameScene.selected_unit;
 GameScene.left_click = false;
 GameScene.left_click_state = 0;
