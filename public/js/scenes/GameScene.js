@@ -18,7 +18,9 @@ var GameScene = new Phaser.Class({
 		this.load.image('phaserguy', '../../img/phaserguy.png');
 		this.load.image('base', '../../img/base.png');
 		
-		this.load.image('bullet', '../../img/bullet.png');		
+		this.load.image('bullet', '../../img/bullet.png');	
+		this.load.image('marker', '../../img/marker.png');	
+		
 		
 		this.scene.launch("ArmySetupUIScene");
     },

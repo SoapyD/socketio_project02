@@ -1,10 +1,10 @@
 
 const bullet = class {
-	constructor(scene, spritesheet, x, y, angle) {
+	constructor(scene, spritesheet, x, y, angle, range) {
 		
 		// this.x = x;
 		// this.y = y;
-		this.max_range = 300;
+		this.range = range;
 		this.speed = 200;
 		
 		this.origin = {
@@ -27,7 +27,7 @@ const bullet = class {
 	checkRange(){
 		let current_range = Math.sqrt(Math.pow(this.origin.x - this.sprite.x, 2) + Math.pow(this.origin.y - this.sprite.y, 2))
 		
-		if (current_range >= this.max_range){
+		if (current_range >= this.range){
 			this.sprite.disableBody(true, true);
 		}
 		// console.log(current_range)

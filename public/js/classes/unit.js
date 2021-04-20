@@ -147,31 +147,56 @@ const unit = class {
 		//GET DIFFERENCE INFO
 		pos.x_diff = pos.end_x - pos.start_x;
 		pos.y_diff = pos.end_y - pos.start_y;
-		pos.x_dir = (pos.x_diff < 0) ? -1:1;
-		pos.y_dir = (pos.y_diff < 0) ? -1:1;		
+			
+		// pos.x_dir = (pos.x_diff < 0) ? -1:1;
+		// pos.y_dir = (pos.y_diff < 0) ? -1:1;		
 
 		//FIND OUT WHICH NORMALISED DIFF IS HIGHER
 		pos.x_norm = (pos.x_diff < 0) ? pos.x_diff * -1:pos.x_diff;
 		pos.y_norm = (pos.y_diff < 0) ? pos.y_diff * -1:pos.y_diff;
-		// pos.itts = (pos.x_norm > pos.y_norm) ? pos.x_norm*2:pos.y_norm*2;
-		pos.itts = (pos.x_norm > pos.y_norm) ? pos.x_norm:pos.y_norm;		
-		pos.itt_value = gameFunctions.tile_size // / pos.itts
 
+		//HIGHEST DISTANCE DETERMINES THE ITTS, THEN DOUBLE THEM TO MAKE SURE ALL CELLS IN BETWEEN ARE COVERED
+		pos.itts = (pos.x_norm > pos.y_norm) ? pos.x_norm:pos.y_norm;	
+		pos.itts *= 2;
+
+		pos.x_itt_value = (gameFunctions.tile_size * pos.x_diff) / pos.itts;
+		pos.y_itt_value = (gameFunctions.tile_size * pos.y_diff) / pos.itts;		
+
+		//PLOT OUT THE GRID POSITIONS OF THE CELLS BUT ONLY TO RANGE OF GUN
 		pos.cells = [];
 		for(let i=0; i<=pos.itts ;i++){
 			let cell = {
-				x: (pos.start_x * gameFunctions.tile_size) + (i * pos.itt_value * pos.x_dir) + (gameFunctions.tile_size / 2),
-				y: (pos.start_y * gameFunctions.tile_size) + (i * pos.itt_value * pos.y_dir) + (gameFunctions.tile_size / 2),
+				x: (pos.start_x * gameFunctions.tile_size) + (i * pos.x_itt_value) + (gameFunctions.tile_size / 2),
+				y: (pos.start_y * gameFunctions.tile_size) + (i * pos.y_itt_value) + (gameFunctions.tile_size / 2),
 			}
+			cell.x_pos = Math.floor(cell.x / gameFunctions.tile_size)
+			cell.y_pos = Math.floor(cell.y / gameFunctions.tile_size)
+			cell.x_pos_real = cell.x_pos * gameFunctions.tile_size
+			cell.y_pos_real = cell.y_pos * gameFunctions.tile_size
+			
 			pos.cells.push(cell)
+			
+			//BREAK THE LOOP IF RANGE IS EQUAL OR ABOVE GUN RANGE
+			let current_range = Math.sqrt(Math.pow(this.sprite.x - cell.x, 2) + Math.pow(this.sprite.y - cell.y, 2))
+			if(current_range >= 100){ break; }
 		}
 		
+		let obj_check = false;
 		pos.cells.forEach((cell) => {
-			scene.physics.add.image(cell.x,cell.y,"bullet")
+			// scene.physics.add.image(cell.x,cell.y,"marker")
+			// scene.physics.add.image(cell.x_pos_real,cell.y_pos_real,"marker").setTint(0xff0000);
+			let grid_cell = GameScene.grid[cell.y_pos][cell.x_pos]
+			console.log(grid_cell)
+			if (grid_cell !== 1){
+				obj_check = true;
+			}
 		})
 		console.log(pos)		
 		
-		// let angle = Phaser.Math.Angle.BetweenPoints(this.sprite, pointer);
-		// GameScene.bullets.push(new bullet(scene, "bullet", this.x, this.y, angle))
+		if(obj_check === false){
+			let angle = Phaser.Math.Angle.BetweenPoints(this.sprite, pointer);
+			GameScene.bullets.push(new bullet(scene, "bullet", this.x, this.y, angle, 100))			
+		}
+
 	}
 }
