@@ -101,7 +101,7 @@ var GameScene = new Phaser.Class({
 		
 		GameScene.units = []		
 		GameScene.units.push(new unit(this, "phaserguy", gameFunctions.tile_size, gameFunctions.tile_size));		
-		GameScene.units.push(new unit(this, "phaserguy", gameFunctions.tile_size * 10, gameFunctions.tile_size * 10));
+		GameScene.units.push(new unit(this, "phaserguy", gameFunctions.tile_size * 9, gameFunctions.tile_size * 9));
 		
     	text = this.add.text(10, 10, '', { fill: '#00ff00' }).setDepth(1);		
 		

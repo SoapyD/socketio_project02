@@ -13,7 +13,7 @@ const bullet = class {
 		}
 		
 		this.sprite = scene.physics.add.image(x,y,spritesheet)
-		this.sprite.setDepth(1);
+		this.sprite.setDepth(10);
 		this.sprite.setOrigin(0.5,0.5);		
 		this.sprite.parent = this;
 		
