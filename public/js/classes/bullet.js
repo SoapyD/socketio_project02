@@ -8,6 +8,7 @@ const bullet = class {
 		this.player = player;
 		this.range = range;
 		this.speed = 200;
+		this.damage = 50;
 		
 		this.origin = {
 			x: x,
@@ -26,19 +27,28 @@ const bullet = class {
 		scene.physics.velocityFromAngle(Phaser.Math.RadToDeg(angle), this.speed, this.sprite.body.velocity);	
 		
 		
-		scene.physics.add.collider(this.sprite, GameScene.units[0].sprite,() => {
+		scene.physics.add.collider(this.sprite, GameScene.unit_collisions,(bullet, unit) => {
 			// console.log("TEST")
-			this.sprite.disableBody(true, true);
 			
-			GameScene.units[0].sprite.setTint(0xff0000);
+			// console.log(unit)
+			if(bullet.parent.player !== unit.parent.player){
+				bullet.parent.kill();
+				// unit.setTint(0xff0000);
+				unit.parent.wound(bullet.parent.damage);
+			}
+
 		})
 	}
 
+	kill(){
+		this.sprite.disableBody(true, true);
+	}
+	
 	checkRange(){
 		let current_range = Math.sqrt(Math.pow(this.origin.x - this.sprite.x, 2) + Math.pow(this.origin.y - this.sprite.y, 2))
 		
 		if (current_range >= this.range){
-			this.sprite.disableBody(true, true);
+			this.kill();
 		}
 		// console.log(current_range)
 		

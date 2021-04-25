@@ -99,6 +99,8 @@ var GameScene = new Phaser.Class({
 		
 		gameFunctions.current_scene = this.scene.get('GameScene');		
 		
+		
+		GameScene.unit_collisions = this.add.group();
 		GameScene.units = []		
 		GameScene.units.push(new unit(this, "phaserguy", gameFunctions.tile_size * 11, gameFunctions.tile_size * 12,1,1));		
 		GameScene.units.push(new unit(this, "phaserguy", gameFunctions.tile_size * 11, gameFunctions.tile_size * 14,0,0));

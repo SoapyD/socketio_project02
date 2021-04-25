@@ -12,6 +12,7 @@ const unit = class {
 		
 		this.max_movement = 10;
 		this.shoot_range = 200;
+		this.health = 100;
 		
 		this.x = x + (gameFunctions.tile_size / 2);
 		this.y = y + (gameFunctions.tile_size / 2);
@@ -20,6 +21,7 @@ const unit = class {
 		this.sprite.setImmovable(true)
 		this.sprite.setDepth(1);
 		this.sprite.parent = this
+		GameScene.unit_collisions.add(this.sprite)
 		
 		this.sprite_base = scene.add.image(this.x,this.y,"base");
 		this.sprite_base.setDepth(0.5);
@@ -34,6 +36,18 @@ const unit = class {
 		this.selectHander = this.selectHander.bind(this);
 	}
 
+	kill(){
+		this.sprite.disableBody(true, true);
+		this.sprite_base.destroy(true);		
+	}	
+	
+	wound(damage){
+		this.health -= damage;
+		if(this.health <= 0){
+			this.kill();
+		}
+	}
+	
 	selectHander(pointer) {
 
 		// console.log(this.parent)
