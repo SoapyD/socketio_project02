@@ -22,7 +22,8 @@ var GameScene = new Phaser.Class({
 		this.load.image('marker', '../../img/marker.png');	
 		
 		
-		this.scene.launch("ArmySetupUIScene");
+		// this.scene.launch("ArmySetupUIScene");
+		this.scene.launch("GameUIScene");
     },
 
 
@@ -100,12 +101,15 @@ var GameScene = new Phaser.Class({
 		gameFunctions.current_scene = this.scene.get('GameScene');		
 		
 		
+		//ADD IN SOME UNITS
 		GameScene.unit_collisions = this.add.group();
 		GameScene.units = []		
-		GameScene.units.push(new unit(this, "phaserguy", gameFunctions.tile_size * 11, gameFunctions.tile_size * 12,1,1));		
-		GameScene.units.push(new unit(this, "phaserguy", gameFunctions.tile_size * 11, gameFunctions.tile_size * 14,0,0));
+		GameScene.units.push(new unit(this, "phaserguy", gameFunctions.tile_size * 11, gameFunctions.tile_size * 12,1,1));
 		
-    	text = this.add.text(10, 10, '', { fill: '#00ff00' }).setDepth(1);					
+		GameScene.units.push(new unit(this, "phaserguy", gameFunctions.tile_size * 11, gameFunctions.tile_size * 14,0,0));
+		GameScene.units.push(new unit(this, "phaserguy", gameFunctions.tile_size * 14, gameFunctions.tile_size * 14,0,0));		
+		
+    	text = this.add.text(10, 10, '', { fill: '#00ff00' }).setDepth(1);							
 		
     },
 
@@ -141,14 +145,13 @@ var GameScene = new Phaser.Class({
 			// console.log(angle);
 		}
 
-		if(GameScene.right_click === true){
-			
-			GameScene.units.forEach((unit) => {
-				if(unit.path){
-					unit.move();		
-				}
-			})
-		}
+		// if(GameScene.right_click === true){
+		// 	GameScene.units.forEach((unit) => {
+		// 		if(unit.path){
+		// 			unit.move();		
+		// 		}
+		// 	})
+		// }
 		
 		GameScene.left_click = false;
 		GameScene.right_click = false;		
