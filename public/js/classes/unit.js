@@ -1,6 +1,10 @@
 
 const unit = class {
-	constructor(scene, spritesheet, x, y) {
+	constructor(scene, spritesheet, x, y, side, player) {
+		
+		this.side = side,
+		this.player = player,			
+		
 		// this.selected = false;
 		this.moves = 0;
 		this.shots = 0;
@@ -12,7 +16,8 @@ const unit = class {
 		this.x = x + (gameFunctions.tile_size / 2);
 		this.y = y + (gameFunctions.tile_size / 2);
 		
-		this.sprite = scene.add.image(this.x,this.y,spritesheet).setInteractive();
+		this.sprite = scene.physics.add.image(this.x,this.y,spritesheet).setInteractive();
+		this.sprite.setImmovable(true)
 		this.sprite.setDepth(1);
 		this.sprite.parent = this
 		
@@ -34,15 +39,20 @@ const unit = class {
 		// console.log(this.parent)
 		if (pointer.leftButtonReleased())
 		{
-			if(GameScene.selected_unit){
-				GameScene.selected_unit.sprite_base.setTint(0xffffff)
-			}		
-			
-			this.parent.sprite_base.setTint(0xff0000);
-			
-			GameScene.selected_unit = this.parent;
-			GameScene.left_click = false;
-			// this.parent.sprite_base.setVisible(true);			
+			if (this.parent.player === GameScene.current_player){
+				//TURN OLD SELECTED PLAYER MARKER, WHITE
+				if(GameScene.selected_unit){
+					GameScene.selected_unit.sprite_base.setTint(0xffffff)
+				}		
+
+				//TURN ENW SELECTED MARKER, RED
+				this.parent.sprite_base.setTint(0xff0000);
+
+				GameScene.selected_unit = this.parent;
+				GameScene.left_click = false;
+				// this.parent.sprite_base.setVisible(true);							
+			}
+
 		}
 	}
 	
@@ -64,6 +74,7 @@ const unit = class {
 		GameScene.finder.calculate(); // don't forget, otherwise nothing happens			
 	}
 	
+	//CALLED AS PART OF CALLBACK IN "FINDPATH"
 	drawPath(path) {
 
 		if (path){
@@ -213,84 +224,12 @@ const unit = class {
 		
 		if(obj_check === false){
 			let angle = Phaser.Math.Angle.BetweenPoints(this.sprite, dest);
-			GameScene.bullets.push(new bullet(scene, "bullet", this.x, this.y, angle, this.shoot_range))			
-		}		
+			if(angle){
+				GameScene.bullets.push(new bullet(scene, "bullet", this.x, this.y, angle, this.shoot_range, this.side, this.player))				
+			}
+
+		}
 		
 	}
-	
-	
-	// shoot_old (scene, pointer) {
-		
-	// 	//GET BASE POSITIONAL DATA
-	// 	let pos = {
-	// 		start_x: Math.floor(this.sprite.x / gameFunctions.tile_size),
-	// 		start_y: Math.floor(this.sprite.y / gameFunctions.tile_size),			
-	// 		end_x: Math.floor(pointer.x / gameFunctions.tile_size),
-	// 		end_y: Math.floor(pointer.y / gameFunctions.tile_size),					
-	// 	}
-	// 	//GET DIFFERENCE INFO
-	// 	pos.x_diff = pos.end_x - pos.start_x;
-	// 	pos.y_diff = pos.end_y - pos.start_y;
-
-	// 	//FIND OUT WHICH NORMALISED DIFF IS HIGHER
-	// 	pos.x_norm = (pos.x_diff < 0) ? pos.x_diff * -1:pos.x_diff;
-	// 	pos.y_norm = (pos.y_diff < 0) ? pos.y_diff * -1:pos.y_diff;
-
-	// 	//HIGHEST DISTANCE DETERMINES THE ITTS, THEN DOUBLE THEM TO MAKE SURE ALL CELLS IN BETWEEN ARE COVERED
-	// 	pos.itts = (pos.x_norm > pos.y_norm) ? pos.x_norm:pos.y_norm;	
-	// 	pos.x_itt_value = (gameFunctions.tile_size * pos.x_diff) / pos.itts;
-	// 	pos.y_itt_value = (gameFunctions.tile_size * pos.y_diff) / pos.itts;		
-
-	// 	//PLOT OUT THE GRID POSITIONS OF THE CELLS BUT ONLY TO RANGE OF GUN
-	// 	pos.cells = [];
-	// 	for(let i=0; i<=pos.itts ;i++){
-	// 		let cell = {
-	// 			x: (pos.start_x * gameFunctions.tile_size) + (i * pos.x_itt_value) + (gameFunctions.tile_size / 2),
-	// 			y: (pos.start_y * gameFunctions.tile_size) + (i * pos.y_itt_value) + (gameFunctions.tile_size / 2),
-	// 		}
-	// 		cell.x_pos = Math.floor(cell.x / gameFunctions.tile_size)
-	// 		cell.y_pos = Math.floor(cell.y / gameFunctions.tile_size)
-	// 		cell.x_pos_real = cell.x_pos * gameFunctions.tile_size
-	// 		cell.y_pos_real = cell.y_pos * gameFunctions.tile_size
-			
-	// 		pos.cells.push(cell)
-			
-	// 		//BREAK THE LOOP IF RANGE IS EQUAL OR ABOVE GUN RANGE
-	// 		let current_range = Math.sqrt(Math.pow(this.sprite.x - cell.x, 2) + Math.pow(this.sprite.y - cell.y, 2))
-	// 		if(current_range >= this.shoot_range){ break; }
-	// 	}
-		
-	// 	let obj_check = false;
-	// 	let dest = {};
-		
-	// 	if (!this.temp_sprites){
-	// 		this.temp_sprites = []			
-	// 	}
-	// 	else{
-	// 		this.temp_sprites.forEach((sprite) => {
-	// 			sprite.destroy();
-	// 		})
-	// 	}
-		
-	// 	pos.cells.forEach((cell) => {
-	// 		this.temp_sprites.push(scene.physics.add.image(cell.x,cell.y,"marker").setDepth(2))
-	// 		this.temp_sprites.push(scene.physics.add.image(cell.x_pos_real,cell.y_pos_real,"marker").setTint(0xff0000).setDepth(3));
-	// 		let grid_cell = GameScene.grid[cell.y_pos][cell.x_pos]
-	// 		// console.log(grid_cell)
-	// 		dest.x = cell.x
-	// 		dest.y = cell.y			
-			
-	// 		if (grid_cell !== 1){
-	// 			obj_check = true;
-	// 		}
-	// 	})
-	// 	// console.log(pos)		
-		
-	// 	if(obj_check === false){
-	// 		let angle = Phaser.Math.Angle.BetweenPoints(this.sprite, dest);
-	// 		GameScene.bullets.push(new bullet(scene, "bullet", this.x, this.y, angle, this.shoot_range))			
-	// 	}
-
-	// }	
 	
 }

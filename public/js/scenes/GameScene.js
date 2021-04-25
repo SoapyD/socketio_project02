@@ -100,10 +100,10 @@ var GameScene = new Phaser.Class({
 		gameFunctions.current_scene = this.scene.get('GameScene');		
 		
 		GameScene.units = []		
-		GameScene.units.push(new unit(this, "phaserguy", gameFunctions.tile_size, gameFunctions.tile_size));		
-		GameScene.units.push(new unit(this, "phaserguy", gameFunctions.tile_size * 9, gameFunctions.tile_size * 9));
+		GameScene.units.push(new unit(this, "phaserguy", gameFunctions.tile_size * 11, gameFunctions.tile_size * 12,1,1));		
+		GameScene.units.push(new unit(this, "phaserguy", gameFunctions.tile_size * 11, gameFunctions.tile_size * 14,0,0));
 		
-    	text = this.add.text(10, 10, '', { fill: '#00ff00' }).setDepth(1);		
+    	text = this.add.text(10, 10, '', { fill: '#00ff00' }).setDepth(1);					
 		
     },
 
@@ -171,6 +171,7 @@ GameScene.checkCollision = function(x,y){
 };
 
 
+GameScene.current_player = 0;
 GameScene.bullets = [];
 GameScene.selected_unit;
 GameScene.left_click = false;
@@ -203,3 +204,5 @@ GameScene.handleClick = function(pointer){
 		GameScene.right_click = true;
 	}			
 };
+
+

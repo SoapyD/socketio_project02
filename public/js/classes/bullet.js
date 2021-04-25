@@ -1,9 +1,11 @@
 
 const bullet = class {
-	constructor(scene, spritesheet, x, y, angle, range) {
+	constructor(scene, spritesheet, x, y, angle, range, side, player) {
 		
 		// this.x = x;
 		// this.y = y;
+		this.side = side;
+		this.player = player;
 		this.range = range;
 		this.speed = 200;
 		
@@ -21,7 +23,15 @@ const bullet = class {
 		
 		this.sprite.enableBody(true, x, y, true, true);
 
-		scene.physics.velocityFromAngle(Phaser.Math.RadToDeg(angle), this.speed, this.sprite.body.velocity);		
+		scene.physics.velocityFromAngle(Phaser.Math.RadToDeg(angle), this.speed, this.sprite.body.velocity);	
+		
+		
+		scene.physics.add.collider(this.sprite, GameScene.units[0].sprite,() => {
+			// console.log("TEST")
+			this.sprite.disableBody(true, true);
+			
+			GameScene.units[0].sprite.setTint(0xff0000);
+		})
 	}
 
 	checkRange(){
@@ -40,7 +50,7 @@ const bullet = class {
 		// console.log(cell)
 		if(cell !== 1){
 			this.sprite.disableBody(true, true);
-			console.log(gridX, gridY, cell)
+			// console.log(gridX, gridY, cell)
 			GameScene.bullets = [];
 		}
 		// console.log(cell)
