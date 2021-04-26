@@ -22,11 +22,21 @@ var GameUIScene = new Phaser.Class({
 		
 		gameFunctions.btn_sprite = [];
 		
-		gameFunctions.createButton(this, gameFunctions.config.width - 50, 25, "move", GameUIScene.active_movement, callbackParams, gameFunctions.btn_sprite);					
+		gameFunctions.createButton(this, gameFunctions.config.width - 50, 25, "move", GameUIScene.activate_movement, callbackParams, gameFunctions.btn_sprite);					
 		
-		gameFunctions.createButton(this, gameFunctions.config.width - 50, 75, "shoot", GameUIScene.active_movement, callbackParams, gameFunctions.btn_sprite);		
+		gameFunctions.createButton(this, gameFunctions.config.width - 50, 75, "shoot", GameUIScene.activate_shooting, callbackParams, gameFunctions.btn_sprite);		
 
 		gameFunctions.createButton(this, gameFunctions.config.width - 50, 125, "fight", GameUIScene.active_movement, callbackParams, gameFunctions.btn_sprite);				
+
+		
+		callbackParams = {mode:"move"};
+		gameFunctions.createButton(this, gameFunctions.config.width - 150, 25, "+", GameUIScene.select_mode, callbackParams, gameFunctions.btn_sprite);					
+		
+		callbackParams = {mode:"shoot"};
+		gameFunctions.createButton(this, gameFunctions.config.width - 150, 75, "+", GameUIScene.select_mode, callbackParams, gameFunctions.btn_sprite);		
+
+		callbackParams = {mode:"fight"};
+		gameFunctions.createButton(this, gameFunctions.config.width - 150, 125, "+", GameUIScene.select_mode, callbackParams, gameFunctions.btn_sprite);				
 		
 		
 		gameFunctions.btn_sprite.forEach(btn => {
@@ -52,12 +62,29 @@ var GameUIScene = new Phaser.Class({
 });
 
 
-GameUIScene.active_movement = () => {
+GameUIScene.select_mode = (options) => {
+	if(options.mode){
+		GameScene.mode = options.mode
+	}
+}
+
+GameUIScene.activate_movement = () => {
 	GameScene.units.forEach((unit) => {
 		if(unit.path){
 			unit.move();		
 		}
 	})	
 }
+
+GameUIScene.activate_shooting = () => {
+	GameScene.units.forEach((unit) => {
+		unit.shoot();
+	})	
+}
+
+
+
+
+
 
 

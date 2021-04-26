@@ -1,28 +1,31 @@
 
 const bullet = class {
-	constructor(scene, spritesheet, x, y, angle, range, side, player) {
-		
+	// constructor(scene, spritesheet, x, y, angle, range, side, player) {
+	constructor(scene, spritesheet, angle, unit) {	
+	
+	
 		// this.x = x;
 		// this.y = y;
-		this.side = side;
-		this.player = player;
-		this.range = range;
+		this.unit = unit;
+		this.side = unit.side;
+		this.player = unit.player;
+		this.range = unit.range;
 		this.speed = 200;
 		this.damage = 50;
 		
 		this.origin = {
-			x: x,
-			y: y
+			x: unit.x,
+			y: unit.y
 		}
 		
-		this.sprite = scene.physics.add.image(x,y,spritesheet)
+		this.sprite = scene.physics.add.image(unit.x,unit.y,spritesheet)
 		this.sprite.setDepth(10);
 		this.sprite.setOrigin(0.5,0.5);		
 		this.sprite.parent = this;
 		
         this.sprite.rotation = angle;
 		
-		this.sprite.enableBody(true, x, y, true, true);
+		this.sprite.enableBody(true, unit.x, unit.y, true, true);
 
 		scene.physics.velocityFromAngle(Phaser.Math.RadToDeg(angle), this.speed, this.sprite.body.velocity);	
 		
@@ -41,6 +44,8 @@ const bullet = class {
 	}
 
 	kill(){
+		// console.log(this)
+		this.unit.graphics.clear()
 		this.sprite.disableBody(true, true);
 	}
 	

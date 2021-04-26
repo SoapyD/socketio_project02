@@ -130,16 +130,33 @@ var GameScene = new Phaser.Class({
 		
 		
 		if(GameScene.selected_unit){
-			GameScene.selected_unit.findPath(GameScene, pointer);
-
+	
+			
 			if(GameScene.left_click === true){
-				GameScene.left_click_state = GameScene.advanceClickState(GameScene.left_click_state, 1)	
-			}
+				switch(GameScene.mode) {
+					case "move":
+						GameScene.selected_unit.findPath(GameScene, pointer);
+					break;
+					case "shoot":
+						GameScene.selected_unit.findTarget(this, pointer);
+					break;
+					case "fight":
 
-			if(GameScene.left_click_state === 0){
-				GameScene.selected_unit.shoot(this, pointer);
-				GameScene.selected_unit.unselectHandler();
-			}		
+					break;					
+					default:
+					// code block
+				}		
+			}
+			
+			
+			// if(GameScene.left_click === true){
+			// 	GameScene.left_click_state = GameScene.advanceClickState(GameScene.left_click_state, 1)	
+			// }
+
+			// if(GameScene.left_click_state === 0){
+			// 	GameScene.selected_unit.shoot(this, pointer);
+			// 	GameScene.selected_unit.unselectHandler();
+			// }		
 			
 			// let angle = Phaser.Math.Angle.BetweenPoints(GameScene.selected_unit.sprite, pointer);
 			// console.log(angle);
@@ -176,6 +193,7 @@ GameScene.checkCollision = function(x,y){
 };
 
 
+GameScene.mode = '';
 GameScene.current_player = 0;
 GameScene.bullets = [];
 GameScene.selected_unit;

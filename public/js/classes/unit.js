@@ -31,6 +31,7 @@ const unit = class {
 		
 		this.graphics = scene.add.graphics();		
 		this.path;
+		this.targets = [];
 		
 		this.drawPath = this.drawPath.bind(this);
 		this.selectHander = this.selectHander.bind(this);
@@ -81,11 +82,18 @@ const unit = class {
 		var toX = Math.floor(x/gameFunctions.tile_size);
 		var toY = Math.floor(y/gameFunctions.tile_size);
 
-		var fromX = Math.floor(this.x/gameFunctions.tile_size);
-		var fromY = Math.floor(this.y/gameFunctions.tile_size);		
+		if(toX < GameScene.map.width && toY < GameScene.map.height
+		  && toX >= 0 && toY >= 0){
+
+			var fromX = Math.floor(this.x/gameFunctions.tile_size);
+			var fromY = Math.floor(this.y/gameFunctions.tile_size);		
+
+			GameScene.finder.findPath(fromX, fromY, toX, toY, this.drawPath);			
+			GameScene.finder.calculate(); // don't forget, otherwise nothing happens						
+			
+		}
 		
-		GameScene.finder.findPath(fromX, fromY, toX, toY, this.drawPath);			
-		GameScene.finder.calculate(); // don't forget, otherwise nothing happens			
+
 	}
 	
 	//CALLED AS PART OF CALLBACK IN "FINDPATH"
@@ -160,7 +168,9 @@ const unit = class {
 		}
 	}
 	
-	shoot (scene, pointer) {
+	findTarget (scene, pointer) {
+		
+		this.targets = [];
 		
 		//GET BASE POSITIONAL DATA
 		let pos = {
@@ -237,13 +247,65 @@ const unit = class {
 		})		
 		
 		if(obj_check === false){
-			let angle = Phaser.Math.Angle.BetweenPoints(this.sprite, dest);
-			if(angle){
-				GameScene.bullets.push(new bullet(scene, "bullet", this.x, this.y, angle, this.shoot_range, this.side, this.player))				
-			}
+			this.targets.push(dest);
+			this.drawTarget();
+			// let angle = Phaser.Math.Angle.BetweenPoints(this.sprite, dest);
+			// if(angle){
+			// 	GameScene.bullets.push(new bullet(scene, "bullet", this.x, this.y, angle, this.shoot_range, this.side, this.player))				
+			// }
 
 		}
 		
 	}
+	
+	//CALLED AS PART OF CALLBACK IN "FINDPATH"
+	drawTarget() {
+
+		// console.log(this)		
+		
+		if (this.targets){
+
+			//RESET THE DRAW GRAPHICS
+			this.graphics.clear()
+			this.graphics.lineStyle(10, 0x2ECC40);	
+			this.graphics.beginPath();
+
+
+			this.targets.forEach((pos, i) => {
+
+				this.graphics.beginPath();
+				// console.log(this)
+				this.graphics.moveTo(this.x, this.y);
+				
+				//OFFSET PATH POSITION TO MIDDLE OF TILE
+				pos.x += 0.5;
+				pos.y += 0.5;	
+				// console.log(pos)
+				
+				this.graphics.lineTo(pos.x, pos.y);
+			})			
+
+			this.graphics.strokePath();		
+		}
+	}	
+	
+	shoot() {
+		
+		if(this.targets){
+			this.targets.forEach((target) => {
+
+				let angle = Phaser.Math.Angle.BetweenPoints(this.sprite, target);
+				if(angle){
+					// GameScene.bullets.push(new bullet(GameScene.scene, "bullet", this.x, this.y, angle, this.shoot_range, this.side, this.player))
+					GameScene.bullets.push(new bullet(GameScene.scene, "bullet", angle, this))
+					//BULLET DEATH KILLS THE GRAPHIC
+				}				
+				
+			})
+			unit.targets = [];
+		}		
+		
+	}
+	
 	
 }
