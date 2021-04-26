@@ -88,8 +88,10 @@ const unit = class {
 			var fromX = Math.floor(this.x/gameFunctions.tile_size);
 			var fromY = Math.floor(this.y/gameFunctions.tile_size);		
 
-			GameScene.finder.findPath(fromX, fromY, toX, toY, this.drawPath);			
-			GameScene.finder.calculate(); // don't forget, otherwise nothing happens						
+			// GameScene.finder.findPath(fromX, fromY, toX, toY, this.drawPath);			
+			// GameScene.finder.calculate(); // don't forget, otherwise nothing happens						
+		
+			GameScene.pathfinder.findPath(fromX, fromY, toX, toY, this.drawPath)
 			
 		}
 		
@@ -212,7 +214,8 @@ const unit = class {
 				}
 				pos.cells.push(cell)
 				
-				let current_range = Math.sqrt(Math.pow(this.sprite.x - cell.x, 2) + Math.pow(this.sprite.y - cell.y, 2))
+				// let current_range = Math.sqrt(Math.pow(this.sprite.x - cell.x, 2) + Math.pow(this.sprite.y - cell.y, 2))
+				let current_range = gameFunctions.twoPointDistance(this.sprite, cell)
 				if(current_range >= this.shoot_range){ break; }						
 			}			
 		}

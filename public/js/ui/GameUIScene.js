@@ -26,7 +26,7 @@ var GameUIScene = new Phaser.Class({
 		
 		gameFunctions.createButton(this, gameFunctions.config.width - 50, 75, "shoot", GameUIScene.activate_shooting, callbackParams, gameFunctions.btn_sprite);		
 
-		gameFunctions.createButton(this, gameFunctions.config.width - 50, 125, "fight", GameUIScene.active_movement, callbackParams, gameFunctions.btn_sprite);				
+		gameFunctions.createButton(this, gameFunctions.config.width - 50, 125, "fight", GameUIScene.activate_movement, callbackParams, gameFunctions.btn_sprite);				
 
 		
 		callbackParams = {mode:"move"};

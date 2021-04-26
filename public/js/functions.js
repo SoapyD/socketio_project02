@@ -1,4 +1,8 @@
 
+gameFunctions.twoPointDistance = (pos_start, pos_end) => {
+	// console.log(pos_start, pos_end)
+	return Math.sqrt(Math.pow(pos_start.x - pos_end.x, 2) + Math.pow(pos_start.y - pos_end.y, 2))
+}
 
 gameFunctions.createButton = (game, x, y, label, clickAction, callbackParams, array) => {
     const btn = game.add.sprite(x, y, "buttons").setInteractive()

@@ -101,6 +101,9 @@ var GameScene = new Phaser.Class({
 		gameFunctions.current_scene = this.scene.get('GameScene');		
 		
 		
+		GameScene.pathfinder = new pathfinder(grid);
+		
+		
 		//ADD IN SOME UNITS
 		GameScene.unit_collisions = this.add.group();
 		GameScene.units = []		
@@ -141,7 +144,7 @@ var GameScene = new Phaser.Class({
 						GameScene.selected_unit.findTarget(this, pointer);
 					break;
 					case "fight":
-
+						GameScene.selected_unit.findPath(GameScene, pointer);
 					break;					
 					default:
 					// code block
