@@ -1,4 +1,6 @@
 
+
+
 const pathfinder = class {
 	constructor(grid) {	
 		this.grid = grid,
@@ -6,7 +8,7 @@ const pathfinder = class {
 		this.height = grid.length,
 			
 		this.path = [],
-		this.max_positions = 1,
+		this.max_positions = 100,
 		
 		this.start = {
 			x: 0,
@@ -28,6 +30,8 @@ const pathfinder = class {
 	findPath(x_start, y_start, x_end, y_end, callback) {
 		
 		this.path = [];
+		this.open = [];
+		this.closed = [];
 		
 		this.start.x = x_start;
 		this.start.y = y_start;
@@ -40,21 +44,30 @@ const pathfinder = class {
 		// 	return
 		// }		
 		
-		//add start pos to open list
-		this.open.push(this.start)
-		// this.current = this.start;
-		// this.closed = this.start
+		//add start pos to open list, first needs converting into a node
+		let start_node = {
+			pos: this.start
+		}
+		start_node.f_cost = 999;
+		this.open.push(start_node)
+		// console.log(this)
+
+        let path_found = false;
 		
+		//LOOP THROUGH MAX POSITIONS
 		for(let i=0;i<this.max_positions;i++){
 			
 			//FIND OPEN NODE WITH LOWEST F_COST
 			let f_cost = 1000;
 			let index = -1;
 			let saved_node
+			// console.log(this)
 			this.open.forEach((open_node, i) => {
 				if(open_node.f_cost < f_cost){
-					f_cost = open_node.f_cost
+                    f_cost = open_node.f_cost;
+                    index = i;
 					this.current = open_node;
+					// console.log(this)
 				}
 			})
 			
@@ -66,8 +79,11 @@ const pathfinder = class {
 
 			
 			
-			if(JSON.stringify(this.current) === JSON.stringify(this.end)){
-				return
+			if(JSON.stringify(this.current.pos) === JSON.stringify(this.end)){
+				// console.log("end met")
+                // return
+                path_found = true;
+                break;
 			}
 			
 			//GET SURROUNDING NODES
@@ -79,13 +95,13 @@ const pathfinder = class {
 				nodes.forEach((node) => {
 					
 					//if neighbour non traversable or neighbour is in closed list
-					if(node.cell !== 1 || closed.includes(node)){
+					if(node.cell !== 1 || this.closed.some(e => JSON.stringify(e.pos) === JSON.stringify(node.pos))){
 						//skip
 					}
 					else{
 						
 						//IF OPEN LISTS INCLUDES THE CURRENT NODE
-						if (open.some(e => JSON.stringify(e.pos) === JSON.stringify(node.pos))) {
+						if (this.open.some(e => JSON.stringify(e.pos) === JSON.stringify(node.pos))) {
 							//GET ARRAY POSITION
 							let index = this.open.findIndex((e) => JSON.stringify(e.pos) === JSON.stringify(node.pos));
 							if(index !== -1){
@@ -99,7 +115,7 @@ const pathfinder = class {
 							
 						}else{
 							//ADD THE NODE
-							open.push(node)
+							this.open.push(node)
 						}
 						
 					}
@@ -109,11 +125,39 @@ const pathfinder = class {
 			}
 		}
 
+        if(path_found === true){
+            console.log("PATH FOUND!")
+            // console.log(this.closed[this.closed.length - 1])
+            let index = this.closed.length - 1
+            let node;
+            this.path = []
+
+            for(let i=0;i<this.max_positions;i++){
+
+                node = this.closed[index]
+                this.path.unshift(node.pos)
+
+                index = this.closed.findIndex((e) => JSON.stringify(e.pos) === JSON.stringify(node.origin_pos));
+                // console.log(index)
+
+                if(index === -1){
+                    break
+                }
+
+            }
+
+            if(callback){
+                callback(this.path)
+            }
+        }
+
+
 		// const found = array1.findIndex((e) => JSON.stringify(e.num) === JSON.stringify({x:5,y:5}));
 		
 		// console.log(this)
 		// return this.path;
 		// callback(this.path);
+		/**/
 	}
 	
 	checkPosition(){		
@@ -137,8 +181,8 @@ const pathfinder = class {
 
 				if(skip === false){
 					let pos = {
-						x: this.current.x + x,
-						y: this.current.y + y
+						x: this.current.pos.x + x,
+						y: this.current.pos.y + y
 					}
 
 					let run_check = true;
@@ -154,7 +198,7 @@ const pathfinder = class {
 					}
 
 					if(run_check === true){
-						let g_cost = gameFunctions.twoPointDistance(pos, this.current)
+						let g_cost = gameFunctions.twoPointDistance(pos, this.current.pos)
 						let h_cost = gameFunctions.twoPointDistance(pos, this.end)
 						let f_cost = g_cost + h_cost;
 
@@ -164,7 +208,7 @@ const pathfinder = class {
 						// }	
 						
 						let node = {
-							origin_pos: this.current,
+							origin_pos: this.current.pos,
 							pos: pos,
 							cell: cell,
 							g_cost: cell,
