@@ -14,7 +14,8 @@ var GameScene = new Phaser.Class({
     preload: function()
     {
 		this.load.image('tileset', './img/gridtiles.png');
-		this.load.tilemapTiledJSON('map', '../../img/map.json');
+		// this.load.tilemapTiledJSON('map', '../../img/map.json');
+		this.load.tilemapTiledJSON('map', '../../img/map2.json');
 		this.load.image('phaserguy', '../../img/phaserguy.png');
 		this.load.image('base', '../../img/base.png');
 		

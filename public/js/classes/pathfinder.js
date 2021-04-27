@@ -246,13 +246,14 @@ const pathfinder = class {
 						x: node.pos.x + x,
 						y: node.pos.y + y
 					}
+					// console.log(pos)
 
 					if(pos.x >= 0 && pos.x < this.width 
 						&& pos.y >= 0 && pos.y < this.height){					
 						let check_cell = this.grid[pos.y][pos.x]
 
-						if(node.cell !== 1){
-                            console.log("node skip")
+						if(check_cell !== 1){
+                            // console.log("node skip")
 							skip = true;
 							break;
 						}					
