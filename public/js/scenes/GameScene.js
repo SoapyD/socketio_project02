@@ -64,7 +64,7 @@ var GameScene = new Phaser.Class({
 
 		// ### Pathfinding stuff ###
 		// Initializing the pathfinder
-		GameScene.finder = new EasyStar.js();		
+		// GameScene.finder = new EasyStar.js();		
 		
 		// We create the 2D array representing all the tiles of our map
 		var grid = [];
@@ -78,24 +78,26 @@ var GameScene = new Phaser.Class({
 			grid.push(col);
 		}
 		GameScene.grid = grid;
-		GameScene.finder.setGrid(grid);
+		
+		
+		// GameScene.finder.setGrid(grid);
 
-		var tileset = GameScene.map.tilesets[0];
-		var properties = tileset.tileProperties;
-		var acceptableTiles = [];
+		// var tileset = GameScene.map.tilesets[0];
+		// var properties = tileset.tileProperties;
+		// var acceptableTiles = [];
 
-		// We need to list all the tile IDs that can be walked on. Let's iterate over all of them
-		// and see what properties have been entered in Tiled.
-		for(var i = tileset.firstgid-1; i < tiles.total; i++){ // firstgid and total are fields from Tiled that indicate the range of IDs that the tiles can take in that tileset
-			if(!properties.hasOwnProperty(i)) {
-				// If there is no property indicated at all, it means it's a walkable tile
-				acceptableTiles.push(i+1);
-				continue;
-			}
-			if(!properties[i].collide) acceptableTiles.push(i+1);
-			if(properties[i].cost) GameScene.finder.setTileCost(i+1, properties[i].cost); // If there is a cost attached to the tile, let's register it
-		}
-		GameScene.finder.setAcceptableTiles(acceptableTiles);		
+		// // We need to list all the tile IDs that can be walked on. Let's iterate over all of them
+		// // and see what properties have been entered in Tiled.
+		// for(var i = tileset.firstgid-1; i < tiles.total; i++){ // firstgid and total are fields from Tiled that indicate the range of IDs that the tiles can take in that tileset
+		// 	if(!properties.hasOwnProperty(i)) {
+		// 		// If there is no property indicated at all, it means it's a walkable tile
+		// 		acceptableTiles.push(i+1);
+		// 		continue;
+		// 	}
+		// 	if(!properties[i].collide) acceptableTiles.push(i+1);
+		// 	if(properties[i].cost) GameScene.finder.setTileCost(i+1, properties[i].cost); // If there is a cost attached to the tile, let's register it
+		// }
+		// GameScene.finder.setAcceptableTiles(acceptableTiles);		
 		
 		
 		gameFunctions.current_scene = this.scene.get('GameScene');		

@@ -10,7 +10,7 @@ const unit = class {
 		this.shots = 0;
 		this.fights = 0;
 		
-		this.max_movement = 10;
+		this.max_movement = 100;
 		this.shoot_range = 200;
 		this.health = 100;
 		
@@ -91,8 +91,8 @@ const unit = class {
 			// GameScene.finder.findPath(fromX, fromY, toX, toY, this.drawPath);			
 			// GameScene.finder.calculate(); // don't forget, otherwise nothing happens						
 		
-			GameScene.pathfinder.findPath(fromX, fromY, toX, toY, this.drawPath)
-			
+			// GameScene.pathfinder.findPath(fromX, fromY, toX, toY, this.drawPath)
+			GameScene.pathfinder.findPath(fromX, fromY, toX, toY, 1, this.drawPath)
 		}
 		
 

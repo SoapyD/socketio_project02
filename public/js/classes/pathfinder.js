@@ -6,7 +6,8 @@ const pathfinder = class {
 		this.grid = grid,
 		this.width = grid[0].length,
 		this.height = grid.length,
-			
+		this.obj_size = 0;        
+        
 		this.path = [],
 		this.max_positions = 100,
 		
@@ -27,7 +28,7 @@ const pathfinder = class {
 		this.closed = []
 	}
 	
-	findPath(x_start, y_start, x_end, y_end, callback) {
+	findPath(x_start, y_start, x_end, y_end, obj_size, callback) {
 		
 		this.path = [];
 		this.open = [];
@@ -36,7 +37,8 @@ const pathfinder = class {
 		this.start.x = x_start;
 		this.start.y = y_start;
 		this.end.x = x_end;
-		this.end.y = y_end;
+        this.end.y = y_end;
+        this.obj_size = obj_size;
 		
 		// this.path.push(this.current)		
 		
@@ -93,9 +95,12 @@ const pathfinder = class {
 
 				// let saved_node;
 				nodes.forEach((node) => {
-					
+                    
+					let skip = this.checkCell(node)
+
 					//if neighbour non traversable or neighbour is in closed list
-					if(node.cell !== 1 || this.closed.some(e => JSON.stringify(e.pos) === JSON.stringify(node.pos))){
+					if(skip === true || this.closed.some(e => JSON.stringify(e.pos) === JSON.stringify(node.pos))){                    
+					// if(node.cell !== 1 || this.closed.some(e => JSON.stringify(e.pos) === JSON.stringify(node.pos))){
 						//skip
 					}
 					else{
@@ -149,6 +154,9 @@ const pathfinder = class {
             if(callback){
                 callback(this.path)
             }
+        }
+        else{
+            console.log("PATH NOT FOUND")            
         }
 
 
@@ -223,5 +231,41 @@ const pathfinder = class {
 		
 		return nodes
 	}
-	
+
+	checkCell(node){
+
+		let skip = false;
+		if(node.cell !== 1){
+			skip = true;
+		}
+
+		if(skip === false){
+			for(let x=-this.obj_size;x<=this.obj_size;x++){
+				for(let y=-this.obj_size;y<=this.obj_size;y++){
+					let pos = {
+						x: node.pos.x + x,
+						y: node.pos.y + y
+					}
+
+					if(pos.x >= 0 && pos.x < this.width 
+						&& pos.y >= 0 && pos.y < this.height){					
+						let check_cell = this.grid[pos.y][pos.x]
+
+						if(node.cell !== 1){
+                            console.log("node skip")
+							skip = true;
+							break;
+						}					
+					}
+					else{
+						skip = true;
+						break;
+					}
+				}
+			}
+		}
+
+		return skip
+	}    
+
 }
