@@ -16,7 +16,11 @@ var GameScene = new Phaser.Class({
 		this.load.image('tileset', './img/gridtiles.png');
 		// this.load.tilemapTiledJSON('map', '../../img/map.json');
 		this.load.tilemapTiledJSON('map', '../../img/map2.json');
-		this.load.image('phaserguy', '../../img/phaserguy.png');
+		// this.load.image('phaserguy', '../../img/phaserguy.png');
+		
+		this.load.image('unit', '../../img/unit.png');
+		this.load.image('tank', '../../img/tank.png');
+		this.load.image('dread', '../../img/dread2.png');		
 		this.load.image('base', '../../img/base.png');
 		
 		this.load.image('bullet', '../../img/bullet.png');	
@@ -110,10 +114,12 @@ var GameScene = new Phaser.Class({
 		//ADD IN SOME UNITS
 		GameScene.unit_collisions = this.add.group();
 		GameScene.units = []		
-		GameScene.units.push(new unit(this, "phaserguy", gameFunctions.tile_size * 11, gameFunctions.tile_size * 12,1,1));
+		GameScene.units.push(new unit(this, "unit", 0, gameFunctions.tile_size * 11, gameFunctions.tile_size * 12,1,1));
 		
-		GameScene.units.push(new unit(this, "phaserguy", gameFunctions.tile_size * 11, gameFunctions.tile_size * 14,0,0));
-		GameScene.units.push(new unit(this, "phaserguy", gameFunctions.tile_size * 14, gameFunctions.tile_size * 14,0,0));		
+		// GameScene.units.push(new unit(this, "dread", 1, gameFunctions.tile_size * 11, gameFunctions.tile_size * 14,0,0));
+		// GameScene.units.push(new unit(this, "tank", 1,gameFunctions.tile_size * 14, gameFunctions.tile_size * 14,0,0));		
+		GameScene.units.push(new unit(this, "unit", 0, gameFunctions.tile_size * 11, gameFunctions.tile_size * 14,0,0));
+		GameScene.units.push(new unit(this, "unit", 0, gameFunctions.tile_size * 14, gameFunctions.tile_size * 14,0,0));		GameScene.units.push(new unit(this, "unit", 0, gameFunctions.tile_size * 12, gameFunctions.tile_size * 14,0,0));			
 		
     	text = this.add.text(10, 10, '', { fill: '#00ff00' }).setDepth(1);							
 		

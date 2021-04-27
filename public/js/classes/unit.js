@@ -1,9 +1,11 @@
 
 const unit = class {
-	constructor(scene, spritesheet, x, y, side, player) {
+	constructor(scene, spritesheet, size, x, y, side, player) {
 		
-		this.side = side,
-		this.player = player,			
+		this.side = side;
+		this.player = player;
+		this.squad = 0;
+		this.size = size;	
 		
 		// this.selected = false;
 		this.moves = 0;
@@ -23,8 +25,8 @@ const unit = class {
 		this.sprite.parent = this
 		GameScene.unit_collisions.add(this.sprite)
 		
-		this.sprite_base = scene.add.image(this.x,this.y,"base");
-		this.sprite_base.setDepth(0.5);
+		// this.sprite_base = scene.add.image(this.x,this.y,"base");
+		// this.sprite_base.setDepth(0.5);
 		
 		this.sprite.on('pointerup', this.selectHander)		
 
@@ -39,7 +41,7 @@ const unit = class {
 
 	kill(){
 		this.sprite.disableBody(true, true);
-		this.sprite_base.destroy(true);		
+		// this.sprite_base.destroy(true);		
 	}	
 	
 	wound(damage){
@@ -57,22 +59,21 @@ const unit = class {
 			if (this.parent.player === GameScene.current_player){
 				//TURN OLD SELECTED PLAYER MARKER, WHITE
 				if(GameScene.selected_unit){
-					GameScene.selected_unit.sprite_base.setTint(0xffffff)
+					// GameScene.selected_unit.sprite_base.setTint(0xffffff)
 				}		
 
 				//TURN ENW SELECTED MARKER, RED
-				this.parent.sprite_base.setTint(0xff0000);
+				// this.parent.sprite_base.setTint(0xff0000);
 
 				GameScene.selected_unit = this.parent;
-				GameScene.left_click = false;
-				// this.parent.sprite_base.setVisible(true);							
+				GameScene.left_click = false;						
 			}
 
 		}
 	}
 	
 	unselectHandler() {
-		this.sprite_base.setTint(0xffffff)
+		// this.sprite_base.setTint(0xffffff)
 		GameScene.selected_unit = undefined;
 	}
 	
@@ -88,11 +89,7 @@ const unit = class {
 			var fromX = Math.floor(this.x/gameFunctions.tile_size);
 			var fromY = Math.floor(this.y/gameFunctions.tile_size);		
 
-			// GameScene.finder.findPath(fromX, fromY, toX, toY, this.drawPath);			
-			// GameScene.finder.calculate(); // don't forget, otherwise nothing happens						
-		
-			// GameScene.pathfinder.findPath(fromX, fromY, toX, toY, this.drawPath)
-			GameScene.pathfinder.findPath(fromX, fromY, toX, toY, 1, this.drawPath)
+			GameScene.pathfinder.findPath(fromX, fromY, toX, toY, this.size, this.drawPath)
 		}
 		
 
@@ -130,18 +127,45 @@ const unit = class {
 		}
 	}
 	
+	checkAngle(start_pos, end_pos) {
+
+		let angle = 0
+		if(start_pos.x < end_pos.x){
+			angle = 0;
+		}
+		if(start_pos.x > end_pos.x){
+			angle = 180;
+		}				
+		if(start_pos.y < end_pos.y){
+			angle = 90;
+		}
+		if(start_pos.y > end_pos.y){
+			angle = -90;
+		}		
+		
+		return angle;
+	}
+	
 	move() {
 		if (this.path){
 			let tweens = []
 			for(let i = 0; i < this.path.length-1; i++){
-				let ex = this.path[i+1].x;
-				let ey = this.path[i+1].y;
+				let next_pos = this.path[i+1];
+				let ex = next_pos.x;
+				let ey = next_pos.y;
+				
+				let pos = this.path[i]
+				
+				let angle = this.checkAngle(pos, next_pos)
+				
+				// console.log(pos, next_pos, angle)				
 				
 				let tween_data = {
-					// targets: this.sprite,
 					targets: [this.sprite, this.sprite_base],
+					// targets: [this.sprite],
 					x: {value: ex*GameScene.map.tileWidth, duration: 200},
 					y: {value: ey*GameScene.map.tileHeight, duration: 200},
+					angle: {value: angle, duration: 0},
 					onComplete: function ()
 					{
 						this.x = this.sprite.x
@@ -158,8 +182,6 @@ const unit = class {
 				
 				tweens.push(tween_data);
 				
-				// tween_data.targets = this.sprite_base;
-				// tweens.push(tween_data);
 			}
 
 			GameScene.scene.tweens.timeline({
@@ -252,11 +274,6 @@ const unit = class {
 		if(obj_check === false){
 			this.targets.push(dest);
 			this.drawTarget();
-			// let angle = Phaser.Math.Angle.BetweenPoints(this.sprite, dest);
-			// if(angle){
-			// 	GameScene.bullets.push(new bullet(scene, "bullet", this.x, this.y, angle, this.shoot_range, this.side, this.player))				
-			// }
-
 		}
 		
 	}
@@ -299,7 +316,8 @@ const unit = class {
 
 				let angle = Phaser.Math.Angle.BetweenPoints(this.sprite, target);
 				if(angle){
-					// GameScene.bullets.push(new bullet(GameScene.scene, "bullet", this.x, this.y, angle, this.shoot_range, this.side, this.player))
+					this.sprite.angle = Phaser.Math.RadToDeg(angle);
+
 					GameScene.bullets.push(new bullet(GameScene.scene, "bullet", angle, this))
 					//BULLET DEATH KILLS THE GRAPHIC
 				}				
