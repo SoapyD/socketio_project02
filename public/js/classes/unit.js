@@ -127,6 +127,9 @@ const unit = class {
 				this.path.push(p)
 			})			
 			
+			//STRIP PATH BACK TO MAX MOVEMENT LENGTH
+			this.path = this.path.slice(0,this.max_movement - 1)			
+			
 			// if(GameScene.units[1].path){
 			// 	console.log(GameScene.units[1].path[0])				
 			// }
@@ -222,9 +225,6 @@ const unit = class {
 			y: this.sprite.y
 		}
 		if (this.path && this.path.length > 1){
-			
-			//STRIP PATH BACK TO MAX MOVEMENT LENGTH
-			this.path = this.path.slice(0,this.max_movement - 1)
 			
 			//RESET THE DRAW GRAPHICS
 			this.graphics[0].clear();
