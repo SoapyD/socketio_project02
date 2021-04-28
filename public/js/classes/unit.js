@@ -2,18 +2,20 @@
 const unit = class {
 	constructor(scene, spritesheet, size, x, y, side, player) {
 		
-		this.side = side;
-		this.player = player;
-		this.squad = 0;
-		this.size = size;	
-		this.cohesion = 75;
+		this.id = GameScene.units.length;
+		this.side = side; //this can be used if each side has multiple players
+		this.player = player; //this is the specific owner of the unit
+		this.squad = 0; //this can be used for squad checks like unit cohesion
+		this.size = size; //the grid size of the object used when plotting movement
+		this.cohesion = 75; //the maximum distance a unit can be from another member of it's squad
 		
+		this.path;
 		// this.selected = false;
 		this.moves = 0;
 		this.shots = 0;
 		this.fights = 0;
 		
-		this.max_movement = 100;
+		this.max_movement = 10;
 		this.shoot_range = 200;
 		this.health = 100;
 		
@@ -41,7 +43,7 @@ const unit = class {
 		this.path;
 		this.targets = [];
 		
-		this.drawPath = this.drawPath.bind(this);
+		// this.drawPath = this.drawPath.bind(this);
 		this.selectHander = this.selectHander.bind(this);
 	}
 
@@ -71,6 +73,9 @@ const unit = class {
 				//TURN ENW SELECTED MARKER, RED
 				// this.parent.sprite_base.setTint(0xff0000);
 
+				if(GameScene.selected_unit){
+					GameScene.selected_unit.unselectHandler();
+				}
 				GameScene.selected_unit = this.parent;
 				GameScene.left_click = false;						
 			}
@@ -81,6 +86,16 @@ const unit = class {
 	unselectHandler() {
 		// this.sprite_base.setTint(0xffffff)
 		GameScene.selected_unit = undefined;
+		
+		
+		// let colours = {
+		// 	line_colour: 0xCCCCCC,
+		// 	fill_colour: 0x999999,
+		// 	line_alpha: 0.3,
+		// 	fill_alpha: 0.15				
+		// }
+		// this.drawPath(this.path, colours)		
+		
 	}
 	
 	findPath(scene, pointer) {
@@ -95,35 +110,131 @@ const unit = class {
 			var fromX = Math.floor(this.x/gameFunctions.tile_size);
 			var fromY = Math.floor(this.y/gameFunctions.tile_size);		
 
-			GameScene.pathfinder.findPath(fromX, fromY, toX, toY, this.size, this.drawPath)
-		}
-		
+			// if(GameScene.units[1].path){
+			// 	console.log(GameScene.units[1].path[0])				
+			// }
 
+			let path = GameScene.pathfinder.findPath(fromX, fromY, toX, toY, this.size)
+			// this.path.push(path[0].x)
+			// console.log(fromX, fromY, toX, toY, this.path[0], this.path.length)
+
+			this.path = []
+			path.forEach((pos) => {
+				let p = {
+					x: pos.x,
+					y: pos.y
+				}
+				this.path.push(p)
+			})			
+			
+			// if(GameScene.units[1].path){
+			// 	console.log(GameScene.units[1].path[0])				
+			// }
+			
+
+			
+			//OFFSET PATH SO THEY'RE IN THE MIDDLE OF EACH TILE
+			this.path.forEach((pos) => {
+				pos.x += 0.5;
+				pos.y += 0.5;
+			})
+
+			
+			
+			//LOOP THROUGH UNITS, IF UNIT IS SAME PLAYER AND SQUAD BUT ISN'T THIS UNIT
+			GameScene.units.forEach((unit) => {
+				if(unit.player === this.player && unit.squad === this.squad) //unit.id !== this.id && 
+				{
+					//LOOP THROUGH UNITS AGAIN AND CHECK COHESION
+					let cohesion_check = false;
+					GameScene.units.forEach((unit2) => {
+						if(unit2.id !== unit.id && unit2.player === this.player && unit2.squad === this.squad)
+						{
+							
+							let unit_pos = {
+								x: unit.sprite.x,
+								y: unit.sprite.y,								
+							}
+							if(unit.path){
+								unit_pos = {
+									x: unit.path[unit.path.length - 1].x * gameFunctions.tile_size,
+									y: unit.path[unit.path.length - 1].y * gameFunctions.tile_size,
+								}
+							}
+							let unit_pos2 = {
+								x: unit2.sprite.x,
+								y: unit2.sprite.y,								
+							}
+							if(unit2.path){
+								// console.log(unit2)
+								unit_pos2 = {
+									x: unit2.path[unit2.path.length - 1].x * gameFunctions.tile_size,
+									y: unit2.path[unit2.path.length - 1].y * gameFunctions.tile_size,
+								}								
+							}							
+							
+							let distance = gameFunctions.twoPointDistance(unit_pos, unit_pos2);
+							if(distance <= unit.cohesion){
+								cohesion_check = true;
+							}
+						}
+					})
+	
+					// console.log(this)
+					let colours = {
+						line_colour: 0x2ECC40,
+						fill_colour: 0x6666ff,
+						line_alpha: 1,
+						fill_alpha: 0.25	
+					}
+					if(cohesion_check === false){
+						colours = {
+							line_colour: 0xFF0000,
+							fill_colour: 0x6666ff,
+							line_alpha: 1,
+							fill_alpha: 0.25				
+						}						
+					}
+					
+					// console.log(unit.path)
+					unit.drawPath(colours)							
+				}
+			})
+			/**/
+			
+			// let colours = {
+			// 	line_colour: 0x2ECC40,
+			// 	fill_colour: 0x6666ff,
+			// 	line_alpha: 1,
+			// 	fill_alpha: 0.25				
+			// }
+			// this.drawPath(colours)
+			
+			// GameScene.updateDraw(this.player, this.squad)
+		}
 	}
 	
 	//CALLED AS PART OF CALLBACK IN "FINDPATH"
-	drawPath(path) {
-
-		if (path){
+	drawPath(colours) {
+		
+		let last_pos = {
+			x: this.sprite.x,
+			y: this.sprite.y
+		}
+		if (this.path && this.path.length > 1){
 			
 			//STRIP PATH BACK TO MAX MOVEMENT LENGTH
-			this.path = path.slice(0,this.max_movement - 1)
+			this.path = this.path.slice(0,this.max_movement - 1)
 			
 			//RESET THE DRAW GRAPHICS
 			this.graphics[0].clear();
 			this.graphics[1].clear();
 			
-			this.graphics[0].lineStyle(5, 0x2ECC40);	
+			this.graphics[0].lineStyle(5, colours.line_colour, colours.line_alpha);	
 			this.graphics[0].beginPath();
 
-			let last_pos = {};
 			this.path.forEach((pos, i) => {
-				
-				//OFFSET PATH POSITION TO MIDDLE OF TILE
-				pos.x += 0.5;
-				pos.y += 0.5;	
-				// console.log(pos)
-				
+	
 				if (i !== 0){
 					this.graphics[0].lineTo(pos.x * gameFunctions.tile_size, pos.y * gameFunctions.tile_size);
 				}
@@ -132,21 +243,19 @@ const unit = class {
 				}
 				
 				last_pos = pos;
-			})			
-
-
-			
-			
-			this.graphics[1].lineStyle(5, 0x2ECC40);
-			this.graphics[1].fillStyle(0x6666ff, 0.25);
-			let circle = new Phaser.Geom.Circle(last_pos.x * gameFunctions.tile_size, last_pos.y * gameFunctions.tile_size, this.cohesion);
-			this.graphics[1].fillCircleShape(circle);
-			
-			this.graphics[1].strokePath();	
+			})				
 			
 			this.graphics[0].strokePath();				
 	
 		}
+		
+		this.graphics[1].lineStyle(5, colours.line_colour, colours.line_alpha);
+		this.graphics[1].fillStyle(colours.fill_colour, colours.fill_alpha);
+		let circle = new Phaser.Geom.Circle(last_pos.x * gameFunctions.tile_size, last_pos.y * gameFunctions.tile_size, this.cohesion);
+		this.graphics[1].fillCircleShape(circle);
+
+		this.graphics[1].strokePath();		
+		
 	}
 	
 	checkAngle(start_pos, end_pos) {
@@ -226,7 +335,7 @@ const unit = class {
 			start_x: this.sprite.x,
 			start_y: this.sprite.y,			
 			end_x: Math.floor(pointer.x / gameFunctions.tile_size) * gameFunctions.tile_size + (gameFunctions.tile_size / 2),
-			end_y: Math.floor(pointer.y / gameFunctions.tile_size) * gameFunctions.tile_size + (gameFunctions.tile_size / 2),					
+			end_y: Math.floor(pointer.y / gameFunctions.tile_size) * gameFunctions.tile_size + (gameFunctions.tile_size / 2),
 		}
 		//GET DIFFERENCE INFO
 		pos.x_diff = pos.end_x - pos.start_x;

@@ -241,3 +241,63 @@ GameScene.handleClick = function(pointer){
 };
 
 
+// GameScene.updateDraw = (player, squad) => {
+// 		//LOOP THROUGH UNITS, IF UNIT IS SAME PLAYER AND SQUAD BUT ISN'T THIS UNIT
+// 		GameScene.units.forEach((unit) => {
+// 			if(unit.player === player && unit.squad === squad) //unit.id !== this.id && 
+// 			{
+// 				//LOOP THROUGH UNITS AGAIN AND CHECK COHESION
+// 				let cohesion_check = false;
+// 				// GameScene.units.forEach((unit2) => {
+// 				// 	if(unit2.id !== unit.id && unit2.player === this.player && unit2.squad === this.squad)
+// 				// 	{
+
+// 				// 		let unit_pos = {
+// 				// 			x: unit.sprite.x,
+// 				// 			y: unit.sprite.y,								
+// 				// 		}
+// 				// 		if(unit.path){
+// 				// 			unit_pos = {
+// 				// 				x: unit.path[unit.path.length - 1].x * gameFunctions.tile_size,
+// 				// 				y: unit.path[unit.path.length - 1].y * gameFunctions.tile_size,
+// 				// 			}
+// 				// 		}
+// 				// 		let unit_pos2 = {
+// 				// 			x: unit2.sprite.x,
+// 				// 			y: unit2.sprite.y,								
+// 				// 		}
+// 				// 		if(unit2.path){
+// 				// 			unit_pos2 = {
+// 				// 				x: unit2.path[unit2.path.length - 1].x * gameFunctions.tile_size,
+// 				// 				y: unit2.path[unit2.path.length - 1].y * gameFunctions.tile_size,
+// 				// 			}								
+// 				// 		}							
+
+// 				// 		let distance = gameFunctions.twoPointDistance(unit_pos, unit_pos2);
+// 				// 		if(distance <= unit.cohesion){
+// 				// 			cohesion_check = true;
+// 				// 		}
+// 				// 	}
+// 				// })
+
+// 				// console.log(this)
+// 				let colours = {
+// 					line_colour: 0x2ECC40,
+// 					fill_colour: 0x6666ff,
+// 					line_alpha: 1,
+// 					fill_alpha: 0.25	
+// 				}
+// 				if(cohesion_check === false){
+// 					colours = {
+// 						line_colour: 0xFF0000,
+// 						fill_colour: 0x6666ff,
+// 						line_alpha: 1,
+// 						fill_alpha: 0.25				
+// 					}						
+// 				}
+
+// 				console.log(unit.path)
+// 				unit.drawPath(colours)							
+// 			}
+// 		})	
+// }

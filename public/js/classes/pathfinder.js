@@ -8,7 +8,7 @@ const pathfinder = class {
 		this.height = grid.length,
 		this.obj_size = 0;        
         
-		this.path = [],
+		// this.path = [],
 		this.max_positions = 100,
 		
 		this.start = {
@@ -28,9 +28,9 @@ const pathfinder = class {
 		this.closed = []
 	}
 	
-	findPath(x_start, y_start, x_end, y_end, obj_size, callback) {
+	findPath(x_start, y_start, x_end, y_end, obj_size) {
 		
-		this.path = [];
+		let path = [];
 		this.open = [];
 		this.closed = [];
 		
@@ -131,16 +131,16 @@ const pathfinder = class {
 		}
 
         if(path_found === true){
-            console.log("PATH FOUND!")
+            // console.log("PATH FOUND!")
             // console.log(this.closed[this.closed.length - 1])
             let index = this.closed.length - 1
             let node;
-            this.path = []
+            path = []
 
             for(let i=0;i<this.max_positions;i++){
 
                 node = this.closed[index]
-                this.path.unshift(node.pos)
+                path.unshift(node.pos)
 
                 index = this.closed.findIndex((e) => JSON.stringify(e.pos) === JSON.stringify(node.origin_pos));
                 // console.log(index)
@@ -151,12 +151,12 @@ const pathfinder = class {
 
             }
 
-            if(callback){
-                callback(this.path)
-            }
+            // if(callback){
+            //     callback(this.path)
+            // }
         }
         else{
-            console.log("PATH NOT FOUND")            
+            // console.log("PATH NOT FOUND")            
         }
 
 
@@ -166,6 +166,8 @@ const pathfinder = class {
 		// return this.path;
 		// callback(this.path);
 		/**/
+		
+		return path
 	}
 	
 	checkPosition(){		
