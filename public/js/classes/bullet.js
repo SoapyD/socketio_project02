@@ -20,7 +20,8 @@ const bullet = class {
 		
 		this.sprite = scene.physics.add.image(unit.x,unit.y,spritesheet)
 		this.sprite.setDepth(10);
-		this.sprite.setOrigin(0.5,0.5);		
+		this.sprite.setOrigin(0.5,0.5);	
+		this.sprite.body.setSize(5, 5); //set the size of the bounding box
 		this.sprite.parent = this;
 		
         this.sprite.rotation = angle;
@@ -31,12 +32,13 @@ const bullet = class {
 		
 		
 		scene.physics.add.collider(this.sprite, GameScene.unit_collisions,(bullet, unit) => {
-			// console.log("TEST")
-			
-			// console.log(unit)
+
+			bullet.parent.kill();
+			// unit.parent.wound(bullet.parent.damage);
+
 			if(bullet.parent.player !== unit.parent.player){
-				bullet.parent.kill();
 				// unit.setTint(0xff0000);
+				// bullet.parent.kill();
 				unit.parent.wound(bullet.parent.damage);
 			}
 
@@ -45,7 +47,7 @@ const bullet = class {
 
 	kill(){
 		// console.log(this)
-		this.unit.graphics.clear()
+		this.unit.graphics[0].clear()
 		this.sprite.disableBody(true, true);
 	}
 	

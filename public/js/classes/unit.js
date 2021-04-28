@@ -6,6 +6,7 @@ const unit = class {
 		this.player = player;
 		this.squad = 0;
 		this.size = size;	
+		this.cohesion = 75;
 		
 		// this.selected = false;
 		this.moves = 0;
@@ -31,7 +32,12 @@ const unit = class {
 		this.sprite.on('pointerup', this.selectHander)		
 
 		
-		this.graphics = scene.add.graphics();		
+		this.graphics = [];
+		for(let i=0;i<2;i++){
+			this.graphics.push(scene.add.graphics());				
+		}
+
+		
 		this.path;
 		this.targets = [];
 		
@@ -104,10 +110,13 @@ const unit = class {
 			this.path = path.slice(0,this.max_movement - 1)
 			
 			//RESET THE DRAW GRAPHICS
-			this.graphics.clear()
-			this.graphics.lineStyle(10, 0x2ECC40);	
-			this.graphics.beginPath();
+			this.graphics[0].clear();
+			this.graphics[1].clear();
+			
+			this.graphics[0].lineStyle(5, 0x2ECC40);	
+			this.graphics[0].beginPath();
 
+			let last_pos = {};
 			this.path.forEach((pos, i) => {
 				
 				//OFFSET PATH POSITION TO MIDDLE OF TILE
@@ -116,14 +125,27 @@ const unit = class {
 				// console.log(pos)
 				
 				if (i !== 0){
-					this.graphics.lineTo(pos.x * gameFunctions.tile_size, pos.y * gameFunctions.tile_size);
+					this.graphics[0].lineTo(pos.x * gameFunctions.tile_size, pos.y * gameFunctions.tile_size);
 				}
 				else{
-					this.graphics.moveTo(pos.x * gameFunctions.tile_size, pos.y * gameFunctions.tile_size);
+					this.graphics[0].moveTo(pos.x * gameFunctions.tile_size, pos.y * gameFunctions.tile_size);
 				}
+				
+				last_pos = pos;
 			})			
 
-			this.graphics.strokePath();		
+
+			
+			
+			this.graphics[1].lineStyle(5, 0x2ECC40);
+			this.graphics[1].fillStyle(0x6666ff, 0.25);
+			let circle = new Phaser.Geom.Circle(last_pos.x * gameFunctions.tile_size, last_pos.y * gameFunctions.tile_size, this.cohesion);
+			this.graphics[1].fillCircleShape(circle);
+			
+			this.graphics[1].strokePath();	
+			
+			this.graphics[0].strokePath();				
+	
 		}
 	}
 	
@@ -147,6 +169,9 @@ const unit = class {
 	}
 	
 	move() {
+		
+		this.graphics[1].clear()
+		
 		if (this.path){
 			let tweens = []
 			for(let i = 0; i < this.path.length-1; i++){
@@ -174,7 +199,7 @@ const unit = class {
 						let end_path = this.path[this.path.length - 1];
 						
 						if(this.x / gameFunctions.tile_size === end_path.x && this.y / gameFunctions.tile_size === end_path.y){
-							this.graphics.clear()
+							this.graphics[0].clear()
 							this.path = undefined;
 						}
 					}.bind(this)			
@@ -286,26 +311,26 @@ const unit = class {
 		if (this.targets){
 
 			//RESET THE DRAW GRAPHICS
-			this.graphics.clear()
-			this.graphics.lineStyle(10, 0x2ECC40);	
-			this.graphics.beginPath();
+			this.graphics[0].clear()
+			this.graphics[0].lineStyle(10, 0x2ECC40);	
+			this.graphics[0].beginPath();
 
 
 			this.targets.forEach((pos, i) => {
 
-				this.graphics.beginPath();
+				this.graphics[0].beginPath();
 				// console.log(this)
-				this.graphics.moveTo(this.x, this.y);
+				this.graphics[0].moveTo(this.x, this.y);
 				
 				//OFFSET PATH POSITION TO MIDDLE OF TILE
 				pos.x += 0.5;
 				pos.y += 0.5;	
 				// console.log(pos)
 				
-				this.graphics.lineTo(pos.x, pos.y);
+				this.graphics[0].lineTo(pos.x, pos.y);
 			})			
 
-			this.graphics.strokePath();		
+			this.graphics[0].strokePath();		
 		}
 	}	
 	
