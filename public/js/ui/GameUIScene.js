@@ -69,11 +69,22 @@ GameUIScene.select_mode = (options) => {
 }
 
 GameUIScene.activate_movement = () => {
+	
+	let cohesion_check = true
 	GameScene.units.forEach((unit) => {
-		if(unit.path){
-			unit.move();		
+		if(unit.cohesion_check === false){
+			cohesion_check = false;		
 		}
-	})	
+	})		
+	
+	if(cohesion_check === true){
+		GameScene.units.forEach((unit) => {
+			if(unit.path){
+				unit.move();		
+			}
+		})			
+	}
+
 }
 
 GameUIScene.activate_shooting = () => {

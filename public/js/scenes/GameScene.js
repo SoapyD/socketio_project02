@@ -113,13 +113,57 @@ var GameScene = new Phaser.Class({
 		
 		//ADD IN SOME UNITS
 		GameScene.unit_collisions = this.add.group();
-		GameScene.units = []		
-		GameScene.units.push(new unit(this, "unit", 0, gameFunctions.tile_size * 11, gameFunctions.tile_size * 12,1,1));
+		GameScene.units = []
+		
+		let options = {
+			scene: this, 
+			spritesheet: "unit", 
+			size: 0, 
+			x: gameFunctions.tile_size * 11, 
+			y: gameFunctions.tile_size * 12, 
+			side: 0, 
+			player: 0,
+			squad: 0,
+			cohesion: 75,
+			movement: 10
+		}
+		
+		GameScene.units.push(new unit(options));
+
+		options.side = 1
+		options.player = 1
+		options.x = gameFunctions.tile_size * 11
+		options.y = gameFunctions.tile_size * 14		
+		
+		GameScene.units.push(new unit(options));
+
+		options.x = gameFunctions.tile_size * 12
+		options.y = gameFunctions.tile_size * 14		
+		
+		GameScene.units.push(new unit(options));			
+		
+		// options.x = gameFunctions.tile_size * 14
+		// options.y = gameFunctions.tile_size * 14		
+		
+		// GameScene.units.push(new unit(options));		
+		
+
+		options.spritesheet = "tank";
+		options.size = 1;
+		options.cohesion = 0;
+		options.movement = 20;
+		options.squad = 1;
+		options.x = gameFunctions.tile_size * 14
+		options.y = gameFunctions.tile_size * 14		
+		
+		GameScene.units.push(new unit(options));			
+		
 		
 		// GameScene.units.push(new unit(this, "dread", 1, gameFunctions.tile_size * 11, gameFunctions.tile_size * 14,0,0));
-		// GameScene.units.push(new unit(this, "tank", 1,gameFunctions.tile_size * 14, gameFunctions.tile_size * 14,0,0));		
-		GameScene.units.push(new unit(this, "unit", 0, gameFunctions.tile_size * 11, gameFunctions.tile_size * 14,0,0));
-		GameScene.units.push(new unit(this, "unit", 0, gameFunctions.tile_size * 14, gameFunctions.tile_size * 14,0,0));		GameScene.units.push(new unit(this, "unit", 0, gameFunctions.tile_size * 12, gameFunctions.tile_size * 14,0,0));			
+
+		
+		
+
 		
     	text = this.add.text(10, 10, '', { fill: '#00ff00' }).setDepth(1);							
 		
@@ -206,7 +250,7 @@ GameScene.checkCollision = function(x,y){
 
 
 GameScene.mode = '';
-GameScene.current_player = 0;
+GameScene.current_player = 1;
 GameScene.bullets = [];
 GameScene.selected_unit;
 GameScene.left_click = false;
