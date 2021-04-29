@@ -110,6 +110,20 @@ var GameScene = new Phaser.Class({
 		
 		GameScene.pathfinder = new pathfinder(grid);
 		
+	
+		
+		// GameScene.text_array = []
+		// GameScene.grid.forEach((row, y) => {
+		// 	GameScene.text_array.push([]);
+		// 	row.forEach((column, x) => {
+		// 		let text = this.add.text(32 * x, 32 * y, GameScene.grid[y][x], { fill: '#00ff00' }).setDepth(20);
+		// 		GameScene.text_array[y].push(text)
+		// 	})
+		// })
+    	// text = this.add.text(10, 10, '', { fill: '#00ff00' }).setDepth(1);		
+		
+		
+		
 		
 		//ADD IN SOME UNITS
 		GameScene.unit_collisions = this.add.group();
@@ -162,10 +176,7 @@ var GameScene = new Phaser.Class({
 		// GameScene.units.push(new unit(this, "dread", 1, gameFunctions.tile_size * 11, gameFunctions.tile_size * 14,0,0));
 
 		
-		
-
-		
-    	text = this.add.text(10, 10, '', { fill: '#00ff00' }).setDepth(1);							
+	
 		
     },
 

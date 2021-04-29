@@ -9,7 +9,7 @@ const unit = class {
 		this.size = options.size; //the grid size of the object used when plotting movement
 		this.cohesion = options.cohesion; //the maximum distance a unit can be from another member of it's squad
 		
-		this.path;
+		this.path = [];
 		this.cohesion_check = true;
 		// this.selected = false;
 		this.moves = 0;
@@ -22,12 +22,17 @@ const unit = class {
 		
 		this.x = options.x + (gameFunctions.tile_size / 2);
 		this.y = options.y + (gameFunctions.tile_size / 2);
+		this.updateGrid(options.x / gameFunctions.tile_size, options.y / gameFunctions.tile_size, '#')
 		
+		this.spritesheet = options.spritesheet;
 		this.sprite = options.scene.physics.add.image(this.x,this.y,options.spritesheet).setInteractive();
 		this.sprite.setImmovable(true)
 		this.sprite.setDepth(1);
 		this.sprite.parent = this
 		GameScene.unit_collisions.add(this.sprite)
+		
+		this.sprite_ghost = options.scene.add.image(this.x,this.y,options.spritesheet);
+		this.sprite_ghost.alpha = 0;
 		
 		// this.sprite_base = scene.add.image(this.x,this.y,"base");
 		// this.sprite_base.setDepth(0.5);
@@ -105,20 +110,54 @@ const unit = class {
 		
 	}
 	
+	updateGrid(x, y, value){
+		/*
+		GameScene.grid[y][x] = value;
+		
+		//SET THE TEXT ARRAY POSITION SO WE CAN SEE IT'S EFFECT
+		let text = GameScene.text_array[y][x];
+		text.setText(value)
+		*/
+	}
+	
 	findPath(scene, pointer) {
 		var x = scene.camera.scrollX + pointer.x;
 		var y = scene.camera.scrollY + pointer.y;
 		var toX = Math.floor(x/gameFunctions.tile_size);
 		var toY = Math.floor(y/gameFunctions.tile_size);
 
+		
+		//CHECK CLICK POSITION TO SEE IF THERE'S ANYONE ALREADY THERE
+		let skip = false
+		GameScene.units.forEach((unit) => {
+			// if(unit.sprite.x )
+			if ((unit.sprite.getBounds().contains((toX + 0.5) * gameFunctions.tile_size, (toY + 0.5) * gameFunctions.tile_size))) {
+				skip = true;
+			}
+			if ((unit.sprite_ghost.getBounds().contains((toX + 0.5) * gameFunctions.tile_size, (toY + 0.5) * gameFunctions.tile_size))) {
+				skip = true;
+			}			
+		})
+		
+		
 		if(toX < GameScene.map.width && toY < GameScene.map.height
-		  && toX >= 0 && toY >= 0){
+		  && toX >= 0 && toY >= 0 && skip === false){
 
 			var fromX = Math.floor(this.x/gameFunctions.tile_size);
 			var fromY = Math.floor(this.y/gameFunctions.tile_size);		
 
 			let path = GameScene.pathfinder.findPath(fromX, fromY, toX, toY, this.size)
 
+			//REMOVE THE OLD NOTIONAL POSITION OF THE THERE WAS ONE AND THE NEW PATH ISN'T A PATH OF 1 POSITION
+			// if(this.path.length > 0 && path.length > 0){
+			// 	let pos = {
+			// 		x: this.path[this.path.length - 1].x - 0.5,
+			// 		y: this.path[this.path.length - 1].y - 0.5
+			// 	}
+			// 	this.updateGrid(pos.x, pos.y, 1)
+			// }						
+			
+			
 			this.path = []
 			path.forEach((pos) => {
 				let p = {
@@ -131,6 +170,19 @@ const unit = class {
 			//STRIP PATH BACK TO MAX MOVEMENT LENGTH
 			this.path = this.path.slice(0,this.movement - 1)			
 
+			
+			//UPDATE THE POSITIONAL DATA
+			if(this.path.length > 1){
+				let pos = this.path[this.path.length - 1];
+				// this.updateGrid(pos.x, pos.y, "#")
+				this.sprite_ghost.alpha = 0.5;
+				this.sprite_ghost.x = (pos.x + 0.5) * gameFunctions.tile_size;
+				this.sprite_ghost.y = (pos.y + 0.5) * gameFunctions.tile_size;
+				
+				let angle = this.checkAngle(this.path[this.path.length - 2], this.path[this.path.length - 1])
+				this.sprite_ghost.angle = angle;
+			}			
+			
 			
 			//OFFSET PATH SO THEY'RE IN THE MIDDLE OF EACH TILE
 			this.path.forEach((pos) => {
@@ -175,7 +227,7 @@ const unit = class {
 							x: unit.sprite.x,
 							y: unit.sprite.y,								
 						}
-						if(unit.path){
+						if(unit.path.length > 0){
 							unit_pos = {
 								x: unit.path[unit.path.length - 1].x * gameFunctions.tile_size,
 								y: unit.path[unit.path.length - 1].y * gameFunctions.tile_size,
@@ -185,7 +237,7 @@ const unit = class {
 							x: unit2.sprite.x,
 							y: unit2.sprite.y,								
 						}
-						if(unit2.path){
+						if(unit2.path.length > 0){
 							// console.log(unit2)
 							unit_pos2 = {
 								x: unit2.path[unit2.path.length - 1].x * gameFunctions.tile_size,
@@ -318,7 +370,7 @@ const unit = class {
 						
 						if(this.x / gameFunctions.tile_size === end_path.x && this.y / gameFunctions.tile_size === end_path.y){
 							this.graphics[0].clear()
-							this.path = undefined;
+							this.path = [];
 						}
 					}.bind(this)			
 				}
