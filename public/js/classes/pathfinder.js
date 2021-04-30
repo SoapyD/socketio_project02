@@ -24,11 +24,14 @@ const pathfinder = class {
 			y: 0
 		}
 		
-		this.open = []
-		this.closed = []
+		this.open = [];
+		this.closed = [];
+		this.parent;
 	}
 	
-	findPath(x_start, y_start, x_end, y_end, obj_size) {
+	findPath(parent, x_start, y_start, x_end, y_end, obj_size) {
+		
+		this.parent = parent;
 		
 		let path = [];
 		this.open = [];
@@ -242,30 +245,62 @@ const pathfinder = class {
 		}
 
 		if(skip === false){
-			for(let x=-this.obj_size;x<=this.obj_size;x++){
-				for(let y=-this.obj_size;y<=this.obj_size;y++){
-					let pos = {
-						x: node.pos.x + x,
-						y: node.pos.y + y
-					}
-					// console.log(pos)
+			
+			if(this.parent.sprite_offset === 0){
+				for(let x=-this.obj_size;x<=0;x++){
+					for(let y=-this.obj_size;y<=0;y++){
+						let pos = {
+							x: node.pos.x + x,
+							y: node.pos.y + y
+						}
+						// console.log(pos)
 
-					if(pos.x >= 0 && pos.x < this.width 
-						&& pos.y >= 0 && pos.y < this.height){					
-						let check_cell = this.grid[pos.y][pos.x]
+						if(pos.x >= 0 && pos.x < this.width 
+							&& pos.y >= 0 && pos.y < this.height){					
+							let check_cell = this.grid[pos.y][pos.x]
 
-						if(check_cell !== 1){
-                            // console.log("node skip")
+							if(check_cell !== 1){
+								// console.log("node skip")
+								skip = true;
+								break;
+							}					
+						}
+						else{
 							skip = true;
 							break;
-						}					
+						}
 					}
-					else{
-						skip = true;
-						break;
+				}				
+			}			
+			
+			if(this.parent.sprite_offset === 0.5){
+				for(let x=-this.obj_size;x<=this.obj_size;x++){
+					for(let y=-this.obj_size;y<=this.obj_size;y++){
+						let pos = {
+							x: node.pos.x + x,
+							y: node.pos.y + y
+						}
+						// console.log(pos)
+
+						if(pos.x >= 0 && pos.x < this.width 
+							&& pos.y >= 0 && pos.y < this.height){					
+							let check_cell = this.grid[pos.y][pos.x]
+
+							if(check_cell !== 1){
+								// console.log("node skip")
+								skip = true;
+								break;
+							}					
+						}
+						else{
+							skip = true;
+							break;
+						}
 					}
-				}
+				}				
 			}
+			
+
 		}
 
 		return skip

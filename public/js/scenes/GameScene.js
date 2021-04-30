@@ -20,7 +20,7 @@ var GameScene = new Phaser.Class({
 		
 		this.load.image('unit', '../../img/unit.png');
 		this.load.image('tank', '../../img/tank.png');
-		this.load.image('dread', '../../img/dread2.png');		
+		this.load.image('dread', '../../img/dread.png');		
 		this.load.image('base', '../../img/base.png');
 		
 		this.load.image('bullet', '../../img/bullet.png');	
@@ -131,7 +131,8 @@ var GameScene = new Phaser.Class({
 		
 		let options = {
 			scene: this, 
-			spritesheet: "unit", 
+			spritesheet: "unit",
+			sprite_offset: 0.5,
 			size: 0, 
 			x: gameFunctions.tile_size * 11, 
 			y: gameFunctions.tile_size * 12, 
@@ -149,12 +150,12 @@ var GameScene = new Phaser.Class({
 		options.x = gameFunctions.tile_size * 11
 		options.y = gameFunctions.tile_size * 14		
 		
-		GameScene.units.push(new unit(options));
+		// GameScene.units.push(new unit(options));
 
-		options.x = gameFunctions.tile_size * 12
-		options.y = gameFunctions.tile_size * 14		
+		// options.x = gameFunctions.tile_size * 12
+		// options.y = gameFunctions.tile_size * 14		
 		
-		GameScene.units.push(new unit(options));			
+		// GameScene.units.push(new unit(options));			
 		
 		// options.x = gameFunctions.tile_size * 14
 		// options.y = gameFunctions.tile_size * 14		
@@ -162,7 +163,19 @@ var GameScene = new Phaser.Class({
 		// GameScene.units.push(new unit(options));		
 		
 
-		options.spritesheet = "tank";
+		// options.spritesheet = "tank";
+		// options.size = 1;
+		// options.cohesion = 0;
+		// options.movement = 20;
+		// options.squad = 1;
+		// options.x = gameFunctions.tile_size * 14
+		// options.y = gameFunctions.tile_size * 14		
+		
+		// GameScene.units.push(new unit(options));			
+		
+		
+		options.spritesheet = "dread";
+		options.sprite_offset = 0;
 		options.size = 1;
 		options.cohesion = 0;
 		options.movement = 20;
@@ -171,7 +184,6 @@ var GameScene = new Phaser.Class({
 		options.y = gameFunctions.tile_size * 14		
 		
 		GameScene.units.push(new unit(options));			
-		
 		
 		// GameScene.units.push(new unit(this, "dread", 1, gameFunctions.tile_size * 11, gameFunctions.tile_size * 14,0,0));
 

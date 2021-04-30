@@ -20,8 +20,10 @@ const unit = class {
 		this.shoot_range = 200;
 		this.health = 100;
 		
-		this.x = options.x + (gameFunctions.tile_size / 2);
-		this.y = options.y + (gameFunctions.tile_size / 2);
+		this.sprite_offset = options.sprite_offset;
+		
+		this.x = options.x + gameFunctions.tile_size * this.sprite_offset;
+		this.y = options.y + gameFunctions.tile_size * this.sprite_offset;
 		this.updateGrid(options.x / gameFunctions.tile_size, options.y / gameFunctions.tile_size, '#')
 		
 		this.spritesheet = options.spritesheet;
@@ -30,6 +32,8 @@ const unit = class {
 		this.sprite.setDepth(1);
 		this.sprite.parent = this
 		GameScene.unit_collisions.add(this.sprite)
+		
+		
 		
 		this.sprite_ghost = options.scene.add.image(this.x,this.y,options.spritesheet);
 		this.sprite_ghost.alpha = 0;
@@ -87,7 +91,7 @@ const unit = class {
 						this.parent.cohesionCheck();	
 					}
 				}
-
+				this.parent.resetGhost();
 				
 				GameScene.left_click = false;						
 			}
@@ -110,6 +114,13 @@ const unit = class {
 		
 	}
 	
+	resetGhost() {
+		this.sprite_ghost.x = this.sprite.x;
+		this.sprite_ghost.y = this.sprite.y;
+		this.sprite_ghost.angle = this.sprite.angle;
+		this.sprite_ghost.alpha = 0.5;		
+	}		
+	
 	updateGrid(x, y, value){
 		/*
 		GameScene.grid[y][x] = value;
@@ -120,43 +131,37 @@ const unit = class {
 		*/
 	}
 	
+	checkSpriteOverlap(spriteA, spriteB){
+		var boundsA = spriteA.getBounds();
+		var boundsB = spriteB.getBounds();
+
+		// console.log(Phaser.Geom.Rectangle.Intersection(boundsA, boundsB))
+		let intersection =  Phaser.Geom.Rectangle.Intersection(boundsA, boundsB);	
+		// console.log(intersection)
+		
+		let check = false;
+		if(intersection.width > 0 && intersection.height > 0){
+			check = true;
+		}
+		
+		return check;
+	}
+	
 	findPath(scene, pointer) {
 		var x = scene.camera.scrollX + pointer.x;
 		var y = scene.camera.scrollY + pointer.y;
 		var toX = Math.floor(x/gameFunctions.tile_size);
-		var toY = Math.floor(y/gameFunctions.tile_size);
-
-		
-		//CHECK CLICK POSITION TO SEE IF THERE'S ANYONE ALREADY THERE
-		let skip = false
-		GameScene.units.forEach((unit) => {
-			// if(unit.sprite.x )
-			if ((unit.sprite.getBounds().contains((toX + 0.5) * gameFunctions.tile_size, (toY + 0.5) * gameFunctions.tile_size))) {
-				skip = true;
-			}
-			if ((unit.sprite_ghost.getBounds().contains((toX + 0.5) * gameFunctions.tile_size, (toY + 0.5) * gameFunctions.tile_size))) {
-				skip = true;
-			}			
-		})
+		var toY = Math.floor(y/gameFunctions.tile_size);	
 		
 		
 		if(toX < GameScene.map.width && toY < GameScene.map.height
-		  && toX >= 0 && toY >= 0 && skip === false){
+		  && toX >= 0 && toY >= 0){
 
 			var fromX = Math.floor(this.x/gameFunctions.tile_size);
 			var fromY = Math.floor(this.y/gameFunctions.tile_size);		
 
-			let path = GameScene.pathfinder.findPath(fromX, fromY, toX, toY, this.size)
+			let path = GameScene.pathfinder.findPath(this, fromX, fromY, toX, toY, this.size)
 
-			//REMOVE THE OLD NOTIONAL POSITION OF THE THERE WAS ONE AND THE NEW PATH ISN'T A PATH OF 1 POSITION
-			// if(this.path.length > 0 && path.length > 0){
-			// 	let pos = {
-			// 		x: this.path[this.path.length - 1].x - 0.5,
-			// 		y: this.path[this.path.length - 1].y - 0.5
-			// 	}
-			// 	this.updateGrid(pos.x, pos.y, 1)
-			// }						
-			
 			
 			this.path = []
 			path.forEach((pos) => {
@@ -171,43 +176,71 @@ const unit = class {
 			this.path = this.path.slice(0,this.movement - 1)			
 
 			
+			//OFFSET PATH SO THEY'RE IN THE MIDDLE OF EACH TILE
+			this.path.forEach((pos) => {
+				pos.x += this.sprite_offset;
+				pos.y += this.sprite_offset;
+			})
+			
+			
 			//UPDATE THE POSITIONAL DATA
 			if(this.path.length > 1){
 				let pos = this.path[this.path.length - 1];
-				// this.updateGrid(pos.x, pos.y, "#")
+
 				this.sprite_ghost.alpha = 0.5;
-				this.sprite_ghost.x = (pos.x + 0.5) * gameFunctions.tile_size;
-				this.sprite_ghost.y = (pos.y + 0.5) * gameFunctions.tile_size;
+				this.sprite_ghost.x = pos.x * gameFunctions.tile_size;
+				this.sprite_ghost.y = pos.y * gameFunctions.tile_size;
+				// this.resetGhost();
 				
 				let angle = this.checkAngle(this.path[this.path.length - 2], this.path[this.path.length - 1])
 				this.sprite_ghost.angle = angle;
 			}			
 			
-			
-			//OFFSET PATH SO THEY'RE IN THE MIDDLE OF EACH TILE
-			this.path.forEach((pos) => {
-				pos.x += 0.5;
-				pos.y += 0.5;
-			})
+						
+			let skip = false
+			GameScene.units.forEach((unit) => {
 
-			//if there's any cohesion needed, check it, otherwise just draw path
-			if(this.cohesion > 0){
-				this.cohesionCheck()
-			}
-			else{
-				// console.log(this)
-				let colours = {
-					line_colour: 0x2ECC40,
-					fill_colour: 0x2ECC40,
-					line_alpha: 0.75,
-					circle_alpha: 0.15,
-					fill_alpha: 0.15	
+				if(unit.id !== this.id){
+					let check = false;
+					check = this.checkSpriteOverlap(unit.sprite, this.sprite_ghost)
+					if(check === true){
+						skip = true;
+					}
+					check = this.checkSpriteOverlap(unit.sprite_ghost, this.sprite_ghost)
+					if(check === true){
+						skip = true;
+					}							
 				}
 
-				// console.log(unit.path)
-				this.drawPath(colours)					
+			})
+
+			//IF THE GHOST CLASHES WITH ANOTHER SPRITE OR GHOST, CANCEL THE MOVE
+			if(skip === true || this.path.length === 0){
+				this.resetGhost();
+				this.path = [];
+				this.graphics[0].clear();
 			}
+			else{
 			
+				//if there's any cohesion needed, check it, otherwise just draw path
+				if(this.cohesion > 0){
+					this.cohesionCheck()
+				}
+				else{
+					// console.log(this)
+					let colours = {
+						line_colour: 0x2ECC40,
+						fill_colour: 0x2ECC40,
+						line_alpha: 0.75,
+						circle_alpha: 0.15,
+						fill_alpha: 0.15	
+					}
+
+					// console.log(unit.path)
+					this.drawPath(colours)
+				}
+				
+			}	
 		}
 	}
 
@@ -493,8 +526,8 @@ const unit = class {
 				this.graphics[0].moveTo(this.x, this.y);
 				
 				//OFFSET PATH POSITION TO MIDDLE OF TILE
-				pos.x += 0.5;
-				pos.y += 0.5;	
+				pos.x += this.sprite_offset;
+				pos.y += this.sprite_offset;	
 				// console.log(pos)
 				
 				this.graphics[0].lineTo(pos.x, pos.y);
@@ -512,6 +545,7 @@ const unit = class {
 				let angle = Phaser.Math.Angle.BetweenPoints(this.sprite, target);
 				if(angle){
 					this.sprite.angle = Phaser.Math.RadToDeg(angle);
+					this.sprite_ghost.angle = this.sprite.angle;
 
 					GameScene.bullets.push(new bullet(GameScene.scene, "bullet", angle, this))
 					//BULLET DEATH KILLS THE GRAPHIC
