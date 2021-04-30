@@ -84,7 +84,6 @@ GameUIScene.activate_movement = () => {
 			}
 		})			
 	}
-
 }
 
 GameUIScene.activate_shooting = () => {
@@ -94,7 +93,30 @@ GameUIScene.activate_shooting = () => {
 }
 
 
-
+GameUIScene.activate_fighting = () => {
+	
+	
+	//CHECK COHESION FOR UNITS THAT'RE CHARGING
+	let cohesion_check = true
+	GameScene.units.forEach((unit) => {
+		if(unit.cohesion_check === false){
+			cohesion_check = false;		
+		}
+	})		
+	
+	//ALSO CHECK ALL CHARGING UNITS ARE NEXT TO AN ENEMY UNITS
+	let in_combat = false;
+	
+	if(cohesion_check === true && in_combat === true){
+		GameScene.units.forEach((unit) => {
+			if(unit.path){
+				unit.move();		
+			}
+		})			
+	}
+	
+	//TRIGGER COMBAT WHEN UNITS HAVE MOVED
+}
 
 
 

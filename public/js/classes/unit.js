@@ -10,6 +10,7 @@ const unit = class {
 		this.cohesion = options.cohesion; //the maximum distance a unit can be from another member of it's squad
 		
 		this.path = [];
+		this.targets = [];
 		this.cohesion_check = true;
 		// this.selected = false;
 		this.moves = 0;
@@ -18,13 +19,14 @@ const unit = class {
 		
 		this.movement = options.movement;
 		this.shoot_range = 200;
+		this.max_targets = 3;
 		this.health = 100;
 		
 		this.sprite_offset = options.sprite_offset;
 		
 		this.x = options.x + gameFunctions.tile_size * this.sprite_offset;
 		this.y = options.y + gameFunctions.tile_size * this.sprite_offset;
-		this.updateGrid(options.x / gameFunctions.tile_size, options.y / gameFunctions.tile_size, '#')
+		// this.updateGrid(options.x / gameFunctions.tile_size, options.y / gameFunctions.tile_size, '#')
 		
 		this.spritesheet = options.spritesheet;
 		this.sprite = options.scene.physics.add.image(this.x,this.y,options.spritesheet).setInteractive();
@@ -121,7 +123,7 @@ const unit = class {
 		this.sprite_ghost.alpha = 0.5;		
 	}		
 	
-	updateGrid(x, y, value){
+	// updateGrid(x, y, value){
 		/*
 		GameScene.grid[y][x] = value;
 		
@@ -129,7 +131,7 @@ const unit = class {
 		let text = GameScene.text_array[y][x];
 		text.setText(value)
 		*/
-	}
+	// }
 	
 	checkSpriteOverlap(spriteA, spriteB){
 		var boundsA = spriteA.getBounds();
@@ -252,10 +254,12 @@ const unit = class {
 			{
 				//LOOP THROUGH UNITS AGAIN AND CHECK COHESION
 				let cohesion_check = false;
+				let squad_count = 0;
 				GameScene.units.forEach((unit2) => {
 					if(unit2.id !== unit.id && unit2.player === this.player && unit2.squad === this.squad)
 					{
-
+						squad_count++;
+						
 						let unit_pos = {
 							x: unit.sprite.x,
 							y: unit.sprite.y,								
@@ -284,6 +288,9 @@ const unit = class {
 						}
 					}
 				})
+				if(squad_count === 0){
+					cohesion_check = true;
+				}
 
 				// console.log(this)
 				let colours = {
@@ -422,8 +429,6 @@ const unit = class {
 	
 	findTarget (scene, pointer) {
 		
-		this.targets = [];
-		
 		//GET BASE POSITIONAL DATA
 		let pos = {
 			start_x: this.sprite.x,
@@ -499,7 +504,8 @@ const unit = class {
 			}
 		})		
 		
-		if(obj_check === false){
+		//ONLY ADD SHOT IF THE TARGETS ARRAY IS UNDER MAX SHOTS
+		if(obj_check === false && this.targets.length < this.max_targets){
 			this.targets.push(dest);
 			this.drawTarget();
 		}
@@ -521,7 +527,7 @@ const unit = class {
 
 			this.targets.forEach((pos, i) => {
 
-				this.graphics[0].beginPath();
+				// this.graphics[0].beginPath();
 				// console.log(this)
 				this.graphics[0].moveTo(this.x, this.y);
 				

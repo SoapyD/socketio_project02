@@ -150,17 +150,17 @@ var GameScene = new Phaser.Class({
 		options.x = gameFunctions.tile_size * 11
 		options.y = gameFunctions.tile_size * 14		
 		
-		// GameScene.units.push(new unit(options));
+		GameScene.units.push(new unit(options));
 
-		// options.x = gameFunctions.tile_size * 12
-		// options.y = gameFunctions.tile_size * 14		
+		options.x = gameFunctions.tile_size * 12
+		options.y = gameFunctions.tile_size * 14		
 		
-		// GameScene.units.push(new unit(options));			
+		GameScene.units.push(new unit(options));			
 		
-		// options.x = gameFunctions.tile_size * 14
-		// options.y = gameFunctions.tile_size * 14		
+		options.x = gameFunctions.tile_size * 14
+		options.y = gameFunctions.tile_size * 14		
 		
-		// GameScene.units.push(new unit(options));		
+		GameScene.units.push(new unit(options));		
 		
 
 		// options.spritesheet = "tank";
@@ -174,18 +174,17 @@ var GameScene = new Phaser.Class({
 		// GameScene.units.push(new unit(options));			
 		
 		
-		options.spritesheet = "dread";
-		options.sprite_offset = 0;
-		options.size = 1;
-		options.cohesion = 0;
-		options.movement = 20;
-		options.squad = 1;
-		options.x = gameFunctions.tile_size * 14
-		options.y = gameFunctions.tile_size * 14		
+		// options.spritesheet = "dread";
+		// options.sprite_offset = 0;
+		// options.size = 1;
+		// options.cohesion = 0;
+		// options.movement = 20;
+		// options.squad = 1;
+		// options.x = gameFunctions.tile_size * 14
+		// options.y = gameFunctions.tile_size * 14		
 		
-		GameScene.units.push(new unit(options));			
+		// GameScene.units.push(new unit(options));			
 		
-		// GameScene.units.push(new unit(this, "dread", 1, gameFunctions.tile_size * 11, gameFunctions.tile_size * 14,0,0));
 
 		
 	
