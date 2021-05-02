@@ -26,7 +26,7 @@ var GameUIScene = new Phaser.Class({
 		
 		gameFunctions.createButton(this, gameFunctions.config.width - 50, 75, "shoot", GameUIScene.activate_shooting, callbackParams, gameFunctions.btn_sprite);		
 
-		gameFunctions.createButton(this, gameFunctions.config.width - 50, 125, "fight", GameUIScene.activate_movement, callbackParams, gameFunctions.btn_sprite);				
+		gameFunctions.createButton(this, gameFunctions.config.width - 50, 125, "fight", GameUIScene.activate_fighting, callbackParams, gameFunctions.btn_sprite);				
 
 		
 		callbackParams = {mode:"move"};
@@ -80,7 +80,20 @@ GameUIScene.activate_movement = () => {
 	if(cohesion_check === true){
 		GameScene.units.forEach((unit) => {
 			if(unit.path){
-				unit.move();		
+				// unit.move();
+				
+					// let data = {
+					// functionGroup: "socketFunctions",  
+					// function: "messageAll",
+					// returnFunctionGroup: "",
+					// returnFunction: "",
+					// returnParameters: "",
+					// message: ""
+					// }
+                    
+					// connFunctions.messageServer(data)				
+				
+				
 			}
 		})			
 	}
@@ -98,21 +111,45 @@ GameUIScene.activate_fighting = () => {
 	
 	//CHECK COHESION FOR UNITS THAT'RE CHARGING
 	let cohesion_check = true
-	GameScene.units.forEach((unit) => {
-		if(unit.cohesion_check === false){
-			cohesion_check = false;		
-		}
-	})		
-	
 	//ALSO CHECK ALL CHARGING UNITS ARE NEXT TO AN ENEMY UNITS
 	let in_combat = false;
 	
+	GameScene.units.forEach((unit) => {
+		if(unit.cohesion_check === false){
+			cohesion_check = false;
+		}
+	})
+	
+	if(cohesion_check === true){
+		GameScene.units.forEach((unit) => {
+			if(unit.player === GameScene.current_player &&
+			   unit.cohesion_check === true){
+				let in_combat_range = unit.checkCombat()
+				
+				if(in_combat_range === true){
+					in_combat = true;
+				}
+			}
+		})		
+	}
+
+	
 	if(cohesion_check === true && in_combat === true){
 		GameScene.units.forEach((unit) => {
-			if(unit.path){
-				unit.move();		
+			
+			if(unit.player === GameScene.current_player){
+
+				// console.log(unit)
+				if(unit.path.length > 0){
+					unit.move("checkCombat"); //
+				}
+				else{
+					unit.checkCombat(unit.fight)
+				}				
+				
 			}
-		})			
+
+		})
 	}
 	
 	//TRIGGER COMBAT WHEN UNITS HAVE MOVED

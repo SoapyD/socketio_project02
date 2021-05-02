@@ -152,15 +152,15 @@ var GameScene = new Phaser.Class({
 		
 		GameScene.units.push(new unit(options));
 
-		options.x = gameFunctions.tile_size * 12
-		options.y = gameFunctions.tile_size * 14		
+// 		options.x = gameFunctions.tile_size * 12
+// 		options.y = gameFunctions.tile_size * 14		
 		
-		GameScene.units.push(new unit(options));			
+// 		GameScene.units.push(new unit(options));			
 		
-		options.x = gameFunctions.tile_size * 14
-		options.y = gameFunctions.tile_size * 14		
+// 		options.x = gameFunctions.tile_size * 14
+// 		options.y = gameFunctions.tile_size * 14		
 		
-		GameScene.units.push(new unit(options));		
+// 		GameScene.units.push(new unit(options));		
 		
 
 		// options.spritesheet = "tank";

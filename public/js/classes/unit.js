@@ -21,6 +21,7 @@ const unit = class {
 		this.shoot_range = 200;
 		this.max_targets = 3;
 		this.health = 100;
+		this.in_combat = false;
 		
 		this.sprite_offset = options.sprite_offset;
 		
@@ -133,7 +134,7 @@ const unit = class {
 		*/
 	// }
 	
-	checkSpriteOverlap(spriteA, spriteB){
+	checkSpriteOverlap(spriteA, spriteB, adjacent=false){
 		var boundsA = spriteA.getBounds();
 		var boundsB = spriteB.getBounds();
 
@@ -142,9 +143,16 @@ const unit = class {
 		// console.log(intersection)
 		
 		let check = false;
-		if(intersection.width > 0 && intersection.height > 0){
+		if(intersection.width > 0 && intersection.height > 0 && adjacent===false){
 			check = true;
 		}
+		if(adjacent===true){
+			if(intersection.width > 0 || intersection.height > 0){
+				check = true;
+			}					
+		}
+
+		
 		
 		return check;
 	}
@@ -198,7 +206,8 @@ const unit = class {
 				this.sprite_ghost.angle = angle;
 			}			
 			
-						
+			
+			//SKIP PATH IF THE UNIT PLACEMENT OVERLAPS ANOTHER UNIT
 			let skip = false
 			GameScene.units.forEach((unit) => {
 
@@ -211,10 +220,13 @@ const unit = class {
 					check = this.checkSpriteOverlap(unit.sprite_ghost, this.sprite_ghost)
 					if(check === true){
 						skip = true;
-					}							
+					}	
 				}
-
 			})
+			//SKIP IF THE UNIT IS IN COMBAT
+			// if(this.in_combat === true){
+			// 	skip = true;
+			// }
 
 			//IF THE GHOST CLASHES WITH ANOTHER SPRITE OR GHOST, CANCEL THE MOVE
 			if(skip === true || this.path.length === 0){
@@ -378,7 +390,7 @@ const unit = class {
 		return angle;
 	}
 	
-	move() {
+	move(endFunction) {
 		
 		this.graphics[1].clear()
 		
@@ -408,9 +420,24 @@ const unit = class {
 						
 						let end_path = this.path[this.path.length - 1];
 						
+						//WHEN THE END OF THE PATH IS REACHED
 						if(this.x / gameFunctions.tile_size === end_path.x && this.y / gameFunctions.tile_size === end_path.y){
 							this.graphics[0].clear()
 							this.path = [];
+							
+							if(endFunction){
+								switch(endFunction){
+									case "checkCombat":
+										this.checkCombat(this.fight);
+										break;
+									default:
+								}								
+							}
+
+							// if (callBack){
+							// 	console.log(arguments)
+							// }
+							
 						}
 					}.bind(this)			
 				}
@@ -563,5 +590,39 @@ const unit = class {
 		
 	}
 	
+	checkCombat(callBack) {
+
+		
+		let in_combat_range = false
+		GameScene.units.forEach((unit) => {
+			let clash = false;
+			if(unit.id !== this.id && unit.player !== this.player && unit.side !== this.side){
+				
+				if(this.path.length > 0){
+					//check to see if movement ends in an attack
+					clash = this.checkSpriteOverlap(this.sprite_ghost, unit.sprite, true)
+				}else{
+					clash = this.checkSpriteOverlap(this.sprite, unit.sprite, true)
+				}
+
+				if(clash === true){
+					// this.in_combat = true;
+					// unit.in_combat = true;
+					
+					in_combat_range = true;
+					
+					if(callBack){
+						callBack(this, unit)
+					}
+				}
+			}
+		})
+		
+		return in_combat_range;
+	}
+	
+	fight(attacker, defender){
+		defender.wound(100);
+	}
 	
 }
