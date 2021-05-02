@@ -20,23 +20,28 @@ var GameUIScene = new Phaser.Class({
 		
 		let callbackParams = {};
 		
-		gameFunctions.btn_sprite = [];
-		
-		gameFunctions.createButton(this, gameFunctions.config.width - 50, 25, "move", GameUIScene.activate_movement, callbackParams, gameFunctions.btn_sprite);					
-		
-		gameFunctions.createButton(this, gameFunctions.config.width - 50, 75, "shoot", GameUIScene.activate_shooting, callbackParams, gameFunctions.btn_sprite);		
-
-		gameFunctions.createButton(this, gameFunctions.config.width - 50, 125, "fight", GameUIScene.activate_fighting, callbackParams, gameFunctions.btn_sprite);				
-
+		gameFunctions.btn_sprite = [];		
 		
 		callbackParams = {mode:"move"};
-		gameFunctions.createButton(this, gameFunctions.config.width - 150, 25, "+", GameUIScene.select_mode, callbackParams, gameFunctions.btn_sprite);					
+		gameFunctions.createButton(this, gameFunctions.config.width - 150, 25, "+", GameUIScene.select_mode, callbackParams, gameFunctions.btn_sprite);
+		callbackParams = {};
+		gameFunctions.createButton(this, gameFunctions.config.width - 50, 25, "move", GameUIScene.activate_movement, callbackParams, gameFunctions.btn_sprite);
 		
 		callbackParams = {mode:"shoot"};
-		gameFunctions.createButton(this, gameFunctions.config.width - 150, 75, "+", GameUIScene.select_mode, callbackParams, gameFunctions.btn_sprite);		
+		gameFunctions.createButton(this, gameFunctions.config.width - 150, 75, "+", GameUIScene.select_mode, callbackParams, gameFunctions.btn_sprite);
+		callbackParams = {};
+		gameFunctions.createButton(this, gameFunctions.config.width - 50, 75, "shoot", GameUIScene.activate_shooting, callbackParams, gameFunctions.btn_sprite);
 
 		callbackParams = {mode:"fight"};
-		gameFunctions.createButton(this, gameFunctions.config.width - 150, 125, "+", GameUIScene.select_mode, callbackParams, gameFunctions.btn_sprite);				
+		gameFunctions.createButton(this, gameFunctions.config.width - 150, 125, "+", GameUIScene.select_mode, callbackParams, gameFunctions.btn_sprite);	
+		callbackParams = {};
+		gameFunctions.createButton(this, gameFunctions.config.width - 50, 125, "fight", GameUIScene.activate_fighting, callbackParams, gameFunctions.btn_sprite);
+
+		
+		callbackParams = {};
+		gameFunctions.createButton(this, gameFunctions.config.width - 150, 175, "End Turn", GameScene.advancePlayer, callbackParams, gameFunctions.btn_sprite);				
+		
+		
 		
 		
 		gameFunctions.btn_sprite.forEach(btn => {
@@ -80,8 +85,38 @@ GameUIScene.activate_movement = () => {
 	if(cohesion_check === true){
 		GameScene.units.forEach((unit) => {
 			if(unit.path.length > 0 && unit.player === GameScene.current_player){
-				// unit.move();
 				
+				if(GameScene.online === false){
+					unit.move();
+				}else{
+					let data = {
+						functionGroup: "socketFunctions",  
+						function: "messageAll",
+						returnFunctionGroup: "connFunctions",
+						returnFunction: "runUnitFunction",
+						returnParameters: {
+							id: unit.id, 
+							path: unit.path,
+							function: "move"
+						},
+						message: "move units"
+					}
+
+					connFunctions.messageServer(data)
+				}
+					
+			}
+		})	
+	}
+}
+
+GameUIScene.activate_shooting = () => {
+	GameScene.units.forEach((unit) => {
+		
+		if(GameScene.online === false){
+			unit.shoot();
+		}else{
+			if(unit.targets.length > 0 && unit.player === GameScene.current_player){
 				let data = {
 					functionGroup: "socketFunctions",  
 					function: "messageAll",
@@ -89,39 +124,16 @@ GameUIScene.activate_movement = () => {
 					returnFunction: "runUnitFunction",
 					returnParameters: {
 						id: unit.id, 
-						path: unit.path,
-						function: "move"
+						targets: unit.targets,
+						function: "shoot"
 					},
-					message: "move units"
+					message: "shoot units"
 				}
 
-				connFunctions.messageServer(data)				
-				
-				
-			}
-		})			
-	}
-}
-
-GameUIScene.activate_shooting = () => {
-	GameScene.units.forEach((unit) => {
-		// unit.shoot();
-		if(unit.targets.length > 0 && unit.player === GameScene.current_player){
-			let data = {
-				functionGroup: "socketFunctions",  
-				function: "messageAll",
-				returnFunctionGroup: "connFunctions",
-				returnFunction: "runUnitFunction",
-				returnParameters: {
-					id: unit.id, 
-					targets: unit.targets,
-					function: "shoot"
-				},
-				message: "shoot units"
-			}
-
-			connFunctions.messageServer(data)			
+				connFunctions.messageServer(data)			
+			}			
 		}
+
 	})	
 }
 
@@ -159,48 +171,55 @@ GameUIScene.activate_fighting = () => {
 			
 			if(unit.player === GameScene.current_player){
 
-				// console.log(unit)
-				if(unit.path.length > 0){
-					// unit.move("checkCombat");
+				if(GameScene.online === false){
 					
-					let data = {
-						functionGroup: "socketFunctions",  
-						function: "messageAll",
-						returnFunctionGroup: "connFunctions",
-						returnFunction: "runUnitFunction",
-						returnParameters: {
-							id: unit.id, 
-							path: unit.path,
-							function: "move",
-							function_parameter: "checkCombat" 
-						},
-						message: "charge units"
+					if(unit.path.length > 0){
+						unit.move("checkCombat");
+					}else{
+						unit.checkCombat("fight")
 					}
-
-					connFunctions.messageServer(data)
 					
-				}
-				else{
-					// unit.checkCombat(unit.fight)
-					
-					let data = {
-						functionGroup: "socketFunctions",  
-						function: "messageAll",
-						returnFunctionGroup: "connFunctions",
-						returnFunction: "runUnitFunction",
-						returnParameters: {
-							id: unit.id, 
-							path: unit.path,
-							function: "checkCombat",
-							function_parameter: "fight" 
-						},
-						message: "fight units"
-					}
-
-					connFunctions.messageServer(data)
-						
-				}
+				}else{				
 				
+					if(unit.path.length > 0){
+
+						let data = {
+							functionGroup: "socketFunctions",  
+							function: "messageAll",
+							returnFunctionGroup: "connFunctions",
+							returnFunction: "runUnitFunction",
+							returnParameters: {
+								id: unit.id, 
+								path: unit.path,
+								function: "move",
+								function_parameter: "checkCombat" 
+							},
+							message: "charge units"
+						}
+
+						connFunctions.messageServer(data)
+
+					}
+					else{
+
+						let data = {
+							functionGroup: "socketFunctions",  
+							function: "messageAll",
+							returnFunctionGroup: "connFunctions",
+							returnFunction: "runUnitFunction",
+							returnParameters: {
+								id: unit.id, 
+								path: unit.path,
+								function: "checkCombat",
+								function_parameter: "fight" 
+							},
+							message: "fight units"
+						}
+
+						connFunctions.messageServer(data)
+
+					}
+				}
 			}
 
 		})

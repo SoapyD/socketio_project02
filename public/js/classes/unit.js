@@ -10,49 +10,68 @@ const unit = class {
 		this.cohesion = options.cohesion; //the maximum distance a unit can be from another member of it's squad
 		
 		this.path = [];
-		this.targets = [];
-		this.cohesion_check = true;
-		// this.selected = false;
+
 		this.moves = 0;
 		this.shots = 0;
 		this.fights = 0;
 		
+		this.health = 100;		
+		this.cohesion_check = true;		
 		this.movement = options.movement;
 		this.shoot_range = 200;
+		this.shoot_damage = 50;
 		this.max_targets = 3;
-		this.health = 100;
+		this.targets = [];
+		
 		this.in_combat = false;
 		
 		this.sprite_offset = options.sprite_offset;
 		
-		this.x = options.x + gameFunctions.tile_size * this.sprite_offset;
-		this.y = options.y + gameFunctions.tile_size * this.sprite_offset;
-		// this.updateGrid(options.x / gameFunctions.tile_size, options.y / gameFunctions.tile_size, '#')
+		let x = options.x + GameScene.tile_size * this.sprite_offset;
+		let y = options.y + GameScene.tile_size * this.sprite_offset;
 		
+		
+		//SPRITES
 		this.spritesheet = options.spritesheet;
-		this.sprite = options.scene.physics.add.image(this.x,this.y,options.spritesheet).setInteractive();
+		this.sprite = options.scene.physics.add.image(x,y,options.spritesheet).setInteractive();
 		this.sprite.setImmovable(true)
 		this.sprite.setDepth(1);
+		this.sprite.angle = options.angle;
+		
+		let colour = 0xFFFFFF;
+		switch(options.player){
+			case 0:
+				colour = 0xFF0000; //red
+				break;
+			case 1:
+				colour = 0x4863A0; //blue
+				break;
+			case 2:
+				colour = 0x00FF00; //lime
+				break;
+			case 3:
+				colour = 0xFFFF00; //yellow
+				break;				
+		}
+		
+		this.sprite.setTint(colour)
 		this.sprite.parent = this
 		GameScene.unit_collisions.add(this.sprite)
+		this.sprite.on('pointerup', this.selectHander)			
 		
 		
-		
-		this.sprite_ghost = options.scene.add.image(this.x,this.y,options.spritesheet);
+		this.sprite_ghost = options.scene.add.image(x,y,options.spritesheet);
 		this.sprite_ghost.alpha = 0;
-		
-		// this.sprite_base = scene.add.image(this.x,this.y,"base");
-		// this.sprite_base.setDepth(0.5);
-		
-		this.sprite.on('pointerup', this.selectHander)		
+		this.sprite_ghost.setTint(colour)
+		this.sprite_ghost.angle = options.angle;
 
 		
+		//SETUP GRAPHICS THAT CAN BE USED TO DRAW ACTIONS
 		this.graphics = [];
 		for(let i=0;i<2;i++){
 			this.graphics.push(options.scene.add.graphics());				
 		}
 
-		this.targets = [];
 		
 		// this.drawPath = this.drawPath.bind(this);
 		this.selectHander = this.selectHander.bind(this);
@@ -138,9 +157,7 @@ const unit = class {
 		var boundsA = spriteA.getBounds();
 		var boundsB = spriteB.getBounds();
 
-		// console.log(Phaser.Geom.Rectangle.Intersection(boundsA, boundsB))
 		let intersection =  Phaser.Geom.Rectangle.Intersection(boundsA, boundsB);	
-		// console.log(intersection)
 		
 		let check = false;
 		if(intersection.width > 0 && intersection.height > 0 && adjacent===false){
@@ -152,26 +169,23 @@ const unit = class {
 			}					
 		}
 
-		
-		
 		return check;
 	}
 	
 	findPath(scene, pointer) {
 		var x = scene.camera.scrollX + pointer.x;
 		var y = scene.camera.scrollY + pointer.y;
-		var toX = Math.floor(x/gameFunctions.tile_size);
-		var toY = Math.floor(y/gameFunctions.tile_size);	
+		var toX = Math.floor(x/GameScene.tile_size);
+		var toY = Math.floor(y/GameScene.tile_size);	
 		
 		
 		if(toX < GameScene.map.width && toY < GameScene.map.height
 		  && toX >= 0 && toY >= 0){
 
-			var fromX = Math.floor(this.x/gameFunctions.tile_size);
-			var fromY = Math.floor(this.y/gameFunctions.tile_size);		
+			var fromX = Math.floor(this.sprite.x/GameScene.tile_size);
+			var fromY = Math.floor(this.sprite.y/GameScene.tile_size);		
 
 			let path = GameScene.pathfinder.findPath(this, fromX, fromY, toX, toY, this.size)
-
 			
 			this.path = []
 			path.forEach((pos) => {
@@ -198,8 +212,8 @@ const unit = class {
 				let pos = this.path[this.path.length - 1];
 
 				this.sprite_ghost.alpha = 0.5;
-				this.sprite_ghost.x = pos.x * gameFunctions.tile_size;
-				this.sprite_ghost.y = pos.y * gameFunctions.tile_size;
+				this.sprite_ghost.x = pos.x * GameScene.tile_size;
+				this.sprite_ghost.y = pos.y * GameScene.tile_size;
 				// this.resetGhost();
 				
 				let angle = this.checkAngle(this.path[this.path.length - 2], this.path[this.path.length - 1])
@@ -227,7 +241,13 @@ const unit = class {
 			// if(this.in_combat === true){
 			// 	skip = true;
 			// }
-
+			if(this.moves !== 0 && GameScene.mode === "move"){
+				skip = true;
+			}
+			if(this.fights !== 0 && GameScene.mode === "fight"){
+				skip = true;
+			}
+			
 			//IF THE GHOST CLASHES WITH ANOTHER SPRITE OR GHOST, CANCEL THE MOVE
 			if(skip === true || this.path.length === 0){
 				this.resetGhost();
@@ -278,8 +298,8 @@ const unit = class {
 						}
 						if(unit.path.length > 0){
 							unit_pos = {
-								x: unit.path[unit.path.length - 1].x * gameFunctions.tile_size,
-								y: unit.path[unit.path.length - 1].y * gameFunctions.tile_size,
+								x: unit.path[unit.path.length - 1].x * GameScene.tile_size,
+								y: unit.path[unit.path.length - 1].y * GameScene.tile_size,
 							}
 						}
 						let unit_pos2 = {
@@ -289,8 +309,8 @@ const unit = class {
 						if(unit2.path.length > 0){
 							// console.log(unit2)
 							unit_pos2 = {
-								x: unit2.path[unit2.path.length - 1].x * gameFunctions.tile_size,
-								y: unit2.path[unit2.path.length - 1].y * gameFunctions.tile_size,
+								x: unit2.path[unit2.path.length - 1].x * GameScene.tile_size,
+								y: unit2.path[unit2.path.length - 1].y * GameScene.tile_size,
 							}								
 						}							
 
@@ -332,8 +352,8 @@ const unit = class {
 	drawPath(colours) {
 		
 		let last_pos = {
-			x: this.sprite.x / gameFunctions.tile_size,
-			y: this.sprite.y / gameFunctions.tile_size
+			x: this.sprite.x / GameScene.tile_size,
+			y: this.sprite.y / GameScene.tile_size
 		}
 		
 		//RESET THE DRAW GRAPHICS
@@ -348,10 +368,10 @@ const unit = class {
 			this.path.forEach((pos, i) => {
 	
 				if (i !== 0){
-					this.graphics[0].lineTo(pos.x * gameFunctions.tile_size, pos.y * gameFunctions.tile_size);
+					this.graphics[0].lineTo(pos.x * GameScene.tile_size, pos.y * GameScene.tile_size);
 				}
 				else{
-					this.graphics[0].moveTo(pos.x * gameFunctions.tile_size, pos.y * gameFunctions.tile_size);
+					this.graphics[0].moveTo(pos.x * GameScene.tile_size, pos.y * GameScene.tile_size);
 				}
 				
 				last_pos = pos;
@@ -360,11 +380,10 @@ const unit = class {
 			this.graphics[0].strokePath();				
 	
 		}
-		// console.log(this)
 		
 		this.graphics[1].lineStyle(5, colours.line_colour, colours.circle_alpha);
 		this.graphics[1].fillStyle(colours.fill_colour, colours.fill_alpha);
-		let circle = new Phaser.Geom.Circle(last_pos.x * gameFunctions.tile_size, last_pos.y * gameFunctions.tile_size, this.cohesion);
+		let circle = new Phaser.Geom.Circle(last_pos.x * GameScene.tile_size, last_pos.y * GameScene.tile_size, this.cohesion);
 		this.graphics[1].fillCircleShape(circle);
 
 		this.graphics[1].strokePath();		
@@ -390,7 +409,7 @@ const unit = class {
 		return angle;
 	}
 	
-	move(endFunction) {
+	move(endFunction="move") {
 		
 		this.graphics[1].clear()
 		
@@ -403,9 +422,7 @@ const unit = class {
 				
 				let pos = this.path[i]
 				
-				let angle = this.checkAngle(pos, next_pos)
-				
-				// console.log(pos, next_pos, angle)				
+				let angle = this.checkAngle(pos, next_pos)				
 				
 				let tween_data = {
 					targets: [this.sprite, this.sprite_base],
@@ -415,23 +432,24 @@ const unit = class {
 					angle: {value: angle, duration: 0},
 					onComplete: function ()
 					{
-						this.x = this.sprite.x
-						this.y = this.sprite.y
 						
 						let end_path = this.path[this.path.length - 1];
 						
 						//WHEN THE END OF THE PATH IS REACHED
-						if(this.x / gameFunctions.tile_size === end_path.x && this.y / gameFunctions.tile_size === end_path.y){
+						if(this.sprite.x / GameScene.tile_size === end_path.x && this.sprite.y / GameScene.tile_size === end_path.y){
 							this.graphics[0].clear()
 							this.path = [];
 							
 							if(endFunction){
 								switch(endFunction){
+									case "move":
+										this.moves = 1;
+										break;
 									case "checkCombat":
 										this.checkCombat(this.fight);
 										break;
 									default:
-								}								
+								}
 							}
 
 							// if (callBack){
@@ -460,8 +478,8 @@ const unit = class {
 		let pos = {
 			start_x: this.sprite.x,
 			start_y: this.sprite.y,			
-			end_x: Math.floor(pointer.x / gameFunctions.tile_size) * gameFunctions.tile_size + (gameFunctions.tile_size / 2),
-			end_y: Math.floor(pointer.y / gameFunctions.tile_size) * gameFunctions.tile_size + (gameFunctions.tile_size / 2),
+			end_x: Math.floor(pointer.x / GameScene.tile_size) * GameScene.tile_size + (GameScene.tile_size / 2),
+			end_y: Math.floor(pointer.y / GameScene.tile_size) * GameScene.tile_size + (GameScene.tile_size / 2),
 		}
 		//GET DIFFERENCE INFO
 		pos.x_diff = pos.end_x - pos.start_x;
@@ -515,11 +533,11 @@ const unit = class {
 		let dest = {}
 		let obj_check = false;
 		pos.cells.forEach((cell) => {
-			let grid_x = Math.floor(cell.x / gameFunctions.tile_size);
-			let grid_y = Math.floor(cell.y / gameFunctions.tile_size);					
+			let grid_x = Math.floor(cell.x / GameScene.tile_size);
+			let grid_y = Math.floor(cell.y / GameScene.tile_size);					
 			
 			// this.temp_sprites.push(scene.physics.add.image(cell.x,cell.y,"marker").setDepth(2))	
-			// this.temp_sprites.push(scene.physics.add.image(grid_x * gameFunctions.tile_size,grid_y * gameFunctions.tile_size,"marker").setTint(0xff0000).setDepth(3));
+			// this.temp_sprites.push(scene.physics.add.image(grid_x * GameScene.tile_size,grid_y * GameScene.tile_size,"marker").setTint(0xff0000).setDepth(3));
 			
 			//RETURN THE GRID CELL POSITION SO WE CAN CHECK IT'S EMPTY
 			let grid_cell = GameScene.grid[grid_y][grid_x]
@@ -556,7 +574,7 @@ const unit = class {
 
 				// this.graphics[0].beginPath();
 				// console.log(this)
-				this.graphics[0].moveTo(this.x, this.y);
+				this.graphics[0].moveTo(this.sprite.x, this.sprite.y);
 				
 				//OFFSET PATH POSITION TO MIDDLE OF TILE
 				pos.x += this.sprite_offset;
@@ -580,12 +598,20 @@ const unit = class {
 					this.sprite.angle = Phaser.Math.RadToDeg(angle);
 					this.sprite_ghost.angle = this.sprite.angle;
 
-					GameScene.bullets.push(new bullet(GameScene.scene, "bullet", angle, this))
+					let options = {
+						scene: GameScene.scene,
+						spritesheet: "bullet",
+						angle: angle,
+						unit: this
+					}
+
+					GameScene.bullets.push(new bullet(options))
 					//BULLET DEATH KILLS THE GRAPHIC
 				}				
 				
 			})
-			unit.targets = [];
+			this.shots = 1;
+			this.targets = [];
 		}		
 		
 	}
@@ -631,6 +657,7 @@ const unit = class {
 	}
 	
 	fight(attacker, defender){
+		attacker.fights = 1;
 		defender.wound(100);
 	}
 	

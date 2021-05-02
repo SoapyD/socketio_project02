@@ -1,14 +1,15 @@
 
 gameFunctions = []
 gameFunctions.btn_sprite = [];
-gameFunctions.tile_size = 32;
+
+
 
 gameFunctions.config = {
     type: Phaser.AUTO,
     // width: gameFunctions.config.cardSize * gameFunctions.config.tableWidth, //800,
 	// height: gameFunctions.config.cardSize * gameFunctions.config.tableHeight, //600,
-    width: 800,
-    height: 600,
+    width: 840,
+    height: 640,
     physics: {
         default: 'arcade',
         arcade: {
@@ -25,8 +26,8 @@ gameFunctions.config = {
           
         mode: Phaser.Scale.FIT,
       },
-    // scene: [ GameScene, GameUIScene ]  
-	scene: [ MainMenuScene, ArmySelectMenuScene, GameScene, GameUIScene ]  
+    scene: [ GameScene, GameUIScene ]  
+	// scene: [ MainMenuScene, ArmySelectMenuScene, GameScene, GameUIScene ]  
     // scene: [ MainMenuScene, ArmySelectMenuScene, GameScene, ArmySetupUIScene ]     
 };
 

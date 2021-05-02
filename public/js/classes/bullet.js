@@ -1,75 +1,81 @@
 
 const bullet = class {
 	// constructor(scene, spritesheet, x, y, angle, range, side, player) {
-	constructor(scene, spritesheet, angle, unit) {	
-	
+	constructor(options) {	
 	
 		// this.x = x;
 		// this.y = y;
-		this.unit = unit;
-		this.side = unit.side;
-		this.player = unit.player;
-		this.range = unit.range;
+		this.unit = options.unit;
+		this.side = options.unit.side;
+		this.player = options.unit.player;
+		this.range = options.unit.shoot_range;
 		this.speed = 200;
-		this.damage = 50;
+		this.damage =  options.unit.shoot_damage;
 		
 		this.origin = {
-			x: unit.x,
-			y: unit.y
+			x: options.unit.sprite.x,
+			y: options.unit.sprite.y
 		}
 		
-		this.sprite = scene.physics.add.image(unit.x,unit.y,spritesheet)
+		this.sprite = options.scene.physics.add.image(options.unit.sprite.x,options.unit.sprite.y,options.spritesheet)
+		// this.sprite.x = options.unit.sprite.x;
+		// this.sprite.y = options.unit.sprite.y;
 		this.sprite.setDepth(10);
 		this.sprite.setOrigin(0.5,0.5);	
 		this.sprite.body.setSize(5, 5); //set the size of the bounding box
 		this.sprite.parent = this;
 		
-        this.sprite.rotation = angle;
+        this.sprite.rotation = options.angle;
 		
-		this.sprite.enableBody(true, unit.x, unit.y, true, true);
+		this.sprite.enableBody(true, options.unit.sprite.x, options.unit.sprite.y, true, true);
 
-		scene.physics.velocityFromAngle(Phaser.Math.RadToDeg(angle), this.speed, this.sprite.body.velocity);	
+		options.scene.physics.velocityFromAngle(Phaser.Math.RadToDeg(options.angle), this.speed, this.sprite.body.velocity);	
 		
 		
-		scene.physics.add.collider(this.sprite, GameScene.unit_collisions,(bullet, unit) => {
+		// options.scene.physics.add.collider(this.sprite, GameScene.unit_collisions,(bullet, unit) => {
+		// 	bullet.parent.kill();
 
-			bullet.parent.kill();
-			// unit.parent.wound(bullet.parent.damage);
-
-			if(bullet.parent.player !== unit.parent.player){
-				// unit.setTint(0xff0000);
-				// bullet.parent.kill();
-				unit.parent.wound(bullet.parent.damage);
-			}
-
-		})
+		// 	if(bullet.parent.player !== unit.parent.player){
+		// 		unit.parent.wound(bullet.parent.damage);
+		// 	}
+		// })
+		options.scene.physics.add.collider(this.sprite, GameScene.unit_collisions, this.checkHit)
+		
+		
 	}
 
+	checkHit(bullet, unit) {
+		console.log(bullet)
+		bullet.parent.kill();
+		// unit.parent.wound(bullet.parent.damage);
+
+		if(bullet.parent.player !== unit.parent.player){
+			// unit.setTint(0xff0000);
+			// bullet.parent.kill();
+			unit.parent.wound(bullet.parent.damage);
+		}		
+	}
+	
 	kill(){
-		// console.log(this)
 		this.unit.graphics[0].clear()
 		this.sprite.disableBody(true, true);
 	}
 	
-	checkRange(){
+	checkRange(bullet){
 		let current_range = Math.sqrt(Math.pow(this.origin.x - this.sprite.x, 2) + Math.pow(this.origin.y - this.sprite.y, 2))
 		
+		// console.log(current_range, this.sprite.x, this.sprite.y, this)
 		if (current_range >= this.range){
 			this.kill();
 		}
-		// console.log(current_range)
 		
-		
-		let gridX = Math.floor(this.sprite.x/gameFunctions.tile_size);
-		let gridY = Math.floor(this.sprite.y/gameFunctions.tile_size);	
+		let gridX = Math.floor(this.sprite.x/GameScene.tile_size);
+		let gridY = Math.floor(this.sprite.y/GameScene.tile_size);	
 		
 		let cell = GameScene.grid[gridY][gridX]
-		// console.log(cell)
 		if(cell !== 1){
 			this.sprite.disableBody(true, true);
-			// console.log(gridX, gridY, cell)
 			GameScene.bullets = [];
 		}
-		// console.log(cell)
 	}
 }

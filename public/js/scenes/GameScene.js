@@ -29,11 +29,32 @@ var GameScene = new Phaser.Class({
 		
 		// this.scene.launch("ArmySetupUIScene");
 		this.scene.launch("GameUIScene");
+		
+		
+		GameScene.mode = '';
+		GameScene.current_player = 0;
+		GameScene.bullets = [];
+		GameScene.selected_unit;
+		GameScene.left_click = false;
+		GameScene.left_click_state = 0;
+		GameScene.right_click = false;
+		GameScene.right_click_state = 0;
+		
+		GameScene.scene = this.scene.get('GameScene')
+		gameFunctions.current_scene = this.scene.get('GameScene');
+		
+		GameScene.tile_size = 32;
+		GameScene.online = false;
+		
+		GameScene.text = this.add.text(0, 0, "", { fill: '#00ff00' }).setDepth(20);
+		
+		
     },
 
 
     create: function()
     {
+
 		this.input.mouse.disableContextMenu();
 		
         //Create a camera controller using the arraow keys
@@ -46,16 +67,11 @@ var GameScene = new Phaser.Class({
 
 
 		GameScene.camera = this.cameras.main;
-		GameScene.camera.setBounds(0, 0, 20*gameFunctions.tile_size, 20*gameFunctions.tile_size);
+		GameScene.camera.setBounds(0, 0, 20*GameScene.tile_size, 20*GameScene.tile_size);
 		
 
 
-		GameScene.scene = this.scene.get('GameScene')		
-
-		
 		// Display map
-
-		// console.log(scene)
 		GameScene.map = GameScene.scene.make.tilemap({ key: 'map'});
 		// The first parameter is the name of the tileset in Tiled and the second parameter is the key
 		// of the tileset image used when loading the file in preload.
@@ -68,9 +84,6 @@ var GameScene = new Phaser.Class({
 		GameScene.marker.strokeRect(0, 0, GameScene.map.tileWidth, GameScene.map.tileHeight);
 
 		// ### Pathfinding stuff ###
-		// Initializing the pathfinder
-		// GameScene.finder = new EasyStar.js();		
-		
 		// We create the 2D array representing all the tiles of our map
 		var grid = [];
 		for(var y = 0; y < GameScene.map.height; y++){
@@ -104,11 +117,8 @@ var GameScene = new Phaser.Class({
 		// }
 		// GameScene.finder.setAcceptableTiles(acceptableTiles);		
 		
-		
-		gameFunctions.current_scene = this.scene.get('GameScene');		
-		
-		
-		GameScene.pathfinder = new pathfinder(grid);
+		GameScene.pathfinder = new pathfinder(grid);		
+	
 		
 	
 		
@@ -120,79 +130,17 @@ var GameScene = new Phaser.Class({
 		// 		GameScene.text_array[y].push(text)
 		// 	})
 		// })
-    	// text = this.add.text(10, 10, '', { fill: '#00ff00' }).setDepth(1);		
+    	// text = this.add.text(10, 10, '', { fill: '#00ff00' }).setDepth(1);
 		
-		
-		
-		
-		//ADD IN SOME UNITS
-		GameScene.unit_collisions = this.add.group();
-		GameScene.units = []
-		
-		let options = {
-			scene: this, 
-			spritesheet: "unit",
-			sprite_offset: 0.5,
-			size: 0, 
-			x: gameFunctions.tile_size * 11, 
-			y: gameFunctions.tile_size * 12, 
-			side: 0, 
-			player: 0,
-			squad: 0,
-			cohesion: 75,
-			movement: 10
-		}
-		
-		GameScene.units.push(new unit(options));
-
-		options.side = 1
-		options.player = 1
-		options.x = gameFunctions.tile_size * 11
-		options.y = gameFunctions.tile_size * 14		
-		
-		GameScene.units.push(new unit(options));
-
-// 		options.x = gameFunctions.tile_size * 12
-// 		options.y = gameFunctions.tile_size * 14		
-		
-// 		GameScene.units.push(new unit(options));			
-		
-// 		options.x = gameFunctions.tile_size * 14
-// 		options.y = gameFunctions.tile_size * 14		
-		
-// 		GameScene.units.push(new unit(options));		
-		
-
-		// options.spritesheet = "tank";
-		// options.size = 1;
-		// options.cohesion = 0;
-		// options.movement = 20;
-		// options.squad = 1;
-		// options.x = gameFunctions.tile_size * 14
-		// options.y = gameFunctions.tile_size * 14		
-		
-		// GameScene.units.push(new unit(options));			
-		
-		
-		// options.spritesheet = "dread";
-		// options.sprite_offset = 0;
-		// options.size = 1;
-		// options.cohesion = 0;
-		// options.movement = 20;
-		// options.squad = 1;
-		// options.x = gameFunctions.tile_size * 14
-		// options.y = gameFunctions.tile_size * 14		
-		
-		// GameScene.units.push(new unit(options));			
-		
-
-		
-	
+		GameScene.seeds();		
 		
     },
 
     update: function (time, delta)
     {
+		
+		GameScene.text.setText("Current Player: "+GameScene.current_player)
+		
         // controls.update(delta);
 		var worldPoint = this.input.activePointer.positionToCamera(this.cameras.main);
 
@@ -226,38 +174,36 @@ var GameScene = new Phaser.Class({
 				}		
 			}
 			
-			
-			// if(GameScene.left_click === true){
-			// 	GameScene.left_click_state = GameScene.advanceClickState(GameScene.left_click_state, 1)	
-			// }
-
-			// if(GameScene.left_click_state === 0){
-			// 	GameScene.selected_unit.shoot(this, pointer);
-			// 	GameScene.selected_unit.unselectHandler();
-			// }		
-			
-			// let angle = Phaser.Math.Angle.BetweenPoints(GameScene.selected_unit.sprite, pointer);
-			// console.log(angle);
 		}
 
-		// if(GameScene.right_click === true){
-		// 	GameScene.units.forEach((unit) => {
-		// 		if(unit.path){
-		// 			unit.move();		
-		// 		}
-		// 	})
-		// }
 		
 		GameScene.left_click = false;
 		GameScene.right_click = false;		
 		
+		//CHECK BULLET DEATH
 		if(GameScene.bullets){
 			GameScene.bullets.forEach((bullet) => {
 				bullet.checkRange();
 			})
+		
 		}
     }
 });
+
+
+GameScene.advancePlayer = () => {
+	let max_player = 2;
+	GameScene.current_player += 1
+	if(GameScene.current_player >= max_player){
+		GameScene.current_player = 0
+	}
+	
+	GameScene.units.forEach((unit) => {
+		unit.moves = 0;
+		unit.fights = 0;
+		unit.shots = 0;
+	})
+}
 
 
 GameScene.checkCollision = function(x,y){
@@ -271,14 +217,6 @@ GameScene.checkCollision = function(x,y){
 };
 
 
-GameScene.mode = '';
-GameScene.current_player = 1;
-GameScene.bullets = [];
-GameScene.selected_unit;
-GameScene.left_click = false;
-GameScene.left_click_state = 0;
-GameScene.right_click = false;
-GameScene.right_click_state = 0;
 GameScene.advanceClickState = (state, max) => {
 	state += 1
 	if(state > max){
@@ -307,64 +245,115 @@ GameScene.handleClick = function(pointer){
 };
 
 
+GameScene.seeds = () => {
 
-// GameScene.updateDraw = (player, squad) => {
-// 		//LOOP THROUGH UNITS, IF UNIT IS SAME PLAYER AND SQUAD BUT ISN'T THIS UNIT
-// 		GameScene.units.forEach((unit) => {
-// 			if(unit.player === player && unit.squad === squad) //unit.id !== this.id && 
-// 			{
-// 				//LOOP THROUGH UNITS AGAIN AND CHECK COHESION
-// 				let cohesion_check = false;
-// 				// GameScene.units.forEach((unit2) => {
-// 				// 	if(unit2.id !== unit.id && unit2.player === this.player && unit2.squad === this.squad)
-// 				// 	{
+		//ADD IN SOME UNITS
+		GameScene.unit_collisions = GameScene.scene.add.group();
+		GameScene.units = []
+		
+		let options = {
+			scene: GameScene.scene, 
+			spritesheet: "unit",
+			sprite_offset: 0.5,
+			size: 0, 
+			x: GameScene.tile_size * 3, 
+			y: GameScene.tile_size * 2, 
+			side: 0, 
+			player: 0,
+			squad: 0,
+			cohesion: 75,
+			movement: 10,
+			angle: 90
+		}
+		
+		
+		//PLAYER 0
+		GameScene.units.push(new unit(options));
+		
+		options.x = GameScene.tile_size * 5
+		options.y = GameScene.tile_size * 2				
+		GameScene.units.push(new unit(options));
 
-// 				// 		let unit_pos = {
-// 				// 			x: unit.sprite.x,
-// 				// 			y: unit.sprite.y,								
-// 				// 		}
-// 				// 		if(unit.path){
-// 				// 			unit_pos = {
-// 				// 				x: unit.path[unit.path.length - 1].x * gameFunctions.tile_size,
-// 				// 				y: unit.path[unit.path.length - 1].y * gameFunctions.tile_size,
-// 				// 			}
-// 				// 		}
-// 				// 		let unit_pos2 = {
-// 				// 			x: unit2.sprite.x,
-// 				// 			y: unit2.sprite.y,								
-// 				// 		}
-// 				// 		if(unit2.path){
-// 				// 			unit_pos2 = {
-// 				// 				x: unit2.path[unit2.path.length - 1].x * gameFunctions.tile_size,
-// 				// 				y: unit2.path[unit2.path.length - 1].y * gameFunctions.tile_size,
-// 				// 			}								
-// 				// 		}							
+		options.x = GameScene.tile_size * 4
+		options.y = GameScene.tile_size * 3				
+		GameScene.units.push(new unit(options));	
+	
+	
+		options.squad = 1
+		options.x = GameScene.tile_size * 14
+		options.y = GameScene.tile_size * 2		
+		GameScene.units.push(new unit(options));
+		
+		options.x = GameScene.tile_size * 16
+		options.y = GameScene.tile_size * 2				
+		GameScene.units.push(new unit(options));
 
-// 				// 		let distance = gameFunctions.twoPointDistance(unit_pos, unit_pos2);
-// 				// 		if(distance <= unit.cohesion){
-// 				// 			cohesion_check = true;
-// 				// 		}
-// 				// 	}
-// 				// })
+		options.x = GameScene.tile_size * 15
+		options.y = GameScene.tile_size * 3				
+		GameScene.units.push(new unit(options));		
+	
+	
+		
+		//PLAYER 1
+		options.player = 1
+		options.angle = -90
+		options.squad = 0
+		options.x = GameScene.tile_size * 3
+		options.y = GameScene.tile_size * 17
+		GameScene.units.push(new unit(options));
+		
+		options.x = GameScene.tile_size * 5
+		options.y = GameScene.tile_size * 17
+		GameScene.units.push(new unit(options));
 
-// 				// console.log(this)
-// 				let colours = {
-// 					line_colour: 0x2ECC40,
-// 					fill_colour: 0x6666ff,
-// 					line_alpha: 1,
-// 					fill_alpha: 0.25	
-// 				}
-// 				if(cohesion_check === false){
-// 					colours = {
-// 						line_colour: 0xFF0000,
-// 						fill_colour: 0x6666ff,
-// 						line_alpha: 1,
-// 						fill_alpha: 0.25				
-// 					}						
-// 				}
+		options.x = GameScene.tile_size * 4
+		options.y = GameScene.tile_size * 16
+		GameScene.units.push(new unit(options));	
+	
+	
+		options.player = 1	
+		options.squad = 1
+		options.x = GameScene.tile_size * 14
+		options.y = GameScene.tile_size * 17	
+		GameScene.units.push(new unit(options));
+		
+		options.x = GameScene.tile_size * 16
+		options.y = GameScene.tile_size * 17
+		GameScene.units.push(new unit(options));
 
-// 				console.log(unit.path)
-// 				unit.drawPath(colours)							
-// 			}
-// 		})	
-// }
+		options.x = GameScene.tile_size * 15
+		options.y = GameScene.tile_size * 16
+		GameScene.units.push(new unit(options));
+	
+	
+	
+	
+	
+	
+
+		// options.spritesheet = "tank";
+		// options.size = 1;
+		// options.cohesion = 0;
+		// options.movement = 20;
+		// options.squad = 1;
+		// options.x = GameScene.tile_size * 14
+		// options.y = GameScene.tile_size * 14		
+		
+		// GameScene.units.push(new unit(options));			
+		
+		
+		// options.spritesheet = "dread";
+		// options.sprite_offset = 0;
+		// options.size = 1;
+		// options.cohesion = 0;
+		// options.movement = 20;
+		// options.squad = 1;
+		// options.x = GameScene.tile_size * 14
+		// options.y = GameScene.tile_size * 14		
+		
+		// GameScene.units.push(new unit(options));				
+	
+}
+
+
+
