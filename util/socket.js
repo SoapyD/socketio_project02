@@ -156,6 +156,8 @@ exports.joinRoom = async(network, data)  => {
             message: ""
         }
 
+		let transition = false;
+		
         //IF ROOM DOES EXIST
         if (rooms && rooms.length > 0){
 
@@ -178,6 +180,8 @@ exports.joinRoom = async(network, data)  => {
                         network.socket.join(data.room_name) 
                         room.sockets.push(network.socket.id);
                         room.save()
+						
+						transition = true;
                     }
                 }
                 else{
@@ -191,6 +195,8 @@ exports.joinRoom = async(network, data)  => {
                     network.io.to(network.socket.id).emit("message_client", return_data) 
 
                     return_data.message = "Player: "+data.user_name+" joined room."
+					
+					transition = true;
                 }
             }   
     
@@ -201,9 +207,22 @@ exports.joinRoom = async(network, data)  => {
 
         network.io.of(network.namespace).emit("message_client", return_data)     
 
+		if(transition === true){
+            let return_data = {
+                functionGroup: "connFunctions",
+                function: "sceneTransition",
+                message: "Room Joined",
+                scene: "ArmySelectMenuScene"
+            }
+
+            //send room info back to socket
+            network.io.to(network.socket.id).emit("message_client", return_data)  			
+		}
+		
+		
     }
     catch(err){
-        console.log("Error trying to create room")
+        console.log("Error trying to join room")
         console.log(err)
     }
 }

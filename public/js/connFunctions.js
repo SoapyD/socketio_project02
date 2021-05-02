@@ -58,6 +58,10 @@ connFunctions.checkMessages = (socket) => {
 
 
     socket.on('message_client', (data) => {
+		if(data.message){
+			console.log(data.message)			
+		}
+
         availableFunctions[data.functionGroup][data.function](data);  
     })
 
@@ -102,9 +106,27 @@ connFunctions.uiSceneTransition = (data) => {
 	gameFunctions.current_uiscene.scene.stop()	
 }
 
+connFunctions.runUnitFunction = function(data) {
+	if(data.parameters.path){
+		GameScene.units[data.parameters.id].path = data.parameters.path;
+	}
+	if(data.parameters.targets){
+		GameScene.units[data.parameters.id].targets = data.parameters.targets;
+	}	
+	
+	if(data.parameters.function_parameter){
+		GameScene.units[data.parameters.id][data.parameters.function](data.parameters.function_parameter)	
+	}
+	else{
+		GameScene.units[data.parameters.id][data.parameters.function]()		
+	}
+
+}
+
 
 availableFunctions = {
-    connFunctions: connFunctions
+    connFunctions: connFunctions,
+	// GameScene: GameScene
 }
 
 connFunctions.checkMessages(socket)

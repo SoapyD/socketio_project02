@@ -307,6 +307,7 @@ GameScene.handleClick = function(pointer){
 };
 
 
+
 // GameScene.updateDraw = (player, squad) => {
 // 		//LOOP THROUGH UNITS, IF UNIT IS SAME PLAYER AND SQUAD BUT ISN'T THIS UNIT
 // 		GameScene.units.forEach((unit) => {

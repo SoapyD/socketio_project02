@@ -79,19 +79,23 @@ GameUIScene.activate_movement = () => {
 	
 	if(cohesion_check === true){
 		GameScene.units.forEach((unit) => {
-			if(unit.path){
+			if(unit.path.length > 0 && unit.player === GameScene.current_player){
 				// unit.move();
 				
-					// let data = {
-					// functionGroup: "socketFunctions",  
-					// function: "messageAll",
-					// returnFunctionGroup: "",
-					// returnFunction: "",
-					// returnParameters: "",
-					// message: ""
-					// }
-                    
-					// connFunctions.messageServer(data)				
+				let data = {
+					functionGroup: "socketFunctions",  
+					function: "messageAll",
+					returnFunctionGroup: "connFunctions",
+					returnFunction: "runUnitFunction",
+					returnParameters: {
+						id: unit.id, 
+						path: unit.path,
+						function: "move"
+					},
+					message: "move units"
+				}
+
+				connFunctions.messageServer(data)				
 				
 				
 			}
@@ -101,7 +105,23 @@ GameUIScene.activate_movement = () => {
 
 GameUIScene.activate_shooting = () => {
 	GameScene.units.forEach((unit) => {
-		unit.shoot();
+		// unit.shoot();
+		if(unit.targets.length > 0 && unit.player === GameScene.current_player){
+			let data = {
+				functionGroup: "socketFunctions",  
+				function: "messageAll",
+				returnFunctionGroup: "connFunctions",
+				returnFunction: "runUnitFunction",
+				returnParameters: {
+					id: unit.id, 
+					targets: unit.targets,
+					function: "shoot"
+				},
+				message: "shoot units"
+			}
+
+			connFunctions.messageServer(data)			
+		}
 	})	
 }
 
@@ -141,11 +161,45 @@ GameUIScene.activate_fighting = () => {
 
 				// console.log(unit)
 				if(unit.path.length > 0){
-					unit.move("checkCombat"); //
+					// unit.move("checkCombat");
+					
+					let data = {
+						functionGroup: "socketFunctions",  
+						function: "messageAll",
+						returnFunctionGroup: "connFunctions",
+						returnFunction: "runUnitFunction",
+						returnParameters: {
+							id: unit.id, 
+							path: unit.path,
+							function: "move",
+							function_parameter: "checkCombat" 
+						},
+						message: "charge units"
+					}
+
+					connFunctions.messageServer(data)
+					
 				}
 				else{
-					unit.checkCombat(unit.fight)
-				}				
+					// unit.checkCombat(unit.fight)
+					
+					let data = {
+						functionGroup: "socketFunctions",  
+						function: "messageAll",
+						returnFunctionGroup: "connFunctions",
+						returnFunction: "runUnitFunction",
+						returnParameters: {
+							id: unit.id, 
+							path: unit.path,
+							function: "checkCombat",
+							function_parameter: "fight" 
+						},
+						message: "fight units"
+					}
+
+					connFunctions.messageServer(data)
+						
+				}
 				
 			}
 

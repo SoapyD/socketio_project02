@@ -590,7 +590,7 @@ const unit = class {
 		
 	}
 	
-	checkCombat(callBack) {
+	checkCombat(endFunction) {
 
 		
 		let in_combat_range = false
@@ -611,8 +611,17 @@ const unit = class {
 					
 					in_combat_range = true;
 					
-					if(callBack){
-						callBack(this, unit)
+					// if(callBack){
+					// 	callBack(this, unit)
+					// }
+					if(endFunction){
+						switch(endFunction){
+							case "fight":
+								this.fight(this,unit);
+								break;
+							default:
+								break;
+						}
 					}
 				}
 			}
