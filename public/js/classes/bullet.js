@@ -18,8 +18,7 @@ const bullet = class {
 		}
 		
 		this.sprite = options.scene.physics.add.image(options.unit.sprite.x,options.unit.sprite.y,options.spritesheet)
-		// this.sprite.x = options.unit.sprite.x;
-		// this.sprite.y = options.unit.sprite.y;
+
 		this.sprite.setDepth(10);
 		this.sprite.setOrigin(0.5,0.5);	
 		this.sprite.body.setSize(5, 5); //set the size of the bounding box
