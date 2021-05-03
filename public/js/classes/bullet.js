@@ -34,14 +34,15 @@ const bullet = class {
 		options.scene.physics.velocityFromAngle(Phaser.Math.RadToDeg(options.angle), this.speed, this.sprite.body.velocity);	
 		
 		
-		// options.scene.physics.add.collider(this.sprite, GameScene.unit_collisions,(bullet, unit) => {
-		// 	bullet.parent.kill();
+		GameScene.unit_collisions.forEach((collider, i) => {
+			
+			if(i !== this.side){
+				options.scene.physics.add.collider(this.sprite, GameScene.unit_collisions[i], this.checkHit)
+			}
+			
+			
+		})
 
-		// 	if(bullet.parent.player !== unit.parent.player){
-		// 		unit.parent.wound(bullet.parent.damage);
-		// 	}
-		// })
-		options.scene.physics.add.collider(this.sprite, GameScene.unit_collisions, this.checkHit)
 		
 		
 	}

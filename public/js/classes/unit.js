@@ -23,6 +23,7 @@ const unit = class {
 		this.max_targets = 3;
 		this.targets = [];
 		
+		this.fight_damage = 50;
 		this.in_combat = false;
 		
 		this.sprite_offset = options.sprite_offset;
@@ -56,8 +57,8 @@ const unit = class {
 		
 		this.sprite.setTint(colour)
 		this.sprite.parent = this
-		GameScene.unit_collisions.add(this.sprite)
-		this.sprite.on('pointerup', this.selectHander)			
+		GameScene.unit_collisions[this.side].add(this.sprite)
+		this.sprite.on('pointerup', this.selectHander)
 		
 		
 		this.sprite_ghost = options.scene.add.image(x,y,options.spritesheet);
@@ -69,7 +70,7 @@ const unit = class {
 		//SETUP GRAPHICS THAT CAN BE USED TO DRAW ACTIONS
 		this.graphics = [];
 		for(let i=0;i<2;i++){
-			this.graphics.push(options.scene.add.graphics());				
+			this.graphics.push(options.scene.add.graphics());
 		}
 
 		
@@ -130,7 +131,8 @@ const unit = class {
 				fill_colour: 0x2ECC40,
 				line_alpha: 0.5,
 				circle_alpha: 0.15,
-				fill_alpha: 0.15	
+				fill_alpha: 0.15,
+				width: 5
 			}
 			if(this.cohesion_check === false){
 				colours.fill_colour = 0xFF0000; //0x6666ff				
@@ -254,6 +256,12 @@ const unit = class {
 			// 	skip = true;
 			// }
 			
+			//DON'T ALLOW FIGHTING IF THERE'S NO FIGHT DAMAGE
+			if(this.fight_damage === 0 && GameScene.mode === "fight"){
+				skip = true;
+			}			
+			
+			
 			//IF THE GHOST CLASHES WITH ANOTHER SPRITE OR GHOST, CANCEL THE MOVE
 			if(skip === true || this.path.length === 0){
 				this.resetGhost();
@@ -273,7 +281,8 @@ const unit = class {
 						fill_colour: 0x2ECC40,
 						line_alpha: 0.75,
 						circle_alpha: 0.15,
-						fill_alpha: 0.15	
+						fill_alpha: 0.15,
+						width: 5
 					}
 
 					// console.log(unit.path)
@@ -336,14 +345,18 @@ const unit = class {
 					fill_colour: 0x2ECC40,
 					line_alpha: 0.75,
 					circle_alpha: 0.15,
-					fill_alpha: 0.15	
+					fill_alpha: 0.15,
+					width: 5
 				}
 				unit.cohesion_check = true
 				
 				if(cohesion_check === false){
 					colours.line_colour = 0xFF0000;
 					colours.fill_colour = 0xFF0000; //0x6666ff	
+					colours.width = 2.5;
+					
 					unit.cohesion_check = false;
+
 				}
 				
 				if(unit.id !== this.id){
@@ -373,7 +386,7 @@ const unit = class {
 		
 		if (this.path && this.path.length > 1){
 			
-			this.graphics[0].lineStyle(5, colours.line_colour, colours.line_alpha);	
+			this.graphics[0].lineStyle(colours.width, colours.line_colour, colours.line_alpha);	
 			this.graphics[0].beginPath();
 
 			this.path.forEach((pos, i) => {
@@ -392,7 +405,7 @@ const unit = class {
 	
 		}
 		
-		this.graphics[1].lineStyle(5, colours.line_colour, colours.circle_alpha);
+		this.graphics[1].lineStyle(colours.width, colours.line_colour, colours.circle_alpha);
 		this.graphics[1].fillStyle(colours.fill_colour, colours.fill_alpha);
 		let circle = new Phaser.Geom.Circle(last_pos.x * GameScene.tile_size, last_pos.y * GameScene.tile_size, this.cohesion);
 		this.graphics[1].fillCircleShape(circle);
@@ -678,7 +691,7 @@ const unit = class {
 	
 	fight(attacker, defender){
 		attacker.fights = 1;
-		defender.wound(100);
+		defender.wound(this.fight_damage);
 	}
 	
 }

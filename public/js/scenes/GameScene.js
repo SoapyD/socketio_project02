@@ -44,11 +44,22 @@ var GameScene = new Phaser.Class({
 		gameFunctions.current_scene = this.scene.get('GameScene');
 		
 		GameScene.tile_size = 32;
-		GameScene.online = false;
+		GameScene.online = true;
 		
 		GameScene.rectangle = this.add.rectangle(0, 0, 10, 10, 0x6666ff);
 		GameScene.rectangle.depth = 100;
 		GameScene.rectangle.alpha = 0;
+		
+		
+		GameScene.units = []
+
+		let max_sides = 6;
+		GameScene.unit_collisions = []
+		for(let i=0; i<max_sides; i++){
+			GameScene.unit_collisions.push(GameScene.scene.add.group());
+		}
+
+		
     },
 
 
@@ -308,32 +319,54 @@ GameScene.setupCamera = () => {
 
 GameScene.seeds = () => {
 
-		//ADD IN SOME UNITS
-		GameScene.unit_collisions = GameScene.scene.add.group();
-		GameScene.units = []
-		
-		let options = {
-			scene: GameScene.scene, 
-			spritesheet: "unit",
-			sprite_offset: 0.5,
-			size: 0, 
-			x: GameScene.tile_size * 3, 
-			y: GameScene.tile_size * 2, 
-			side: 0, 
-			player: 0,
-			squad: 0,
-			cohesion: 75,
-			movement: 10,
-			angle: 90
-		}
-		
-		
-		//PLAYER 0
-		GameScene.units.push(new unit(options));
-		
-		options.x = GameScene.tile_size * 5
-		options.y = GameScene.tile_size * 2				
-		GameScene.units.push(new unit(options));
+	let item;	
+	
+
+	// let options = {
+	// 	scene: GameScene.scene, 
+	// 	spritesheet: "unit",
+	// 	sprite_offset: 0.5,
+	// 	size: 0, 
+	// 	x: GameScene.tile_size * 3, 
+	// 	y: GameScene.tile_size * 2, 
+	// 	side: 0, 
+	// 	player: 0,
+	// 	squad: 0,
+	// 	cohesion: 75,
+	// 	movement: 10,
+	// 	angle: 90
+	// }
+
+	let core_data = {
+		scene: GameScene.scene, 
+		x: GameScene.tile_size * 3, 
+		y: GameScene.tile_size * 2, 
+		side: 0, 
+		player: 0,
+		squad: 0,
+		angle: 90		
+	}
+	
+	let options;
+	
+	item = GameScene.unit_types.find((e) => e.name="marine")	
+	options = {}
+	gameFunctions.copyObject(options, item)
+	gameFunctions.copyObject(options, core_data)
+
+	//PLAYER 0
+	GameScene.units.push(new unit(options));
+	
+	
+	options = {}
+	gameFunctions.copyObject(options, item)
+	gameFunctions.copyObject(options, core_data)	
+	options.x = GameScene.tile_size * 5
+	options.y = GameScene.tile_size * 2
+	
+	GameScene.units.push(new unit(options));
+	
+	/*
 
 		options.x = GameScene.tile_size * 4
 		options.y = GameScene.tile_size * 3				
@@ -410,13 +443,14 @@ GameScene.seeds = () => {
 		options.y = GameScene.tile_size * 16
 		GameScene.units.push(new unit(options));
 	
+	*/
 }
 
 GameScene.seeds2 = () => {
 
 		//ADD IN SOME UNITS
-		GameScene.unit_collisions = GameScene.scene.add.group();
-		GameScene.units = []
+		// GameScene.unit_collisions = GameScene.scene.add.group();
+		// GameScene.units = []
 		
 		let options = {
 			scene: GameScene.scene, 
@@ -437,12 +471,29 @@ GameScene.seeds2 = () => {
 		//PLAYER 0
 		GameScene.units.push(new unit(options));
 		
-		options.player = 1
-		options.angle = -90
+		// options.player = 1
+		// options.angle = -90
 		options.x = GameScene.tile_size * 5
-		options.y = GameScene.tile_size * 2				
+		options.y = GameScene.tile_size * 2
 		GameScene.units.push(new unit(options));
 	
+		options.player = 1;
+		options.side = 1;
+		options.x = GameScene.tile_size * 7
+		options.y = GameScene.tile_size * 2
+		GameScene.units.push(new unit(options));
+	
+		options.player = 2;
+		options.side = 2;
+		options.x = GameScene.tile_size * 5
+		options.y = GameScene.tile_size * 4
+		GameScene.units.push(new unit(options));	
+
+		options.player = 3;
+		options.side = 3;
+		options.x = GameScene.tile_size * 7
+		options.y = GameScene.tile_size * 4
+		GameScene.units.push(new unit(options));	
 }
 
 

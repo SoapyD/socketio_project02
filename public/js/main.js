@@ -8,7 +8,7 @@ gameFunctions.config = {
     type: Phaser.AUTO,
     // width: gameFunctions.config.cardSize * gameFunctions.config.tableWidth, //800,
 	// height: gameFunctions.config.cardSize * gameFunctions.config.tableHeight, //600,
-    width: 840,
+    width: 1000,
     height: 640,
     physics: {
         default: 'arcade',
