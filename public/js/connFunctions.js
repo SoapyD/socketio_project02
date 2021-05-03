@@ -126,7 +126,7 @@ connFunctions.runUnitFunction = function(data) {
 
 availableFunctions = {
     connFunctions: connFunctions,
-	// GameScene: GameScene
+	GameScene: GameScene
 }
 
 connFunctions.checkMessages(socket)

@@ -26,6 +26,7 @@ gameFunctions.createButton = (game, x, y, label, clickAction, callbackParams, ar
     return btn
 }
 
+
 gameFunctions.buttonPress = (sprite, callback, callbackParams) => {
 	sprite.on('pointerover', function (event) {
 		this.setFrame(1);

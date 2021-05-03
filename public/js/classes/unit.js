@@ -61,7 +61,7 @@ const unit = class {
 		
 		
 		this.sprite_ghost = options.scene.add.image(x,y,options.spritesheet);
-		this.sprite_ghost.alpha = 0;
+		this.sprite_ghost.alpha = 0.5;
 		this.sprite_ghost.setTint(colour)
 		this.sprite_ghost.angle = options.angle;
 
@@ -78,8 +78,11 @@ const unit = class {
 	}
 
 	kill(){
-		this.sprite.disableBody(true, true);
-		// this.sprite_base.destroy(true);		
+		this.sprite.destroy();
+		this.sprite_ghost.destroy();
+		// this.sprite.disableBody(true, true);
+		// this.sprite_ghost.destroy(true);
+		// this.sprite_base.destroy(true);
 	}	
 	
 	wound(damage){
@@ -97,11 +100,9 @@ const unit = class {
 			if (this.parent.player === GameScene.current_player){
 				//TURN OLD SELECTED PLAYER MARKER, WHITE
 				if(GameScene.selected_unit){
-					// GameScene.selected_unit.sprite_base.setTint(0xffffff)
+					GameScene.selected_unit.resetColours();
 				}		
 
-				//TURN ENW SELECTED MARKER, RED
-				// this.parent.sprite_base.setTint(0xff0000);
 
 				if(GameScene.selected_unit){
 					GameScene.selected_unit.unselectHandler();
@@ -133,6 +134,23 @@ const unit = class {
 		// 	fill_alpha: 0.15				
 		// }
 		// this.drawPath(this.path, colours)		
+		
+	}
+	
+	resetColours(){
+		if(this.path){
+			let colours = {
+				line_colour: 0x808080,
+				fill_colour: 0x2ECC40,
+				line_alpha: 0.5,
+				circle_alpha: 0.15,
+				fill_alpha: 0.15	
+			}
+			if(this.cohesion_check === false){
+				colours.fill_colour = 0xFF0000; //0x6666ff				
+			}
+			this.drawPath(colours)
+		}
 		
 	}
 	
@@ -173,8 +191,10 @@ const unit = class {
 	}
 	
 	findPath(scene, pointer) {
-		var x = scene.camera.scrollX + pointer.x;
-		var y = scene.camera.scrollY + pointer.y;
+		// var x = scene.camera.scrollX + pointer.x;
+		// var y = scene.camera.scrollY + pointer.y;
+		var x = pointer.x;
+		var y = pointer.y;		
 		var toX = Math.floor(x/GameScene.tile_size);
 		var toY = Math.floor(y/GameScene.tile_size);	
 		
@@ -339,6 +359,11 @@ const unit = class {
 					colours.fill_colour = 0xFF0000; //0x6666ff	
 					unit.cohesion_check = false;
 				}
+				
+				if(unit.id !== this.id){
+					colours.line_colour = 0x808080;
+					colours.line_alpha = 0.5;
+				}
 
 				// console.log(unit.path)
 				unit.drawPath(colours)							
@@ -358,7 +383,7 @@ const unit = class {
 		
 		//RESET THE DRAW GRAPHICS
 		this.graphics[0].clear();
-		this.graphics[1].clear();		
+		this.graphics[1].clear();
 		
 		if (this.path && this.path.length > 1){
 			
@@ -542,20 +567,27 @@ const unit = class {
 			//RETURN THE GRID CELL POSITION SO WE CAN CHECK IT'S EMPTY
 			let grid_cell = GameScene.grid[grid_y][grid_x]
 			dest.x = cell.x
-			dest.y = cell.y			
+			dest.y = cell.y
 			
-			if (grid_cell !== 1){
+			if (!GameScene.pathfinder.acceptable_tiles.includes(grid_cell)){
 				obj_check = true;
 			}
 		})		
 		
 		//ONLY ADD SHOT IF THE TARGETS ARRAY IS UNDER MAX SHOTS
-		if(obj_check === false && this.targets.length < this.max_targets){
+		if(dest.x && dest.y && obj_check === false && this.targets.length <= this.max_targets){
+			
 			this.targets.push(dest);
 			this.drawTarget();
 		}
 		
 	}
+
+	removeTarget() {
+		this.targets.pop();
+		this.drawTarget()
+	}
+	
 	
 	//CALLED AS PART OF CALLBACK IN "FINDPATH"
 	drawTarget() {
@@ -591,6 +623,7 @@ const unit = class {
 	shoot() {
 		
 		if(this.targets){
+			// console.log(this.targets)
 			this.targets.forEach((target) => {
 
 				let angle = Phaser.Math.Angle.BetweenPoints(this.sprite, target);
@@ -602,7 +635,8 @@ const unit = class {
 						scene: GameScene.scene,
 						spritesheet: "bullet",
 						angle: angle,
-						unit: this
+						unit: this,
+						target: target
 					}
 
 					GameScene.bullets.push(new bullet(options))

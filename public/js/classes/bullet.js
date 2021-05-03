@@ -16,6 +16,8 @@ const bullet = class {
 			x: options.unit.sprite.x,
 			y: options.unit.sprite.y
 		}
+		this.angle = options.angle;
+		this.target = options.target;
 		
 		this.sprite = options.scene.physics.add.image(options.unit.sprite.x,options.unit.sprite.y,options.spritesheet)
 
@@ -44,7 +46,8 @@ const bullet = class {
 	}
 
 	checkHit(bullet, unit) {
-		console.log(bullet)
+		
+		//run kill function on bullet
 		bullet.parent.kill();
 		// unit.parent.wound(bullet.parent.damage);
 
@@ -57,7 +60,8 @@ const bullet = class {
 	
 	kill(){
 		this.unit.graphics[0].clear()
-		this.sprite.disableBody(true, true);
+		this.sprite.destroy();
+		// this.sprite.disableBody(true, true);
 	}
 	
 	checkRange(bullet){

@@ -2,12 +2,14 @@
 
 
 const pathfinder = class {
-	constructor(grid) {	
+	constructor(grid, acceptable_tiles) {	
 		this.grid = grid,
 		this.width = grid[0].length,
 		this.height = grid.length,
 		this.obj_size = 0;        
         
+		this.acceptable_tiles = acceptable_tiles;		
+		
 		// this.path = [],
 		this.max_positions = 100,
 		
@@ -259,7 +261,7 @@ const pathfinder = class {
 							&& pos.y >= 0 && pos.y < this.height){					
 							let check_cell = this.grid[pos.y][pos.x]
 
-							if(check_cell !== 1){
+							if(!this.acceptable_tiles.includes(check_cell)){
 								// console.log("node skip")
 								skip = true;
 								break;
