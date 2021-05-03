@@ -5,6 +5,7 @@ const bullet = class {
 	
 		// this.x = x;
 		// this.y = y;
+		this.delete = false;
 		this.unit = options.unit;
 		this.side = options.unit.side;
 		this.player = options.unit.player;
@@ -61,6 +62,7 @@ const bullet = class {
 	kill(){
 		this.unit.graphics[0].clear()
 		this.sprite.destroy();
+		this.delete = true;
 		// this.sprite.disableBody(true, true);
 	}
 	
@@ -76,9 +78,13 @@ const bullet = class {
 		let gridY = Math.floor(this.sprite.y/GameScene.tile_size);	
 		
 		let cell = GameScene.grid[gridY][gridX]
-		if(cell !== 1){
-			this.sprite.disableBody(true, true);
-			GameScene.bullets = [];
+		
+
+		if(!GameScene.pathfinder.acceptable_tiles.includes(cell)){
+			// this.sprite.disableBody(true, true);
+			// GameScene.bullets = [];
+			
+			this.kill();
 		}
 	}
 }

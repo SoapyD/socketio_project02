@@ -64,7 +64,8 @@ var GameScene = new Phaser.Class({
 		
 		GameScene.setupMap();
 		GameScene.setupCamera();
-		GameScene.seeds();			
+		GameScene.seeds();
+		// GameScene.seeds2();
 		
 		// GameScene.text_array = []
 		// GameScene.grid.forEach((row, y) => {
@@ -138,12 +139,17 @@ var GameScene = new Phaser.Class({
 		GameScene.right_click = false;		
 		
 		//CHECK BULLET DEATH
+		let bullets = [];
 		if(GameScene.bullets){
 			GameScene.bullets.forEach((bullet) => {
 				bullet.checkRange();
+				if(bullet.delete === false){
+					bullets.push(bullet)
+				}
 			})
-		
 		}
+		
+		GameScene.bullets = bullets;
     }
 });
 
@@ -233,8 +239,9 @@ GameScene.setupMap = () => {
 	let properties = tileset.tileProperties;
 	let acceptable_tiles = [];
 
-	// // We need to list all the tile IDs that can be walked on. Let's iterate over all of them
-	// // and see what properties have been entered in Tiled.
+	/*
+	// We need to list all the tile IDs that can be walked on. Let's iterate over all of them
+	// and see what properties have been entered in Tiled.
 	for(let i = tileset.firstgid-1; i < tiles.total; i++){ // firstgid and total are fields from Tiled that indicate the range of IDs that the tiles can take in that tileset
 		if(!properties.hasOwnProperty(i)) {
 			// If there is no property indicated at all, it means it's a walkable tile
@@ -242,9 +249,9 @@ GameScene.setupMap = () => {
 			continue;
 		}
 		if(!properties[i].collide) acceptable_tiles.push(i+1);
-		// if(properties[i].cost) GameScene.finder.setTileCost(i+1, properties[i].cost); // If there is a cost attached to the tile, let's register it
 	}
-
+	*/
+	acceptable_tiles.push(1);
 	GameScene.pathfinder = new pathfinder(grid, acceptable_tiles);			
 }
 
@@ -405,5 +412,37 @@ GameScene.seeds = () => {
 	
 }
 
+GameScene.seeds2 = () => {
+
+		//ADD IN SOME UNITS
+		GameScene.unit_collisions = GameScene.scene.add.group();
+		GameScene.units = []
+		
+		let options = {
+			scene: GameScene.scene, 
+			spritesheet: "unit",
+			sprite_offset: 0.5,
+			size: 0, 
+			x: GameScene.tile_size * 3, 
+			y: GameScene.tile_size * 2, 
+			side: 0, 
+			player: 0,
+			squad: 0,
+			cohesion: 75,
+			movement: 10,
+			angle: 90
+		}
+		
+		
+		//PLAYER 0
+		GameScene.units.push(new unit(options));
+		
+		options.player = 1
+		options.angle = -90
+		options.x = GameScene.tile_size * 5
+		options.y = GameScene.tile_size * 2				
+		GameScene.units.push(new unit(options));
+	
+}
 
 

@@ -99,12 +99,9 @@ const unit = class {
 		{
 			if (this.parent.player === GameScene.current_player){
 				//TURN OLD SELECTED PLAYER MARKER, WHITE
-				if(GameScene.selected_unit){
-					GameScene.selected_unit.resetColours();
-				}		
-
 
 				if(GameScene.selected_unit){
+					GameScene.selected_unit.resetColours();					
 					GameScene.selected_unit.unselectHandler();
 				}
 				GameScene.selected_unit = this.parent;
@@ -116,29 +113,18 @@ const unit = class {
 				}
 				this.parent.resetGhost();
 				
-				GameScene.left_click = false;						
+				GameScene.left_click = false;
 			}
 
 		}
 	}
 	
 	unselectHandler() {
-		// this.sprite_base.setTint(0xffffff)
 		GameScene.selected_unit = undefined;
-		
-		
-		// let colours = {
-		// 	line_colour: 0xCCCCCC,
-		// 	fill_colour: 0x999999,
-		// 	line_alpha: 0.3,
-		// 	fill_alpha: 0.15				
-		// }
-		// this.drawPath(this.path, colours)		
-		
 	}
 	
 	resetColours(){
-		if(this.path){
+		if(this.path.length > 0){
 			let colours = {
 				line_colour: 0x808080,
 				fill_colour: 0x2ECC40,
@@ -261,12 +247,12 @@ const unit = class {
 			// if(this.in_combat === true){
 			// 	skip = true;
 			// }
-			if(this.moves !== 0 && GameScene.mode === "move"){
-				skip = true;
-			}
-			if(this.fights !== 0 && GameScene.mode === "fight"){
-				skip = true;
-			}
+			// if(this.moves !== 0 && GameScene.mode === "move"){
+			// 	skip = true;
+			// }
+			// if(this.fights !== 0 && GameScene.mode === "fight"){
+			// 	skip = true;
+			// }
 			
 			//IF THE GHOST CLASHES WITH ANOTHER SPRITE OR GHOST, CANCEL THE MOVE
 			if(skip === true || this.path.length === 0){

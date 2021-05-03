@@ -242,7 +242,7 @@ const pathfinder = class {
 	checkCell(node){
 
 		let skip = false;
-		if(node.cell !== 1){
+		if(!this.acceptable_tiles.includes(node.cell)){
 			skip = true;
 		}
 
@@ -288,7 +288,7 @@ const pathfinder = class {
 							&& pos.y >= 0 && pos.y < this.height){					
 							let check_cell = this.grid[pos.y][pos.x]
 
-							if(check_cell !== 1){
+							if(!this.acceptable_tiles.includes(check_cell)){
 								// console.log("node skip")
 								skip = true;
 								break;
