@@ -15,15 +15,18 @@ const unit = class {
 		this.shots = 0;
 		this.fights = 0;
 		
-		this.health = 100;		
+		this.health = options.health;		
+		this.armour = options.armour;
+		
 		this.cohesion_check = true;		
 		this.movement = options.movement;
-		this.shoot_range = 200;
-		this.shoot_damage = 50;
-		this.max_targets = 3;
+		
+		this.shoot_range = options.shoot_range;
+		this.shoot_damage = options.shoot_damage;
+		this.max_targets = options.max_targets;
 		this.targets = [];
 		
-		this.fight_damage = 50;
+		this.fight_damage = options.fight_damage;
 		this.in_combat = false;
 		
 		this.sprite_offset = options.sprite_offset;
@@ -574,8 +577,7 @@ const unit = class {
 		})		
 		
 		//ONLY ADD SHOT IF THE TARGETS ARRAY IS UNDER MAX SHOTS
-		if(dest.x && dest.y && obj_check === false && this.targets.length <= this.max_targets){
-			
+		if(dest.x && dest.y && obj_check === false && this.targets.length < this.max_targets){
 			this.targets.push(dest);
 			this.drawTarget();
 		}

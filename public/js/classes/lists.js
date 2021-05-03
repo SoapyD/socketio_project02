@@ -10,19 +10,36 @@ const unit_type = class {
 		this.health = options.health;		
 		this.movement = options.movement;
 	}
-	
-	// getData() {
-	// 	let return_info = {}
-	
-	// 	for (const element in this){
-	// 		return_info[element] = this[element];
-	// 	}
-		
-	// 	return return_info;
-	// }
 }
 
+const projectile_weapon_type = class {
+	constructor(options) {
+		this.name = options.name;
+		this.shoot_range = options.shoot_range;
+		this.shoot_damage = options.shoot_damage;
+		this.max_targets = options.max_targets;
+	}
+}
+
+const combat_weapon_type = class {
+	constructor(options) {
+		this.name = options.name;
+		this.fight_damage = options.fight_damage;
+	}
+}
+
+const armour_type = class {
+	constructor(options) {
+		this.name = options.name;
+		this.armour = options.armour;
+	}
+}
+
+
 const unit_types = []
+const projectile_weapon_types = []
+const combat_weapon_types = []
+const armour_types = []
 let options;
 
 options = {
@@ -49,7 +66,6 @@ options = {
 
 unit_types.push(new unit_type(options))
 
-
 options = {
 	name: 'tank',
 	spritesheet: 'tank',
@@ -62,14 +78,42 @@ options = {
 
 unit_types.push(new unit_type(options))
 
+//PROJECTILE WEAPONS
+options = {
+	name: "bolter",
+	shoot_range: 200,
+	shoot_damage: 50,
+	max_targets: 2
+}
+
+projectile_weapon_types.push(new projectile_weapon_type(options))
+
+//COMBAT WEAPONS
+options = {
+	name: "none",
+	fight_damage: 0,
+}
+
+combat_weapon_types.push(new combat_weapon_type(options))
+
+options = {
+	name: "sword",
+	fight_damage: 50,
+}
+
+combat_weapon_types.push(new combat_weapon_type(options))
+
+options = {
+	name: "basic",
+	armour: 50,
+}
+
+armour_types.push(new armour_type(options))
 
 
 GameScene.unit_types = unit_types;
-
-// let unit_info = GameScene.unit_types.find((e) => e.name="marine")
-// let item = unit_info.getData();
-// item.name = "test"
-// console.log(GameScene.unit_types[0])
-// console.log(item)
+GameScene.projectile_weapon_types = projectile_weapon_types;
+GameScene.combat_weapon_types = combat_weapon_types;
+GameScene.armour_types = armour_types;
 
 
