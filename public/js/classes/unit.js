@@ -556,15 +556,16 @@ const unit = class {
 				sprite.destroy();
 			})
 		}		
-		
+
+		//CHECK THE BULLET PATH TO MAKE SURE THERE'S NO OBJECTS BLOCKING SIGHT
 		let dest = {}
-		let obj_check = false;
+		let skip = false;
 		pos.cells.forEach((cell) => {
 			let grid_x = Math.floor(cell.x / GameScene.tile_size);
 			let grid_y = Math.floor(cell.y / GameScene.tile_size);					
 			
-			// this.temp_sprites.push(scene.physics.add.image(cell.x,cell.y,"marker").setDepth(2))	
-			// this.temp_sprites.push(scene.physics.add.image(grid_x * GameScene.tile_size,grid_y * GameScene.tile_size,"marker").setTint(0xff0000).setDepth(3));
+			// this.temp_sprites.push(scene.physics.add.image(cell.x,cell.y,"marker").setDepth(0))	
+			// this.temp_sprites.push(scene.physics.add.image(grid_x * GameScene.tile_size,grid_y * GameScene.tile_size,"marker").setTint(0xff0000).setDepth(0.5));
 			
 			//RETURN THE GRID CELL POSITION SO WE CAN CHECK IT'S EMPTY
 			let grid_cell = GameScene.grid[grid_y][grid_x]
@@ -572,12 +573,18 @@ const unit = class {
 			dest.y = cell.y
 			
 			if (!GameScene.pathfinder.acceptable_tiles.includes(grid_cell)){
-				obj_check = true;
+				skip = true;
 			}
 		})		
 		
+		//SKIP IF THE POINTER IS OVER THE SHOOTING UNITS
+		if (this.sprite.getBounds().contains(pointer.x, pointer.y)) {
+			skip = true;
+		}		
+		
+		
 		//ONLY ADD SHOT IF THE TARGETS ARRAY IS UNDER MAX SHOTS
-		if(dest.x && dest.y && obj_check === false && this.targets.length < this.max_targets){
+		if(dest.x && dest.y && skip === false && this.targets.length < this.max_targets){
 			this.targets.push(dest);
 			this.drawTarget();
 		}
