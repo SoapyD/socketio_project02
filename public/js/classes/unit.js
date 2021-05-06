@@ -11,11 +11,14 @@ const unit = class {
 		
 		this.path = [];
 
+
 		this.moves = 0;
 		this.shots = 0;
 		this.fights = 0;
 		
-		this.health = options.health;		
+		this.health = options.health;
+		this.max_health = options.health;
+		
 		this.armour = options.armour;
 		
 		this.cohesion_check = true;		
@@ -71,19 +74,61 @@ const unit = class {
 
 		
 		//SETUP GRAPHICS THAT CAN BE USED TO DRAW ACTIONS
+		this.bar = options.scene.add.graphics();
+
+		this.group = options.scene.add.group();		
+		this.group.add(this.sprite)
+		this.group.add(this.bar)
+		
 		this.graphics = [];
 		for(let i=0;i<2;i++){
 			this.graphics.push(options.scene.add.graphics());
 		}
 
+		this.draw_health();
 		
 		// this.drawPath = this.drawPath.bind(this);
 		this.selectHander = this.selectHander.bind(this);
 	}
 
+    draw_health()
+    {
+        this.bar.clear();
+		let health_width = 32;
+		let edge = 2;
+		let pos = {
+			x: this.sprite.x - (health_width / 2) - edge,
+			y: this.sprite.y
+		}
+		
+        //  BG
+        this.bar.fillStyle(0x000000);
+        this.bar.fillRect(pos.x, pos.y, health_width + (edge * 2), 16);
+
+        //  Health
+
+        this.bar.fillStyle(0xffffff);
+        this.bar.fillRect(pos.x + edge, pos.y + edge, health_width, 12);
+
+        if (this.health < 30)
+        {
+            this.bar.fillStyle(0xff0000);
+        }
+        else
+        {
+            this.bar.fillStyle(0x00ff00);
+        }
+
+		
+        var d = Math.floor((this.health / 100) * health_width);
+        this.bar.fillRect(pos.x + edge, pos.y + edge, d, 12);
+    }	
+	
+	
 	kill(){
 		this.sprite.destroy();
 		this.sprite_ghost.destroy();
+		this.bar.destroy();
 		// this.sprite.disableBody(true, true);
 		// this.sprite_ghost.destroy(true);
 		// this.sprite_base.destroy(true);
@@ -91,6 +136,7 @@ const unit = class {
 	
 	wound(damage){
 		this.health -= damage;
+		this.draw_health()
 		if(this.health <= 0){
 			this.kill();
 		}
@@ -264,7 +310,6 @@ const unit = class {
 				skip = true;
 			}			
 			
-			
 			//IF THE GHOST CLASHES WITH ANOTHER SPRITE OR GHOST, CANCEL THE MOVE
 			if(skip === true || this.path.length === 0){
 				this.resetGhost();
@@ -338,6 +383,7 @@ const unit = class {
 						}
 					}
 				})
+
 				if(squad_count === 0){
 					cohesion_check = true;
 				}
@@ -452,11 +498,12 @@ const unit = class {
 				let angle = this.checkAngle(pos, next_pos)				
 				
 				let tween_data = {
-					targets: [this.sprite, this.sprite_base],
-					// targets: [this.sprite],
+					targets: [this.sprite],
+					// targets: this.group.getChildren(),
 					x: {value: ex*GameScene.map.tileWidth, duration: 200},
 					y: {value: ey*GameScene.map.tileHeight, duration: 200},
 					angle: {value: angle, duration: 0},
+					delay: 0,
 					onComplete: function ()
 					{
 						
@@ -471,9 +518,11 @@ const unit = class {
 								switch(endFunction){
 									case "move":
 										this.moves = 1;
+										this.combat_check = this.checkCombat();
+										 
 										break;
 									case "checkCombat":
-										this.checkCombat(this.fight);
+										this.checkCombat("fight");
 										break;
 									default:
 								}
@@ -493,7 +542,8 @@ const unit = class {
 
 			GameScene.scene.tweens.timeline({
 				tweens: tweens
-			});					
+			});
+			
 			
 			GameScene.selected_unit = undefined;
 		}
@@ -582,6 +632,14 @@ const unit = class {
 			skip = true;
 		}		
 		
+		//SKIP IF IN COMBAT
+		if(this.in_combat === true){
+			//DOUBLE CHECK THE UNIT IS STILL IN COMBAT
+			this.combat_check = this.checkCombat();
+			if(this.this.in_combat === true){
+				skip = true;
+			}
+		}
 		
 		//ONLY ADD SHOT IF THE TARGETS ARRAY IS UNDER MAX SHOTS
 		if(dest.x && dest.y && skip === false && this.targets.length < this.max_targets){
@@ -659,7 +717,6 @@ const unit = class {
 	}
 	
 	checkCombat(endFunction) {
-
 		
 		let in_combat_range = false
 		GameScene.units.forEach((unit) => {
@@ -674,17 +731,19 @@ const unit = class {
 				}
 
 				if(clash === true){
-					// this.in_combat = true;
-					// unit.in_combat = true;
 					
 					in_combat_range = true;
 					
 					// if(callBack){
 					// 	callBack(this, unit)
 					// }
+
 					if(endFunction){
 						switch(endFunction){
 							case "fight":
+								//SET BOTH UNITS AS FIGHTING EACH OTHER
+								this.in_combat = true;
+								unit.in_combat = true;
 								this.fight(this,unit);
 								break;
 							default:

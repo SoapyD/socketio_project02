@@ -75,8 +75,8 @@ var GameScene = new Phaser.Class({
 		
 		GameScene.setupMap();
 		GameScene.setupCamera();
-		GameScene.seeds();
-		// GameScene.seeds2();
+		// GameScene.seeds();
+		GameScene.seeds2();
 		
 		// GameScene.text_array = []
 		// GameScene.grid.forEach((row, y) => {
@@ -580,6 +580,26 @@ GameScene.seeds2 = () => {
 	gameFunctions.copyObject(options, core_data)
 
 	GameScene.units.push(new unit(options));
+	
+	
+	options = {}
+	core_data.player = 1;
+	core_data.side = 1;	
+	core_data.x =GameScene.tile_size * 3;
+	core_data.y =GameScene.tile_size * 5;	
+	unit_info = GameScene.unit_types.find((e) => e.name==="marine")	
+	gameFunctions.copyObject(options, unit_info)
+	projectile_weapon_info = GameScene.projectile_weapon_types.find((e) => e.name==="bolter")	
+	gameFunctions.copyObject(options, projectile_weapon_info)	
+	combat_weapon_info = GameScene.combat_weapon_types.find((e) => e.name==="sword")	
+	gameFunctions.copyObject(options, combat_weapon_info)	
+	armour_info = GameScene.armour_types.find((e) => e.name==="basic")	
+	gameFunctions.copyObject(options, armour_info)		
+	
+	gameFunctions.copyObject(options, core_data)
+
+	GameScene.units.push(new unit(options));	
+	
 }
 
 
