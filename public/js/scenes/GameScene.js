@@ -60,7 +60,8 @@ var GameScene = new Phaser.Class({
 		this.load.image('bullet', '../../img/bullet.png');	
 		this.load.image('marker', '../../img/marker.png');			
 		
-		
+        this.load.spritesheet('explosion', '../../img/explosion7.png', { frameWidth: 256, frameHeight: 256 });
+        this.load.spritesheet('punch', '../../img/explosion23.png', { frameWidth: 256, frameHeight: 256 });		
     },
 
 
@@ -88,6 +89,8 @@ var GameScene = new Phaser.Class({
 		// 	})
 		// })
     	// text = this.add.text(10, 10, '', { fill: '#00ff00' }).setDepth(1);
+		
+
 		
     },
 

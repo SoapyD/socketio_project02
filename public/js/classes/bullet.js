@@ -35,15 +35,20 @@ const bullet = class {
 		
 		
 		GameScene.unit_collisions.forEach((collider, i) => {
-			
 			if(i !== this.side){
 				options.scene.physics.add.collider(this.sprite, GameScene.unit_collisions[i], this.checkHit)
 			}
-			
-			
 		})
 
+		//THIS EXPLOSION
+		options.scene.anims.create({
+		key: 'boom',
+		frames: options.scene.anims.generateFrameNumbers('explosion'),
+		frameRate: 30
+		})
 		
+		this.sprite_explosion = options.scene.add.sprite(this.sprite.x, this.sprite.y, 'explosion') //.setScale(4);
+		this.sprite_explosion.setScale(0.75).setDepth(2).setAlpha(0.75);
 		
 	}
 
@@ -61,9 +66,14 @@ const bullet = class {
 	}
 	
 	kill(){
-		this.unit.graphics[0].clear()
+		// this.unit.graphics[0].clear()
+		this.sprite_explosion.x = this.sprite.x;
+		this.sprite_explosion.y = this.sprite.y;		
+		
 		this.sprite.destroy();
 		this.delete = true;
+
+		this.sprite_explosion.anims.play('boom');
 		// this.sprite.disableBody(true, true);
 	}
 	

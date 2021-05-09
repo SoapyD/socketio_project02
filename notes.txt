@@ -8,7 +8,7 @@
 -move the ghost when online, otherwise it doesn't register
 -create function automatically lay units out around a certain point
 
-
+-Have graphics and paths cleared if another action is selected. Also reset ghosts
 
 
 

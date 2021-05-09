@@ -2,6 +2,8 @@
 const unit = class {
 	constructor(options) {
 		
+		// super(options);
+		
 		this.id = GameScene.units.length;
 		this.side = options.side; //this can be used if each side has multiple players
 		this.player = options.player; //this is the specific owner of the unit
@@ -74,27 +76,104 @@ const unit = class {
 		this.sprite_ghost.angle = options.angle;
 
 		
-		//SETUP GRAPHICS THAT CAN BE USED TO DRAW ACTIONS
-		this.bar = options.scene.add.graphics();
-
-		this.group = options.scene.add.group();		
-		this.group.add(this.sprite)
-		this.group.add(this.bar)
+		//THIS EXPLOSION
+		options.scene.anims.create({
+		key: 'hit',
+		frames: options.scene.anims.generateFrameNumbers('punch'),
+		frameRate: 30
+		})		
+		this.sprite_hit = options.scene.add.sprite(this.sprite.x, this.sprite.y, 'punch') //.setScale(4);
+		this.sprite_hit.setScale(0.75).setDepth(2).setAlpha(0.75);		
 		
-		this.graphics = [];
-		for(let i=0;i<2;i++){
-			this.graphics.push(options.scene.add.graphics());
-		}
+		
+		//SETUP GRAPHICS THAT CAN BE USED TO DRAW ACTIONS
+		this.bar_graphic = options.scene.add.graphics();
+		this.path_graphic = options.scene.add.graphics();
+		this.cohesion_graphic = options.scene.add.graphics();		
+		
+		// this.group = options.scene.add.group();		
+		// this.group.add(this.sprite)
+		// this.group.add(this.bar_graphic)
+		
+		// this.graphics = [];
+		// for(let i=0;i<2;i++){
+		// 	this.graphics.push(options.scene.add.graphics());
+		// }
 
 		this.draw_health();
+		
+		
+		
+		// const mummyAnimation = options.scene.anims.create({
+		// key: 'walk',
+		// frames: options.scene.anims.generateFrameNumbers('explosion'),
+		// frameRate: 30
+		// });
+		// GameScene.sprite = options.scene.add.sprite(100, 100, 'explosion').setScale(1);
+        
+		// GameScene.scene.anims.play({ key: 'walk', repeat: 7 });		
+		
 		
 		// this.drawPath = this.drawPath.bind(this);
 		this.selectHander = this.selectHander.bind(this);
 	}
 
+	resetColours(){
+		if(this.path.length > 0){
+			let colours = {
+				line_colour: 0x808080,
+				fill_colour: 0x2ECC40,
+				line_alpha: 0.5,
+				circle_alpha: 0.15,
+				fill_alpha: 0.15,
+				width: 5
+			}
+			if(this.cohesion_check === false){
+				colours.fill_colour = 0xFF0000; //0x6666ff				
+			}
+			this.drawPath(colours)
+		}
+		
+	}
+	
+	resetActions() {
+		this.path = [];
+		this.targets = [];		
+		
+		this.resetGhost();
+		this.path_graphic.clear();
+		this.cohesion_graphic.clear();
+	}
+	
+	resetGhost() {
+		this.sprite_ghost.x = this.sprite.x;
+		this.sprite_ghost.y = this.sprite.y;
+		this.sprite_ghost.angle = this.sprite.angle;
+		this.sprite_ghost.alpha = 0.5;		
+	}	
+	
+	kill(){
+		this.sprite.destroy();
+		this.sprite_ghost.destroy();
+		this.bar_graphic.destroy();
+		// this.sprite.disableBody(true, true);
+		// this.sprite_ghost.destroy(true);
+		// this.sprite_base.destroy(true);
+	}	
+	
+	wound(damage){
+		this.health -= damage;
+		this.draw_health()
+		if(this.health <= 0){
+			this.kill();
+		}
+	}	
+	
+	
+	
     draw_health()
     {
-        this.bar.clear();
+        this.bar_graphic.clear();
 		let width = this.sprite.width;
 		let height = this.sprite.height;
 		
@@ -108,26 +187,26 @@ const unit = class {
 		
 		/*
         //  BG
-        this.bar.fillStyle(0x000000);
-        this.bar.fillRect(pos.x, pos.y, width + (edge * 2), 16);
+        this.bar_graphic.fillStyle(0x000000);
+        this.bar_graphic.fillRect(pos.x, pos.y, width + (edge * 2), 16);
 
         //  Health
 
-        this.bar.fillStyle(0xffffff);
-        this.bar.fillRect(pos.x + edge, pos.y + edge, width, 12);
+        this.bar_graphic.fillStyle(0xffffff);
+        this.bar_graphic.fillRect(pos.x + edge, pos.y + edge, width, 12);
 
         if (this.health < 30)
         {
-            this.bar.fillStyle(0xff0000);
+            this.bar_graphic.fillStyle(0xff0000);
         }
         else
         {
-            this.bar.fillStyle(0x00ff00);
+            this.bar_graphic.fillStyle(0x00ff00);
         }
 
 		
         var d = Math.floor((this.health / 100) * width);
-        this.bar.fillRect(pos.x + edge, pos.y + edge, d, 12);
+        this.bar_graphic.fillRect(pos.x + edge, pos.y + edge, d, 12);
 		*/
 		///////////////////////////////////////////////////////////////		
 		
@@ -138,7 +217,7 @@ const unit = class {
 		}		
 		
 		//  Without this the arc will appear closed when stroked
-		this.bar.beginPath();
+		this.bar_graphic.beginPath();
 
 		
 		let angle = (360 / this.max_health) * this.health;
@@ -152,28 +231,11 @@ const unit = class {
 		
 		// arc (x, y, radius, startAngle, endAngle, anticlockwise)
 		
-		this.bar.lineStyle(4, fill_colour, 0.5);
-		this.bar.arc(pos.x, pos.y, width / 2, Phaser.Math.DegToRad(angle), Phaser.Math.DegToRad(0), true) //.setStartAngle(90);
-		this.bar.strokePath();
+		this.bar_graphic.lineStyle(7, fill_colour, 0.5);
+		this.bar_graphic.arc(pos.x, pos.y, width / 2, Phaser.Math.DegToRad(angle), Phaser.Math.DegToRad(0), true) //.setStartAngle(90);
+		this.bar_graphic.strokePath();
     }
 	
-	
-	kill(){
-		this.sprite.destroy();
-		this.sprite_ghost.destroy();
-		this.bar.destroy();
-		// this.sprite.disableBody(true, true);
-		// this.sprite_ghost.destroy(true);
-		// this.sprite_base.destroy(true);
-	}	
-	
-	wound(damage){
-		this.health -= damage;
-		this.draw_health()
-		if(this.health <= 0){
-			this.kill();
-		}
-	}
 	
 	selectHander(pointer) {
 
@@ -205,31 +267,6 @@ const unit = class {
 	unselectHandler() {
 		GameScene.selected_unit = undefined;
 	}
-	
-	resetColours(){
-		if(this.path.length > 0){
-			let colours = {
-				line_colour: 0x808080,
-				fill_colour: 0x2ECC40,
-				line_alpha: 0.5,
-				circle_alpha: 0.15,
-				fill_alpha: 0.15,
-				width: 5
-			}
-			if(this.cohesion_check === false){
-				colours.fill_colour = 0xFF0000; //0x6666ff				
-			}
-			this.drawPath(colours)
-		}
-		
-	}
-	
-	resetGhost() {
-		this.sprite_ghost.x = this.sprite.x;
-		this.sprite_ghost.y = this.sprite.y;
-		this.sprite_ghost.angle = this.sprite.angle;
-		this.sprite_ghost.alpha = 0.5;		
-	}		
 	
 	// updateGrid(x, y, value){
 		/*
@@ -347,7 +384,7 @@ const unit = class {
 			if(skip === true || this.path.length === 0){
 				this.resetGhost();
 				this.path = [];
-				this.graphics[0].clear();
+				this.path_graphic.clear();
 			}
 			else{
 			
@@ -463,36 +500,36 @@ const unit = class {
 		}
 		
 		//RESET THE DRAW GRAPHICS
-		this.graphics[0].clear();
-		this.graphics[1].clear();
+		this.path_graphic.clear();
+		this.cohesion_graphic.clear();
 		
 		if (this.path && this.path.length > 1){
 			
-			this.graphics[0].lineStyle(colours.width, colours.line_colour, colours.line_alpha);	
-			this.graphics[0].beginPath();
+			this.path_graphic.lineStyle(colours.width, colours.line_colour, colours.line_alpha);	
+			this.path_graphic.beginPath();
 
 			this.path.forEach((pos, i) => {
 	
 				if (i !== 0){
-					this.graphics[0].lineTo(pos.x * GameScene.tile_size, pos.y * GameScene.tile_size);
+					this.path_graphic.lineTo(pos.x * GameScene.tile_size, pos.y * GameScene.tile_size);
 				}
 				else{
-					this.graphics[0].moveTo(pos.x * GameScene.tile_size, pos.y * GameScene.tile_size);
+					this.path_graphic.moveTo(pos.x * GameScene.tile_size, pos.y * GameScene.tile_size);
 				}
 				
 				last_pos = pos;
 			})				
 			
-			this.graphics[0].strokePath();				
+			this.path_graphic.strokePath();				
 	
 		}
 		
-		this.graphics[1].lineStyle(colours.width, colours.line_colour, colours.circle_alpha);
-		this.graphics[1].fillStyle(colours.fill_colour, colours.fill_alpha);
+		this.cohesion_graphic.lineStyle(colours.width, colours.line_colour, colours.circle_alpha);
+		this.cohesion_graphic.fillStyle(colours.fill_colour, colours.fill_alpha);
 		let circle = new Phaser.Geom.Circle(last_pos.x * GameScene.tile_size, last_pos.y * GameScene.tile_size, this.cohesion);
-		this.graphics[1].fillCircleShape(circle);
+		this.cohesion_graphic.fillCircleShape(circle);
 
-		this.graphics[1].strokePath();		
+		this.cohesion_graphic.strokePath();		
 		
 	}
 	
@@ -517,7 +554,7 @@ const unit = class {
 	
 	move(endFunction="move") {
 		
-		this.graphics[1].clear()
+		this.cohesion_graphic.clear()
 		this.is_moving = true;
 		
 		if (this.path){
@@ -545,7 +582,7 @@ const unit = class {
 						
 						//WHEN THE END OF THE PATH IS REACHED
 						if(this.sprite.x / GameScene.tile_size === end_path.x && this.sprite.y / GameScene.tile_size === end_path.y){
-							this.graphics[0].clear()
+							this.path_graphic.clear()
 							this.path = [];
 							this.is_moving = false;
 							
@@ -698,26 +735,26 @@ const unit = class {
 		if (this.targets){
 
 			//RESET THE DRAW GRAPHICS
-			this.graphics[0].clear()
-			this.graphics[0].lineStyle(10, 0x2ECC40);	
-			this.graphics[0].beginPath();
+			this.path_graphic.clear()
+			this.path_graphic.lineStyle(10, 0x2ECC40);	
+			this.path_graphic.beginPath();
 
 
 			this.targets.forEach((pos, i) => {
 
-				// this.graphics[0].beginPath();
+				// this.path_graphic.beginPath();
 				// console.log(this)
-				this.graphics[0].moveTo(this.sprite.x, this.sprite.y);
+				this.path_graphic.moveTo(this.sprite.x, this.sprite.y);
 				
 				//OFFSET PATH POSITION TO MIDDLE OF TILE
 				pos.x += this.sprite_offset;
 				pos.y += this.sprite_offset;	
 				// console.log(pos)
 				
-				this.graphics[0].lineTo(pos.x, pos.y);
+				this.path_graphic.lineTo(pos.x, pos.y);
 			})			
 
-			this.graphics[0].strokePath();		
+			this.path_graphic.strokePath();		
 		}
 	}	
 	
@@ -794,6 +831,11 @@ const unit = class {
 	
 	fight(attacker, defender){
 		attacker.fights = 1;
+		
+		this.sprite_hit.x = defender.sprite.x;
+		this.sprite_hit.y = defender.sprite.y;
+		this.sprite_hit.anims.play('hit');		
+		
 		defender.wound(this.fight_damage);
 	}
 	
