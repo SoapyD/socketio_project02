@@ -27,28 +27,28 @@ var GameUIScene = new Phaser.Class({
 		
 		gameFunctions.btn_sprite = [];		
 		
-		callbackParams = {mode:"move"};
-		gameFunctions.createButton(this, gameFunctions.config.width - 150, 25, "+", GameUIScene.selectMode, callbackParams, gameFunctions.btn_sprite);
-		callbackParams = {};
-		gameFunctions.createButton(this, gameFunctions.config.width - 50, 25, "move", GameUIScene.activateMovement, callbackParams, gameFunctions.btn_sprite);
-		
-		callbackParams = {mode:"shoot"};
-		gameFunctions.createButton(this, gameFunctions.config.width - 150, 75, "+", GameUIScene.selectMode, callbackParams, gameFunctions.btn_sprite);
-		callbackParams = {};
-		gameFunctions.createButton(this, gameFunctions.config.width - 50, 75, "shoot", GameUIScene.activateShooting, callbackParams, gameFunctions.btn_sprite);
-
-		callbackParams = {mode:"fight"};
-		gameFunctions.createButton(this, gameFunctions.config.width - 150, 125, "+", GameUIScene.selectMode, callbackParams, gameFunctions.btn_sprite);	
-		callbackParams = {};
-		gameFunctions.createButton(this, gameFunctions.config.width - 50, 125, "fight", GameUIScene.activateFighting, callbackParams, gameFunctions.btn_sprite);
-
-		callbackParams = {};
-		gameFunctions.createButton(this, gameFunctions.config.width - 150, 175, "End Turn", GameUIScene.nextPlayer, callbackParams, gameFunctions.btn_sprite);	
-		
-		
+		// callbackParams = {mode:"move"};
+		// gameFunctions.createButton(this, gameFunctions.config.width - 150, 25, "+", GameUIScene.selectMode, callbackParams, gameFunctions.btn_sprite);
 		// callbackParams = {};
-		// gameFunctions.createButton(this, gameFunctions.config.width - 50, 25, "+", GameUIScene.advanceMode, callbackParams, gameFunctions.btn_sprite);		
-		// GameUIScene.advanceMode();
+		// gameFunctions.createButton(this, gameFunctions.config.width - 50, 25, "move", GameUIScene.activateMovement, callbackParams, gameFunctions.btn_sprite);
+		
+		// callbackParams = {mode:"shoot"};
+		// gameFunctions.createButton(this, gameFunctions.config.width - 150, 75, "+", GameUIScene.selectMode, callbackParams, gameFunctions.btn_sprite);
+		// callbackParams = {};
+		// gameFunctions.createButton(this, gameFunctions.config.width - 50, 75, "shoot", GameUIScene.activateShooting, callbackParams, gameFunctions.btn_sprite);
+
+		// callbackParams = {mode:"fight"};
+		// gameFunctions.createButton(this, gameFunctions.config.width - 150, 125, "+", GameUIScene.selectMode, callbackParams, gameFunctions.btn_sprite);	
+		// callbackParams = {};
+		// gameFunctions.createButton(this, gameFunctions.config.width - 50, 125, "fight", GameUIScene.activateFighting, callbackParams, gameFunctions.btn_sprite);
+
+		// callbackParams = {};
+		// gameFunctions.createButton(this, gameFunctions.config.width - 150, 175, "End Turn", GameUIScene.nextPlayer, callbackParams, gameFunctions.btn_sprite);	
+		
+		
+		callbackParams = {};
+		gameFunctions.createButton(this, gameFunctions.config.width - 50, 25, "+", GameUIScene.advanceMode, callbackParams, gameFunctions.btn_sprite);		
+		GameUIScene.advanceMode();
 		
 		
 		gameFunctions.btn_sprite.forEach(btn => {

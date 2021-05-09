@@ -10,6 +10,7 @@ const unit = class {
 		this.cohesion = options.cohesion; //the maximum distance a unit can be from another member of it's squad
 		
 		this.path = [];
+		this.is_moving = false;
 
 
 		this.moves = 0;
@@ -94,21 +95,26 @@ const unit = class {
     draw_health()
     {
         this.bar.clear();
-		let health_width = 32;
-		let edge = 2;
-		let pos = {
-			x: this.sprite.x - (health_width / 2) - edge,
-			y: this.sprite.y
-		}
+		let width = this.sprite.width;
+		let height = this.sprite.height;
 		
+		
+		///////////////////////////////////////////////////////////////DRAW A BAR
+		// let edge = 2;
+		// let pos = {
+		// 	x: this.sprite.x - (width / 2) - edge,
+		// 	y: this.sprite.y + (height / 2)
+		// }
+		
+		/*
         //  BG
         this.bar.fillStyle(0x000000);
-        this.bar.fillRect(pos.x, pos.y, health_width + (edge * 2), 16);
+        this.bar.fillRect(pos.x, pos.y, width + (edge * 2), 16);
 
         //  Health
 
         this.bar.fillStyle(0xffffff);
-        this.bar.fillRect(pos.x + edge, pos.y + edge, health_width, 12);
+        this.bar.fillRect(pos.x + edge, pos.y + edge, width, 12);
 
         if (this.health < 30)
         {
@@ -120,9 +126,36 @@ const unit = class {
         }
 
 		
-        var d = Math.floor((this.health / 100) * health_width);
+        var d = Math.floor((this.health / 100) * width);
         this.bar.fillRect(pos.x + edge, pos.y + edge, d, 12);
-    }	
+		*/
+		///////////////////////////////////////////////////////////////		
+		
+		
+		let pos = {
+			x: this.sprite.x,
+			y: this.sprite.y
+		}		
+		
+		//  Without this the arc will appear closed when stroked
+		this.bar.beginPath();
+
+		
+		let angle = (360 / this.max_health) * this.health;
+		
+		let fill_colour = 0x00ff00;
+        if (this.health < 30)
+        {
+            fill_colour = 0xff0000;
+        }
+	
+		
+		// arc (x, y, radius, startAngle, endAngle, anticlockwise)
+		
+		this.bar.lineStyle(4, fill_colour, 0.5);
+		this.bar.arc(pos.x, pos.y, width / 2, Phaser.Math.DegToRad(angle), Phaser.Math.DegToRad(0), true) //.setStartAngle(90);
+		this.bar.strokePath();
+    }
 	
 	
 	kill(){
@@ -485,6 +518,7 @@ const unit = class {
 	move(endFunction="move") {
 		
 		this.graphics[1].clear()
+		this.is_moving = true;
 		
 		if (this.path){
 			let tweens = []
@@ -513,6 +547,7 @@ const unit = class {
 						if(this.sprite.x / GameScene.tile_size === end_path.x && this.sprite.y / GameScene.tile_size === end_path.y){
 							this.graphics[0].clear()
 							this.path = [];
+							this.is_moving = false;
 							
 							if(endFunction){
 								switch(endFunction){
@@ -636,7 +671,7 @@ const unit = class {
 		if(this.in_combat === true){
 			//DOUBLE CHECK THE UNIT IS STILL IN COMBAT
 			this.combat_check = this.checkCombat();
-			if(this.this.in_combat === true){
+			if(this.in_combat === true){
 				skip = true;
 			}
 		}

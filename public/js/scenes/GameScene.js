@@ -13,24 +13,12 @@ var GameScene = new Phaser.Class({
 
     preload: function()
     {
-		this.load.image('tileset', './img/gridtiles.png');
-		// this.load.tilemapTiledJSON('map', '../../img/map.json');
-		this.load.tilemapTiledJSON('map', '../../img/map2.json');
-		// this.load.image('phaserguy', '../../img/phaserguy.png');
-		
-		this.load.image('unit', '../../img/unit.png');
-		this.load.image('tank', '../../img/tank.png');
-		this.load.image('dread', '../../img/dread.png');		
-		this.load.image('base', '../../img/base.png');
-		
-		this.load.image('bullet', '../../img/bullet.png');	
-		this.load.image('marker', '../../img/marker.png');	
-		
 		
 		// this.scene.launch("ArmySetupUIScene");
 		this.scene.launch("GameUIScene");
 		
 		
+		GameScene.online = true;		
 		GameScene.mode = '';
 		GameScene.current_player = 0;
 		GameScene.bullets = [];
@@ -44,7 +32,6 @@ var GameScene = new Phaser.Class({
 		gameFunctions.current_scene = this.scene.get('GameScene');
 		
 		GameScene.tile_size = 32;
-		GameScene.online = true;
 		
 		GameScene.rectangle = this.add.rectangle(0, 0, 10, 10, 0x6666ff);
 		GameScene.rectangle.depth = 100;
@@ -59,6 +46,20 @@ var GameScene = new Phaser.Class({
 			GameScene.unit_collisions.push(GameScene.scene.add.group());
 		}
 
+	
+		this.load.image('tileset', './img/gridtiles.png');
+		// this.load.tilemapTiledJSON('map', '../../img/map.json');
+		this.load.tilemapTiledJSON('map', '../../img/map2.json');
+		// this.load.image('phaserguy', '../../img/phaserguy.png');
+		
+		this.load.image('unit', '../../img/unit.png');
+		this.load.image('tank', '../../img/tank.png');
+		this.load.image('dread', '../../img/dread.png');		
+		this.load.image('base', '../../img/base.png');
+		
+		this.load.image('bullet', '../../img/bullet.png');	
+		this.load.image('marker', '../../img/marker.png');			
+		
 		
     },
 
@@ -161,6 +162,17 @@ var GameScene = new Phaser.Class({
 		}
 		
 		GameScene.bullets = bullets;
+		
+		if(GameScene.units){
+			GameScene.units.forEach((unit) => {
+				if(unit.player === GameScene.current_player){
+
+					if(unit.is_moving === true){
+						unit.draw_health()
+					}
+				}
+			})
+		}
     }
 });
 
@@ -296,13 +308,13 @@ GameScene.setupCamera = () => {
 	
 	GameScene.scene.cameras.main.zoom = 1.5;
 	GameScene.scene.input.on('wheel', function (pointer, gameObjects, deltaX, deltaY, deltaZ) {
-		gameFunctions.game.cameras.main.zoom -= (deltaY / 100) * 0.1;
+		GameScene.scene.cameras.main.zoom -= (deltaY / 100) * 0.1;
 
-		if(gameFunctions.game.cameras.main.zoom <= 0.8){
-			gameFunctions.game.cameras.main.zoom = 0.8
+		if(GameScene.scene.cameras.main.zoom <= 0.8){
+			GameScene.scene.cameras.main.zoom = 0.8
 		}	
-		if(gameFunctions.game.cameras.main.zoom >= 2){
-			gameFunctions.game.cameras.main.zoom = 2
+		if(GameScene.scene.cameras.main.zoom >= 2){
+			GameScene.scene.cameras.main.zoom = 2
 		}	
 	});	
 	
@@ -599,6 +611,21 @@ GameScene.seeds2 = () => {
 	gameFunctions.copyObject(options, core_data)
 
 	GameScene.units.push(new unit(options));	
+	
+	
+	
+	core_data.squad = 3;	
+	unit_info =GameScene.unit_types.find((e) => e.name==="dread")
+	options = {}
+	gameFunctions.copyObject(options, core_data)
+	gameFunctions.copyObject(options, unit_info)
+	gameFunctions.copyObject(options, projectile_weapon_info)
+	gameFunctions.copyObject(options, combat_weapon_info)
+	gameFunctions.copyObject(options, armour_info)	
+	options.x = GameScene.tile_size * 7
+	options.y = GameScene.tile_size * 5
+	
+	GameScene.units.push(new unit(options));		
 	
 }
 

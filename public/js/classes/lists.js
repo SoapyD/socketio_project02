@@ -82,7 +82,7 @@ unit_types.push(new unit_type(options))
 options = {
 	name: "bolter",
 	shoot_range: 200,
-	shoot_damage: 50,
+	shoot_damage: 20,
 	max_targets: 2
 }
 
@@ -98,14 +98,14 @@ combat_weapon_types.push(new combat_weapon_type(options))
 
 options = {
 	name: "sword",
-	fight_damage: 50,
+	fight_damage: 20,
 }
 
 combat_weapon_types.push(new combat_weapon_type(options))
 
 options = {
 	name: "basic",
-	armour: 50,
+	armour: 20,
 }
 
 armour_types.push(new armour_type(options))
