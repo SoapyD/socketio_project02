@@ -5,6 +5,7 @@ const bullet = class {
 	
 		// this.x = x;
 		// this.y = y;
+		this.id = GameScene.bullets.length;
 		this.delete = false;
 		this.unit = options.unit;
 		this.side = options.unit.side;
@@ -40,16 +41,9 @@ const bullet = class {
 			}
 		})
 
-		//THIS EXPLOSION
-		options.scene.anims.create({
-		key: 'boom',
-		frames: options.scene.anims.generateFrameNumbers('explosion'),
-		frameRate: 30
-		})
+		//PLAY SHOT SOUND
 		GameScene.sfx['shot'].play();
-		
-		this.sprite_explosion = options.scene.add.sprite(this.sprite.x, this.sprite.y, 'explosion') //.setScale(4);
-		this.sprite_explosion.setScale(0.75).setDepth(2).setAlpha(0.75);
+
 		
 	}
 
@@ -67,15 +61,28 @@ const bullet = class {
 	}
 	
 	kill(){
-		// this.unit.graphics[0].clear()
-		this.sprite_explosion.x = this.sprite.x;
-		this.sprite_explosion.y = this.sprite.y;		
+		
+		let options = {
+			scene: GameScene.scene,
+			key: "boom"+this.id,
+			spritesheet: "explosion",
+			framerate: 30,
+			sfx: "blast",
+			alpha: 0.75,
+			scale: 0.75,
+			pos: {
+				x: this.sprite.x,
+				y: this.sprite.y
+			}
+		}
+		new particle(options)
+		
 		
 		this.sprite.destroy();
 		this.delete = true;
 
-		this.sprite_explosion.anims.play('boom');
-		GameScene.sfx['blast'].play();
+
+		
 		// this.sprite.disableBody(true, true);
 	}
 	

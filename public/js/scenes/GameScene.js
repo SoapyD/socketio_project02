@@ -70,6 +70,8 @@ var GameScene = new Phaser.Class({
 		this.load.audio('button', [ 'button.mp3' ])
 		
 		this.load.audio('action', [ 'action.mp3' ])	
+		
+		this.load.audio('movement', [ 'movement.mp3' ])	
 		this.load.audio('sword', [ 'sword.mp3' ])
 		this.load.audio('shot', [ 'shot.mp3' ])
 		this.load.audio('blast', [ 'blast.mp3' ])	
@@ -80,11 +82,12 @@ var GameScene = new Phaser.Class({
     {
 		//SFX can only be set in the creation method once theyve been pre-loaded
 		GameScene.sfx = {}		
-		GameScene.sfx.select = this.sound.add('select');
+		GameScene.sfx.select = this.sound.add('select', {volume: 0.25});
 		GameScene.sfx.clear = this.sound.add('clear');
 		GameScene.sfx.button = this.sound.add('button');
 		
-		GameScene.sfx.action = this.sound.add('action');
+		GameScene.sfx.action = this.sound.add('action', {volume: 0.3});
+		GameScene.sfx.movement = this.sound.add('movement', {volume: 0.5});
 		GameScene.sfx.sword = this.sound.add('sword');
 		GameScene.sfx.blast = this.sound.add('blast');
 		GameScene.sfx.shot = this.sound.add('shot');
@@ -157,9 +160,10 @@ var GameScene = new Phaser.Class({
 				
 				GameScene.sfx['clear'].play();
 				switch(GameScene.mode) {
-					// case "move":
+					case "move":
 					// 	GameScene.selected_unit.findPath(GameScene, pointer);
-					// break;
+						GameScene.selected_unit.resetMove();
+					break;
 					case "shoot":
 						GameScene.selected_unit.removeTarget();
 					break;

@@ -317,6 +317,13 @@ GameUIScene.activateFighting = () => {
 
 
 GameUIScene.nextPlayer = () => {
+	
+	GameScene.units.forEach((unit) => {
+		if(unit.player === GameScene.current_player){
+			unit.resetActions();
+		}
+	})
+	
 	if(GameScene.online === false){
 		GameScene.advancePlayer()
 	}else{

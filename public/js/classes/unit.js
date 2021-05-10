@@ -11,6 +11,8 @@ const unit = class {
 		this.size = options.size; //the grid size of the object used when plotting movement
 		this.cohesion = options.cohesion; //the maximum distance a unit can be from another member of it's squad
 		
+		this.alive = true;
+		
 		this.path = [];
 		this.is_moving = false;
 
@@ -143,14 +145,27 @@ const unit = class {
 		this.cohesion_graphic.clear();
 	}
 	
+	resetMove() {
+		this.path = []
+		this.resetGhost();
+	}
+	
 	resetGhost() {
 		this.sprite_ghost.x = this.sprite.x;
 		this.sprite_ghost.y = this.sprite.y;
 		this.sprite_ghost.angle = this.sprite.angle;
-		this.sprite_ghost.alpha = 0.5;		
+		this.sprite_ghost.alpha = 0.5;
+		
+		
+		if(GameScene.mode === "move" || GameScene.mode === "fight"){
+			if(this.cohesion > 0){
+				this.cohesionCheck();	
+			}
+		}
 	}	
 	
-	kill(){
+	kill(){	
+		this.alive = false;
 		this.sprite.destroy();
 		this.sprite_ghost.destroy();
 		this.bar_graphic.destroy();
@@ -249,11 +264,6 @@ const unit = class {
 				}
 				GameScene.selected_unit = this.parent;
 				
-				if(GameScene.mode === "move"){
-					if(this.cohesion > 0){
-						this.parent.cohesionCheck();	
-					}
-				}
 				this.parent.resetGhost();
 				
 				GameScene.sfx['select'].play();
@@ -382,9 +392,15 @@ const unit = class {
 			
 			//IF THE GHOST CLASHES WITH ANOTHER SPRITE OR GHOST, CANCEL THE MOVE
 			if(skip === true || this.path.length <= 1){
-				this.resetGhost();
-				this.path = [];
-				this.path_graphic.clear();
+				// this.resetGhost();
+				// this.path = [];
+				// this.path_graphic.clear();
+				
+				this.resetMove();
+				if(this.path.length === 0){
+					GameScene.sfx['clear'].play();
+				}
+				
 			}
 			else{
 			
@@ -561,6 +577,8 @@ const unit = class {
 		this.is_moving = true;
 		
 		if (this.path){
+			
+			GameScene.sfx['movement'].play();
 			let tweens = []
 			for(let i = 0; i < this.path.length-1; i++){
 				let next_pos = this.path[i+1];
@@ -797,7 +815,7 @@ const unit = class {
 		let in_combat_range = false
 		GameScene.units.forEach((unit) => {
 			let clash = false;
-			if(unit.id !== this.id && unit.player !== this.player && unit.side !== this.side){
+			if(unit.alive === true && unit.id !== this.id && unit.player !== this.player && unit.side !== this.side){
 				
 				if(this.path.length > 0){
 					//check to see if movement ends in an attack
@@ -845,7 +863,24 @@ const unit = class {
 		// sprite_hit.once('animationcomplete', (sprite_hit)=>{
 		// 	sprite_hit.destroy()
 		// })
-		GameScene.sfx['sword'].play();
+		// GameScene.sfx['sword'].play();
+		
+		
+		let options = {
+			scene: GameScene.scene,
+			key: "sword"+this.id+"_"+defender.id,
+			spritesheet: "punch",
+			framerate: 30,
+			sfx: "sword",
+			alpha: 0.75,
+			scale: 0.5,
+			pos: {
+				x: defender.sprite.x,
+				y: defender.sprite.y
+			}
+		}
+		new particle(options)		
+		
 		
 		defender.wound(this.fight_damage);
 	}
