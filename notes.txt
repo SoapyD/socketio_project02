@@ -4,7 +4,7 @@
 -DONE -if a unit is in combat, skip and shot setting actions
 -DONE -design larger map
 -DONE -Have graphics and paths cleared if another action is selected. Also reset ghosts
-
+-DONE -in_combat is still set to true after enemy dies
 
 
 

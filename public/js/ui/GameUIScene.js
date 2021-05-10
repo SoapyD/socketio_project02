@@ -146,6 +146,7 @@ GameUIScene.advanceMode = () => {
 GameUIScene.selectMode = (options) => {
 	
 	GameScene.sfx['button'].play();
+	
 	if(options.mode){
 		GameScene.mode = options.mode
 		
@@ -323,6 +324,7 @@ GameUIScene.nextPlayer = () => {
 			unit.resetActions();
 		}
 	})
+	GameScene.sfx["end_turn"].play();
 	
 	if(GameScene.online === false){
 		GameScene.advancePlayer()

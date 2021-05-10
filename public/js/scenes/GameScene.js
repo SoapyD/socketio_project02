@@ -70,11 +70,24 @@ var GameScene = new Phaser.Class({
 		this.load.audio('button', [ 'button.mp3' ])
 		
 		this.load.audio('action', [ 'action.mp3' ])	
+		this.load.audio('end_path', [ 'end_path.mp3' ])	
+		this.load.audio('end_turn', [ 'end_turn.mp3' ])	
 		
 		this.load.audio('movement', [ 'movement.mp3' ])	
 		this.load.audio('sword', [ 'sword.mp3' ])
 		this.load.audio('shot', [ 'shot.mp3' ])
 		this.load.audio('blast', [ 'blast.mp3' ])	
+		
+		this.load.audio('death_man', [ 'death_man.mp3' ])
+		this.load.audio('death_machine', [ 'death_machine.mp3' ])
+		
+		
+		GameScene.music_playing = false;
+		GameScene.music_track = 0;
+		this.load.setPath('../../music');
+		this.load.audio('song1', [ 'song1.mp3' ])
+		this.load.audio('song2', [ 'song2.mp3' ])
+		this.load.audio('song3', [ 'song3.mp3' ])
     },
 
 
@@ -87,10 +100,37 @@ var GameScene = new Phaser.Class({
 		GameScene.sfx.button = this.sound.add('button');
 		
 		GameScene.sfx.action = this.sound.add('action', {volume: 0.3});
+		GameScene.sfx.end_path = this.sound.add('end_path', {volume: 0.3});
+		GameScene.sfx.end_turn = this.sound.add('end_turn', {volume: 0.5});
+		
 		GameScene.sfx.movement = this.sound.add('movement', {volume: 0.5});
 		GameScene.sfx.sword = this.sound.add('sword');
-		GameScene.sfx.blast = this.sound.add('blast');
-		GameScene.sfx.shot = this.sound.add('shot');
+		GameScene.sfx.blast = this.sound.add('blast', {volume: 0.5});
+		GameScene.sfx.shot = this.sound.add('shot', {volume: 0.5});
+		
+		GameScene.sfx.death_man = this.sound.add('death_man', {volume: 0.3});
+		GameScene.sfx.death_machine = this.sound.add('death_machine', {volume: 0.3});
+		
+		
+		GameScene.music = []
+		GameScene.music.push(this.sound.add('song1', {volume: 0.15}));
+		GameScene.music.push(this.sound.add('song2', {volume: 0.15}));
+		GameScene.music.push(this.sound.add('song3', {volume: 0.15}));
+
+		
+		GameScene.music.forEach((track) => {
+			track.on('complete', () => {
+
+				GameScene.music_track += 1
+				if(GameScene.music_track >= GameScene.music.length){
+					GameScene.music_track = 0
+				}
+				GameScene.music_playing = false;
+			});				
+		})
+		
+		
+
 		
 		this.input.mouse.disableContextMenu();
 		
@@ -98,12 +138,12 @@ var GameScene = new Phaser.Class({
         var cursors = this.input.keyboard.createCursorKeys();		
 				
 		// Handles the clicks on the map to make the character move
-		this.input.on('pointerup',GameScene.handleClick);
+		this.input.on('pointerup',GameScene.clickHandler);
 		
 		GameScene.setupMap();
 		GameScene.setupCamera();
-		// GameScene.seeds();
-		GameScene.seeds2();
+		GameScene.seeds();
+		// GameScene.seeds2();
 		
 		// GameScene.text_array = []
 		// GameScene.grid.forEach((row, y) => {
@@ -121,6 +161,12 @@ var GameScene = new Phaser.Class({
 
     update: function (time, delta)
     {
+		
+		
+		// setTimeout(() => { 
+			GameScene.musicHandler(); 
+		// }, 1000);
+
 		GameScene.rectangle.x = GameScene.camera.midPoint.x
 		GameScene.rectangle.y = GameScene.camera.midPoint.y		
 
@@ -167,9 +213,9 @@ var GameScene = new Phaser.Class({
 					case "shoot":
 						GameScene.selected_unit.removeTarget();
 					break;
-					// case "fight":
-					// 	GameScene.selected_unit.findPath(GameScene, pointer);
-					// break;					
+					case "fight":
+						GameScene.selected_unit.resetMove();
+					break;					
 					default:
 					// code block
 				}					
@@ -206,6 +252,45 @@ var GameScene = new Phaser.Class({
 		}
     }
 });
+
+GameScene.musicHandler = () => {
+	
+	if(GameScene.music_playing === false){
+		
+
+		
+		if (!GameScene.scene.sound.locked)
+		{
+			// already unlocked so play
+			// GameScene.musicPlay();
+			GameScene.music[GameScene.music_track].play();
+		}
+		else
+		{
+			// wait for 'unlocked' to fire and then play
+			GameScene.scene.sound.once(Phaser.Sound.Events.UNLOCKED, () => {
+				// GameScene.musicPlay();
+				GameScene.music[GameScene.music_track].play();
+			})
+		}				
+		
+		GameScene.music_playing = true;
+	}
+}
+
+GameScene.clickHandler = function(pointer){
+
+
+	if (pointer.leftButtonReleased())
+	{	
+		GameScene.left_click = true;
+	}		
+	if (pointer.rightButtonReleased())
+	{	
+		GameScene.right_click = true;
+	}			
+};
+
 
 
 GameScene.advancePlayer = () => {
@@ -249,17 +334,7 @@ GameScene.getTileID = function(x,y){
     return tile.index;
 };
 
-GameScene.handleClick = function(pointer){
 
-	if (pointer.leftButtonReleased())
-	{	
-		GameScene.left_click = true;
-	}		
-	if (pointer.rightButtonReleased())
-	{	
-		GameScene.right_click = true;
-	}			
-};
 
 GameScene.setupMap = () => {
 	// Display map
@@ -289,14 +364,14 @@ GameScene.setupMap = () => {
 	GameScene.grid = grid;
 
 
-	let tileset = GameScene.map.tilesets[0];
-	let properties = tileset.tileProperties;
+	GameScene.tileset = GameScene.map.tilesets[0];
+	let properties = GameScene.tileset.tileProperties;
 	let acceptable_tiles = [];
 
-	/*
+	
 	// We need to list all the tile IDs that can be walked on. Let's iterate over all of them
 	// and see what properties have been entered in Tiled.
-	for(let i = tileset.firstgid-1; i < tiles.total; i++){ // firstgid and total are fields from Tiled that indicate the range of IDs that the tiles can take in that tileset
+	for(let i = GameScene.tileset.firstgid-1; i < tiles.total; i++){ // firstgid and total are fields from Tiled that indicate the range of IDs that the tiles can take in that tileset
 		if(!properties.hasOwnProperty(i)) {
 			// If there is no property indicated at all, it means it's a walkable tile
 			acceptable_tiles.push(i+1);
@@ -304,8 +379,8 @@ GameScene.setupMap = () => {
 		}
 		if(!properties[i].collide) acceptable_tiles.push(i+1);
 	}
-	*/
-	acceptable_tiles.push(1);
+	/**/
+	// acceptable_tiles.push(1);
 	GameScene.pathfinder = new pathfinder(grid, acceptable_tiles);			
 }
 
@@ -497,7 +572,7 @@ GameScene.seeds = () => {
 	gameFunctions.copyObject(options, combat_weapon_info)
 	gameFunctions.copyObject(options, armour_info)	
 	options.x = GameScene.tile_size * 3
-	options.y = GameScene.tile_size * 17
+	options.y = GameScene.tile_size * 37
 	
 	GameScene.units.push(new unit(options));
 	
@@ -509,7 +584,7 @@ GameScene.seeds = () => {
 	gameFunctions.copyObject(options, combat_weapon_info)
 	gameFunctions.copyObject(options, armour_info)	
 	options.x = GameScene.tile_size * 5
-	options.y = GameScene.tile_size * 17
+	options.y = GameScene.tile_size * 37
 	
 	GameScene.units.push(new unit(options));
 	
@@ -521,7 +596,7 @@ GameScene.seeds = () => {
 	gameFunctions.copyObject(options, combat_weapon_info)
 	gameFunctions.copyObject(options, armour_info)	
 	options.x = GameScene.tile_size * 4
-	options.y = GameScene.tile_size * 16
+	options.y = GameScene.tile_size * 36
 	
 	GameScene.units.push(new unit(options));	
 	
@@ -534,7 +609,7 @@ GameScene.seeds = () => {
 	gameFunctions.copyObject(options, combat_weapon_info)
 	gameFunctions.copyObject(options, armour_info)	
 	options.x = GameScene.tile_size * 14
-	options.y = GameScene.tile_size * 17
+	options.y = GameScene.tile_size * 37
 	
 	GameScene.units.push(new unit(options));	
 	
@@ -546,7 +621,7 @@ GameScene.seeds = () => {
 	gameFunctions.copyObject(options, combat_weapon_info)
 	gameFunctions.copyObject(options, armour_info)	
 	options.x = GameScene.tile_size * 16
-	options.y = GameScene.tile_size * 17
+	options.y = GameScene.tile_size * 37
 	
 	GameScene.units.push(new unit(options));
 	
@@ -557,7 +632,7 @@ GameScene.seeds = () => {
 	gameFunctions.copyObject(options, combat_weapon_info)
 	gameFunctions.copyObject(options, armour_info)	
 	options.x = GameScene.tile_size * 15
-	options.y = GameScene.tile_size * 16
+	options.y = GameScene.tile_size * 36
 	
 	GameScene.units.push(new unit(options));	
 	
@@ -571,7 +646,7 @@ GameScene.seeds = () => {
 	gameFunctions.copyObject(options, combat_weapon_info)
 	gameFunctions.copyObject(options, armour_info)	
 	options.x = GameScene.tile_size * 12
-	options.y = GameScene.tile_size * 17
+	options.y = GameScene.tile_size * 37
 	
 	GameScene.units.push(new unit(options));
 	
@@ -585,7 +660,7 @@ GameScene.seeds = () => {
 	gameFunctions.copyObject(options, combat_weapon_info)
 	gameFunctions.copyObject(options, armour_info)	
 	options.x = GameScene.tile_size * 8
-	options.y = GameScene.tile_size * 18
+	options.y = GameScene.tile_size * 38
 	
 	GameScene.units.push(new unit(options));	
 	

@@ -9,6 +9,7 @@ const unit_type = class {
 				
 		this.health = options.health;		
 		this.movement = options.movement;
+		this.death_sfx = options.death_sfx;
 	}
 }
 
@@ -49,7 +50,8 @@ options = {
 	sprite_offset: 0.5,
 	cohesion: 75,
 	health: 100,
-	movement: 10
+	movement: 10,
+	death_sfx: "death_man"
 }
 
 unit_types.push(new unit_type(options))
@@ -61,7 +63,8 @@ options = {
 	sprite_offset: 0,	
 	cohesion: 0,
 	health: 100,
-	movement: 6
+	movement: 6,
+	death_sfx: "death_machine"
 }
 
 unit_types.push(new unit_type(options))
@@ -73,7 +76,8 @@ options = {
 	sprite_offset: 0.5,	
 	cohesion: 0,
 	health: 100,
-	movement: 12
+	movement: 12,
+	death_sfx: "death_machine"
 }
 
 unit_types.push(new unit_type(options))

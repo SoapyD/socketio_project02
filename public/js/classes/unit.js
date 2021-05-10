@@ -23,6 +23,7 @@ const unit = class {
 		
 		this.health = options.health;
 		this.max_health = options.health;
+		this.death_sfx = options.death_sfx;
 		
 		this.armour = options.armour;
 		
@@ -95,26 +96,9 @@ const unit = class {
 		// this.group.add(this.sprite)
 		// this.group.add(this.bar_graphic)
 		
-		// this.graphics = [];
-		// for(let i=0;i<2;i++){
-		// 	this.graphics.push(options.scene.add.graphics());
-		// }
-
 		this.draw_health();
 		
 		
-		
-		// const mummyAnimation = options.scene.anims.create({
-		// key: 'walk',
-		// frames: options.scene.anims.generateFrameNumbers('explosion'),
-		// frameRate: 30
-		// });
-		// GameScene.sprite = options.scene.add.sprite(100, 100, 'explosion').setScale(1);
-        
-		// GameScene.scene.anims.play({ key: 'walk', repeat: 7 });		
-		
-		
-		// this.drawPath = this.drawPath.bind(this);
 		this.selectHander = this.selectHander.bind(this);
 	}
 
@@ -146,7 +130,8 @@ const unit = class {
 	}
 	
 	resetMove() {
-		this.path = []
+		this.path = [];
+		this.path_graphic.clear();		
 		this.resetGhost();
 	}
 	
@@ -166,12 +151,11 @@ const unit = class {
 	
 	kill(){	
 		this.alive = false;
+
+		GameScene.sfx[this.death_sfx].play();
 		this.sprite.destroy();
 		this.sprite_ghost.destroy();
 		this.bar_graphic.destroy();
-		// this.sprite.disableBody(true, true);
-		// this.sprite_ghost.destroy(true);
-		// this.sprite_base.destroy(true);
 	}	
 	
 	wound(damage){
@@ -278,15 +262,6 @@ const unit = class {
 		GameScene.selected_unit = undefined;
 	}
 	
-	// updateGrid(x, y, value){
-		/*
-		GameScene.grid[y][x] = value;
-		
-		//SET THE TEXT ARRAY POSITION SO WE CAN SEE IT'S EFFECT
-		let text = GameScene.text_array[y][x];
-		text.setText(value)
-		*/
-	// }
 	
 	checkSpriteOverlap(spriteA, spriteB, adjacent=false){
 		var boundsA = spriteA.getBounds();
@@ -308,8 +283,6 @@ const unit = class {
 	}
 	
 	findPath(scene, pointer) {
-		// var x = scene.camera.scrollX + pointer.x;
-		// var y = scene.camera.scrollY + pointer.y;
 		var x = pointer.x;
 		var y = pointer.y;		
 		var toX = Math.floor(x/GameScene.tile_size);
@@ -388,18 +361,31 @@ const unit = class {
 			//DON'T ALLOW FIGHTING IF THERE'S NO FIGHT DAMAGE
 			if(this.fight_damage === 0 && GameScene.mode === "fight"){
 				skip = true;
-			}			
+			}
+			
+			if(this.path.length === 0){
+				skip = true;
+			}
+			
+			if(skip === true){
+				GameScene.sfx['clear'].play();				
+			}
+			
+			//SKIP IF THE POINTER IS OVER THE SHOOTING UNITS, put here so it doesn't play the clear sound
+			if (this.sprite.getBounds().contains(pointer.x, pointer.y)) {
+				skip = true;
+			}				
 			
 			//IF THE GHOST CLASHES WITH ANOTHER SPRITE OR GHOST, CANCEL THE MOVE
-			if(skip === true || this.path.length <= 1){
+			if(skip === true){
 				// this.resetGhost();
 				// this.path = [];
 				// this.path_graphic.clear();
 				
 				this.resetMove();
-				if(this.path.length === 0){
-					GameScene.sfx['clear'].play();
-				}
+				// if(this.path.length === 0){
+				// 	GameScene.sfx['clear'].play();
+				// }
 				
 			}
 			else{
@@ -612,6 +598,7 @@ const unit = class {
 									case "move":
 										this.moves = 1;
 										this.combat_check = this.checkCombat();
+										GameScene.sfx["end_path"].play();
 										 
 										break;
 									case "checkCombat":
@@ -720,19 +707,25 @@ const unit = class {
 			}
 		})		
 		
-		//SKIP IF THE POINTER IS OVER THE SHOOTING UNITS
-		if (this.sprite.getBounds().contains(pointer.x, pointer.y)) {
-			skip = true;
-		}		
-		
 		//SKIP IF IN COMBAT
 		if(this.in_combat === true){
 			//DOUBLE CHECK THE UNIT IS STILL IN COMBAT
-			this.combat_check = this.checkCombat();
+			this.in_combat = this.checkCombat();
+
 			if(this.in_combat === true){
 				skip = true;
 			}
 		}
+		
+		if(skip === true){
+			GameScene.sfx['clear'].play();
+		}
+		
+		
+		//SKIP IF THE POINTER IS OVER THE SHOOTING UNITS, put here so it doesn't play the clear sound
+		if (this.sprite.getBounds().contains(pointer.x, pointer.y)) {
+			skip = true;
+		}				
 		
 		//ONLY ADD SHOT IF THE TARGETS ARRAY IS UNDER MAX SHOTS
 		if(dest.x && dest.y && skip === false && this.targets.length < this.max_targets){
