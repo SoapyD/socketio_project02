@@ -62,11 +62,33 @@ var GameScene = new Phaser.Class({
 		
         this.load.spritesheet('explosion', '../../img/explosion7.png', { frameWidth: 256, frameHeight: 256 });
         this.load.spritesheet('punch', '../../img/explosion23.png', { frameWidth: 256, frameHeight: 256 });		
+		
+		
+		this.load.setPath('../../sfx');		
+		this.load.audio('select', [ 'select.mp3' ])
+		this.load.audio('clear', [ 'clear.mp3' ])
+		this.load.audio('button', [ 'button.mp3' ])
+		
+		this.load.audio('action', [ 'action.mp3' ])	
+		this.load.audio('sword', [ 'sword.mp3' ])
+		this.load.audio('shot', [ 'shot.mp3' ])
+		this.load.audio('blast', [ 'blast.mp3' ])	
     },
 
 
     create: function()
     {
+		//SFX can only be set in the creation method once theyve been pre-loaded
+		GameScene.sfx = {}		
+		GameScene.sfx.select = this.sound.add('select');
+		GameScene.sfx.clear = this.sound.add('clear');
+		GameScene.sfx.button = this.sound.add('button');
+		
+		GameScene.sfx.action = this.sound.add('action');
+		GameScene.sfx.sword = this.sound.add('sword');
+		GameScene.sfx.blast = this.sound.add('blast');
+		GameScene.sfx.shot = this.sound.add('shot');
+		
 		this.input.mouse.disableContextMenu();
 		
         //Create a camera controller using the arraow keys
@@ -132,6 +154,8 @@ var GameScene = new Phaser.Class({
 			}
 			
 			if(GameScene.right_click === true){
+				
+				GameScene.sfx['clear'].play();
 				switch(GameScene.mode) {
 					// case "move":
 					// 	GameScene.selected_unit.findPath(GameScene, pointer);

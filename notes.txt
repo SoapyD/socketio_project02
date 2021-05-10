@@ -3,12 +3,15 @@
 -DONE -run check at the end of movement to see if a unit is in combat range. If not, mark the unit as not being in combat range
 -DONE -if a unit is in combat, skip and shot setting actions
 -DONE -design larger map
+-DONE -Have graphics and paths cleared if another action is selected. Also reset ghosts
 
 
--move the ghost when online, otherwise it doesn't register
+
+
+-move the ghost when online, otherwise it doesn't register. In fact, don't have opponent ghosts generate if online
 -create function automatically lay units out around a certain point
 
--Have graphics and paths cleared if another action is selected. Also reset ghosts
+
 
 
 

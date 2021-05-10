@@ -46,6 +46,7 @@ const bullet = class {
 		frames: options.scene.anims.generateFrameNumbers('explosion'),
 		frameRate: 30
 		})
+		GameScene.sfx['shot'].play();
 		
 		this.sprite_explosion = options.scene.add.sprite(this.sprite.x, this.sprite.y, 'explosion') //.setScale(4);
 		this.sprite_explosion.setScale(0.75).setDepth(2).setAlpha(0.75);
@@ -74,6 +75,7 @@ const bullet = class {
 		this.delete = true;
 
 		this.sprite_explosion.anims.play('boom');
+		GameScene.sfx['blast'].play();
 		// this.sprite.disableBody(true, true);
 	}
 	

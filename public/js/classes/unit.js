@@ -80,10 +80,8 @@ const unit = class {
 		options.scene.anims.create({
 		key: 'hit',
 		frames: options.scene.anims.generateFrameNumbers('punch'),
-		frameRate: 30
-		})		
-		this.sprite_hit = options.scene.add.sprite(this.sprite.x, this.sprite.y, 'punch') //.setScale(4);
-		this.sprite_hit.setScale(0.75).setDepth(2).setAlpha(0.75);		
+		frameRate: 50
+		})			
 		
 		
 		//SETUP GRAPHICS THAT CAN BE USED TO DRAW ACTIONS
@@ -258,6 +256,8 @@ const unit = class {
 				}
 				this.parent.resetGhost();
 				
+				GameScene.sfx['select'].play();
+				
 				GameScene.left_click = false;
 			}
 
@@ -381,7 +381,7 @@ const unit = class {
 			}			
 			
 			//IF THE GHOST CLASHES WITH ANOTHER SPRITE OR GHOST, CANCEL THE MOVE
-			if(skip === true || this.path.length === 0){
+			if(skip === true || this.path.length <= 1){
 				this.resetGhost();
 				this.path = [];
 				this.path_graphic.clear();
@@ -391,6 +391,7 @@ const unit = class {
 				//if there's any cohesion needed, check it, otherwise just draw path
 				if(this.cohesion > 0){
 					this.cohesionCheck()
+					GameScene.sfx['action'].play();
 				}
 				else{
 					// console.log(this)
@@ -405,6 +406,8 @@ const unit = class {
 
 					// console.log(unit.path)
 					this.drawPath(colours)
+					
+					GameScene.sfx['action'].play();
 				}
 				
 			}	
@@ -717,6 +720,7 @@ const unit = class {
 		if(dest.x && dest.y && skip === false && this.targets.length < this.max_targets){
 			this.targets.push(dest);
 			this.drawTarget();
+			GameScene.sfx['action'].play();
 		}
 		
 	}
@@ -832,9 +836,16 @@ const unit = class {
 	fight(attacker, defender){
 		attacker.fights = 1;
 		
-		this.sprite_hit.x = defender.sprite.x;
-		this.sprite_hit.y = defender.sprite.y;
-		this.sprite_hit.anims.play('hit');		
+		//generate, play then destroy attack cloud
+		// let sprite_hit = GameScene.scene.add.sprite(this.sprite.x, this.sprite.y, 'punch') //.setScale(4);
+		// sprite_hit.setScale(0.75).setDepth(2).setAlpha(0.75);			
+		// sprite_hit.x = defender.sprite.x;
+		// sprite_hit.y = defender.sprite.y;
+		// sprite_hit.anims.play('hit');		
+		// sprite_hit.once('animationcomplete', (sprite_hit)=>{
+		// 	sprite_hit.destroy()
+		// })
+		GameScene.sfx['sword'].play();
 		
 		defender.wound(this.fight_damage);
 	}

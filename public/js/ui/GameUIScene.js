@@ -144,6 +144,8 @@ GameUIScene.advanceMode = () => {
 
 
 GameUIScene.selectMode = (options) => {
+	
+	GameScene.sfx['button'].play();
 	if(options.mode){
 		GameScene.mode = options.mode
 		
