@@ -374,7 +374,8 @@ const unit = class {
 			//SKIP IF THE POINTER IS OVER THE SHOOTING UNITS, put here so it doesn't play the clear sound
 			if (this.sprite.getBounds().contains(pointer.x, pointer.y)) {
 				skip = true;
-			}				
+			}
+			
 			
 			//IF THE GHOST CLASHES WITH ANOTHER SPRITE OR GHOST, CANCEL THE MOVE
 			if(skip === true){

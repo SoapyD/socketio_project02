@@ -95,15 +95,15 @@ var GameScene = new Phaser.Class({
     {
 		//SFX can only be set in the creation method once theyve been pre-loaded
 		GameScene.sfx = {}		
-		GameScene.sfx.select = this.sound.add('select', {volume: 0.25});
+		GameScene.sfx.select = this.sound.add('select', {volume: 0.1});
 		GameScene.sfx.clear = this.sound.add('clear');
 		GameScene.sfx.button = this.sound.add('button');
 		
-		GameScene.sfx.action = this.sound.add('action', {volume: 0.3});
-		GameScene.sfx.end_path = this.sound.add('end_path', {volume: 0.3});
+		GameScene.sfx.action = this.sound.add('action', {volume: 0.1});
+		GameScene.sfx.end_path = this.sound.add('end_path', {volume: 0.08});
 		GameScene.sfx.end_turn = this.sound.add('end_turn', {volume: 0.5});
 		
-		GameScene.sfx.movement = this.sound.add('movement', {volume: 0.5});
+		GameScene.sfx.movement = this.sound.add('movement', {volume: 0.2});
 		GameScene.sfx.sword = this.sound.add('sword');
 		GameScene.sfx.blast = this.sound.add('blast', {volume: 0.5});
 		GameScene.sfx.shot = this.sound.add('shot', {volume: 0.5});

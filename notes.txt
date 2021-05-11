@@ -8,6 +8,12 @@
 
 
 
+
+-Hide action buttons when it's not a players turn
+-stop a player from being able to interact with another players units
+-test out a 3 side game
+-test out a 2 side, 4 player game
+
 -move the ghost when online, otherwise it doesn't register. In fact, don't have opponent ghosts generate if online
 -create function automatically lay units out around a certain point
 

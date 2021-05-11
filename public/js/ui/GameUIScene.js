@@ -163,7 +163,7 @@ GameUIScene.activateMovement = () => {
 	
 	let cohesion_check = true
 	GameScene.units.forEach((unit) => {
-		if(unit.cohesion_check === false){
+		if(unit.cohesion_check === false && unit.cohesion > 0){
 			cohesion_check = false;		
 		}
 	})		
@@ -235,7 +235,7 @@ GameUIScene.activateFighting = () => {
 	let in_combat = false;
 	
 	GameScene.units.forEach((unit) => {
-		if(unit.cohesion_check === false){
+		if(unit.cohesion_check === false && unit.cohesion > 0){
 			cohesion_check = false;
 		}
 	})
@@ -319,6 +319,7 @@ GameUIScene.activateFighting = () => {
 
 GameUIScene.nextPlayer = () => {
 	
+	GameScene.mode = ""
 	GameScene.units.forEach((unit) => {
 		if(unit.player === GameScene.current_player){
 			unit.resetActions();
