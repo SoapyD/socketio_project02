@@ -14,6 +14,8 @@
 -test out a 3 side game
 -test out a 2 side, 4 player game
 
+-error socket messages need to be returned to the originating player only
+
 -move the ghost when online, otherwise it doesn't register. In fact, don't have opponent ghosts generate if online
 -create function automatically lay units out around a certain point
 

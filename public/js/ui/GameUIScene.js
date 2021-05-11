@@ -83,7 +83,8 @@ GameUIScene.advanceMode = () => {
 	GameUIScene.mode_state++;
 	// if(GameUIScene.mode_state >= 2){
 	// 	GameUIScene.mode_state = 0;
-	// }	
+	// }
+	
 	
 	let options = {}
 	let btn;

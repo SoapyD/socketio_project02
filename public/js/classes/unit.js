@@ -239,7 +239,16 @@ const unit = class {
 		// console.log(this.parent)
 		if (pointer.leftButtonReleased())
 		{
-			if (this.parent.player === GameScene.current_player){
+			
+			let skip = false
+			if(GameScene.online === true){
+				if(this.parent.player !== gameFunctions.params.player_number){
+					skip = true;
+				}
+			}
+
+			
+			if (this.parent.player === GameScene.current_player && skip === false){
 				//TURN OLD SELECTED PLAYER MARKER, WHITE
 
 				if(GameScene.selected_unit){

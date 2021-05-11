@@ -3,6 +3,10 @@ gameFunctions = []
 gameFunctions.btn_sprite = [];
 
 
+gameFunctions.params = {
+	player_number: -1
+}
+
 
 gameFunctions.config = {
     type: Phaser.AUTO,
@@ -27,7 +31,7 @@ gameFunctions.config = {
         mode: Phaser.Scale.FIT,
       },
     // scene: [ GameScene, GameUIScene ]  
-	scene: [ MainMenuScene, ArmySelectMenuScene, GameScene, GameUIScene ]  
+	// scene: [ MainMenuScene, ArmySelectMenuScene, GameScene, GameUIScene ]  
     // scene: [ MainMenuScene, ArmySelectMenuScene, GameScene, ArmySetupUIScene ]     
 };
 

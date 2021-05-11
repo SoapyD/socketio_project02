@@ -58,22 +58,30 @@ connFunctions.checkMessages = (socket) => {
 
 
     socket.on('message_client', (data) => {
+
 		if(data.message){
 			console.log(data.message)			
+		}		
+		
+		if(data.functionGroup && data.function){
+        	availableFunctions[data.functionGroup][data.function](data);  			
 		}
 
-        availableFunctions[data.functionGroup][data.function](data);  
     })
 
 }        
 
 connFunctions.test = (data) => {
-  console.log(data.message)
+  console.log(data)
 }
 
 
+connFunctions.setRoomInfo = (data) => {
+	gameFunctions.params.player_number = data.player_number
+}
+
 connFunctions.sceneTransition = (data) => {
-    console.log(data.message)
+    // console.log(data.message)
 
 	//IF THERE'S A CURRENT FORM LOADED, TWEEN IT AWAY BEFORE TRANSITIONING
 	if (gameFunctions.current_form){
@@ -102,7 +110,7 @@ connFunctions.sceneTransition = (data) => {
 
 
 connFunctions.uiSceneTransition = (data) => {
-	console.log(data.message)
+	// console.log(data.message)
 	gameFunctions.current_uiscene.scene.stop()	
 }
 

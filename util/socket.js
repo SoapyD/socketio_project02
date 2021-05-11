@@ -93,9 +93,9 @@ exports.createRoom = async(network, data)  => {
 
 
             let return_data = {
-                functionGroup: "connFunctions",
-                function: "test",
-                message: ""
+                // functionGroup: "connFunctions",
+                // function: "test",
+                // message: ""
             }
 
             //CHECK TO SEE IF THE USER IS ALREADY IN THE ROOM OR NOT IN THE ROOM BUT ABLE TO JOIN IT
@@ -117,7 +117,26 @@ exports.createRoom = async(network, data)  => {
         else{
             let room = await queriesUtil.createRoom(data, network.socket.id)
     
-            let return_data = {
+			
+			//SEND THE CORE GAME DATA OT THE PLAYER
+			let return_data = {
+                functionGroup: "connFunctions"
+                ,function: "setRoomInfo"
+                ,message: "Room Info"
+				,userName: data.userName
+				,roomName: data.roomName
+				,roomID: room._id
+				,maxPlayers: room.max_players
+				,player_number: room.users.indexOf(data.user_id)
+			}
+			network.socket.join(data.roomName)
+			//send room info back to socket
+			network.io.to(network.socket.id).emit('message_client', return_data);			
+			
+			
+			
+			//TRANSITION TO THE NEXT GAME SCREEN
+            return_data = {
                 functionGroup: "connFunctions",
                 function: "sceneTransition",
                 message: "Room Created",
@@ -151,12 +170,13 @@ exports.joinRoom = async(network, data)  => {
     try{
 
         let return_data = {
-            functionGroup: "connFunctions",
-            function: "test",
-            message: ""
+            // functionGroup: "connFunctions",
+            // function: "test",
+            // message: ""
         }
 
-		let transition = false;
+		// let transition = false;
+		let saved_room;
 		
         //IF ROOM DOES EXIST
         if (rooms && rooms.length > 0){
@@ -179,16 +199,16 @@ exports.joinRoom = async(network, data)  => {
                                         
                         network.socket.join(data.room_name) 
                         room.sockets.push(network.socket.id);
-                        room.save()
+                        saved_room = await room.save()
 						
-						transition = true;
+						// transition = true;
                     }
                 }
                 else{
                     //ADD USER TO ROOM THEN RETURN DATA
                     room.users.push(data.user_id);
                     room.sockets.push(network.socket.id);
-                    let saved_room = await room.save()
+                    saved_room = await room.save()
 
                     return_data.message = "Room Joined. You're player number is : "+saved_room.users.indexOf(data.user_id)   
                     
@@ -196,7 +216,7 @@ exports.joinRoom = async(network, data)  => {
 
                     return_data.message = "Player: "+data.user_name+" joined room."
 					
-					transition = true;
+					// transition = true;
                 }
             }   
     
@@ -205,10 +225,28 @@ exports.joinRoom = async(network, data)  => {
             return_data.message = "Join failed. Room Doesn't exist"
         }
 
+		//MESSAGE PLAYER WITH JOIN RESULTS
         network.io.of(network.namespace).emit("message_client", return_data)     
 
-		if(transition === true){
-            let return_data = {
+		if(saved_room){
+			//SEND THE CORE GAME DATA OT THE PLAYER
+			return_data = {
+                functionGroup: "connFunctions"
+                ,function: "setRoomInfo"
+                ,message: "Room Info"
+				,userName: data.userName
+				,roomName: data.roomName
+				,roomID: saved_room._id
+				,maxPlayers: saved_room.max_players
+				,player_number: saved_room.users.indexOf(data.user_id)
+			}
+			network.socket.join(data.roomName)
+			//send room info back to socket
+			network.io.to(network.socket.id).emit('message_client', return_data);		
+			
+			
+			//TRANSITION TO THE NEXT GAME SCREEN
+			return_data = {
                 functionGroup: "connFunctions",
                 function: "sceneTransition",
                 message: "Room Joined",
@@ -216,8 +254,21 @@ exports.joinRoom = async(network, data)  => {
             }
 
             //send room info back to socket
-            network.io.to(network.socket.id).emit("message_client", return_data)  			
+            network.io.to(network.socket.id).emit("message_client", return_data) 			
 		}
+		
+		//TRANSITION TO THE NEXT GAME SCREEN
+		// if(transition === true){
+		// let return_data = {
+		// functionGroup: "connFunctions",
+		// function: "sceneTransition",
+		// message: "Room Joined",
+		// scene: "ArmySelectMenuScene"
+		// }
+
+		// //send room info back to socket
+		// network.io.to(network.socket.id).emit("message_client", return_data)  			
+		// }
 		
 		
     }
@@ -243,6 +294,7 @@ exports.joinRoom = async(network, data)  => {
 // ##################################################################################
 // ##################################################################################
 
+//USED WHEN WE JUST NEED TO PASS CERTAIN VALUES DIRECTLY BACK TO ALL USERS TO TRIGGER A FUNCTION WITH OPTIONAL PARAEMTERS
 exports.messageAll = (network, data) => {
 
 	let return_data = {
