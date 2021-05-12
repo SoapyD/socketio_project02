@@ -80,10 +80,16 @@ var GameUIScene = new Phaser.Class({
 
 GameUIScene.advanceMode = () => {
 
+	
+	if(GameUIScene.mode_state !== -1){
+		GameScene.sfxHandler("button")
+	}
+	
 	GameUIScene.mode_state++;
 	// if(GameUIScene.mode_state >= 2){
 	// 	GameUIScene.mode_state = 0;
 	// }
+	// console.log("mode advanced")
 	
 	
 	let options = {}
@@ -102,6 +108,11 @@ GameUIScene.advanceMode = () => {
 			//activate movement
 			GameUIScene.activateMovement();
 
+			btn = gameFunctions.btn_sprite[0]
+			btn.text.setText("next");			
+			break;
+			
+		case 2:
 			//setup shoot
 			options.mode = "shoot"
 			GameUIScene.selectMode(options);
@@ -110,10 +121,13 @@ GameUIScene.advanceMode = () => {
 			btn.text.x = btn.x - (btn.text.width / 2)
 			btn.text.y = btn.y	- (btn.text.height / 2)				
 			break;
-		case 2:
+		case 3:
 			//activate shoot
 			GameUIScene.activateShooting();
-
+			btn = gameFunctions.btn_sprite[0]
+			btn.text.setText("next");
+			break;
+		case 4:
 			//setup fight
 			options.mode = "fight"
 			GameUIScene.selectMode(options);
@@ -122,10 +136,13 @@ GameUIScene.advanceMode = () => {
 			btn.text.x = btn.x - (btn.text.width / 2)
 			btn.text.y = btn.y	- (btn.text.height / 2)				
 			break;
-		case 3:
+		case 5:
 			//activate fight
 			GameUIScene.activateFighting();
-			
+			btn = gameFunctions.btn_sprite[0]
+			btn.text.setText("next");
+			break
+		case 6:
 			//setup end turn
 			options.mode = "end turn"
 			GameUIScene.selectMode(options);
@@ -134,8 +151,9 @@ GameUIScene.advanceMode = () => {
 			btn.text.x = btn.x - (btn.text.width / 2)
 			btn.text.y = btn.y	- (btn.text.height / 2)				
 			break;
-		case 4:
+		case 7:
 			//activate end turn
+			GameScene.sfxHandler("end_turn")
 			GameUIScene.nextPlayer();
 			GameUIScene.mode_state = -1;
 			GameUIScene.advanceMode()
@@ -146,7 +164,7 @@ GameUIScene.advanceMode = () => {
 
 GameUIScene.selectMode = (options) => {
 	
-	GameScene.sfx['button'].play();
+	// GameScene.sfx['button'].play();
 	
 	if(options.mode){
 		GameScene.mode = options.mode
@@ -154,7 +172,10 @@ GameUIScene.selectMode = (options) => {
 		//RESET ALL PLAYER ACTIONS
 		if(GameScene.units){
 			GameScene.units.forEach((unit) => {
-				unit.resetActions();
+				if(unit.player === GameScene.current_player){
+					unit.resetActions();					
+				}
+
 			})
 		}
 	}
@@ -326,7 +347,8 @@ GameUIScene.nextPlayer = () => {
 			unit.resetActions();
 		}
 	})
-	GameScene.sfx["end_turn"].play();
+	// GameScene.sfx["end_turn"].play();
+	GameScene.sfxHandler("end_turn")
 	
 	if(GameScene.online === false){
 		GameScene.advancePlayer()

@@ -113,9 +113,9 @@ var GameScene = new Phaser.Class({
 		
 		
 		GameScene.music = []
-		GameScene.music.push(this.sound.add('song1', {volume: 0.15}));
-		GameScene.music.push(this.sound.add('song2', {volume: 0.15}));
-		GameScene.music.push(this.sound.add('song3', {volume: 0.15}));
+		GameScene.music.push(this.sound.add('song1', {volume: 0.35}));
+		GameScene.music.push(this.sound.add('song2', {volume: 0.35}));
+		GameScene.music.push(this.sound.add('song3', {volume: 0.35}));
 
 		
 		GameScene.music.forEach((track) => {
@@ -142,8 +142,8 @@ var GameScene = new Phaser.Class({
 		
 		GameScene.setupMap();
 		GameScene.setupCamera();
-		GameScene.seeds();
-		// GameScene.seeds2();
+		// GameScene.seeds();
+		GameScene.seeds2();
 		
 		// GameScene.text_array = []
 		// GameScene.grid.forEach((row, y) => {
@@ -253,23 +253,35 @@ var GameScene = new Phaser.Class({
     }
 });
 
+GameScene.sfxHandler = (sfx) => {
+	
+	if (!GameScene.scene.sound.locked)
+	{
+		// already unlocked so play
+		GameScene.sfx[sfx].play();
+	}
+	else
+	{
+		// wait for 'unlocked' to fire and then play
+		GameScene.scene.sound.once(Phaser.Sound.Events.UNLOCKED, () => {
+			GameScene.sfx[sfx].play();
+		})
+	}
+}
+
 GameScene.musicHandler = () => {
 	
 	if(GameScene.music_playing === false){
-		
-
-		
+				
 		if (!GameScene.scene.sound.locked)
 		{
 			// already unlocked so play
-			// GameScene.musicPlay();
 			GameScene.music[GameScene.music_track].play();
 		}
 		else
 		{
 			// wait for 'unlocked' to fire and then play
 			GameScene.scene.sound.once(Phaser.Sound.Events.UNLOCKED, () => {
-				// GameScene.musicPlay();
 				GameScene.music[GameScene.music_track].play();
 			})
 		}				
@@ -532,7 +544,8 @@ GameScene.seeds = () => {
 	
 	
 	core_data.squad = 2;	
-	unit_info =GameScene.unit_types.find((e) => e.name==="tank")	
+	unit_info =GameScene.unit_types.find((e) => e.name==="tank")
+	combat_weapon_info = GameScene.combat_weapon_types.find((e) => e.name==="none")
 	options = {}
 	gameFunctions.copyObject(options, core_data)
 	gameFunctions.copyObject(options, unit_info)
@@ -547,6 +560,7 @@ GameScene.seeds = () => {
 
 	core_data.squad = 3;	
 	unit_info =GameScene.unit_types.find((e) => e.name==="dread")
+	combat_weapon_info = GameScene.combat_weapon_types.find((e) => e.name==="sword")	
 	options = {}
 	gameFunctions.copyObject(options, core_data)
 	gameFunctions.copyObject(options, unit_info)
@@ -636,20 +650,6 @@ GameScene.seeds = () => {
 	
 	GameScene.units.push(new unit(options));	
 	
-	
-	core_data.squad = 2;	
-	unit_info =GameScene.unit_types.find((e) => e.name==="tank")	
-	options = {}
-	gameFunctions.copyObject(options, core_data)
-	gameFunctions.copyObject(options, unit_info)
-	gameFunctions.copyObject(options, projectile_weapon_info)
-	gameFunctions.copyObject(options, combat_weapon_info)
-	gameFunctions.copyObject(options, armour_info)	
-	options.x = GameScene.tile_size * 12
-	options.y = GameScene.tile_size * 37
-	
-	GameScene.units.push(new unit(options));
-	
 
 	core_data.squad = 3;	
 	unit_info =GameScene.unit_types.find((e) => e.name==="dread")
@@ -661,6 +661,21 @@ GameScene.seeds = () => {
 	gameFunctions.copyObject(options, armour_info)	
 	options.x = GameScene.tile_size * 8
 	options.y = GameScene.tile_size * 38
+	
+	GameScene.units.push(new unit(options));	
+	
+	
+	core_data.squad = 2;	
+	unit_info =GameScene.unit_types.find((e) => e.name==="tank")
+	combat_weapon_info = GameScene.combat_weapon_types.find((e) => e.name==="none")	
+	options = {}
+	gameFunctions.copyObject(options, core_data)
+	gameFunctions.copyObject(options, unit_info)
+	gameFunctions.copyObject(options, projectile_weapon_info)
+	gameFunctions.copyObject(options, combat_weapon_info)
+	gameFunctions.copyObject(options, armour_info)	
+	options.x = GameScene.tile_size * 12
+	options.y = GameScene.tile_size * 37
 	
 	GameScene.units.push(new unit(options));	
 	
@@ -694,10 +709,25 @@ GameScene.seeds2 = () => {
 	gameFunctions.copyObject(options, combat_weapon_info)	
 	armour_info = GameScene.armour_types.find((e) => e.name==="basic")	
 	gameFunctions.copyObject(options, armour_info)		
-	
 	gameFunctions.copyObject(options, core_data)
 
 	GameScene.units.push(new unit(options));
+
+	
+	options = {}
+	core_data.x =GameScene.tile_size * 5;
+	core_data.y =GameScene.tile_size * 2;	
+	unit_info = GameScene.unit_types.find((e) => e.name==="marine")	
+	gameFunctions.copyObject(options, unit_info)
+	projectile_weapon_info = GameScene.projectile_weapon_types.find((e) => e.name==="bolter")	
+	gameFunctions.copyObject(options, projectile_weapon_info)	
+	combat_weapon_info = GameScene.combat_weapon_types.find((e) => e.name==="sword")	
+	gameFunctions.copyObject(options, combat_weapon_info)	
+	armour_info = GameScene.armour_types.find((e) => e.name==="basic")	
+	gameFunctions.copyObject(options, armour_info)			
+	gameFunctions.copyObject(options, core_data)	
+	
+	GameScene.units.push(new unit(options));	
 	
 	
 	options = {}
@@ -713,15 +743,28 @@ GameScene.seeds2 = () => {
 	gameFunctions.copyObject(options, combat_weapon_info)	
 	armour_info = GameScene.armour_types.find((e) => e.name==="basic")	
 	gameFunctions.copyObject(options, armour_info)		
-	
 	gameFunctions.copyObject(options, core_data)
 
 	GameScene.units.push(new unit(options));	
 	
 	
 	
-	core_data.squad = 3;	
-	unit_info =GameScene.unit_types.find((e) => e.name==="dread")
+	// core_data.squad = 3;	
+	// unit_info =GameScene.unit_types.find((e) => e.name==="dread")
+	// options = {}
+	// gameFunctions.copyObject(options, core_data)
+	// gameFunctions.copyObject(options, unit_info)
+	// gameFunctions.copyObject(options, projectile_weapon_info)
+	// gameFunctions.copyObject(options, combat_weapon_info)
+	// gameFunctions.copyObject(options, armour_info)	
+	// options.x = GameScene.tile_size * 7
+	// options.y = GameScene.tile_size * 5
+	
+	// GameScene.units.push(new unit(options));		
+	
+	core_data.squad = 2;	
+	unit_info =GameScene.unit_types.find((e) => e.name==="tank")
+	combat_weapon_info = GameScene.combat_weapon_types.find((e) => e.name==="none")	
 	options = {}
 	gameFunctions.copyObject(options, core_data)
 	gameFunctions.copyObject(options, unit_info)
@@ -732,6 +775,7 @@ GameScene.seeds2 = () => {
 	options.y = GameScene.tile_size * 5
 	
 	GameScene.units.push(new unit(options));		
+	
 	
 }
 

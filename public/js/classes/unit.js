@@ -356,10 +356,15 @@ const unit = class {
 					}	
 				}
 			})
-			//SKIP IF THE UNIT IS IN COMBAT
-			// if(this.in_combat === true){
-			// 	skip = true;
-			// }
+			//SKIP IF IN COMBAT
+			if(this.in_combat === true){
+				//DOUBLE CHECK THE UNIT IS STILL IN COMBAT
+				this.in_combat = this.checkCombat();
+
+				if(this.in_combat === true){
+					skip = true;
+				}
+			}
 			// if(this.moves !== 0 && GameScene.mode === "move"){
 			// 	skip = true;
 			// }
@@ -375,15 +380,18 @@ const unit = class {
 			if(this.path.length === 0){
 				skip = true;
 			}
+		
 			
-			if(skip === true){
-				GameScene.sfx['clear'].play();				
-			}
-			
+			let on_unit = false;
 			//SKIP IF THE POINTER IS OVER THE SHOOTING UNITS, put here so it doesn't play the clear sound
 			if (this.sprite.getBounds().contains(pointer.x, pointer.y)) {
 				skip = true;
+				on_unit = true;
 			}
+		
+			if(skip === true && on_unit === false){
+				GameScene.sfx['clear'].play();				
+			}			
 			
 			
 			//IF THE GHOST CLASHES WITH ANOTHER SPRITE OR GHOST, CANCEL THE MOVE
@@ -727,15 +735,17 @@ const unit = class {
 			}
 		}
 		
-		if(skip === true){
-			GameScene.sfx['clear'].play();
-		}
-		
-		
+		let on_unit = false;
 		//SKIP IF THE POINTER IS OVER THE SHOOTING UNITS, put here so it doesn't play the clear sound
 		if (this.sprite.getBounds().contains(pointer.x, pointer.y)) {
 			skip = true;
+			on_unit = true;
 		}				
+		
+		if(skip === true && on_unit === false){
+			GameScene.sfx['clear'].play();
+		}		
+		
 		
 		//ONLY ADD SHOT IF THE TARGETS ARRAY IS UNDER MAX SHOTS
 		if(dest.x && dest.y && skip === false && this.targets.length < this.max_targets){
@@ -839,8 +849,11 @@ const unit = class {
 						switch(endFunction){
 							case "fight":
 								//SET BOTH UNITS AS FIGHTING EACH OTHER
-								this.in_combat = true;
-								unit.in_combat = true;
+								//only set fighting if the opponent has any capacity to fight
+								if(unit.fight_damage > 0){
+									this.in_combat = true;
+									unit.in_combat = true;
+								}
 								this.fight(this,unit);
 								break;
 							default:
