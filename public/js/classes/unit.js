@@ -158,8 +158,28 @@ const unit = class {
 		this.bar_graphic.destroy();
 	}	
 	
-	wound(damage){
-		this.health -= damage;
+	wound(options){
+		
+		let part_options = {
+			scene: GameScene.scene,
+			text: "-"+options.damage,
+			text_style: { 
+				font: "16px Arial",
+				fill: "#ff0044",
+				align: "center",
+				stroke: "#000000",
+				strokeThickness: 2
+			},
+			pos: {
+				x: this.sprite.x,
+				y: this.sprite.y
+			},
+			tween:true
+		}
+		new particle(part_options)		
+		
+		
+		this.health -= options.damage;
 		this.draw_health()
 		if(this.health <= 0){
 			this.kill();
@@ -898,7 +918,10 @@ const unit = class {
 		new particle(options)		
 		
 		
-		defender.wound(this.fight_damage);
+		options = {
+			damage: this.fight_damage
+		}
+		defender.wound(options);
 	}
 	
 }

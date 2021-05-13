@@ -2,25 +2,60 @@
 const particle = class {
 	constructor(options) {	
 
-		//THIS EXPLOSION
-		options.scene.anims.create({
-		key: options.key,
-		frames: options.scene.anims.generateFrameNumbers(options.spritesheet),
-		frameRate: options.framerate
-		})
 		
 		if(options.sfx){
 			GameScene.sfx[options.sfx].play();
 		}
 		
+		if(options.spritesheet){
+			this.sprite = options.scene.add.sprite(options.pos.x, options.pos.y, options.spritesheet) //.setScale(4);
+			this.sprite.setScale(options.scale).setDepth(2).setAlpha(options.alpha);			
+		}
 		
-		this.sprite = options.scene.add.sprite(options.pos.x, options.pos.y, options.spritesheet) //.setScale(4);
-		this.sprite.setScale(options.scale).setDepth(2).setAlpha(options.alpha);
-		this.sprite.anims.play(options.key);
+		if(options.key){
+			//THIS EXPLOSION
+			options.scene.anims.create({
+			key: options.key,
+			frames: options.scene.anims.generateFrameNumbers(options.spritesheet),
+			frameRate: options.framerate
+			})					
+			
+			this.sprite.anims.play(options.key);			
+			
+			this.sprite.once('animationcomplete', (sprite)=>{
+				sprite.destroy()
+			})				
+			
+		}
 		
-		this.sprite.once('animationcomplete', (sprite)=>{
-			sprite.destroy()
-		})		
+		if(options.text && options.text_style){
+			this.text = options.scene.add.text(options.pos.x, options.pos.y, options.text, options.text_style).setDepth(20);
+			this.text.x -= this.text.width / 2;
+		}
+		
+		if(options.tween){
+			
+			let target;
+			if(this.sprite){
+				target = this.sprite
+			}
+			if(this.text){
+				target = this.text
+			}			
+			
+			options.scene.tweens.add({
+				targets: target,
+				y: options.pos.y - 25,
+				duration: 2300,
+				alpha: 0,
+				ease: 'Power3',
+                onComplete: function ()
+                {
+                    target.destroy();
+                }
+			}); 
+		}
+		
 	}
 	
 }

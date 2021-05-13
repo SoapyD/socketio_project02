@@ -54,9 +54,15 @@ const bullet = class {
 		// unit.parent.wound(bullet.parent.damage);
 
 		if(bullet.parent.player !== unit.parent.player){
+			
 			// unit.setTint(0xff0000);
 			// bullet.parent.kill();
-			unit.parent.wound(bullet.parent.damage);
+
+			let options = {
+				damage: bullet.parent.damage
+			}			
+			
+			unit.parent.wound(options);
 		}		
 	}
 	
@@ -75,14 +81,12 @@ const bullet = class {
 				y: this.sprite.y
 			}
 		}
-		new particle(options)
+		new particle(options)	
 		
 		
 		this.sprite.destroy();
 		this.delete = true;
 
-
-		
 		// this.sprite.disableBody(true, true);
 	}
 	

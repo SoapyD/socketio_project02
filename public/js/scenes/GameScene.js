@@ -52,10 +52,13 @@ var GameScene = new Phaser.Class({
 		this.load.tilemapTiledJSON('map', '../../img/map2.json');
 		// this.load.image('phaserguy', '../../img/phaserguy.png');
 		
-		this.load.image('unit', '../../img/unit.png');
-		this.load.image('tank', '../../img/tank.png');
-		this.load.image('dread', '../../img/dread.png');		
-		this.load.image('base', '../../img/base.png');
+		this.load.image('squad_leader', '../../img/units/squad_leader.png');
+		this.load.image('heavy', '../../img/units/heavy.png');	
+		this.load.image('special', '../../img/units/special.png');			
+		this.load.image('unit', '../../img/units/unit.png');
+		this.load.image('tank', '../../img/units/tank.png');
+		this.load.image('dread', '../../img/units/dread.png');		
+		// this.load.image('base', '../../img/base.png');
 		
 		this.load.image('bullet', '../../img/bullet.png');	
 		this.load.image('marker', '../../img/marker.png');			
@@ -112,10 +115,12 @@ var GameScene = new Phaser.Class({
 		GameScene.sfx.death_machine = this.sound.add('death_machine', {volume: 0.3});
 		
 		
+		GameScene.master_volume = 0; //0.35
+		
 		GameScene.music = []
-		GameScene.music.push(this.sound.add('song1', {volume: 0.35}));
-		GameScene.music.push(this.sound.add('song2', {volume: 0.35}));
-		GameScene.music.push(this.sound.add('song3', {volume: 0.35}));
+		GameScene.music.push(this.sound.add('song1', {volume: GameScene.master_volume}));
+		GameScene.music.push(this.sound.add('song2', {volume: GameScene.master_volume}));
+		GameScene.music.push(this.sound.add('song3', {volume: GameScene.master_volume}));
 
 		
 		GameScene.music.forEach((track) => {
@@ -142,8 +147,33 @@ var GameScene = new Phaser.Class({
 		
 		GameScene.setupMap();
 		GameScene.setupCamera();
+		
+		
+		let options = {
+			unit_list: GameScene.units,
+			scene: GameScene.scene,
+			player: 0,
+			side: 0,
+			angle : 90,
+			tile_size: GameScene.tile_size,
+			unit_types: GameScene.unit_types,
+			projectile_weapon_types: GameScene.projectile_weapon_types,
+			combat_weapon_types: GameScene.combat_weapon_types,
+			armour_types: GameScene.armour_types
+		}
+		GameScene.seeder = new seeder(options)
+		
+		
+
+		options = {x: 3, y:2}
+		GameScene.seeder.placeSquad(options)
+		
+		options = {x: 12, y:2}
+		GameScene.seeder.placeSquad(options)		
+		
+		
 		// GameScene.seeds();
-		GameScene.seeds2();
+		// GameScene.seeds2();
 		
 		// GameScene.text_array = []
 		// GameScene.grid.forEach((row, y) => {
@@ -447,336 +477,5 @@ GameScene.setupCamera = () => {
 }
 
 
-GameScene.seeds = () => {
-
-	let unit_info;
-	let projectile_weapon_info;
-	let combat_weapon_info;	
-	let armour_info;	
-	
-	let core_data = {
-		scene: GameScene.scene, 
-		x: GameScene.tile_size * 3, 
-		y: GameScene.tile_size * 2, 
-		side: 0, 
-		player: 0,
-		squad: 0,
-		angle: 90		
-	}
-	
-	let options;
-	
-	unit_info =GameScene.unit_types.find((e) => e.name==="marine")	
-	projectile_weapon_info = GameScene.projectile_weapon_types.find((e) => e.name==="bolter")	
-	combat_weapon_info = GameScene.combat_weapon_types.find((e) => e.name==="sword")	
-	armour_info = GameScene.armour_types.find((e) => e.name==="basic")			
-	
-	
-	options = {}
-	gameFunctions.copyObject(options, core_data)
-	gameFunctions.copyObject(options, unit_info)
-	gameFunctions.copyObject(options, projectile_weapon_info)
-	gameFunctions.copyObject(options, combat_weapon_info)
-	gameFunctions.copyObject(options, armour_info)	
-
-
-	GameScene.units.push(new unit(options));
-	
-	
-	options = {}
-	gameFunctions.copyObject(options, core_data)
-	gameFunctions.copyObject(options, unit_info)
-	gameFunctions.copyObject(options, projectile_weapon_info)
-	gameFunctions.copyObject(options, combat_weapon_info)
-	gameFunctions.copyObject(options, armour_info)	
-	options.x = GameScene.tile_size * 5
-	options.y = GameScene.tile_size * 2
-	
-	GameScene.units.push(new unit(options));
-	
-	
-	options = {}
-	gameFunctions.copyObject(options, core_data)
-	gameFunctions.copyObject(options, unit_info)
-	gameFunctions.copyObject(options, projectile_weapon_info)
-	gameFunctions.copyObject(options, combat_weapon_info)
-	gameFunctions.copyObject(options, armour_info)	
-	options.x = GameScene.tile_size * 4
-	options.y = GameScene.tile_size * 3
-	
-	GameScene.units.push(new unit(options));	
-	
-	
-	options = {}
-	core_data.squad = 1;
-	gameFunctions.copyObject(options, core_data)
-	gameFunctions.copyObject(options, unit_info)
-	gameFunctions.copyObject(options, projectile_weapon_info)
-	gameFunctions.copyObject(options, combat_weapon_info)
-	gameFunctions.copyObject(options, armour_info)	
-	options.x = GameScene.tile_size * 14
-	options.y = GameScene.tile_size * 2
-	
-	GameScene.units.push(new unit(options));	
-	
-	
-	options = {}
-	gameFunctions.copyObject(options, core_data)
-	gameFunctions.copyObject(options, unit_info)
-	gameFunctions.copyObject(options, projectile_weapon_info)
-	gameFunctions.copyObject(options, combat_weapon_info)
-	gameFunctions.copyObject(options, armour_info)	
-	options.x = GameScene.tile_size * 16
-	options.y = GameScene.tile_size * 2
-	
-	GameScene.units.push(new unit(options));
-	
-	options = {}
-	gameFunctions.copyObject(options, core_data)
-	gameFunctions.copyObject(options, unit_info)
-	gameFunctions.copyObject(options, projectile_weapon_info)
-	gameFunctions.copyObject(options, combat_weapon_info)
-	gameFunctions.copyObject(options, armour_info)	
-	options.x = GameScene.tile_size * 15
-	options.y = GameScene.tile_size * 3
-	
-	GameScene.units.push(new unit(options));	
-	
-	
-	core_data.squad = 2;	
-	unit_info =GameScene.unit_types.find((e) => e.name==="tank")
-	combat_weapon_info = GameScene.combat_weapon_types.find((e) => e.name==="none")
-	options = {}
-	gameFunctions.copyObject(options, core_data)
-	gameFunctions.copyObject(options, unit_info)
-	gameFunctions.copyObject(options, projectile_weapon_info)
-	gameFunctions.copyObject(options, combat_weapon_info)
-	gameFunctions.copyObject(options, armour_info)	
-	options.x = GameScene.tile_size * 12
-	options.y = GameScene.tile_size * 2
-	
-	GameScene.units.push(new unit(options));
-	
-
-	core_data.squad = 3;	
-	unit_info =GameScene.unit_types.find((e) => e.name==="dread")
-	combat_weapon_info = GameScene.combat_weapon_types.find((e) => e.name==="sword")	
-	options = {}
-	gameFunctions.copyObject(options, core_data)
-	gameFunctions.copyObject(options, unit_info)
-	gameFunctions.copyObject(options, projectile_weapon_info)
-	gameFunctions.copyObject(options, combat_weapon_info)
-	gameFunctions.copyObject(options, armour_info)	
-	options.x = GameScene.tile_size * 8
-	options.y = GameScene.tile_size * 2
-	
-	GameScene.units.push(new unit(options));		
-	
-	
-	//PLAYER 1
-	core_data.player = 1;
-	core_data.side = 1;
-	core_data.angle = -90;	
-	
-	unit_info =GameScene.unit_types.find((e) => e.name==="marine")	
-	options = {}
-	gameFunctions.copyObject(options, core_data)
-	gameFunctions.copyObject(options, unit_info)
-	gameFunctions.copyObject(options, projectile_weapon_info)
-	gameFunctions.copyObject(options, combat_weapon_info)
-	gameFunctions.copyObject(options, armour_info)	
-	options.x = GameScene.tile_size * 3
-	options.y = GameScene.tile_size * 37
-	
-	GameScene.units.push(new unit(options));
-	
-	
-	options = {}
-	gameFunctions.copyObject(options, core_data)
-	gameFunctions.copyObject(options, unit_info)
-	gameFunctions.copyObject(options, projectile_weapon_info)
-	gameFunctions.copyObject(options, combat_weapon_info)
-	gameFunctions.copyObject(options, armour_info)	
-	options.x = GameScene.tile_size * 5
-	options.y = GameScene.tile_size * 37
-	
-	GameScene.units.push(new unit(options));
-	
-	
-	options = {}
-	gameFunctions.copyObject(options, core_data)
-	gameFunctions.copyObject(options, unit_info)
-	gameFunctions.copyObject(options, projectile_weapon_info)
-	gameFunctions.copyObject(options, combat_weapon_info)
-	gameFunctions.copyObject(options, armour_info)	
-	options.x = GameScene.tile_size * 4
-	options.y = GameScene.tile_size * 36
-	
-	GameScene.units.push(new unit(options));	
-	
-	
-	options = {}
-	core_data.squad = 1;
-	gameFunctions.copyObject(options, core_data)
-	gameFunctions.copyObject(options, unit_info)
-	gameFunctions.copyObject(options, projectile_weapon_info)
-	gameFunctions.copyObject(options, combat_weapon_info)
-	gameFunctions.copyObject(options, armour_info)	
-	options.x = GameScene.tile_size * 14
-	options.y = GameScene.tile_size * 37
-	
-	GameScene.units.push(new unit(options));	
-	
-	
-	options = {}
-	gameFunctions.copyObject(options, core_data)
-	gameFunctions.copyObject(options, unit_info)
-	gameFunctions.copyObject(options, projectile_weapon_info)
-	gameFunctions.copyObject(options, combat_weapon_info)
-	gameFunctions.copyObject(options, armour_info)	
-	options.x = GameScene.tile_size * 16
-	options.y = GameScene.tile_size * 37
-	
-	GameScene.units.push(new unit(options));
-	
-	options = {}
-	gameFunctions.copyObject(options, core_data)
-	gameFunctions.copyObject(options, unit_info)
-	gameFunctions.copyObject(options, projectile_weapon_info)
-	gameFunctions.copyObject(options, combat_weapon_info)
-	gameFunctions.copyObject(options, armour_info)	
-	options.x = GameScene.tile_size * 15
-	options.y = GameScene.tile_size * 36
-	
-	GameScene.units.push(new unit(options));	
-	
-
-	core_data.squad = 3;	
-	unit_info =GameScene.unit_types.find((e) => e.name==="dread")
-	options = {}
-	gameFunctions.copyObject(options, core_data)
-	gameFunctions.copyObject(options, unit_info)
-	gameFunctions.copyObject(options, projectile_weapon_info)
-	gameFunctions.copyObject(options, combat_weapon_info)
-	gameFunctions.copyObject(options, armour_info)	
-	options.x = GameScene.tile_size * 8
-	options.y = GameScene.tile_size * 38
-	
-	GameScene.units.push(new unit(options));	
-	
-	
-	core_data.squad = 2;	
-	unit_info =GameScene.unit_types.find((e) => e.name==="tank")
-	combat_weapon_info = GameScene.combat_weapon_types.find((e) => e.name==="none")	
-	options = {}
-	gameFunctions.copyObject(options, core_data)
-	gameFunctions.copyObject(options, unit_info)
-	gameFunctions.copyObject(options, projectile_weapon_info)
-	gameFunctions.copyObject(options, combat_weapon_info)
-	gameFunctions.copyObject(options, armour_info)	
-	options.x = GameScene.tile_size * 12
-	options.y = GameScene.tile_size * 37
-	
-	GameScene.units.push(new unit(options));	
-	
-}
-
-GameScene.seeds2 = () => {
-
-	let unit_info;
-	let projectile_weapon_info;
-	let combat_weapon_info;	
-	let armour_info;
-	
-	let core_data = {
-		scene: GameScene.scene, 
-		x: GameScene.tile_size * 3, 
-		y: GameScene.tile_size * 2, 
-		side: 0, 
-		player: 0,
-		squad: 0,
-		angle: 90		
-	}
-	
-	let options;
-	
-	options = {}
-	unit_info = GameScene.unit_types.find((e) => e.name==="marine")	
-	gameFunctions.copyObject(options, unit_info)
-	projectile_weapon_info = GameScene.projectile_weapon_types.find((e) => e.name==="bolter")	
-	gameFunctions.copyObject(options, projectile_weapon_info)	
-	combat_weapon_info = GameScene.combat_weapon_types.find((e) => e.name==="sword")	
-	gameFunctions.copyObject(options, combat_weapon_info)	
-	armour_info = GameScene.armour_types.find((e) => e.name==="basic")	
-	gameFunctions.copyObject(options, armour_info)		
-	gameFunctions.copyObject(options, core_data)
-
-	GameScene.units.push(new unit(options));
-
-	
-	options = {}
-	core_data.x =GameScene.tile_size * 5;
-	core_data.y =GameScene.tile_size * 2;	
-	unit_info = GameScene.unit_types.find((e) => e.name==="marine")	
-	gameFunctions.copyObject(options, unit_info)
-	projectile_weapon_info = GameScene.projectile_weapon_types.find((e) => e.name==="bolter")	
-	gameFunctions.copyObject(options, projectile_weapon_info)	
-	combat_weapon_info = GameScene.combat_weapon_types.find((e) => e.name==="sword")	
-	gameFunctions.copyObject(options, combat_weapon_info)	
-	armour_info = GameScene.armour_types.find((e) => e.name==="basic")	
-	gameFunctions.copyObject(options, armour_info)			
-	gameFunctions.copyObject(options, core_data)	
-	
-	GameScene.units.push(new unit(options));	
-	
-	
-	options = {}
-	core_data.player = 1;
-	core_data.side = 1;	
-	core_data.x =GameScene.tile_size * 3;
-	core_data.y =GameScene.tile_size * 5;	
-	unit_info = GameScene.unit_types.find((e) => e.name==="marine")	
-	gameFunctions.copyObject(options, unit_info)
-	projectile_weapon_info = GameScene.projectile_weapon_types.find((e) => e.name==="bolter")	
-	gameFunctions.copyObject(options, projectile_weapon_info)	
-	combat_weapon_info = GameScene.combat_weapon_types.find((e) => e.name==="sword")	
-	gameFunctions.copyObject(options, combat_weapon_info)	
-	armour_info = GameScene.armour_types.find((e) => e.name==="basic")	
-	gameFunctions.copyObject(options, armour_info)		
-	gameFunctions.copyObject(options, core_data)
-
-	GameScene.units.push(new unit(options));	
-	
-	
-	
-	// core_data.squad = 3;	
-	// unit_info =GameScene.unit_types.find((e) => e.name==="dread")
-	// options = {}
-	// gameFunctions.copyObject(options, core_data)
-	// gameFunctions.copyObject(options, unit_info)
-	// gameFunctions.copyObject(options, projectile_weapon_info)
-	// gameFunctions.copyObject(options, combat_weapon_info)
-	// gameFunctions.copyObject(options, armour_info)	
-	// options.x = GameScene.tile_size * 7
-	// options.y = GameScene.tile_size * 5
-	
-	// GameScene.units.push(new unit(options));		
-	
-	core_data.squad = 2;	
-	unit_info =GameScene.unit_types.find((e) => e.name==="tank")
-	combat_weapon_info = GameScene.combat_weapon_types.find((e) => e.name==="none")	
-	options = {}
-	gameFunctions.copyObject(options, core_data)
-	gameFunctions.copyObject(options, unit_info)
-	gameFunctions.copyObject(options, projectile_weapon_info)
-	gameFunctions.copyObject(options, combat_weapon_info)
-	gameFunctions.copyObject(options, armour_info)	
-	options.x = GameScene.tile_size * 7
-	options.y = GameScene.tile_size * 5
-	
-	GameScene.units.push(new unit(options));		
-	
-	
-}
 
 

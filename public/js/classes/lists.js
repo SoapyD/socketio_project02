@@ -57,6 +57,47 @@ options = {
 unit_types.push(new unit_type(options))
 
 options = {
+	name: 'squad_leader',
+	spritesheet: 'squad_leader',
+	size: 0,
+	sprite_offset: 0.5,
+	cohesion: 75,
+	health: 100,
+	movement: 10,
+	death_sfx: "death_man"
+}
+
+unit_types.push(new unit_type(options))
+
+options = {
+	name: 'heavy',
+	spritesheet: 'heavy',
+	size: 0,
+	sprite_offset: 0.5,
+	cohesion: 75,
+	health: 100,
+	movement: 10,
+	death_sfx: "death_man"
+}
+
+unit_types.push(new unit_type(options))
+
+options = {
+	name: 'special',
+	spritesheet: 'special',
+	size: 0,
+	sprite_offset: 0.5,
+	cohesion: 75,
+	health: 100,
+	movement: 10,
+	death_sfx: "death_man"
+}
+
+unit_types.push(new unit_type(options))
+
+
+
+options = {
 	name: 'dread',
 	spritesheet: 'dread',
 	size: 1,
