@@ -50,6 +50,7 @@ const seeder = class {
 		unit_options.x = options.x * this.tile_size;
 		unit_options.y = options.y * this.tile_size;		
 
+		
 		this.unit_list.push(new unit(unit_options));		
 		
 	}
@@ -72,14 +73,14 @@ const seeder = class {
 		
 		let special_options = {
 			unit: "special",
-			projectile_weapon: "bolter",
+			projectile_weapon: "plasma",
 			combat_weapon: "sword",
 			armour: "basic",
 		}				
 		
 		let heavy_options = {
 			unit: "heavy",
-			projectile_weapon: "bolter",
+			projectile_weapon: "heavy",
 			combat_weapon: "sword",
 			armour: "basic",
 		}		

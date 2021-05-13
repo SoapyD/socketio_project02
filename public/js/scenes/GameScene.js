@@ -63,8 +63,11 @@ var GameScene = new Phaser.Class({
 		//PARTICLE SPRITES
 		this.load.image('bullet', '../../img/particles/bullet.png');	
 		this.load.image('marker', '../../img/particles/marker.png');			
-        this.load.spritesheet('explosion', '../../img/particles/explosion7.png', { frameWidth: 256, frameHeight: 256 }); //CLOSE COMBAT HIT
-        this.load.spritesheet('punch', '../../img/particles/explosion23.png', { frameWidth: 256, frameHeight: 256 });	//WEAPON BLAST
+        this.load.spritesheet('explosion', '../../img/particles/explosion7.png', { frameWidth: 256, frameHeight: 256 }); //WEAPON BLAST
+        this.load.spritesheet('punch', '../../img/particles/explosion23.png', { frameWidth: 256, frameHeight: 256 });	//CLOSE COMBAT BLAST
+        this.load.spritesheet('special_blast', '../../img/particles/explosion65.png', { frameWidth: 256, frameHeight: 256 });	//SPECIAL WEAPON BLAST
+        this.load.spritesheet('heavy_blast', '../../img/particles/explosion102.png', { frameWidth: 256, frameHeight: 256 });	//HEAVY WEAPON BLAST				
+		
 		
 		
 		this.load.setPath('../../sfx');		
@@ -148,11 +151,7 @@ var GameScene = new Phaser.Class({
 		GameScene.setupMap();
 		GameScene.setupCamera();
 		
-		
-		
-		
-		
-		// GameScene.seeds();
+		GameScene.seed();
 		// GameScene.seeds2();
 		
 		// GameScene.text_array = []
@@ -197,6 +196,7 @@ var GameScene = new Phaser.Class({
 		if(GameScene.selected_unit){
 		
 			if(GameScene.left_click === true){
+
 				switch(GameScene.mode) {
 					case "move":
 						GameScene.selected_unit.findPath(GameScene, worldPoint);
@@ -476,11 +476,26 @@ GameScene.seed = () => {
 	GameScene.seeder = new seeder(options)
 
 
-
 	options = {x: 3, y:2}
 	GameScene.seeder.placeSquad(options)
 
-	options = {x: 12, y:2}
+	
+	options = {
+		unit_list: GameScene.units,
+		scene: GameScene.scene,
+		player: 1,
+		side: 1,
+		angle : -90,
+		tile_size: GameScene.tile_size,
+		unit_types: GameScene.unit_types,
+		projectile_weapon_types: GameScene.projectile_weapon_types,
+		combat_weapon_types: GameScene.combat_weapon_types,
+		armour_types: GameScene.armour_types
+	}
+	GameScene.seeder = new seeder(options)	
+	
+	
+	options = {x: 8, y:6}
 	GameScene.seeder.placeSquad(options)	
 	
 }

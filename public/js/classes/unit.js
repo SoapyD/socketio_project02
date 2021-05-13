@@ -25,16 +25,23 @@ const unit = class {
 		this.max_health = options.health;
 		this.death_sfx = options.death_sfx;
 		
+		this.shooting_bonus = options.shooting_bonus,
+		this.fighting_bonus =  options.fighting_bonus,
+		
 		this.armour = options.armour;
 		
 		this.cohesion_check = true;		
 		this.movement = options.movement;
 		
+		this.blast_spritesheet = options.blast_spritesheet;
+		this.blast_radius = options.blast_radius;
 		this.shoot_range = options.shoot_range;
 		this.shoot_damage = options.shoot_damage;
+		this.shoot_ap = options.shoot_ap;
 		this.max_targets = options.max_targets;
 		this.targets = [];
 		
+		this.fight_ap = options.fight_ap;
 		this.fight_damage = options.fight_damage;
 		this.in_combat = false;
 		
@@ -159,10 +166,52 @@ const unit = class {
 	}	
 	
 	wound(options){
+	
+		let hit_chance = this.armour - options.ap + options.bonus;
+		let random_roll = this.getRandomInt(20);
+		
+		let result = ""
+		if(random_roll >= hit_chance){
+			result = "pass"
+		}
+		if(random_roll < hit_chance){
+			result = "fail"
+		}		
+		if(random_roll === 20){
+			result = "critical success"
+		}
+		if(random_roll === 1){
+			result = "critical fail"
+		}
+		
+		let print_text = "";
+		let target;
+		switch(result){
+			case "pass":
+				print_text = "-"+options.damage;
+				target = this;
+			break;
+			case "fail":
+				print_text = "miss";
+				options.damage = 0;
+				target = this;
+			break;
+			case "critical success":
+				options.damage *= 2;
+				print_text = "crit success!\n-"+options.damage;
+				target = this;
+				
+			break;
+			case "critical fail":
+				options.damage = 0;
+				print_text = "crit fail!";
+				target = this;
+			break;
+		}
 		
 		let part_options = {
 			scene: GameScene.scene,
-			text: "-"+options.damage,
+			text: print_text,
 			text_style: { 
 				font: "16px Arial",
 				fill: "#ff0044",
@@ -171,21 +220,23 @@ const unit = class {
 				strokeThickness: 2
 			},
 			pos: {
-				x: this.sprite.x,
-				y: this.sprite.y
+				x: target.sprite.x,
+				y: target.sprite.y
 			},
 			tween:true
 		}
 		new particle(part_options)		
 		
-		
-		this.health -= options.damage;
-		this.draw_health()
-		if(this.health <= 0){
-			this.kill();
+		target.health -= options.damage;
+		target.draw_health()
+		if(target.health <= 0){
+			target.kill();
 		}
 	}	
 	
+	getRandomInt(max) {
+  		return Math.floor(Math.random() * max) + 1;
+	}
 	
 	
     draw_health()
@@ -256,7 +307,7 @@ const unit = class {
 	
 	selectHander(pointer) {
 
-		// console.log(this.parent)
+
 		if (pointer.leftButtonReleased())
 		{
 			
@@ -434,7 +485,7 @@ const unit = class {
 					GameScene.sfx['action'].play();
 				}
 				else{
-					// console.log(this)
+
 					let colours = {
 						line_colour: 0x2ECC40,
 						fill_colour: 0x2ECC40,
@@ -444,7 +495,7 @@ const unit = class {
 						width: 5
 					}
 
-					// console.log(unit.path)
+
 					this.drawPath(colours)
 					
 					GameScene.sfx['action'].play();
@@ -483,7 +534,7 @@ const unit = class {
 							y: unit2.sprite.y,								
 						}
 						if(unit2.path.length > 0){
-							// console.log(unit2)
+
 							unit_pos2 = {
 								x: unit2.path[unit2.path.length - 1].x * GameScene.tile_size,
 								y: unit2.path[unit2.path.length - 1].y * GameScene.tile_size,
@@ -501,7 +552,6 @@ const unit = class {
 					cohesion_check = true;
 				}
 
-				// console.log(this)
 				let colours = {
 					line_colour: 0x2ECC40,
 					fill_colour: 0x2ECC40,
@@ -526,7 +576,6 @@ const unit = class {
 					colours.line_alpha = 0.5;
 				}
 
-				// console.log(unit.path)
 				unit.drawPath(colours)							
 			}
 		})		
@@ -646,9 +695,6 @@ const unit = class {
 								}
 							}
 
-							// if (callBack){
-							// 	console.log(arguments)
-							// }
 							
 						}
 					}.bind(this)			
@@ -769,6 +815,7 @@ const unit = class {
 		
 		//ONLY ADD SHOT IF THE TARGETS ARRAY IS UNDER MAX SHOTS
 		if(dest.x && dest.y && skip === false && this.targets.length < this.max_targets){
+
 			this.targets.push(dest);
 			this.drawTarget();
 			GameScene.sfx['action'].play();
@@ -783,9 +830,7 @@ const unit = class {
 	
 	
 	//CALLED AS PART OF CALLBACK IN "FINDPATH"
-	drawTarget() {
-
-		// console.log(this)		
+	drawTarget() {	
 		
 		if (this.targets){
 
@@ -798,13 +843,11 @@ const unit = class {
 			this.targets.forEach((pos, i) => {
 
 				// this.path_graphic.beginPath();
-				// console.log(this)
 				this.path_graphic.moveTo(this.sprite.x, this.sprite.y);
 				
 				//OFFSET PATH POSITION TO MIDDLE OF TILE
 				pos.x += this.sprite_offset;
 				pos.y += this.sprite_offset;	
-				// console.log(pos)
 				
 				this.path_graphic.lineTo(pos.x, pos.y);
 			})			
@@ -816,7 +859,7 @@ const unit = class {
 	shoot() {
 		
 		if(this.targets){
-			// console.log(this.targets)
+
 			this.targets.forEach((target) => {
 
 				let angle = Phaser.Math.Angle.BetweenPoints(this.sprite, target);
@@ -919,7 +962,10 @@ const unit = class {
 		
 		
 		options = {
-			damage: this.fight_damage
+			damage: this.fight_damage,
+			ap: this.fight_ap,
+			bonus: this.fighting_bonus,
+			attacker: this
 		}
 		defender.wound(options);
 	}

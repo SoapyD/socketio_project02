@@ -11,8 +11,20 @@ const bullet = class {
 		this.side = options.unit.side;
 		this.player = options.unit.player;
 		this.range = options.unit.shoot_range;
+
+		//IF TARGET IS CLOSER THAN TOTAL RANGE, ADJUST THE RANGE
+		let val = Math.pow(options.unit.sprite.x - options.target.x, 2) + Math.pow(options.unit.sprite.y - options.target.y, 2)		
+		let path_range = Math.sqrt(val)
+
+
+		if(path_range < this.range){
+			this.range = path_range
+		}
+		
 		this.speed = 200;
 		this.damage =  options.unit.shoot_damage;
+		this.blast_spritesheet = options.unit.blast_spritesheet;
+		this.blast_radius = options.unit.blast_radius;	
 		
 		this.origin = {
 			x: options.unit.sprite.x,
@@ -53,25 +65,50 @@ const bullet = class {
 		bullet.parent.kill();
 		// unit.parent.wound(bullet.parent.damage);
 
-		if(bullet.parent.player !== unit.parent.player){
-			
-			// unit.setTint(0xff0000);
-			// bullet.parent.kill();
 
-			let options = {
-				damage: bullet.parent.damage
-			}			
-			
-			unit.parent.wound(options);
-		}		
+		//DEAL DAMAGE IF IT'S NOT A BLAST WEAPON
+		if(bullet.parent.blast_radius === 1){
+			if(bullet.parent.player !== unit.parent.player){
+
+				let options = {
+					damage: bullet.parent.damage,
+					ap: bullet.parent.unit.shoot_ap,
+					bonus: bullet.parent.unit.shooting_bonus,					
+					attacker: bullet.parent.unit
+				}			
+
+				unit.parent.wound(options);
+			}					
+		}
+
 	}
 	
 	kill(){
 		
+		if(this.blast_radius > 1){
+			GameScene.units.forEach((unit) => {
+				
+				let val = Math.pow(this.sprite.x - unit.sprite.x, 2) + Math.pow(this.sprite.y - unit.sprite.y, 2)
+				let dist = Math.sqrt(val)
+				if(dist <= (this.blast_radius / 2) * GameScene.tile_size){
+										
+					let options = {
+						damage: this.damage,
+						ap: this.unit.shoot_ap,
+						bonus: this.unit.shooting_bonus,	
+						attacker: this.unit
+					}			
+					unit.wound(options);
+				}
+			})	
+		}
+		
+		
 		let options = {
 			scene: GameScene.scene,
 			key: "boom"+this.id,
-			spritesheet: "explosion",
+			spritesheet: this.blast_spritesheet,
+			width: this.blast_radius,
 			framerate: 30,
 			sfx: "blast",
 			alpha: 0.75,
@@ -93,7 +130,7 @@ const bullet = class {
 	checkRange(bullet){
 		let current_range = Math.sqrt(Math.pow(this.origin.x - this.sprite.x, 2) + Math.pow(this.origin.y - this.sprite.y, 2))
 		
-		// console.log(current_range, this.sprite.x, this.sprite.y, this)
+
 		if (current_range >= this.range){
 			this.kill();
 		}

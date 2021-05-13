@@ -9,7 +9,13 @@ const particle = class {
 		
 		if(options.spritesheet){
 			this.sprite = options.scene.add.sprite(options.pos.x, options.pos.y, options.spritesheet) //.setScale(4);
-			this.sprite.setScale(options.scale).setDepth(2).setAlpha(options.alpha);			
+			this.sprite.setDepth(2).setAlpha(options.alpha); //.setScale(options.scale).
+			
+			
+			if(options.width){
+				this.sprite.displayWidth = options.width * (GameScene.tile_size * 2.5);
+				this.sprite.displayHeight = options.width * (GameScene.tile_size * 2.5);
+			}
 		}
 		
 		if(options.key){
@@ -45,8 +51,8 @@ const particle = class {
 			
 			options.scene.tweens.add({
 				targets: target,
-				y: options.pos.y - 25,
-				duration: 2300,
+				y: options.pos.y - 50,
+				duration: 3000,
 				alpha: 0,
 				ease: 'Power3',
                 onComplete: function ()
