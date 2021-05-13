@@ -149,27 +149,7 @@ var GameScene = new Phaser.Class({
 		GameScene.setupCamera();
 		
 		
-		let options = {
-			unit_list: GameScene.units,
-			scene: GameScene.scene,
-			player: 0,
-			side: 0,
-			angle : 90,
-			tile_size: GameScene.tile_size,
-			unit_types: GameScene.unit_types,
-			projectile_weapon_types: GameScene.projectile_weapon_types,
-			combat_weapon_types: GameScene.combat_weapon_types,
-			armour_types: GameScene.armour_types
-		}
-		GameScene.seeder = new seeder(options)
 		
-		
-
-		options = {x: 3, y:2}
-		GameScene.seeder.placeSquad(options)
-		
-		options = {x: 12, y:2}
-		GameScene.seeder.placeSquad(options)		
 		
 		
 		// GameScene.seeds();
@@ -477,5 +457,32 @@ GameScene.setupCamera = () => {
 }
 
 
+
+GameScene.seed = () => {
+
+	
+	let options = {
+		unit_list: GameScene.units,
+		scene: GameScene.scene,
+		player: 0,
+		side: 0,
+		angle : 90,
+		tile_size: GameScene.tile_size,
+		unit_types: GameScene.unit_types,
+		projectile_weapon_types: GameScene.projectile_weapon_types,
+		combat_weapon_types: GameScene.combat_weapon_types,
+		armour_types: GameScene.armour_types
+	}
+	GameScene.seeder = new seeder(options)
+
+
+
+	options = {x: 3, y:2}
+	GameScene.seeder.placeSquad(options)
+
+	options = {x: 12, y:2}
+	GameScene.seeder.placeSquad(options)	
+	
+}
 
 
