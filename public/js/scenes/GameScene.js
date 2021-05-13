@@ -47,24 +47,24 @@ var GameScene = new Phaser.Class({
 		}
 
 	
-		this.load.image('tileset', './img/gridtiles.png');
-		// this.load.tilemapTiledJSON('map', '../../img/map.json');
-		this.load.tilemapTiledJSON('map', '../../img/map2.json');
-		// this.load.image('phaserguy', '../../img/phaserguy.png');
+		this.load.image('tileset', './img/maps/gridtiles.png');
+		// this.load.tilemapTiledJSON('map', '../../img/maps/map.json');
+		this.load.tilemapTiledJSON('map', '../../img/maps/map2.json');
 		
+		//UNIT SPRITES
 		this.load.image('squad_leader', '../../img/units/squad_leader.png');
 		this.load.image('heavy', '../../img/units/heavy.png');	
 		this.load.image('special', '../../img/units/special.png');			
 		this.load.image('unit', '../../img/units/unit.png');
 		this.load.image('tank', '../../img/units/tank.png');
 		this.load.image('dread', '../../img/units/dread.png');		
-		// this.load.image('base', '../../img/base.png');
 		
-		this.load.image('bullet', '../../img/bullet.png');	
-		this.load.image('marker', '../../img/marker.png');			
 		
-        this.load.spritesheet('explosion', '../../img/explosion7.png', { frameWidth: 256, frameHeight: 256 });
-        this.load.spritesheet('punch', '../../img/explosion23.png', { frameWidth: 256, frameHeight: 256 });		
+		//PARTICLE SPRITES
+		this.load.image('bullet', '../../img/particles/bullet.png');	
+		this.load.image('marker', '../../img/particles/marker.png');			
+        this.load.spritesheet('explosion', '../../img/particles/explosion7.png', { frameWidth: 256, frameHeight: 256 }); //CLOSE COMBAT HIT
+        this.load.spritesheet('punch', '../../img/particles/explosion23.png', { frameWidth: 256, frameHeight: 256 });	//WEAPON BLAST
 		
 		
 		this.load.setPath('../../sfx');		
