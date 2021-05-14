@@ -72,7 +72,7 @@ if(process.env.INSTANCE_TYPE === 'DEV'){
 		console.log("dev server running")
 	})	
 }else{
-	const expressServer = app.listen(process.env.PORT, process.env.IP, function(){
+	expressServer = app.listen(process.env.PORT, process.env.IP, function(){
 		console.log("prod server running")
 	})		
 }
