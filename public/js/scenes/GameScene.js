@@ -18,7 +18,7 @@ var GameScene = new Phaser.Class({
 		this.scene.launch("GameUIScene");
 		
 		
-		GameScene.online = false;		
+		GameScene.online = true;		
 		GameScene.mode = '';
 		GameScene.current_player = 0;
 		GameScene.bullets = [];
