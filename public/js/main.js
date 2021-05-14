@@ -32,8 +32,8 @@ gameFunctions.config = {
           
         mode: Phaser.Scale.FIT,
       },
-    scene: [ GameScene, GameUIScene ]  
-	// scene: [ MainMenuScene, ArmySelectMenuScene, GameScene, GameUIScene ]  
+    // scene: [ GameScene, GameUIScene ]  
+	scene: [ MainMenuScene, ArmySelectMenuScene, GameScene, GameUIScene ]  
     // scene: [ MainMenuScene, ArmySelectMenuScene, GameScene, ArmySetupUIScene ]     
 };
 
