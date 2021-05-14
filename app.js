@@ -1,4 +1,4 @@
-require('dotenv').config()
+// require('dotenv').config()
 
 const express = require('express');
 const app = express();
@@ -59,8 +59,8 @@ app.use(require("./routes/index"));
 seedsUtil.seedDB();
 
 
-const expressServer = app.listen(3000, () => {
-// const expressServer = app.listen(process.env.PORT, process.env.IP, function(){	
+// const expressServer = app.listen(3000, () => {
+const expressServer = app.listen(process.env.PORT, process.env.IP, function(){	
     console.log("server running")
 })
 
