@@ -151,6 +151,24 @@ const seeder = class {
 	}
 
 	
+	placeGeneral(options){
+		
+		
+		let unit_options = {
+			unit: "general",
+			projectile_weapon: "bolter",
+			combat_weapon: "sword",
+			armour: "basic",
+		}		
+		
+
+		unit_options.x = options.x
+		unit_options.y = options.y
+		this.placeUnit(unit_options)
+		
+		this.squad++;
+	}		
+	
 	placeTank(options){
 		
 		

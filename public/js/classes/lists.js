@@ -51,12 +51,28 @@ const armour_types = []
 let options;
 
 options = {
+	name: 'general',
+	spritesheet: 'general',
+	size: 0,
+	sprite_offset: 0.5,
+	cohesion: 0,
+	health: 160,
+	movement: 10,
+	death_sfx: "death_man",
+	
+	shooting_bonus: -2,
+	fighting_bonus: -2
+}
+
+unit_types.push(new unit_type(options))
+
+options = {
 	name: 'squad_leader',
 	spritesheet: 'squad_leader',
 	size: 0,
 	sprite_offset: 0.5,
 	cohesion: 75,
-	health: 100,
+	health: 120,
 	movement: 8,
 	death_sfx: "death_man",
 	
@@ -121,7 +137,7 @@ options = {
 	size: 1,
 	sprite_offset: 0,	
 	cohesion: 0,
-	health: 100,
+	health: 200,
 	movement: 6,
 	death_sfx: "death_machine",
 	shooting_bonus: -1,
@@ -137,7 +153,7 @@ options = {
 	size: 1,
 	sprite_offset: 0.5,	
 	cohesion: 0,
-	health: 100,
+	health: 200,
 	movement: 10,
 	death_sfx: "death_machine",
 	shooting_bonus: 0,
@@ -164,7 +180,7 @@ projectile_weapon_types.push(new projectile_weapon_type(options))
 options = {
 	name: "plasma",
 	shoot_range: 250,
-	shoot_damage: 20,
+	shoot_damage: 60,
 	max_targets: 1,
 	blast_spritesheet: "special_blast",
 	blast_radius: 3,
@@ -176,7 +192,7 @@ projectile_weapon_types.push(new projectile_weapon_type(options))
 options = {
 	name: "heavy",
 	shoot_range: 400,
-	shoot_damage: 20,
+	shoot_damage: 40,
 	max_targets: 1,
 	blast_spritesheet: "heavy_blast",
 	blast_radius: 6,

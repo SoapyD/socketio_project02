@@ -52,6 +52,7 @@ var GameScene = new Phaser.Class({
 		this.load.tilemapTiledJSON('map', '../../img/maps/map2.json');
 		
 		//UNIT SPRITES
+		this.load.image('general', '../../img/units/general.png');
 		this.load.image('squad_leader', '../../img/units/squad_leader.png');
 		this.load.image('heavy', '../../img/units/heavy.png');	
 		this.load.image('special', '../../img/units/special.png');			
@@ -441,8 +442,8 @@ GameScene.setupCamera = () => {
 		if(GameScene.scene.cameras.main.zoom <= 1.5){
 			GameScene.scene.cameras.main.zoom = 1.5
 		}	
-		if(GameScene.scene.cameras.main.zoom >= 2){
-			GameScene.scene.cameras.main.zoom = 2
+		if(GameScene.scene.cameras.main.zoom >= 2.5){
+			GameScene.scene.cameras.main.zoom = 2.5
 		}	
 	});	
 	
@@ -482,6 +483,9 @@ GameScene.seed = () => {
 	options = {x: 14, y:2}
 	GameScene.seeder.placeTank(options)	
 	
+	options = {x: 14, y:5}
+	GameScene.seeder.placeGeneral(options)		
+	
 	options = {x: 17, y:2}
 	GameScene.seeder.placeSquad(options)	
 	
@@ -506,6 +510,9 @@ GameScene.seed = () => {
 
 	options = {x: 14, y:37}
 	GameScene.seeder.placeTank(options)	
+	
+	options = {x: 14, y:34}
+	GameScene.seeder.placeGeneral(options)		
 	
 	options = {x: 17, y:35}
 	GameScene.seeder.placeSquad(options)
