@@ -1,4 +1,8 @@
-// require('dotenv').config()
+if(!process.env.INSTANCE_TYPE){
+	require('dotenv').config();
+	console.log("dev env variables loaded")	
+}
+
 
 
 const express = require('express');
@@ -60,10 +64,20 @@ app.use(require("./routes/index"));
 seedsUtil.seedDB();
 
 
-// const expressServer = app.listen(3000, () => {
-const expressServer = app.listen(process.env.PORT, process.env.IP, function(){	
-    console.log("server running")
-})
+let expressServer;
+
+if(process.env.INSTANCE_TYPE === 'DEV'){
+	expressServer = app.listen(3000, () => {
+	// const expressServer = app.listen(process.env.PORT, process.env.IP, function(){
+		console.log("dev server running")
+	})	
+}else{
+	const expressServer = app.listen(process.env.PORT, process.env.IP, function(){
+		console.log("prod server running")
+	})		
+}
+	
+
 
 const io = socketio(expressServer);
 socketUtil.checkSockets(io);
