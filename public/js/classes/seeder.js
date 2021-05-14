@@ -84,39 +84,64 @@ const seeder = class {
 			combat_weapon: "sword",
 			armour: "basic",
 		}		
-		
 
 		let x_start = options.x;		
 		let y_start = options.y;
 		let id = 0
 
 		for(let y=y_start; y<y_start+4; y+=2){
-			for(let x=x_start; x<x_start+6; x+=2){
+			for(let x=x_start; x<x_start+10; x+=2){
 				
 
-				switch(id){
-					case 3:
-						special_options.x = x
-						special_options.y = y
-						this.placeUnit(special_options)
+				if(this.angle === 90){
+					switch(id){
+						case 6:
+							special_options.x = x
+							special_options.y = y
+							this.placeUnit(special_options)
+							break;
+						case 7:
+							leader_options.x = x
+							leader_options.y = y
+							this.placeUnit(leader_options)
+							break;
+						case 8:
+							heavy_options.x = x
+							heavy_options.y = y
+							this.placeUnit(heavy_options)
+							break;
+						default:
+							unit_options.x = x
+							unit_options.y = y
+							this.placeUnit(unit_options)
 						break;
-					case 4:
-						heavy_options.x = x
-						heavy_options.y = y
-						this.placeUnit(heavy_options)
-						break;
-					case 5:
-						leader_options.x = x
-						leader_options.y = y
-						this.placeUnit(leader_options)
-						break;
-					default:
-						unit_options.x = x
-						unit_options.y = y
-						this.placeUnit(unit_options)
-					break;
+					}					
 				}
-				
+
+				if(this.angle === -90){
+					switch(id){
+						case 1:
+							special_options.x = x
+							special_options.y = y
+							this.placeUnit(special_options)
+							break;
+						case 2:
+							leader_options.x = x
+							leader_options.y = y
+							this.placeUnit(leader_options)
+							break;
+						case 3:
+							heavy_options.x = x
+							heavy_options.y = y
+							this.placeUnit(heavy_options)
+							break;
+						default:
+							unit_options.x = x
+							unit_options.y = y
+							this.placeUnit(unit_options)
+						break;
+					}					
+				}				
 				
 				id++;
 			}			
@@ -124,6 +149,26 @@ const seeder = class {
 		
 		this.squad++;
 	}
+
+	
+	placeTank(options){
+		
+		
+		let unit_options = {
+			unit: "tank",
+			projectile_weapon: "heavy",
+			combat_weapon: "none",
+			armour: "heavy",
+		}		
+		
+
+		unit_options.x = options.x
+		unit_options.y = options.y
+		this.placeUnit(unit_options)
+		
+		this.squad++;
+	}	
+	
 	
 }
 

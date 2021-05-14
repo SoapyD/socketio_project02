@@ -9,11 +9,13 @@ gameFunctions.params = {
 
 
 gameFunctions.config = {
-    type: Phaser.AUTO,
+    // type: Phaser.AUTO,
     // width: gameFunctions.config.cardSize * gameFunctions.config.tableWidth, //800,
 	// height: gameFunctions.config.cardSize * gameFunctions.config.tableHeight, //600,
-    width: 1000,
-    height: 640,
+    // width: 1000,
+    // height: 640,
+	  width: window.innerWidth * window.devicePixelRatio,
+	  height: window.innerHeight * window.devicePixelRatio,	
     physics: {
         default: 'arcade',
         arcade: {

@@ -5,7 +5,8 @@
 -DONE -design larger map
 -DONE -Have graphics and paths cleared if another action is selected. Also reset ghosts
 -DONE -in_combat is still set to true after enemy dies
-
+-DONE -create function automatically lay units out around a certain point
+-DONE -Cohesion check doesn't work properly. It only checks that units are close to one other unit, so as long as a group are close to each other, even though they're away from their other squad, will still pass the cohesion check
 
 
 
@@ -17,7 +18,7 @@
 -error socket messages need to be returned to the originating player only
 
 -move the ghost when online, otherwise it doesn't register. In fact, don't have opponent ghosts generate if online
--create function automatically lay units out around a certain point
+
 
 
 

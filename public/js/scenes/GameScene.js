@@ -426,7 +426,7 @@ GameScene.setupCamera = () => {
 	GameScene.controls = new Phaser.Cameras.Controls.SmoothedKeyControl(controlConfig);
 
 	//SET BOUNDS TO THE CAMERA MOVEMENT
-	let offset = 100;
+	let offset = 200;
 	GameScene.scene.cameras.main.setBounds(
 		-offset, 
 		-offset, 
@@ -434,12 +434,12 @@ GameScene.setupCamera = () => {
 		GameScene.map.height * GameScene.tile_size + (offset * 2));	
 	
 	
-	GameScene.scene.cameras.main.zoom = 1.5;
+	GameScene.scene.cameras.main.zoom = 1.75;
 	GameScene.scene.input.on('wheel', function (pointer, gameObjects, deltaX, deltaY, deltaZ) {
 		GameScene.scene.cameras.main.zoom -= (deltaY / 100) * 0.1;
 
-		if(GameScene.scene.cameras.main.zoom <= 0.8){
-			GameScene.scene.cameras.main.zoom = 0.8
+		if(GameScene.scene.cameras.main.zoom <= 1.5){
+			GameScene.scene.cameras.main.zoom = 1.5
 		}	
 		if(GameScene.scene.cameras.main.zoom >= 2){
 			GameScene.scene.cameras.main.zoom = 2
@@ -479,6 +479,12 @@ GameScene.seed = () => {
 	options = {x: 3, y:2}
 	GameScene.seeder.placeSquad(options)
 
+	options = {x: 14, y:2}
+	GameScene.seeder.placeTank(options)	
+	
+	options = {x: 17, y:2}
+	GameScene.seeder.placeSquad(options)	
+	
 	
 	options = {
 		unit_list: GameScene.units,
@@ -495,8 +501,14 @@ GameScene.seed = () => {
 	GameScene.seeder = new seeder(options)	
 	
 	
-	options = {x: 8, y:6}
-	GameScene.seeder.placeSquad(options)	
+	options = {x: 3, y:35}
+	GameScene.seeder.placeSquad(options)
+
+	options = {x: 14, y:37}
+	GameScene.seeder.placeTank(options)	
+	
+	options = {x: 17, y:35}
+	GameScene.seeder.placeSquad(options)
 	
 }
 

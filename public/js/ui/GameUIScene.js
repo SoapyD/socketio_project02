@@ -173,9 +173,8 @@ GameUIScene.selectMode = (options) => {
 		if(GameScene.units){
 			GameScene.units.forEach((unit) => {
 				if(unit.player === GameScene.current_player){
-					unit.resetActions();					
+					unit.resetActions();
 				}
-
 			})
 		}
 	}

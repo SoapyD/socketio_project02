@@ -57,7 +57,7 @@ options = {
 	sprite_offset: 0.5,
 	cohesion: 75,
 	health: 100,
-	movement: 10,
+	movement: 8,
 	death_sfx: "death_man",
 	
 	shooting_bonus: -1,
@@ -73,7 +73,7 @@ options = {
 	sprite_offset: 0.5,
 	cohesion: 75,
 	health: 100,
-	movement: 10,
+	movement: 8,
 	death_sfx: "death_man",
 	
 	shooting_bonus: -2,
@@ -89,7 +89,7 @@ options = {
 	sprite_offset: 0.5,
 	cohesion: 75,
 	health: 100,
-	movement: 10,
+	movement: 8,
 	death_sfx: "death_man",
 	
 	shooting_bonus: -1,
@@ -105,7 +105,7 @@ options = {
 	sprite_offset: 0.5,
 	cohesion: 75,
 	health: 100,
-	movement: 10,
+	movement: 8,
 	death_sfx: "death_man",
 	shooting_bonus: 0,
 	fighting_bonus: 0	
@@ -115,38 +115,43 @@ unit_types.push(new unit_type(options))
 
 
 
-// options = {
-// 	name: 'dread',
-// 	spritesheet: 'dread',
-// 	size: 1,
-// 	sprite_offset: 0,	
-// 	cohesion: 0,
-// 	health: 100,
-// 	movement: 6,
-// 	death_sfx: "death_machine"
-// }
+options = {
+	name: 'dread',
+	spritesheet: 'dread',
+	size: 1,
+	sprite_offset: 0,	
+	cohesion: 0,
+	health: 100,
+	movement: 6,
+	death_sfx: "death_machine",
+	shooting_bonus: -1,
+	fighting_bonus: -2
+}
 
-// unit_types.push(new unit_type(options))
+unit_types.push(new unit_type(options))
 
-// options = {
-// 	name: 'tank',
-// 	spritesheet: 'tank',
-// 	size: 1,
-// 	sprite_offset: 0.5,	
-// 	cohesion: 0,
-// 	health: 100,
-// 	movement: 12,
-// 	death_sfx: "death_machine"
-// }
 
-// unit_types.push(new unit_type(options))
+options = {
+	name: 'tank',
+	spritesheet: 'tank',
+	size: 1,
+	sprite_offset: 0.5,	
+	cohesion: 0,
+	health: 100,
+	movement: 10,
+	death_sfx: "death_machine",
+	shooting_bonus: 0,
+	fighting_bonus: -2
+}
+
+unit_types.push(new unit_type(options))
 
 
 
 //PROJECTILE WEAPONS
 options = {
 	name: "bolter",
-	shoot_range: 200,
+	shoot_range: 300,
 	shoot_damage: 20,
 	max_targets: 2,
 	blast_spritesheet: "explosion",
@@ -158,9 +163,9 @@ projectile_weapon_types.push(new projectile_weapon_type(options))
 
 options = {
 	name: "plasma",
-	shoot_range: 200,
+	shoot_range: 250,
 	shoot_damage: 20,
-	max_targets: 2,
+	max_targets: 1,
 	blast_spritesheet: "special_blast",
 	blast_radius: 3,
 	shoot_ap: 6
@@ -170,9 +175,9 @@ projectile_weapon_types.push(new projectile_weapon_type(options))
 
 options = {
 	name: "heavy",
-	shoot_range: 200,
+	shoot_range: 400,
 	shoot_damage: 20,
-	max_targets: 2,
+	max_targets: 1,
 	blast_spritesheet: "heavy_blast",
 	blast_radius: 6,
 	shoot_ap: 4
@@ -201,6 +206,13 @@ combat_weapon_types.push(new combat_weapon_type(options))
 
 options = {
 	name: "basic",
+	armour: 10,
+}
+
+armour_types.push(new armour_type(options))
+
+options = {
+	name: "heavy",
 	armour: 15,
 }
 

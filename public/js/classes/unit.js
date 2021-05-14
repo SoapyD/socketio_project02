@@ -61,10 +61,10 @@ const unit = class {
 		let colour = 0xFFFFFF;
 		switch(options.player){
 			case 0:
-				colour = 0xFF0000; //red
+				colour = 0xff3333; //red
 				break;
 			case 1:
-				colour = 0x4863A0; //blue
+				colour = 0x3399ff; //blue
 				break;
 			case 2:
 				colour = 0x00FF00; //lime
@@ -74,16 +74,20 @@ const unit = class {
 				break;				
 		}
 		
-		this.sprite.setTint(colour)
+		this.colour = colour
+		this.sprite.setTint(this.colour)
 		this.sprite.parent = this
 		GameScene.unit_collisions[this.side].add(this.sprite)
 		this.sprite.on('pointerup', this.selectHander)
 		
 		
-		this.sprite_ghost = options.scene.add.image(x,y,options.spritesheet);
-		this.sprite_ghost.alpha = 0.5;
+		this.sprite_ghost = options.scene.add.image(x,y,options.spritesheet).setInteractive();
+		this.sprite_ghost.alpha = 1; //0.5;
 		this.sprite_ghost.setTint(colour)
 		this.sprite_ghost.angle = options.angle;
+		this.sprite_ghost.parent = this;
+		this.sprite_ghost.is_ghost = true;
+		this.sprite_ghost.on('pointerup', this.selectHander)
 
 		
 		//THIS EXPLOSION
@@ -131,7 +135,12 @@ const unit = class {
 		this.path = [];
 		this.targets = [];		
 		
-		this.resetGhost();
+		// this.resetGhost();
+		this.sprite_ghost.x = this.sprite.x;
+		this.sprite_ghost.y = this.sprite.y;
+		this.sprite_ghost.angle = this.sprite.angle;
+		this.sprite_ghost.alpha = 1;
+				
 		this.path_graphic.clear();
 		this.cohesion_graphic.clear();
 	}
@@ -146,7 +155,9 @@ const unit = class {
 		this.sprite_ghost.x = this.sprite.x;
 		this.sprite_ghost.y = this.sprite.y;
 		this.sprite_ghost.angle = this.sprite.angle;
-		this.sprite_ghost.alpha = 0.5;
+		this.sprite_ghost.alpha = 1;
+		this.sprite.setTint(this.colour)
+		this.sprite.alpha = 1;
 		
 		
 		if(GameScene.mode === "move" || GameScene.mode === "fight"){
@@ -307,7 +318,6 @@ const unit = class {
 	
 	selectHander(pointer) {
 
-
 		if (pointer.leftButtonReleased())
 		{
 			
@@ -328,7 +338,10 @@ const unit = class {
 				}
 				GameScene.selected_unit = this.parent;
 				
-				this.parent.resetGhost();
+				if(!this.is_ghost){
+					this.parent.resetGhost();
+				}
+					
 				
 				GameScene.sfx['select'].play();
 				
@@ -337,6 +350,7 @@ const unit = class {
 
 		}
 	}
+
 	
 	unselectHandler() {
 		GameScene.selected_unit = undefined;
@@ -401,7 +415,7 @@ const unit = class {
 			if(this.path.length > 1){
 				let pos = this.path[this.path.length - 1];
 
-				this.sprite_ghost.alpha = 0.5;
+				// this.sprite_ghost.alpha = 0.5;
 				this.sprite_ghost.x = pos.x * GameScene.tile_size;
 				this.sprite_ghost.y = pos.y * GameScene.tile_size;
 				// this.resetGhost();
@@ -505,80 +519,179 @@ const unit = class {
 		}
 	}
 
-	cohesionCheck() {
+	cohesionCheck2() {
 		
-		//LOOP THROUGH UNITS, IF UNIT IS SAME PLAYER AND SQUAD BUT ISN'T THIS UNIT
+		//GET THE UNITS IN THE SQUAD
+		let open = [];
 		GameScene.units.forEach((unit) => {
-			if(unit.player === this.player && unit.squad === this.squad) //unit.id !== this.id && 
+			if(unit.id !== this.id && unit.player === this.player && unit.squad === this.squad) //
 			{
-				//LOOP THROUGH UNITS AGAIN AND CHECK COHESION
-				let cohesion_check = false;
-				let squad_count = 0;
-				GameScene.units.forEach((unit2) => {
-					if(unit2.id !== unit.id && unit2.player === this.player && unit2.squad === this.squad)
-					{
-						squad_count++;
-						
-						let unit_pos = {
-							x: unit.sprite.x,
-							y: unit.sprite.y,								
-						}
-						if(unit.path.length > 0){
-							unit_pos = {
-								x: unit.path[unit.path.length - 1].x * GameScene.tile_size,
-								y: unit.path[unit.path.length - 1].y * GameScene.tile_size,
-							}
-						}
-						let unit_pos2 = {
-							x: unit2.sprite.x,
-							y: unit2.sprite.y,								
-						}
-						if(unit2.path.length > 0){
-
-							unit_pos2 = {
-								x: unit2.path[unit2.path.length - 1].x * GameScene.tile_size,
-								y: unit2.path[unit2.path.length - 1].y * GameScene.tile_size,
-							}								
-						}							
-
-						let distance = gameFunctions.twoPointDistance(unit_pos, unit_pos2);
-						if(distance <= unit.cohesion){
-							cohesion_check = true;
-						}
+				open.push(unit);
+			}
+		})
+		
+		let closed = [];
+		closed.push(this)
+		
+		for(let i=0; i<1000; i++){
+			
+			let new_open = []
+			let closed_add = []
+			let any_closed = false;
+			open.forEach((open_unit) => {
+				
+				let add_closed = false;
+				closed.forEach((closed_unit) => {
+					let distance = gameFunctions.twoPointDistance(open_unit.sprite_ghost, closed_unit.sprite_ghost);
+					if(distance <= open_unit.cohesion){
+						add_closed = true;
 					}
 				})
-
-				if(squad_count === 0){
-					cohesion_check = true;
+				
+				if(add_closed === true){
+					closed_add.push(open_unit)
+					any_closed = true;
 				}
+				else{
+					new_open.push(open_unit)
+				}
+			})
+
+			// console.log("open", open.length, "closed", closed.length, "closed add:",closed_add.length, "new add:",new_open.length)
+			// console.log(closed_add)
+		
+			
+			//
+			if(any_closed === false){
+				// console.log("no cohesion")
+				return false;
+				// break;
+			}
+			if(new_open.length === 0){
+				// console.log("cohesion found!")
+				return true;
+				// break;				
+			}
+			
+			// closed.concat(closed_add)
+			closed = closed_add
+			// console.log(closed.length)
+			open = new_open
+				
+			
+		}
+	}
+	
+	cohesionCheck() {
+		
+		GameScene.units.forEach((unit) => {
+			if(unit.player === this.player && unit.squad === this.squad) //unit.id !== this.id && 
+			{		
+		
+				unit.cohesion_check = unit.cohesionCheck2();
 
 				let colours = {
 					line_colour: 0x2ECC40,
 					fill_colour: 0x2ECC40,
 					line_alpha: 0.75,
-					circle_alpha: 0.15,
-					fill_alpha: 0.15,
+					circle_alpha: 0.75,
+					fill_alpha: 0.25,
 					width: 5
 				}
-				unit.cohesion_check = true
-				
-				if(cohesion_check === false){
+				// this.cohesion_check = true
+
+				if(unit.cohesion_check === false){
 					colours.line_colour = 0xFF0000;
 					colours.fill_colour = 0xFF0000; //0x6666ff	
 					colours.width = 2.5;
-					
-					unit.cohesion_check = false;
-
 				}
-				
+
 				if(unit.id !== this.id){
-					colours.line_colour = 0x808080;
-					colours.line_alpha = 0.5;
+					colours.circle_alpha = 0.4,
+					colours.fill_alpha = 0.05,					
+					colours.line_colour = 0x808080; //grey
+					colours.line_alpha = 0.1;
 				}
 
-				unit.drawPath(colours)							
+				unit.drawPath(colours)
 			}
-		})		
+		})
+		
+// 		//LOOP THROUGH UNITS, IF UNIT IS SAME PLAYER AND SQUAD BUT ISN'T THIS UNIT
+// 		GameScene.units.forEach((unit) => {
+// 			if(unit.player === this.player && unit.squad === this.squad) //unit.id !== this.id && 
+// 			{
+// 				//LOOP THROUGH UNITS AGAIN AND CHECK COHESION
+// 				let cohesion_check = false;
+// 				let squad_count = 0;
+// 				GameScene.units.forEach((unit2) => {
+// 					if(unit2.id !== unit.id && unit2.player === this.player && unit2.squad === this.squad)
+// 					{
+// 						squad_count++;
+						
+// 						let unit_pos = {
+// 							x: unit.sprite.x,
+// 							y: unit.sprite.y,								
+// 						}
+// 						if(unit.path.length > 0){
+// 							unit_pos = {
+// 								x: unit.path[unit.path.length - 1].x * GameScene.tile_size,
+// 								y: unit.path[unit.path.length - 1].y * GameScene.tile_size,
+// 							}
+// 						}
+// 						let unit_pos2 = {
+// 							x: unit2.sprite.x,
+// 							y: unit2.sprite.y,								
+// 						}
+// 						if(unit2.path.length > 0){
+
+// 							unit_pos2 = {
+// 								x: unit2.path[unit2.path.length - 1].x * GameScene.tile_size,
+// 								y: unit2.path[unit2.path.length - 1].y * GameScene.tile_size,
+// 							}								
+// 						}							
+
+// 						let distance = gameFunctions.twoPointDistance(unit_pos, unit_pos2);
+// 						if(distance <= unit.cohesion){
+// 							cohesion_check = true;
+// 						}
+// 					}
+// 				})
+				
+
+// 				if(squad_count === 0){
+// 					cohesion_check = true;
+// 				}
+
+// 				let colours = {
+// 					line_colour: 0x2ECC40,
+// 					fill_colour: 0x2ECC40,
+// 					line_alpha: 0.75,
+// 					circle_alpha: 0.25,
+// 					fill_alpha: 0.25,
+// 					width: 5
+// 				}
+// 				unit.cohesion_check = true
+				
+// 				if(cohesion_check === false){
+// 					colours.line_colour = 0xFF0000;
+// 					colours.fill_colour = 0xFF0000; //0x6666ff	
+// 					colours.width = 2.5;
+					
+// 					unit.cohesion_check = false;
+
+// 				}
+				
+// 				if(unit.id !== this.id){
+// 					colours.circle_alpha = 0.05,
+// 					colours.fill_alpha = 0.1,					
+// 					colours.line_colour = 0x808080; //grey
+// 					colours.line_alpha = 0.1;
+// 				}
+
+// 				unit.drawPath(colours)
+// 			}
+// 		})		
 		
 	}
 	
@@ -586,6 +699,7 @@ const unit = class {
 	//CALLED AS PART OF CALLBACK IN "FINDPATH"
 	drawPath(colours) {
 		
+
 		let last_pos = {
 			x: this.sprite.x / GameScene.tile_size,
 			y: this.sprite.y / GameScene.tile_size
@@ -614,6 +728,9 @@ const unit = class {
 			
 			this.path_graphic.strokePath();				
 	
+			this.sprite.setTint(0x808080) //turn unit grey if it has a ghost path
+			this.sprite.alpha = 0.25;
+			
 		}
 		
 		this.cohesion_graphic.lineStyle(colours.width, colours.line_colour, colours.circle_alpha);
@@ -647,6 +764,9 @@ const unit = class {
 	move(endFunction="move") {
 		
 		this.cohesion_graphic.clear()
+		this.sprite.setTint(this.colour)
+		this.sprite.alpha = 1;
+		this.sprite_ghost.alpha = 0.5;
 		this.is_moving = true;
 		
 		if (this.path){
