@@ -85,6 +85,11 @@ connFunctions.setRoomInfo = (data) => {
 connFunctions.sceneTransition = (data) => {
     // console.log(data.message)
 
+	
+	if(gameFunctions.current_uiscene){
+		connFunctions.uiSceneTransition();
+	}	
+
 	//IF THERE'S A CURRENT FORM LOADED, TWEEN IT AWAY BEFORE TRANSITIONING
 	if (gameFunctions.current_form){
 	

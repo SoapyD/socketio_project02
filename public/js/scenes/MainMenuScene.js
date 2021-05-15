@@ -20,7 +20,7 @@ var MainMenuScene = new Phaser.Class({
     create: function()
     {
         let x_origin = this.cameras.main.centerX	
-        let y_origin = this.cameras.main.centerY	
+        let y_origin = this.cameras.main.centerY
 
         this.add.grid(
             x_origin, y_origin, 

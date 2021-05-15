@@ -13,6 +13,7 @@ var ArmySetupUIScene = new Phaser.Class({
     {
         this.load.spritesheet("buttons", "./img/buttons3.jpg", 
         { frameWidth: 100, frameHeight: 50, endFrame: 3 });	
+	
     },
 
     create: function()
@@ -38,6 +39,10 @@ var ArmySetupUIScene = new Phaser.Class({
 		gameFunctions.btn_sprite.forEach(btn => {
 			gameFunctions.buttonPress(btn, btn.clickAction, btn.callbackParams);                    
 		})		
+		
+
+		
+		
 		
 		gameFunctions.current_uiscene = this.scene.get('ArmySetupUIScene');
 		
