@@ -6,7 +6,8 @@
 // const address = 'https://node-v12-ubyor.run-eu-central1.goorm.io';
 // const address = 'http://localhost:3000';
 // const socket = io(address)
-const socket = io(process.env.SOCKET_ADDRESS)
+
+const socket = io(socket_address)
 
 
 
