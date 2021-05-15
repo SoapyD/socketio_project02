@@ -18,7 +18,7 @@ var GameScene = new Phaser.Class({
 		this.scene.launch("GameUIScene");
 		
 		
-		GameScene.online = true;		
+		GameScene.online = false;		
 		GameScene.mode = '';
 		GameScene.current_player = 0;
 		GameScene.bullets = [];
@@ -69,6 +69,7 @@ var GameScene = new Phaser.Class({
         this.load.spritesheet('special_blast', '../../img/particles/explosion65.png', { frameWidth: 256, frameHeight: 256 });	//SPECIAL WEAPON BLAST
         this.load.spritesheet('heavy_blast', '../../img/particles/explosion102.png', { frameWidth: 256, frameHeight: 256 });	//HEAVY WEAPON BLAST				
 		
+        this.load.spritesheet('symbols', '../../img/symbols.png', { frameWidth: 190, frameHeight: 200 }); 
 		
 		
 		this.load.setPath('../../sfx');		
@@ -153,7 +154,7 @@ var GameScene = new Phaser.Class({
 		GameScene.setupCamera();
 		
 		GameScene.seed();
-		// GameScene.seeds2();
+		// GameScene.seed2();
 		
 		// GameScene.text_array = []
 		// GameScene.grid.forEach((row, y) => {
@@ -256,7 +257,8 @@ var GameScene = new Phaser.Class({
 				if(unit.player === GameScene.current_player){
 
 					if(unit.is_moving === true){
-						unit.draw_health()
+						// unit.draw_health()
+						unit.updateUnitElements();
 					}
 				}
 			})
@@ -481,7 +483,7 @@ GameScene.seed = () => {
 	GameScene.seeder.placeSquad(options)
 
 	options = {x: 14, y:2}
-	GameScene.seeder.placeTank(options)	
+	GameScene.seeder.placeTank(options)
 	
 	options = {x: 14, y:5}
 	GameScene.seeder.placeGeneral(options)		
@@ -520,3 +522,27 @@ GameScene.seed = () => {
 }
 
 
+GameScene.seed2 = () => {
+
+	
+	let options = {
+		unit_list: GameScene.units,
+		scene: GameScene.scene,
+		player: 0,
+		side: 0,
+		angle : 90,
+		tile_size: GameScene.tile_size,
+		unit_types: GameScene.unit_types,
+		projectile_weapon_types: GameScene.projectile_weapon_types,
+		combat_weapon_types: GameScene.combat_weapon_types,
+		armour_types: GameScene.armour_types
+	}
+	GameScene.seeder = new seeder(options)
+
+	options = {x: 14, y:5}
+	GameScene.seeder.placeGeneral(options)		
+
+	options = {x: 14, y:2}
+	GameScene.seeder.placeTank(options)	
+	
+}

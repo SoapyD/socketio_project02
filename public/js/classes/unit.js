@@ -89,6 +89,11 @@ const unit = class {
 		this.sprite_ghost.is_ghost = true;
 		this.sprite_ghost.on('pointerup', this.selectHander)
 
+		this.sprite_symbol = options.scene.add.image(x,y,"symbols").setScale(0.09)
+		this.sprite_symbol.x += (this.sprite.displayWidth / 2) //- (this.sprite_symbol.displayWidth / 2)
+		this.sprite_symbol.y -= (this.sprite.displayHeight / 2) //- (this.sprite_symbol.displayHeight / 2)
+		this.sprite_symbol.setFrame(options.symbol_id).setDepth(10);
+		
 		
 		//THIS EXPLOSION
 		options.scene.anims.create({
@@ -101,7 +106,12 @@ const unit = class {
 		//SETUP GRAPHICS THAT CAN BE USED TO DRAW ACTIONS
 		this.bar_graphic = options.scene.add.graphics();
 		this.path_graphic = options.scene.add.graphics();
-		this.cohesion_graphic = options.scene.add.graphics();		
+		this.cohesion_graphic = options.scene.add.graphics();
+		this.blast_graphics = [];
+		for(let i=0; i<10; i++){
+			this.blast_graphics.push(options.scene.add.graphics());
+		}
+
 		
 		// this.group = options.scene.add.group();		
 		// this.group.add(this.sprite)
@@ -143,6 +153,10 @@ const unit = class {
 				
 		this.path_graphic.clear();
 		this.cohesion_graphic.clear();
+		
+		this.blast_graphics.forEach((graphic) => {
+			graphic.clear();
+		})
 	}
 	
 	resetMove() {
@@ -165,7 +179,13 @@ const unit = class {
 				this.cohesionCheck();	
 			}
 		}
-	}	
+	}
+	
+	updateUnitElements(){
+		this.draw_health();
+		this.sprite_symbol.x = this.sprite.x + (this.sprite.displayWidth / 2) //- (this.sprite_symbol.displayWidth / 2)
+		this.sprite_symbol.y = this.sprite.y - (this.sprite.displayHeight / 2) //- (this.sprite_symbol.displayHeight / 2)
+	}
 	
 	kill(){	
 		this.alive = false;
@@ -174,6 +194,7 @@ const unit = class {
 		this.sprite.destroy();
 		this.sprite_ghost.destroy();
 		this.bar_graphic.destroy();
+		this.sprite_symbol.destroy();
 	}	
 	
 	wound(options){
@@ -556,10 +577,6 @@ const unit = class {
 					new_open.push(open_unit)
 				}
 			})
-
-			// console.log("open", open.length, "closed", closed.length, "closed add:",closed_add.length, "new add:",new_open.length)
-			// console.log(closed_add)
-		
 			
 			//
 			if(any_closed === false){
@@ -616,82 +633,6 @@ const unit = class {
 				unit.drawPath(colours)
 			}
 		})
-		
-// 		//LOOP THROUGH UNITS, IF UNIT IS SAME PLAYER AND SQUAD BUT ISN'T THIS UNIT
-// 		GameScene.units.forEach((unit) => {
-// 			if(unit.player === this.player && unit.squad === this.squad) //unit.id !== this.id && 
-// 			{
-// 				//LOOP THROUGH UNITS AGAIN AND CHECK COHESION
-// 				let cohesion_check = false;
-// 				let squad_count = 0;
-// 				GameScene.units.forEach((unit2) => {
-// 					if(unit2.id !== unit.id && unit2.player === this.player && unit2.squad === this.squad)
-// 					{
-// 						squad_count++;
-						
-// 						let unit_pos = {
-// 							x: unit.sprite.x,
-// 							y: unit.sprite.y,								
-// 						}
-// 						if(unit.path.length > 0){
-// 							unit_pos = {
-// 								x: unit.path[unit.path.length - 1].x * GameScene.tile_size,
-// 								y: unit.path[unit.path.length - 1].y * GameScene.tile_size,
-// 							}
-// 						}
-// 						let unit_pos2 = {
-// 							x: unit2.sprite.x,
-// 							y: unit2.sprite.y,								
-// 						}
-// 						if(unit2.path.length > 0){
-
-// 							unit_pos2 = {
-// 								x: unit2.path[unit2.path.length - 1].x * GameScene.tile_size,
-// 								y: unit2.path[unit2.path.length - 1].y * GameScene.tile_size,
-// 							}								
-// 						}							
-
-// 						let distance = gameFunctions.twoPointDistance(unit_pos, unit_pos2);
-// 						if(distance <= unit.cohesion){
-// 							cohesion_check = true;
-// 						}
-// 					}
-// 				})
-				
-
-// 				if(squad_count === 0){
-// 					cohesion_check = true;
-// 				}
-
-// 				let colours = {
-// 					line_colour: 0x2ECC40,
-// 					fill_colour: 0x2ECC40,
-// 					line_alpha: 0.75,
-// 					circle_alpha: 0.25,
-// 					fill_alpha: 0.25,
-// 					width: 5
-// 				}
-// 				unit.cohesion_check = true
-				
-// 				if(cohesion_check === false){
-// 					colours.line_colour = 0xFF0000;
-// 					colours.fill_colour = 0xFF0000; //0x6666ff	
-// 					colours.width = 2.5;
-					
-// 					unit.cohesion_check = false;
-
-// 				}
-				
-// 				if(unit.id !== this.id){
-// 					colours.circle_alpha = 0.05,
-// 					colours.fill_alpha = 0.1,					
-// 					colours.line_colour = 0x808080; //grey
-// 					colours.line_alpha = 0.1;
-// 				}
-
-// 				unit.drawPath(colours)
-// 			}
-// 		})		
 		
 	}
 	
@@ -767,9 +708,10 @@ const unit = class {
 		this.sprite.setTint(this.colour)
 		this.sprite.alpha = 1;
 		this.sprite_ghost.alpha = 0.5;
-		this.is_moving = true;
 		
-		if (this.path){
+		if (this.path && this.is_moving === false){
+			
+			this.is_moving = true;
 			
 			GameScene.sfx['movement'].play();
 			let tweens = []
@@ -945,7 +887,10 @@ const unit = class {
 
 	removeTarget() {
 		this.targets.pop();
-		this.drawTarget()
+		this.blast_graphics.forEach((graphic) => {
+			graphic.clear();
+		})		
+		this.drawTarget();
 	}
 	
 	
@@ -970,7 +915,17 @@ const unit = class {
 				pos.y += this.sprite_offset;	
 				
 				this.path_graphic.lineTo(pos.x, pos.y);
-			})			
+				
+				if(this.blast_radius > 0){
+					let blast_graphic = this.blast_graphics[i];
+					// blast_graphic.lineStyle(3 * GameScene.tile_size, colours.line_colour, 0.5);
+					blast_graphic.fillStyle(0x0000FF, 0.5);
+					let circle = new Phaser.Geom.Circle(pos.x, pos.y, (this.blast_radius / 2) * GameScene.tile_size);
+					blast_graphic.fillCircleShape(circle);
+
+					blast_graphic.strokePath();
+				}
+			})
 
 			this.path_graphic.strokePath();		
 		}
@@ -980,8 +935,10 @@ const unit = class {
 		
 		if(this.targets){
 
-			this.targets.forEach((target) => {
+			this.targets.forEach( async(target, i) => {
 
+				await this.delay(1000 * i)
+				
 				let angle = Phaser.Math.Angle.BetweenPoints(this.sprite, target);
 				if(angle){
 					this.sprite.angle = Phaser.Math.RadToDeg(angle);
@@ -997,13 +954,16 @@ const unit = class {
 
 					GameScene.bullets.push(new bullet(options))
 					//BULLET DEATH KILLS THE GRAPHIC
-				}				
-				
+				}
 			})
 			this.shots = 1;
 			this.targets = [];
 		}		
 		
+	}
+
+	delay = async(ms) => {
+		return new Promise(resolve => setTimeout(resolve, ms));
 	}
 	
 	checkCombat(endFunction) {

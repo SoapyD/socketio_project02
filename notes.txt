@@ -7,7 +7,8 @@
 -DONE -in_combat is still set to true after enemy dies
 -DONE -create function automatically lay units out around a certain point
 -DONE -Cohesion check doesn't work properly. It only checks that units are close to one other unit, so as long as a group are close to each other, even though they're away from their other squad, will still pass the cohesion check
-
+-DONE -Fix the multiple press for movement bug
+-DONE -Add in a delay for bullets being shot
 
 
 -Hide action buttons when it's not a players turn

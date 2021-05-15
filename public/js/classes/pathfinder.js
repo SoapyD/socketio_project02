@@ -248,6 +248,8 @@ const pathfinder = class {
 
 		if(skip === false){
 			
+			//CHECK CELL CHECK SLIGHTLY DIFFERENTLY DEPENDING ON THE SPRITE OFFSET VALUE
+
 			if(this.parent.sprite_offset === 0){
 				for(let x=-this.obj_size;x<=0;x++){
 					for(let y=-this.obj_size;y<=0;y++){

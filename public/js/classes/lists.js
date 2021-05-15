@@ -12,7 +12,9 @@ const unit_type = class {
 		this.death_sfx = options.death_sfx;
 		
 		this.shooting_bonus = options.shooting_bonus;
-		this.fighting_bonus = options.fighting_bonus;		
+		this.fighting_bonus = options.fighting_bonus;
+		
+		this.symbol_id = options.symbol_id;
 	}
 }
 
@@ -61,7 +63,8 @@ options = {
 	death_sfx: "death_man",
 	
 	shooting_bonus: -2,
-	fighting_bonus: -2
+	fighting_bonus: -2,
+	symbol_id: 5,
 }
 
 unit_types.push(new unit_type(options))
@@ -77,7 +80,8 @@ options = {
 	death_sfx: "death_man",
 	
 	shooting_bonus: -1,
-	fighting_bonus: -1
+	fighting_bonus: -1,
+	symbol_id: 4,
 }
 
 unit_types.push(new unit_type(options))
@@ -93,7 +97,8 @@ options = {
 	death_sfx: "death_man",
 	
 	shooting_bonus: -2,
-	fighting_bonus: 1	
+	fighting_bonus: 1,
+	symbol_id: 7,
 }
 
 unit_types.push(new unit_type(options))
@@ -109,7 +114,8 @@ options = {
 	death_sfx: "death_man",
 	
 	shooting_bonus: -1,
-	fighting_bonus: 0
+	fighting_bonus: 0,
+	symbol_id: 2,
 }
 
 unit_types.push(new unit_type(options))
@@ -124,7 +130,8 @@ options = {
 	movement: 8,
 	death_sfx: "death_man",
 	shooting_bonus: 0,
-	fighting_bonus: 0	
+	fighting_bonus: 0,
+	symbol_id: 3,
 }
 
 unit_types.push(new unit_type(options))
@@ -141,7 +148,8 @@ options = {
 	movement: 6,
 	death_sfx: "death_machine",
 	shooting_bonus: -1,
-	fighting_bonus: -2
+	fighting_bonus: -2,
+	symbol_id: 1,
 }
 
 unit_types.push(new unit_type(options))
@@ -157,7 +165,8 @@ options = {
 	movement: 10,
 	death_sfx: "death_machine",
 	shooting_bonus: 0,
-	fighting_bonus: -2
+	fighting_bonus: -2,
+	symbol_id: 12,
 }
 
 unit_types.push(new unit_type(options))
