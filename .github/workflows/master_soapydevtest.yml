@@ -25,6 +25,7 @@ jobs:
       run: |
         npm install
         npm run build --if-present
+        npm run test --if-present
 
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v2
@@ -51,5 +52,5 @@ jobs:
       with:
         app-name: 'soapydevtest'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_a50ecae5092a44d9a361acb35390a912 }}
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_68d5c5ebc1cd40c39f4a5d71e01b13d7 }}
         package: .
