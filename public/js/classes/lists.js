@@ -35,6 +35,8 @@ const combat_weapon_type = class {
 		this.name = options.name;
 		this.fight_damage = options.fight_damage;
 		this.fight_ap = options.fight_ap;
+		this.fight_max_targets = options.fight_max_targets
+		this.fight_range = options.fight_range
 	}
 }
 
@@ -216,7 +218,9 @@ projectile_weapon_types.push(new projectile_weapon_type(options))
 options = {
 	name: "none",
 	fight_damage: 0,
-	fight_ap: 0
+	fight_ap: 0,
+	fight_max_targets : 0,
+	fight_range: 0
 }
 
 combat_weapon_types.push(new combat_weapon_type(options))
@@ -224,7 +228,9 @@ combat_weapon_types.push(new combat_weapon_type(options))
 options = {
 	name: "sword",
 	fight_damage: 20,
-	fight_ap: 2
+	fight_ap: 2,
+	fight_max_targets: 2,
+	fight_range: 200
 }
 
 combat_weapon_types.push(new combat_weapon_type(options))

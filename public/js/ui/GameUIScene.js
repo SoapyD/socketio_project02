@@ -37,13 +37,18 @@ var GameUIScene = new Phaser.Class({
 		callbackParams = {};
 		gameFunctions.createButton(this, gameFunctions.config.width - 50, 75, "shoot", GameUIScene.activateShooting, callbackParams, gameFunctions.btn_sprite);
 
-		callbackParams = {mode:"fight"};
+		callbackParams = {mode:"charge"};
 		gameFunctions.createButton(this, gameFunctions.config.width - 150, 125, "+", GameUIScene.selectMode, callbackParams, gameFunctions.btn_sprite);	
 		callbackParams = {};
-		gameFunctions.createButton(this, gameFunctions.config.width - 50, 125, "fight", GameUIScene.activateFighting, callbackParams, gameFunctions.btn_sprite);
+		gameFunctions.createButton(this, gameFunctions.config.width - 50, 125, "charge", GameUIScene.activateCharging, callbackParams, gameFunctions.btn_sprite);
 
+		callbackParams = {mode:"fight"};
+		gameFunctions.createButton(this, gameFunctions.config.width - 150, 175, "+", GameUIScene.selectMode, callbackParams, gameFunctions.btn_sprite);	
 		callbackParams = {};
-		gameFunctions.createButton(this, gameFunctions.config.width - 150, 175, "End Turn", GameUIScene.nextPlayer, callbackParams, gameFunctions.btn_sprite);	
+		gameFunctions.createButton(this, gameFunctions.config.width - 50, 175, "fight", GameUIScene.activateFighting, callbackParams, gameFunctions.btn_sprite);		
+		
+		callbackParams = {};
+		gameFunctions.createButton(this, gameFunctions.config.width - 150, 225, "End Turn", GameUIScene.nextPlayer, callbackParams, gameFunctions.btn_sprite);	
 		
 		
 		// callbackParams = {};
@@ -127,7 +132,24 @@ GameUIScene.advanceMode = () => {
 			btn = gameFunctions.btn_sprite[0]
 			btn.text.setText("next");
 			break;
+			
 		case 4:
+			//setup shoot
+			options.mode = "charge"
+			GameUIScene.selectMode(options);
+			btn = gameFunctions.btn_sprite[0]
+			btn.text.setText(options.mode);
+			btn.text.x = btn.x - (btn.text.width / 2)
+			btn.text.y = btn.y	- (btn.text.height / 2)				
+			break;
+		case 5:
+			//activate shoot
+			GameUIScene.activateCharging();
+			btn = gameFunctions.btn_sprite[0]
+			btn.text.setText("next");
+			break;			
+			
+		case 6:
 			//setup fight
 			options.mode = "fight"
 			GameUIScene.selectMode(options);
@@ -136,13 +158,13 @@ GameUIScene.advanceMode = () => {
 			btn.text.x = btn.x - (btn.text.width / 2)
 			btn.text.y = btn.y	- (btn.text.height / 2)				
 			break;
-		case 5:
+		case 7:
 			//activate fight
 			GameUIScene.activateFighting();
 			btn = gameFunctions.btn_sprite[0]
 			btn.text.setText("next");
 			break
-		case 6:
+		case 8:
 			//setup end turn
 			options.mode = "end turn"
 			GameUIScene.selectMode(options);
@@ -151,7 +173,7 @@ GameUIScene.advanceMode = () => {
 			btn.text.x = btn.x - (btn.text.width / 2)
 			btn.text.y = btn.y	- (btn.text.height / 2)				
 			break;
-		case 7:
+		case 9:
 			//activate end turn
 			GameScene.sfxHandler("end_turn")
 			GameUIScene.nextPlayer();
@@ -168,6 +190,7 @@ GameUIScene.selectMode = (options) => {
 	
 	if(options.mode){
 		GameScene.mode = options.mode
+		GameScene.selected_unit = undefined;
 		
 		//RESET ALL PLAYER ACTIONS
 		if(GameScene.units){
@@ -247,6 +270,141 @@ GameUIScene.activateShooting = () => {
 }
 
 
+GameUIScene.activateCharging = () => {
+	
+	
+	//CHECK COHESION FOR UNITS THAT'RE CHARGING
+	let cohesion_check = true
+	//ALSO CHECK ALL CHARGING UNITS ARE NEXT TO AN ENEMY UNITS
+	let in_combat = false;
+	
+	GameScene.units.forEach((unit) => {
+		if(unit.cohesion_check === false && unit.cohesion > 0){
+			cohesion_check = false;
+		}
+	})
+	
+	if(cohesion_check === true){
+		GameScene.units.forEach((unit) => {
+			if(unit.player === GameScene.current_player &&
+			   unit.cohesion_check === true){
+				let in_combat_range = unit.checkCombat()
+				
+				if(in_combat_range === true){
+					in_combat = true;
+				}
+			}
+		})		
+	}
+	
+	if(cohesion_check === true && in_combat === true){
+		GameScene.units.forEach((unit) => {
+			
+			if(unit.player === GameScene.current_player){
+
+				if(GameScene.online === false){
+					
+					if(unit.path.length > 0){
+						unit.move("checkCombat");
+					}
+					
+				}else{
+				
+					if(unit.path.length > 0){
+
+						let data = {
+							functionGroup: "socketFunctions",  
+							function: "messageAll",
+							returnFunctionGroup: "connFunctions",
+							returnFunction: "runUnitFunction",
+							returnParameters: {
+								id: unit.id, 
+								path: unit.path,
+								function: "move",
+								function_parameter: "checkCombat" 
+							},
+							message: "charge units"
+						}
+
+						connFunctions.messageServer(data)
+
+					}
+				}
+			}
+
+		})
+	}
+	
+	//TRIGGER COMBAT WHEN UNITS HAVE MOVED
+}
+
+
+GameUIScene.activateFighting = () => {
+	
+	GameScene.units.forEach((unit) => {
+
+		if(unit.player === GameScene.current_player){
+
+			if(GameScene.online === false){
+
+				unit.fight()
+				
+			}else{
+
+				let data = {
+					functionGroup: "socketFunctions",  
+					function: "messageAll",
+					returnFunctionGroup: "connFunctions",
+					returnFunction: "runUnitFunction",
+					returnParameters: {
+						id: unit.id, 
+						path: unit.path,
+						function: "fight"
+					},
+					message: "fight units"
+				}
+
+				connFunctions.messageServer(data)
+			}
+		}
+
+	})
+	
+	//TRIGGER COMBAT WHEN UNITS HAVE MOVED
+}
+
+
+GameUIScene.nextPlayer = () => {
+	
+	GameScene.mode = ""
+	GameScene.units.forEach((unit) => {
+		if(unit.player === GameScene.current_player){
+			unit.resetActions();
+		}
+	})
+	// GameScene.sfx["end_turn"].play();
+	GameScene.sfxHandler("end_turn")
+	
+	if(GameScene.online === false){
+		GameScene.advancePlayer()
+	}else{
+		let data = {
+			functionGroup: "socketFunctions",  
+			function: "messageAll",
+			returnFunctionGroup: "GameScene",
+			returnFunction: "advancePlayer",
+			returnParameters: {},
+			message: "next player"
+		}
+
+		connFunctions.messageServer(data)		
+	}
+}
+
+
+
+
+/*
 GameUIScene.activateFighting = () => {
 	
 	
@@ -336,32 +494,4 @@ GameUIScene.activateFighting = () => {
 	
 	//TRIGGER COMBAT WHEN UNITS HAVE MOVED
 }
-
-
-GameUIScene.nextPlayer = () => {
-	
-	GameScene.mode = ""
-	GameScene.units.forEach((unit) => {
-		if(unit.player === GameScene.current_player){
-			unit.resetActions();
-		}
-	})
-	// GameScene.sfx["end_turn"].play();
-	GameScene.sfxHandler("end_turn")
-	
-	if(GameScene.online === false){
-		GameScene.advancePlayer()
-	}else{
-		let data = {
-			functionGroup: "socketFunctions",  
-			function: "messageAll",
-			returnFunctionGroup: "GameScene",
-			returnFunction: "advancePlayer",
-			returnParameters: {},
-			message: "next player"
-		}
-
-		connFunctions.messageServer(data)		
-	}
-}
-
+*/

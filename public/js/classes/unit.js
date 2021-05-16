@@ -41,9 +41,12 @@ const unit = class {
 		this.max_targets = options.max_targets;
 		this.targets = [];
 		
+		this.fight_range = options.fight_range;
 		this.fight_ap = options.fight_ap;
 		this.fight_damage = options.fight_damage;
 		this.in_combat = false;
+		this.fight_max_targets = options.fight_max_targets;		
+		this.fight_targets = [];		
 		
 		this.sprite_offset = options.sprite_offset;
 		
@@ -143,7 +146,8 @@ const unit = class {
 	
 	resetActions() {
 		this.path = [];
-		this.targets = [];		
+		this.targets = [];
+		this.fight_targets = [];	
 		
 		// this.resetGhost();
 		this.sprite_ghost.x = this.sprite.x;
@@ -165,6 +169,10 @@ const unit = class {
 		this.resetGhost();
 	}
 	
+	resetFightRadius() {
+		this.cohesion_graphic.clear();	
+	}
+	
 	resetGhost() {
 		this.sprite_ghost.x = this.sprite.x;
 		this.sprite_ghost.y = this.sprite.y;
@@ -174,12 +182,25 @@ const unit = class {
 		this.sprite.alpha = 1;
 		
 		
-		if(GameScene.mode === "move" || GameScene.mode === "fight"){
+		if(GameScene.mode === "move" || GameScene.mode === "charge"){
 			if(this.cohesion > 0){
 				this.cohesionCheck();	
 			}
 		}
 	}
+	
+	removeTarget() {
+		this.targets.pop();
+		this.blast_graphics.forEach((graphic) => {
+			graphic.clear();
+		})		
+		this.drawTarget(this.targets, this.blast_radius);
+	}
+	
+	removeFightTarget() {
+		this.fight_targets.pop();	
+		this.drawTarget(this.fight_targets, 0);
+	}	
 	
 	updateUnitElements(){
 		this.draw_health();
@@ -266,49 +287,11 @@ const unit = class {
 		}
 	}	
 	
-	getRandomInt(max) {
-  		return Math.floor(Math.random() * max) + 1;
-	}
-	
-	
     draw_health()
     {
         this.bar_graphic.clear();
 		let width = this.sprite.width;
 		let height = this.sprite.height;
-		
-		
-		///////////////////////////////////////////////////////////////DRAW A BAR
-		// let edge = 2;
-		// let pos = {
-		// 	x: this.sprite.x - (width / 2) - edge,
-		// 	y: this.sprite.y + (height / 2)
-		// }
-		
-		/*
-        //  BG
-        this.bar_graphic.fillStyle(0x000000);
-        this.bar_graphic.fillRect(pos.x, pos.y, width + (edge * 2), 16);
-
-        //  Health
-
-        this.bar_graphic.fillStyle(0xffffff);
-        this.bar_graphic.fillRect(pos.x + edge, pos.y + edge, width, 12);
-
-        if (this.health < 30)
-        {
-            this.bar_graphic.fillStyle(0xff0000);
-        }
-        else
-        {
-            this.bar_graphic.fillStyle(0x00ff00);
-        }
-
-		
-        var d = Math.floor((this.health / 100) * width);
-        this.bar_graphic.fillRect(pos.x + edge, pos.y + edge, d, 12);
-		*/
-		///////////////////////////////////////////////////////////////		
 		
 		
 		let pos = {
@@ -354,15 +337,23 @@ const unit = class {
 				//TURN OLD SELECTED PLAYER MARKER, WHITE
 
 				if(GameScene.selected_unit){
-					GameScene.selected_unit.resetColours();					
+					GameScene.selected_unit.resetColours();
+					if(GameScene.mode === "fight"){
+						GameScene.selected_unit.resetFightRadius();
+					}
+					
 					GameScene.selected_unit.unselectHandler();
 				}
 				GameScene.selected_unit = this.parent;
 				
+				//RESET GHOST & COHESION IF THE GHOST SPRITE ISN'T SELECTED
 				if(!this.is_ghost){
 					this.parent.resetGhost();
 				}
-					
+				
+				if(GameScene.mode === "fight"){
+					this.parent.drawFightRadius()
+				}
 				
 				GameScene.sfx['select'].play();
 				
@@ -373,10 +364,19 @@ const unit = class {
 	}
 
 	
+	
 	unselectHandler() {
 		GameScene.selected_unit = undefined;
 	}
 	
+	
+	getRandomInt(max) {
+  		return Math.floor(Math.random() * max) + 1;
+	}
+	
+	async delay(ms) {
+		return new Promise(resolve => setTimeout(resolve, ms));
+	}		
 	
 	checkSpriteOverlap(spriteA, spriteB, adjacent=false){
 		var boundsA = spriteA.getBounds();
@@ -396,6 +396,51 @@ const unit = class {
 
 		return check;
 	}
+	
+	checkSpriteandPos(pointer){
+		var bounds = this.sprite.getBounds();
+
+		
+		let check = false;
+		if(bounds.contains(pointer.x, pointer.y)){
+			check = true;
+		}
+		// if(adjacent===true){
+		// 	if(intersection.width > 0 || intersection.height > 0){
+		// 		check = true;
+		// 	}					
+		// }
+
+		return check;
+	}
+	
+	checkAngle(start_pos, end_pos) {
+
+		let angle = 0
+		if(start_pos.x < end_pos.x){
+			angle = 0;
+		}
+		if(start_pos.x > end_pos.x){
+			angle = 180;
+		}				
+		if(start_pos.y < end_pos.y){
+			angle = 90;
+		}
+		if(start_pos.y > end_pos.y){
+			angle = -90;
+		}		
+		
+		return angle;
+	}	
+	
+	
+// #     # ####### #     # ####### 
+// ##   ## #     # #     # #       
+// # # # # #     # #     # #       
+// #  #  # #     # #     # #####   
+// #     # #     #  #   #  #       
+// #     # #     #   # #   #       
+// #     # #######    #    ####### 	
 	
 	findPath(scene, pointer) {
 		var x = pointer.x;
@@ -529,7 +574,6 @@ const unit = class {
 						fill_alpha: 0.15,
 						width: 5
 					}
-
 
 					this.drawPath(colours)
 					
@@ -683,32 +727,13 @@ const unit = class {
 		
 	}
 	
-	checkAngle(start_pos, end_pos) {
-
-		let angle = 0
-		if(start_pos.x < end_pos.x){
-			angle = 0;
-		}
-		if(start_pos.x > end_pos.x){
-			angle = 180;
-		}				
-		if(start_pos.y < end_pos.y){
-			angle = 90;
-		}
-		if(start_pos.y > end_pos.y){
-			angle = -90;
-		}		
-		
-		return angle;
-	}
-	
 	move(endFunction="move") {
 		
 		this.cohesion_graphic.clear()
 		this.sprite.setTint(this.colour)
 		this.sprite.alpha = 1;
 		this.sprite_ghost.alpha = 0.5;
-		
+
 		if (this.path && this.is_moving === false){
 			
 			this.is_moving = true;
@@ -751,7 +776,7 @@ const unit = class {
 										 
 										break;
 									case "checkCombat":
-										this.checkCombat("fight");
+										// this.checkCombat("fight");
 										break;
 									default:
 								}
@@ -774,6 +799,15 @@ const unit = class {
 			GameScene.selected_unit = undefined;
 		}
 	}
+	
+	
+//  #####  #     # ####### ####### ####### 
+// #     # #     # #     # #     #    #    
+// #       #     # #     # #     #    #    
+//  #####  ####### #     # #     #    #    
+//       # #     # #     # #     #    #    
+// #     # #     # #     # #     #    #    
+//  #####  #     # ####### #######    #   	
 	
 	findTarget (scene, pointer) {
 		
@@ -879,25 +913,17 @@ const unit = class {
 		if(dest.x && dest.y && skip === false && this.targets.length < this.max_targets){
 
 			this.targets.push(dest);
-			this.drawTarget();
+			this.drawTarget(this.targets, this.blast_radius);
 			GameScene.sfx['action'].play();
 		}
 		
 	}
-
-	removeTarget() {
-		this.targets.pop();
-		this.blast_graphics.forEach((graphic) => {
-			graphic.clear();
-		})		
-		this.drawTarget();
-	}
 	
 	
 	//CALLED AS PART OF CALLBACK IN "FINDPATH"
-	drawTarget() {	
+	drawTarget(targets, blast_radius) {	
 		
-		if (this.targets){
+		if (targets){
 
 			//RESET THE DRAW GRAPHICS
 			this.path_graphic.clear()
@@ -905,7 +931,7 @@ const unit = class {
 			this.path_graphic.beginPath();
 
 
-			this.targets.forEach((pos, i) => {
+			targets.forEach((pos, i) => {
 
 				// this.path_graphic.beginPath();
 				this.path_graphic.moveTo(this.sprite.x, this.sprite.y);
@@ -916,11 +942,11 @@ const unit = class {
 				
 				this.path_graphic.lineTo(pos.x, pos.y);
 				
-				if(this.blast_radius > 0){
+				if(blast_radius > 0){
 					let blast_graphic = this.blast_graphics[i];
 					// blast_graphic.lineStyle(3 * GameScene.tile_size, colours.line_colour, 0.5);
 					blast_graphic.fillStyle(0x0000FF, 0.5);
-					let circle = new Phaser.Geom.Circle(pos.x, pos.y, (this.blast_radius / 2) * GameScene.tile_size);
+					let circle = new Phaser.Geom.Circle(pos.x, pos.y, (blast_radius / 2) * GameScene.tile_size);
 					blast_graphic.fillCircleShape(circle);
 
 					blast_graphic.strokePath();
@@ -937,7 +963,7 @@ const unit = class {
 
 			this.targets.forEach( async(target, i) => {
 
-				await this.delay(1000 * i)
+				await this.delay(2000 * i)
 				
 				let angle = Phaser.Math.Angle.BetweenPoints(this.sprite, target);
 				if(angle){
@@ -961,10 +987,83 @@ const unit = class {
 		}		
 		
 	}
+	
+	
+// ####### ###  #####  #     # ####### 
+// #        #  #     # #     #    #    
+// #        #  #       #     #    #    
+// #####    #  #  #### #######    #    
+// #        #  #     # #     #    #    
+// #        #  #     # #     #    #    
+// #       ###  #####  #     #    #    		
+	
+	drawFightRadius(){
+		let radius_graphic = this.cohesion_graphic;
+		// blast_graphic.lineStyle(3 * GameScene.tile_size, colours.line_colour, 0.5);
+		radius_graphic.fillStyle(0x0000FF, 0.5);
+		let circle = new Phaser.Geom.Circle(this.sprite.x, this.sprite.y, (this.fight_range / 2));
+		radius_graphic.fillCircleShape(circle);
 
-	delay = async(ms) => {
-		return new Promise(resolve => setTimeout(resolve, ms));
+		radius_graphic.strokePath();		
 	}
+	
+	
+	findFightTarget (scene, pointer) {
+		
+		//GET BASE POSITIONAL DATA
+		let pos = {
+			start_x: this.sprite.x,
+			start_y: this.sprite.y,			
+			end_x: Math.floor(pointer.x / GameScene.tile_size) * GameScene.tile_size + (GameScene.tile_size / 2),
+			end_y: Math.floor(pointer.y / GameScene.tile_size) * GameScene.tile_size + (GameScene.tile_size / 2),
+		}
+
+		let current_range = Math.sqrt(Math.pow(this.sprite.x - pos.end_x, 2) + Math.pow(this.sprite.y - pos.end_y, 2))
+		
+
+		let skip = false
+		let on_unit = false;
+		
+		if(current_range > (this.fight_range / 2)){
+			skip = true;	
+		}
+		
+		//SKIP IF THE POINTER IS OVER THE SHOOTING UNITS, put here so it doesn't play the clear sound
+		if (this.sprite.getBounds().contains(pointer.x, pointer.y)) {
+			skip = true;
+			on_unit = true;
+		}				
+		
+		if(skip === true && on_unit === false){
+			GameScene.sfx['clear'].play();
+		}		
+		
+		let dest = {
+			x: pos.end_x,
+			y: pos.end_y,
+		}
+
+		let check = false;
+		let found_unit;
+		GameScene.units.forEach((unit) => {
+			check = unit.checkSpriteandPos(pointer);
+			if(check === true && unit.id !== this.id){
+				found_unit = unit
+				return
+			}
+		})
+		
+		//ONLY ADD SHOT IF THE TARGETS ARRAY IS UNDER MAX SHOTS
+		if(found_unit && skip === false && this.fight_targets.length < this.fight_max_targets){
+
+			this.fight_targets.push(found_unit.sprite);
+			this.drawTarget(this.fight_targets, 0);
+			GameScene.sfx['action'].play();
+		}
+		
+	}	
+
+	
 	
 	checkCombat(endFunction) {
 		
@@ -981,73 +1080,95 @@ const unit = class {
 				}
 
 				if(clash === true){
-					
 					in_combat_range = true;
 					
-					// if(callBack){
-					// 	callBack(this, unit)
-					// }
-
-					if(endFunction){
-						switch(endFunction){
-							case "fight":
-								//SET BOTH UNITS AS FIGHTING EACH OTHER
-								//only set fighting if the opponent has any capacity to fight
-								if(unit.fight_damage > 0){
-									this.in_combat = true;
-									unit.in_combat = true;
-								}
-								this.fight(this,unit);
-								break;
-							default:
-								break;
-						}
+					//SET BOTH UNITS AS FIGHTING EACH OTHER
+					//only set fighting if the opponent has any capacity to fight
+					if(unit.fight_damage > 0){
+						this.in_combat = true;
+						unit.in_combat = true;
 					}
 				}
 			}
 		})
-		
+
 		return in_combat_range;
 	}
+	/**/	
 	
-	fight(attacker, defender){
-		attacker.fights = 1;
+	
+	fight(){
+		this.fights = 1;
+		this.checkCombat("fight")	
 		
-		//generate, play then destroy attack cloud
-		// let sprite_hit = GameScene.scene.add.sprite(this.sprite.x, this.sprite.y, 'punch') //.setScale(4);
-		// sprite_hit.setScale(0.75).setDepth(2).setAlpha(0.75);			
-		// sprite_hit.x = defender.sprite.x;
-		// sprite_hit.y = defender.sprite.y;
-		// sprite_hit.anims.play('hit');		
-		// sprite_hit.once('animationcomplete', (sprite_hit)=>{
-		// 	sprite_hit.destroy()
-		// })
-		// GameScene.sfx['sword'].play();
-		
-		
-		let options = {
-			scene: GameScene.scene,
-			key: "sword"+this.id+"_"+defender.id,
-			spritesheet: "punch",
-			framerate: 30,
-			sfx: "sword",
-			alpha: 0.75,
-			scale: 0.5,
-			pos: {
-				x: defender.sprite.x,
-				y: defender.sprite.y
+		this.fight_targets.forEach( async(target, i) => {
+			
+			await this.delay(2000 * i)
+			
+			let options = {
+				scene: GameScene.scene,
+				key: "sword"+this.id+"_"+target.parent.id,
+				spritesheet: "punch",
+				framerate: 30,
+				sfx: "sword",
+				alpha: 0.75,
+				scale: 0.5,
+				pos: {
+					x: target.x,
+					y: target.y
+				}
 			}
-		}
-		new particle(options)		
+			new particle(options)		
+
+
+			options = {
+				damage: this.fight_damage,
+				ap: this.fight_ap,
+				bonus: this.fighting_bonus,
+				attacker: this
+			}
+			target.parent.wound(options);
+		})
 		
-		
-		options = {
-			damage: this.fight_damage,
-			ap: this.fight_ap,
-			bonus: this.fighting_bonus,
-			attacker: this
-		}
-		defender.wound(options);
+		this.fight_targets = [];
 	}
 	
 }
+
+
+
+
+
+		
+		///////////////////////////////////////////////////////////////DRAW A BAR
+		// let edge = 2;
+		// let pos = {
+		// 	x: this.sprite.x - (width / 2) - edge,
+		// 	y: this.sprite.y + (height / 2)
+		// }
+		
+		/*
+        //  BG
+        this.bar_graphic.fillStyle(0x000000);
+        this.bar_graphic.fillRect(pos.x, pos.y, width + (edge * 2), 16);
+
+        //  Health
+
+        this.bar_graphic.fillStyle(0xffffff);
+        this.bar_graphic.fillRect(pos.x + edge, pos.y + edge, width, 12);
+
+        if (this.health < 30)
+        {
+            this.bar_graphic.fillStyle(0xff0000);
+        }
+        else
+        {
+            this.bar_graphic.fillStyle(0x00ff00);
+        }
+
+		
+        var d = Math.floor((this.health / 100) * width);
+        this.bar_graphic.fillRect(pos.x + edge, pos.y + edge, d, 12);
+		*/
+		///////////////////////////////////////////////////////////////		
+

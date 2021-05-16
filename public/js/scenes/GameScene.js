@@ -18,7 +18,11 @@ var GameScene = new Phaser.Class({
 		this.scene.launch("GameUIScene");
 		
 		
-		GameScene.online = false;		
+		if(instance_type === "DEV"){
+			GameScene.online = false;
+		}else{
+			GameScene.online = true;			
+		}
 		GameScene.mode = '';
 		GameScene.current_player = 0;
 		GameScene.bullets = [];
@@ -206,8 +210,11 @@ var GameScene = new Phaser.Class({
 					case "shoot":
 						GameScene.selected_unit.findTarget(this, worldPoint);
 					break;
-					case "fight":
+					case "charge":
 						GameScene.selected_unit.findPath(GameScene, worldPoint);
+					break;		
+					case "fight":
+						GameScene.selected_unit.findFightTarget(this, worldPoint);
 					break;					
 					default:
 					// code block
@@ -225,9 +232,12 @@ var GameScene = new Phaser.Class({
 					case "shoot":
 						GameScene.selected_unit.removeTarget();
 					break;
-					case "fight":
+					case "charge":
 						GameScene.selected_unit.resetMove();
-					break;					
+					break;
+					case "fight":
+						GameScene.selected_unit.removeFightTarget();
+					break;	
 					default:
 					// code block
 				}					
@@ -542,7 +552,22 @@ GameScene.seed2 = () => {
 	options = {x: 14, y:5}
 	GameScene.seeder.placeGeneral(options)		
 
+	
+	options = {
+		unit_list: GameScene.units,
+		scene: GameScene.scene,
+		player: 1,
+		side: 1,
+		angle : -90,
+		tile_size: GameScene.tile_size,
+		unit_types: GameScene.unit_types,
+		projectile_weapon_types: GameScene.projectile_weapon_types,
+		combat_weapon_types: GameScene.combat_weapon_types,
+		armour_types: GameScene.armour_types
+	}
+	GameScene.seeder = new seeder(options)	
+	
 	options = {x: 14, y:2}
-	GameScene.seeder.placeTank(options)	
+	GameScene.seeder.placeSquad(options)		
 	
 }

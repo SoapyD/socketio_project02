@@ -64,7 +64,8 @@ exports.logoutUser = (req,res) => {
 
 exports.getRoom = (req,res) => {
 	let data = {
-		address: process.env.SOCKET_ADDRESS
+		address: process.env.SOCKET_ADDRESS,
+		instance_type: process.env.INSTANCE_TYPE
 	}
 	res.render("room", data);		
 }

@@ -19,7 +19,7 @@ gameFunctions.config = {
     physics: {
         default: 'arcade',
         arcade: {
-            debug: true
+            debug: false
         }
     },
 	
@@ -32,9 +32,18 @@ gameFunctions.config = {
           
         mode: Phaser.Scale.FIT,
       },
-    scene: [ GameScene, GameUIScene ]  
+    // scene: [ GameScene, GameUIScene ]
 	// scene: [ MainMenuScene, ArmySelectMenuScene, ArmySelectUIScene, ArmySetupUIScene, GameScene, GameUIScene ]  
     // scene: [ MainMenuScene, ArmySelectMenuScene, GameScene, ArmySetupUIScene ]     
 };
 
+if(instance_type === "DEV"){
+	gameFunctions.config.scene = [ GameScene, GameUIScene ]
+}
+else{
+	gameFunctions.config.scene = [ MainMenuScene, ArmySelectMenuScene, ArmySelectUIScene, ArmySetupUIScene, GameScene, GameUIScene]
+}
+
+
 gameFunctions.game = new Phaser.Game(gameFunctions.config);
+
