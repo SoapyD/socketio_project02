@@ -93,7 +93,7 @@ const unit = class {
 			this.sprite_ghost.on('pointerup', this.selectHander)
 		}
 
-		this.sprite_symbol = options.scene.add.image(x,y,"symbols").setScale(0.09)
+		this.sprite_symbol = options.scene.add.image(x,y,"symbols").setScale(0.08)
 		this.sprite_symbol.x += (this.sprite.displayWidth / 2) //- (this.sprite_symbol.displayWidth / 2)
 		this.sprite_symbol.y -= (this.sprite.displayHeight / 2) //- (this.sprite_symbol.displayHeight / 2)
 		this.sprite_symbol.setFrame(options.symbol_id).setDepth(10);
@@ -117,16 +117,35 @@ const unit = class {
 		}
 
 		
+		this.text_style = { 
+			font: "8px Arial",
+			fill: "#000000",
+			align: "center",
+			stroke: "#000000",
+			strokeThickness: 1
+		},		
+		this.text = options.scene.add.text(this.sprite.x, this.sprite.y - (this.sprite.displayHeight / 2), "", this.text_style).setDepth(20);
+		this.text_graphic = options.scene.add.graphics();
+		
 		// this.group = options.scene.add.group();		
 		// this.group.add(this.sprite)
 		// this.group.add(this.bar_graphic)
 		
-		this.draw_health();
 		
+		this.drawHealth();
+		this.drawInfo()
 		
 		this.selectHander = this.selectHander.bind(this);
 	}
 
+// ######  #######  #####  ####### #######  #####  
+// #     # #       #     # #          #    #     # 
+// #     # #       #       #          #    #       
+// ######  #####    #####  #####      #     #####  
+// #   #   #             # #          #          # 
+// #    #  #       #     # #          #    #     # 
+// #     # #######  #####  #######    #     #####  	
+	
 	resetColours(){
 		if(this.path.length > 0){
 			let colours = {
@@ -161,6 +180,7 @@ const unit = class {
 				
 		this.path_graphic.clear();
 		this.cohesion_graphic.clear();
+		this.resetDrawInfo();
 		
 		this.blast_graphics.forEach((graphic) => {
 			graphic.clear();
@@ -201,18 +221,21 @@ const unit = class {
 			graphic.clear();
 		})		
 		this.drawTarget(this.targets, this.blast_radius);
+		this.drawInfo();
 	}
 	
 	removeFightTarget() {
 		this.fight_targets.pop();	
 		this.drawTarget(this.fight_targets, 0);
+		this.drawInfo();
 	}	
 	
-	updateUnitElements(){
-		this.draw_health();
-		this.sprite_symbol.x = this.sprite.x + (this.sprite.displayWidth / 2) //- (this.sprite_symbol.displayWidth / 2)
-		this.sprite_symbol.y = this.sprite.y - (this.sprite.displayHeight / 2) //- (this.sprite_symbol.displayHeight / 2)
-	}
+	resetDrawInfo(){
+		this.text.setText("");
+		this.text_graphic.clear();
+	}	
+	
+	
 	
 	kill(){	
 		this.alive = false;
@@ -289,13 +312,56 @@ const unit = class {
 		new particle(part_options)		
 		
 		target.health -= options.damage;
-		target.draw_health()
+		target.drawHealth()
 		if(target.health <= 0){
 			target.kill();
 		}
 	}	
 	
-    draw_health()
+	
+	
+// ######  ######     #    #     # 
+// #     # #     #   # #   #  #  # 
+// #     # #     #  #   #  #  #  # 
+// #     # ######  #     # #  #  # 
+// #     # #   #   ####### #  #  # 
+// #     # #    #  #     # #  #  # 
+// ######  #     # #     #  ## ##  	
+	
+	updateUnitElements(){
+		this.drawHealth();
+		this.sprite_symbol.x = this.sprite.x + (this.sprite.displayWidth / 2) //- (this.sprite_symbol.displayWidth / 2)
+		this.sprite_symbol.y = this.sprite.y - (this.sprite.displayHeight / 2) //- (this.sprite_symbol.displayHeight / 2)
+	}	
+	
+	
+	drawInfo()
+	{
+		let string = ""
+		switch(GameScene.mode){
+			case "shoot":
+				string = this.targets.length + "/" + this.max_targets
+				break;
+			case "fight":
+				string = this.fight_targets.length + "/" + this.fight_max_targets
+				break;				
+		}
+		
+		if(string !== ""){
+
+			this.text.setText(string);
+			this.text.x = this.sprite.x -(this.text.width / 2) + (this.sprite.displayWidth / 2)
+			this.text.y = this.sprite.y - (this.sprite.displayHeight / 2) + 10
+
+			
+			this.text_graphic.clear();
+			this.text_graphic.fillStyle(0xFFFFFF).setDepth(19);
+			this.text_graphic.fillRect(this.text.x, this.text.y, this.text.width, this.text.height);
+		}
+
+	}
+	
+    drawHealth()
     {
         this.bar_graphic.clear();
 		let width = this.sprite.width;
@@ -311,7 +377,7 @@ const unit = class {
 		this.bar_graphic.beginPath();
 
 		
-		let angle = (360 / this.max_health) * this.health;
+		let angle = (270 / this.max_health) * this.health;
 		
 		let fill_colour = 0x00ff00;
         if (this.health < 30)
@@ -327,6 +393,112 @@ const unit = class {
 		this.bar_graphic.strokePath();
     }
 	
+	//CALLED AS PART OF CALLBACK IN "FINDPATH"
+	drawPath(colours) {
+		
+
+		let last_pos = {
+			x: this.sprite.x / GameScene.tile_size,
+			y: this.sprite.y / GameScene.tile_size
+		}
+		
+		//RESET THE DRAW GRAPHICS
+		this.path_graphic.clear();
+		this.cohesion_graphic.clear();
+		
+		if (this.path && this.path.length > 1){
+			
+			this.path_graphic.lineStyle(colours.width, colours.line_colour, colours.line_alpha);
+			this.path_graphic.beginPath();
+
+			this.path.forEach((pos, i) => {
+	
+				if (i !== 0){
+					this.path_graphic.lineTo(pos.x * GameScene.tile_size, pos.y * GameScene.tile_size);
+				}
+				else{
+					this.path_graphic.moveTo(pos.x * GameScene.tile_size, pos.y * GameScene.tile_size);
+				}
+				
+				last_pos = pos;
+			})				
+			
+			this.path_graphic.strokePath();				
+	
+			this.sprite.setTint(0x808080) //turn unit grey if it has a ghost path
+			this.sprite.alpha = 0.25;
+			
+		}
+		
+		this.cohesion_graphic.lineStyle(colours.width, colours.line_colour, colours.circle_alpha);
+		this.cohesion_graphic.fillStyle(colours.fill_colour, colours.fill_alpha);
+		let circle = new Phaser.Geom.Circle(last_pos.x * GameScene.tile_size, last_pos.y * GameScene.tile_size, this.cohesion);
+		this.cohesion_graphic.fillCircleShape(circle);
+
+		this.cohesion_graphic.strokePath();		
+		
+	}		
+	
+	
+	//CALLED AS PART OF CALLBACK IN "FINDPATH"
+	drawTarget(targets, blast_radius) {	
+		
+		if (targets){
+
+			//RESET THE DRAW GRAPHICS
+			this.path_graphic.clear()
+			this.path_graphic.lineStyle(8, 0x00cccc, 0.5);	
+			this.path_graphic.beginPath();
+
+
+			targets.forEach((pos, i) => {
+
+				// this.path_graphic.beginPath();
+				this.path_graphic.moveTo(this.sprite.x, this.sprite.y);
+				
+				//OFFSET PATH POSITION TO MIDDLE OF TILE
+				pos.x += this.sprite_offset;
+				pos.y += this.sprite_offset;	
+				
+				this.path_graphic.lineTo(pos.x, pos.y);
+				
+				if(blast_radius > 1){
+					let blast_graphic = this.blast_graphics[i];
+					// blast_graphic.lineStyle(3 * GameScene.tile_size, colours.line_colour, 0.5);
+					blast_graphic.fillStyle(0x0000FF, 0.5);
+					let circle = new Phaser.Geom.Circle(pos.x, pos.y, (blast_radius / 2) * GameScene.tile_size);
+					blast_graphic.fillCircleShape(circle);
+
+					blast_graphic.strokePath();
+				}
+			})
+
+			this.path_graphic.strokePath();		
+		}
+	}		
+	
+	
+	drawFightRadius(){
+		let radius_graphic = this.cohesion_graphic;
+		radius_graphic.lineStyle(1, 0x0000FF, 0.5);
+		radius_graphic.fillStyle(0x0000FF, 0.2);
+		let circle = new Phaser.Geom.Circle(this.sprite.x, this.sprite.y, (this.fight_range / 2));
+		radius_graphic.fillCircleShape(circle).setDepth(1);
+
+		radius_graphic.strokePath();		
+	}	
+	
+	
+
+	
+	
+// ####### #     # #     #  #####  ####### ### ####### #     #  #####  
+// #       #     # ##    # #     #    #     #  #     # ##    # #     # 
+// #       #     # # #   # #          #     #  #     # # #   # #       
+// #####   #     # #  #  # #          #     #  #     # #  #  #  #####  
+// #       #     # #   # # #          #     #  #     # #   # #       # 
+// #       #     # #    ## #     #    #     #  #     # #    ## #     # 
+// #        #####  #     #  #####     #    ### ####### #     #  #####  	
 	
 	selectHander(pointer) {
 
@@ -580,7 +752,7 @@ const unit = class {
 				else{
 
 					let colours = {
-						line_colour: 0x2ECC40,
+						line_colour: 0x00cccc,
 						fill_colour: 0x2ECC40,
 						line_alpha: 0.75,
 						circle_alpha: 0.15,
@@ -667,7 +839,7 @@ const unit = class {
 				unit.cohesion_check = unit.cohesionCheck2();
 
 				let colours = {
-					line_colour: 0x2ECC40,
+					line_colour: 0x00cccc,
 					fill_colour: 0x2ECC40,
 					line_alpha: 0.75,
 					circle_alpha: 0.75,
@@ -677,7 +849,7 @@ const unit = class {
 				// this.cohesion_check = true
 
 				if(unit.cohesion_check === false){
-					colours.line_colour = 0xFF0000;
+					colours.line_colour = 0x00cccc;
 					colours.fill_colour = 0xFF0000; //0x6666ff	
 					colours.width = 2.5;
 				}
@@ -694,53 +866,7 @@ const unit = class {
 		})
 		
 	}
-	
-	
-	//CALLED AS PART OF CALLBACK IN "FINDPATH"
-	drawPath(colours) {
-		
 
-		let last_pos = {
-			x: this.sprite.x / GameScene.tile_size,
-			y: this.sprite.y / GameScene.tile_size
-		}
-		
-		//RESET THE DRAW GRAPHICS
-		this.path_graphic.clear();
-		this.cohesion_graphic.clear();
-		
-		if (this.path && this.path.length > 1){
-			
-			this.path_graphic.lineStyle(colours.width, colours.line_colour, colours.line_alpha);	
-			this.path_graphic.beginPath();
-
-			this.path.forEach((pos, i) => {
-	
-				if (i !== 0){
-					this.path_graphic.lineTo(pos.x * GameScene.tile_size, pos.y * GameScene.tile_size);
-				}
-				else{
-					this.path_graphic.moveTo(pos.x * GameScene.tile_size, pos.y * GameScene.tile_size);
-				}
-				
-				last_pos = pos;
-			})				
-			
-			this.path_graphic.strokePath();				
-	
-			this.sprite.setTint(0x808080) //turn unit grey if it has a ghost path
-			this.sprite.alpha = 0.25;
-			
-		}
-		
-		this.cohesion_graphic.lineStyle(colours.width, colours.line_colour, colours.circle_alpha);
-		this.cohesion_graphic.fillStyle(colours.fill_colour, colours.fill_alpha);
-		let circle = new Phaser.Geom.Circle(last_pos.x * GameScene.tile_size, last_pos.y * GameScene.tile_size, this.cohesion);
-		this.cohesion_graphic.fillCircleShape(circle);
-
-		this.cohesion_graphic.strokePath();		
-		
-	}
 	
 	move(endFunction="move") {
 		
@@ -793,9 +919,9 @@ const unit = class {
 										GameScene.sfx["end_path"].play();
 										 
 										break;
-									case "checkCombat":
+									// case "checkCombat":
 										// this.checkCombat("fight");
-										break;
+										// break;
 									default:
 								}
 							}
@@ -933,47 +1059,12 @@ const unit = class {
 			this.targets.push(dest);
 			this.drawTarget(this.targets, this.blast_radius);
 			GameScene.sfx['action'].play();
+			
+			this.drawInfo()
 		}
 		
 	}
 	
-	
-	//CALLED AS PART OF CALLBACK IN "FINDPATH"
-	drawTarget(targets, blast_radius) {	
-		
-		if (targets){
-
-			//RESET THE DRAW GRAPHICS
-			this.path_graphic.clear()
-			this.path_graphic.lineStyle(10, 0x2ECC40);	
-			this.path_graphic.beginPath();
-
-
-			targets.forEach((pos, i) => {
-
-				// this.path_graphic.beginPath();
-				this.path_graphic.moveTo(this.sprite.x, this.sprite.y);
-				
-				//OFFSET PATH POSITION TO MIDDLE OF TILE
-				pos.x += this.sprite_offset;
-				pos.y += this.sprite_offset;	
-				
-				this.path_graphic.lineTo(pos.x, pos.y);
-				
-				if(blast_radius > 0){
-					let blast_graphic = this.blast_graphics[i];
-					// blast_graphic.lineStyle(3 * GameScene.tile_size, colours.line_colour, 0.5);
-					blast_graphic.fillStyle(0x0000FF, 0.5);
-					let circle = new Phaser.Geom.Circle(pos.x, pos.y, (blast_radius / 2) * GameScene.tile_size);
-					blast_graphic.fillCircleShape(circle);
-
-					blast_graphic.strokePath();
-				}
-			})
-
-			this.path_graphic.strokePath();		
-		}
-	}	
 	
 	shoot() {
 		
@@ -1017,16 +1108,6 @@ const unit = class {
 // #        #  #     # #     #    #    
 // #        #  #     # #     #    #    
 // #       ###  #####  #     #    #    		
-	
-	drawFightRadius(){
-		let radius_graphic = this.cohesion_graphic;
-		// blast_graphic.lineStyle(3 * GameScene.tile_size, colours.line_colour, 0.5);
-		radius_graphic.fillStyle(0x0000FF, 0.5);
-		let circle = new Phaser.Geom.Circle(this.sprite.x, this.sprite.y, (this.fight_range / 2));
-		radius_graphic.fillCircleShape(circle);
-
-		radius_graphic.strokePath();		
-	}
 	
 	
 	findFightTarget (scene, pointer) {
@@ -1080,13 +1161,15 @@ const unit = class {
 			this.fight_targets.push(found_unit.sprite);
 			this.drawTarget(this.fight_targets, 0);
 			GameScene.sfx['action'].play();
+			
+			this.drawInfo()
 		}
 		
 	}	
 
 	
 	
-	checkCombat(endFunction) {
+	checkCombat() {
 		
 		let in_combat_range = false
 		GameScene.units.forEach((unit) => {
@@ -1122,7 +1205,7 @@ const unit = class {
 	
 	fight(){
 		this.fights = 1;
-		this.checkCombat("fight")	
+		this.checkCombat()	
 		
 		this.fight_targets.forEach( async(target, i) => {
 			

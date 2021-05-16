@@ -95,6 +95,13 @@ var GameScene = new Phaser.Class({
 		
 		
 		GameScene.music_playing = false;
+		
+		if(instance_type === "DEV"){
+			GameScene.master_volume = 0;
+		}else{
+			GameScene.master_volume = 0.35;
+		}
+		
 		GameScene.music_track = 0;
 		this.load.setPath('../../music');
 		this.load.audio('song1', [ 'song1.mp3' ])
@@ -124,7 +131,7 @@ var GameScene = new Phaser.Class({
 		GameScene.sfx.death_machine = this.sound.add('death_machine', {volume: 0.3});
 		
 		
-		GameScene.master_volume = 0; //0.35
+		
 		
 		GameScene.music = []
 		GameScene.music.push(this.sound.add('song1', {volume: GameScene.master_volume}));
@@ -157,8 +164,8 @@ var GameScene = new Phaser.Class({
 		GameScene.setupMap();
 		GameScene.setupCamera();
 		
-		GameScene.seed();
-		// GameScene.seed2();
+		// GameScene.seed();
+		GameScene.seed2();
 		
 		// GameScene.text_array = []
 		// GameScene.grid.forEach((row, y) => {
@@ -568,6 +575,7 @@ GameScene.seed2 = () => {
 	GameScene.seeder = new seeder(options)	
 	
 	options = {x: 14, y:2}
-	GameScene.seeder.placeSquad(options)		
+	GameScene.seeder.placeSquad(options)
+	// GameScene.seeder.placeGeneral(options)
 	
 }
