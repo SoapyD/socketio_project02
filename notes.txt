@@ -9,13 +9,12 @@
 -DONE -Cohesion check doesn't work properly. It only checks that units are close to one other unit, so as long as a group are close to each other, even though they're away from their other squad, will still pass the cohesion check
 -DONE -Fix the multiple press for movement bug
 -DONE -Add in a delay for bullets being shot
+-DONE -move the ghost when online, otherwise it doesn't register. In fact, don't have opponent ghosts generate if online
+-DONE -stop a player from being able to interact with another players units
+-DONE -Hide action buttons when it's not a players turn
 
 
--move the ghost when online, otherwise it doesn't register. In fact, don't have opponent ghosts generate if online
 
-
--Hide action buttons when it's not a players turn
--stop a player from being able to interact with another players units
 -test out a 3 side game
 -test out a 2 side, 4 player game
 

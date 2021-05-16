@@ -66,15 +66,18 @@ seedsUtil.seedDB();
 
 let expressServer;
 
-if(process.env.INSTANCE_TYPE === 'DEV'){
-	expressServer = app.listen(3000, () => {
-	// const expressServer = app.listen(process.env.PORT, process.env.IP, function(){
-		console.log("dev server running")
-	})	
-}else{
-	expressServer = app.listen(process.env.PORT, process.env.IP, function(){
-		console.log("prod server running")
-	})		
+switch(process.env.INSTANCE_TYPE){
+	case "DEV":
+	case "DEV-ONLINE":
+		expressServer = app.listen(3000, () => {
+			console.log("dev server running")
+		})	
+		break;
+	default:
+		expressServer = app.listen(process.env.PORT, process.env.IP, function(){
+			console.log("prod server running")
+		})		
+		break;
 }
 	
 

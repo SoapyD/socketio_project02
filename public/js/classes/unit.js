@@ -83,7 +83,7 @@ const unit = class {
 		GameScene.unit_collisions[this.side].add(this.sprite)
 		this.sprite.on('pointerup', this.selectHander)
 		
-		if(GameScene.online === false || (GameScene.online === true && GameScene.current_player === gameFunctions.params.player_number)){
+		if(GameScene.online === false || (GameScene.online === true && this.player === gameFunctions.params.player_number)){
 			this.sprite_ghost = options.scene.add.image(x,y,options.spritesheet).setInteractive();
 			this.sprite_ghost.alpha = 1; //0.5;
 			this.sprite_ghost.setTint(colour)
@@ -685,6 +685,8 @@ const unit = class {
 						if(check === true){
 							skip = true;
 						}
+					}
+					if(this.sprite_ghost && unit.sprite_ghost){
 						check = this.checkSpriteOverlap(unit.sprite_ghost, this.sprite_ghost)
 						if(check === true){
 							skip = true;

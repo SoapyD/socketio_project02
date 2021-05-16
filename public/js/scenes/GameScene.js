@@ -17,14 +17,25 @@ var GameScene = new Phaser.Class({
 		// this.scene.launch("ArmySetupUIScene");
 		this.scene.launch("GameUIScene");
 		
-		
-		if(instance_type === "DEV"){
-			GameScene.online = false;
-		}else{
-			GameScene.online = true;			
+		switch(instance_type){
+			case "DEV":
+				GameScene.master_volume = 0;
+				GameScene.online = false;
+				break;
+			case "DEV-ONLINE":
+				GameScene.master_volume = 0;
+				GameScene.online = true;
+				break;				
+			default:
+				GameScene.master_volume = 0.35;
+				GameScene.online = true;
+				break;
 		}
+		
+		
+		
 		GameScene.mode = '';
-		GameScene.current_player = 0;
+		GameScene.current_player = -1;
 		GameScene.bullets = [];
 		GameScene.selected_unit;
 		GameScene.left_click = false;
@@ -96,12 +107,6 @@ var GameScene = new Phaser.Class({
 		
 		GameScene.music_playing = false;
 		
-		if(instance_type === "DEV"){
-			GameScene.master_volume = 0;
-		}else{
-			GameScene.master_volume = 0.35;
-		}
-		
 		GameScene.music_track = 0;
 		this.load.setPath('../../music');
 		this.load.audio('song1', [ 'song1.mp3' ])
@@ -166,6 +171,8 @@ var GameScene = new Phaser.Class({
 		
 		// GameScene.seed();
 		GameScene.seed2();
+		
+		GameScene.advancePlayer()
 		
 		// GameScene.text_array = []
 		// GameScene.grid.forEach((row, y) => {
@@ -336,10 +343,18 @@ GameScene.clickHandler = function(pointer){
 
 
 GameScene.advancePlayer = () => {
-	let max_player = 2;
+
 	GameScene.current_player += 1
-	if(GameScene.current_player >= max_player){
+	if(GameScene.current_player >= gameFunctions.params.max_player){
 		GameScene.current_player = 0
+	}
+	
+	if(GameScene.online === true){
+		if(gameFunctions.params.player_number === GameScene.current_player){
+			GameUIScene.showButtons()			
+		}else{
+			GameUIScene.hideButtons()
+		}
 	}
 	
 	GameScene.units.forEach((unit) => {

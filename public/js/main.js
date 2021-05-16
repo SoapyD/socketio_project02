@@ -4,7 +4,8 @@ gameFunctions.btn_sprite = [];
 
 
 gameFunctions.params = {
-	player_number: -1
+	player_number: -1,
+	max_player: 2
 }
 
 
@@ -37,12 +38,19 @@ gameFunctions.config = {
     // scene: [ MainMenuScene, ArmySelectMenuScene, GameScene, ArmySetupUIScene ]     
 };
 
-if(instance_type === "DEV"){
-	gameFunctions.config.scene = [ GameScene, GameUIScene ]
+
+switch(instance_type){
+	case "DEV":
+		gameFunctions.config.scene = [ GameScene, GameUIScene ]
+		break;
+	case "DEV-ONLINE":
+		gameFunctions.config.scene = [ MainMenuScene, ArmySelectMenuScene, ArmySelectUIScene, ArmySetupUIScene, GameScene, GameUIScene]
+		break;		
+	default:
+		gameFunctions.config.scene = [ MainMenuScene, ArmySelectMenuScene, ArmySelectUIScene, ArmySetupUIScene, GameScene, GameUIScene]
+		break;
 }
-else{
-	gameFunctions.config.scene = [ MainMenuScene, ArmySelectMenuScene, ArmySelectUIScene, ArmySetupUIScene, GameScene, GameUIScene]
-}
+
 
 
 gameFunctions.game = new Phaser.Game(gameFunctions.config);

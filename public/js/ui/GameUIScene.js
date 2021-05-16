@@ -27,40 +27,19 @@ var GameUIScene = new Phaser.Class({
 		
 		gameFunctions.btn_sprite = [];		
 		
+
+		switch(instance_type){
+			case "DEV":
+				GameUIScene.loadFullButtons(this)
+				break;
+			case "DEV-ONLINE":
+				GameUIScene.loadFullButtons(this)
+				break;
+			default:
+				GameUIScene.loadSingleButton(this)
+				break;
+		}		
 		
-		if(instance_type === "DEV"){
-			callbackParams = {mode:"move"};
-			gameFunctions.createButton(this, gameFunctions.config.width - 150, 25, "+", GameUIScene.selectMode, callbackParams, gameFunctions.btn_sprite);
-			callbackParams = {};
-			gameFunctions.createButton(this, gameFunctions.config.width - 50, 25, "move", GameUIScene.activateMovement, callbackParams, gameFunctions.btn_sprite);
-
-			callbackParams = {mode:"shoot"};
-			gameFunctions.createButton(this, gameFunctions.config.width - 150, 75, "+", GameUIScene.selectMode, callbackParams, gameFunctions.btn_sprite);
-			callbackParams = {};
-			gameFunctions.createButton(this, gameFunctions.config.width - 50, 75, "shoot", GameUIScene.activateShooting, callbackParams, gameFunctions.btn_sprite);
-
-			callbackParams = {mode:"charge"};
-			gameFunctions.createButton(this, gameFunctions.config.width - 150, 125, "+", GameUIScene.selectMode, callbackParams, gameFunctions.btn_sprite);	
-			callbackParams = {};
-			gameFunctions.createButton(this, gameFunctions.config.width - 50, 125, "charge", GameUIScene.activateCharging, callbackParams, gameFunctions.btn_sprite);
-
-			callbackParams = {mode:"fight"};
-			gameFunctions.createButton(this, gameFunctions.config.width - 150, 175, "+", GameUIScene.selectMode, callbackParams, gameFunctions.btn_sprite);	
-			callbackParams = {};
-			gameFunctions.createButton(this, gameFunctions.config.width - 50, 175, "fight", GameUIScene.activateFighting, callbackParams, gameFunctions.btn_sprite);		
-
-			
-			
-			callbackParams = {};
-			gameFunctions.createButton(this, gameFunctions.config.width - 150, 225, "End Turn", GameUIScene.nextPlayer, callbackParams, gameFunctions.btn_sprite);
-			
-		}else{
-			callbackParams = {};
-			gameFunctions.createButton(this, gameFunctions.config.width - 50, 25, "+", GameUIScene.advanceMode, callbackParams, gameFunctions.btn_sprite);		
-			GameUIScene.advanceMode();			
-		}
-		
-
 		
 		
 		gameFunctions.btn_sprite.forEach(btn => {
@@ -89,6 +68,42 @@ var GameUIScene = new Phaser.Class({
 		GameUIScene.text.setText(text)		
     }
 });
+
+GameUIScene.loadSingleButton = (scene) => {
+	let callbackParams;
+	
+	callbackParams = {};
+	gameFunctions.createButton(scene, gameFunctions.config.width - 50, 25, "+", GameUIScene.advanceMode, callbackParams, gameFunctions.btn_sprite);		
+	GameUIScene.advanceMode();	
+}
+
+GameUIScene.loadFullButtons = (scene) => {
+	let callbackParams;
+	
+	callbackParams = {mode:"move"};
+	gameFunctions.createButton(scene, gameFunctions.config.width - 150, 25, "+", GameUIScene.selectMode, callbackParams, gameFunctions.btn_sprite);
+	callbackParams = {};
+	gameFunctions.createButton(scene, gameFunctions.config.width - 50, 25, "move", GameUIScene.activateMovement, callbackParams, gameFunctions.btn_sprite);
+
+	callbackParams = {mode:"shoot"};
+	gameFunctions.createButton(scene, gameFunctions.config.width - 150, 75, "+", GameUIScene.selectMode, callbackParams, gameFunctions.btn_sprite);
+	callbackParams = {};
+	gameFunctions.createButton(scene, gameFunctions.config.width - 50, 75, "shoot", GameUIScene.activateShooting, callbackParams, gameFunctions.btn_sprite);
+
+	callbackParams = {mode:"charge"};
+	gameFunctions.createButton(scene, gameFunctions.config.width - 150, 125, "+", GameUIScene.selectMode, callbackParams, gameFunctions.btn_sprite);	
+	callbackParams = {};
+	gameFunctions.createButton(scene, gameFunctions.config.width - 50, 125, "charge", GameUIScene.activateCharging, callbackParams, gameFunctions.btn_sprite);
+
+	callbackParams = {mode:"fight"};
+	gameFunctions.createButton(scene, gameFunctions.config.width - 150, 175, "+", GameUIScene.selectMode, callbackParams, gameFunctions.btn_sprite);	
+	callbackParams = {};
+	gameFunctions.createButton(scene, gameFunctions.config.width - 50, 175, "fight", GameUIScene.activateFighting, callbackParams, gameFunctions.btn_sprite);		
+
+	callbackParams = {};
+	gameFunctions.createButton(scene, gameFunctions.config.width - 150, 225, "End Turn", GameUIScene.nextPlayer, callbackParams, gameFunctions.btn_sprite);	
+}
+
 
 GameUIScene.advanceMode = () => {
 
@@ -380,6 +395,21 @@ GameUIScene.activateFighting = () => {
 	//TRIGGER COMBAT WHEN UNITS HAVE MOVED
 }
 
+GameUIScene.hideButtons = () => {
+	gameFunctions.btn_sprite.forEach((btn) => {
+		btn.setInteractive(false);
+		btn.setAlpha(0);
+		btn.text.setAlpha(0);
+	})
+}
+
+GameUIScene.showButtons = () => {
+	gameFunctions.btn_sprite.forEach((btn) => {
+		btn.setInteractive(true);
+		btn.setAlpha(1);
+		btn.text.setAlpha(1);		
+	})
+}
 
 GameUIScene.nextPlayer = () => {
 	
