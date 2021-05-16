@@ -83,14 +83,15 @@ const unit = class {
 		GameScene.unit_collisions[this.side].add(this.sprite)
 		this.sprite.on('pointerup', this.selectHander)
 		
-		
-		this.sprite_ghost = options.scene.add.image(x,y,options.spritesheet).setInteractive();
-		this.sprite_ghost.alpha = 1; //0.5;
-		this.sprite_ghost.setTint(colour)
-		this.sprite_ghost.angle = options.angle;
-		this.sprite_ghost.parent = this;
-		this.sprite_ghost.is_ghost = true;
-		this.sprite_ghost.on('pointerup', this.selectHander)
+		if(GameScene.online === false || (GameScene.online === true && GameScene.current_player === gameFunctions.params.player_number)){
+			this.sprite_ghost = options.scene.add.image(x,y,options.spritesheet).setInteractive();
+			this.sprite_ghost.alpha = 1; //0.5;
+			this.sprite_ghost.setTint(colour)
+			this.sprite_ghost.angle = options.angle;
+			this.sprite_ghost.parent = this;
+			this.sprite_ghost.is_ghost = true;
+			this.sprite_ghost.on('pointerup', this.selectHander)
+		}
 
 		this.sprite_symbol = options.scene.add.image(x,y,"symbols").setScale(0.09)
 		this.sprite_symbol.x += (this.sprite.displayWidth / 2) //- (this.sprite_symbol.displayWidth / 2)
@@ -150,10 +151,13 @@ const unit = class {
 		this.fight_targets = [];	
 		
 		// this.resetGhost();
-		this.sprite_ghost.x = this.sprite.x;
-		this.sprite_ghost.y = this.sprite.y;
-		this.sprite_ghost.angle = this.sprite.angle;
-		this.sprite_ghost.alpha = 1;
+		if(this.sprite_ghost){
+			this.sprite_ghost.x = this.sprite.x;
+			this.sprite_ghost.y = this.sprite.y;
+			this.sprite_ghost.angle = this.sprite.angle;
+			this.sprite_ghost.alpha = 1;			
+		}
+
 				
 		this.path_graphic.clear();
 		this.cohesion_graphic.clear();
@@ -174,10 +178,12 @@ const unit = class {
 	}
 	
 	resetGhost() {
-		this.sprite_ghost.x = this.sprite.x;
-		this.sprite_ghost.y = this.sprite.y;
-		this.sprite_ghost.angle = this.sprite.angle;
-		this.sprite_ghost.alpha = 1;
+		if(this.sprite_ghost){
+			this.sprite_ghost.x = this.sprite.x;
+			this.sprite_ghost.y = this.sprite.y;
+			this.sprite_ghost.angle = this.sprite.angle;
+			this.sprite_ghost.alpha = 1;
+		}
 		this.sprite.setTint(this.colour)
 		this.sprite.alpha = 1;
 		
@@ -213,7 +219,9 @@ const unit = class {
 
 		GameScene.sfx[this.death_sfx].play();
 		this.sprite.destroy();
-		this.sprite_ghost.destroy();
+		if(this.sprite_ghost){
+			this.sprite_ghost.destroy();
+		}
 		this.bar_graphic.destroy();
 		this.sprite_symbol.destroy();
 	}	
@@ -480,14 +488,17 @@ const unit = class {
 			//UPDATE THE POSITIONAL DATA
 			if(this.path.length > 1){
 				let pos = this.path[this.path.length - 1];
-
-				// this.sprite_ghost.alpha = 0.5;
-				this.sprite_ghost.x = pos.x * GameScene.tile_size;
-				this.sprite_ghost.y = pos.y * GameScene.tile_size;
-				// this.resetGhost();
 				
 				let angle = this.checkAngle(this.path[this.path.length - 2], this.path[this.path.length - 1])
-				this.sprite_ghost.angle = angle;
+				
+				if(this.sprite_ghost){
+					// this.sprite_ghost.alpha = 0.5;
+					this.sprite_ghost.x = pos.x * GameScene.tile_size;
+					this.sprite_ghost.y = pos.y * GameScene.tile_size;
+					// this.resetGhost();				
+					this.sprite_ghost.angle = angle;					
+				}
+
 			}			
 			
 			
@@ -497,14 +508,16 @@ const unit = class {
 
 				if(unit.id !== this.id){
 					let check = false;
-					check = this.checkSpriteOverlap(unit.sprite, this.sprite_ghost)
-					if(check === true){
-						skip = true;
+					if(this.sprite_ghost){
+						check = this.checkSpriteOverlap(unit.sprite, this.sprite_ghost)
+						if(check === true){
+							skip = true;
+						}
+						check = this.checkSpriteOverlap(unit.sprite_ghost, this.sprite_ghost)
+						if(check === true){
+							skip = true;
+						}
 					}
-					check = this.checkSpriteOverlap(unit.sprite_ghost, this.sprite_ghost)
-					if(check === true){
-						skip = true;
-					}	
 				}
 			})
 			//SKIP IF IN COMBAT
@@ -607,9 +620,11 @@ const unit = class {
 				
 				let add_closed = false;
 				closed.forEach((closed_unit) => {
-					let distance = gameFunctions.twoPointDistance(open_unit.sprite_ghost, closed_unit.sprite_ghost);
-					if(distance <= open_unit.cohesion){
-						add_closed = true;
+					if(this.sprite_ghost){
+						let distance = gameFunctions.twoPointDistance(open_unit.sprite_ghost, closed_unit.sprite_ghost);
+						if(distance <= open_unit.cohesion){
+							add_closed = true;
+						}
 					}
 				})
 				
@@ -732,8 +747,11 @@ const unit = class {
 		this.cohesion_graphic.clear()
 		this.sprite.setTint(this.colour)
 		this.sprite.alpha = 1;
-		this.sprite_ghost.alpha = 0.5;
-
+		
+		if(this.sprite_ghost){
+			this.sprite_ghost.alpha = 0.5;
+		}
+		
 		if (this.path && this.is_moving === false){
 			
 			this.is_moving = true;
@@ -968,8 +986,11 @@ const unit = class {
 				let angle = Phaser.Math.Angle.BetweenPoints(this.sprite, target);
 				if(angle){
 					this.sprite.angle = Phaser.Math.RadToDeg(angle);
-					this.sprite_ghost.angle = this.sprite.angle;
-
+					
+					if(this.sprite_ghost){
+						this.sprite_ghost.angle = this.sprite.angle;
+					}
+					
 					let options = {
 						scene: GameScene.scene,
 						spritesheet: "bullet",
@@ -1074,7 +1095,9 @@ const unit = class {
 				
 				if(this.path.length > 0){
 					//check to see if movement ends in an attack
-					clash = this.checkSpriteOverlap(this.sprite_ghost, unit.sprite, true)
+					if(this.sprite_ghost){
+						clash = this.checkSpriteOverlap(this.sprite_ghost, unit.sprite, true)
+					}
 				}else{
 					clash = this.checkSpriteOverlap(this.sprite, unit.sprite, true)
 				}
