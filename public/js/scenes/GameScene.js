@@ -169,8 +169,8 @@ var GameScene = new Phaser.Class({
 		GameScene.setupMap();
 		GameScene.setupCamera();
 		
-		// GameScene.seed();
-		GameScene.seed2();
+		GameScene.seed();
+		// GameScene.seed2();
 		
 		GameScene.advancePlayer()
 		
