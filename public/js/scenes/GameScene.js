@@ -203,7 +203,12 @@ var GameScene = new Phaser.Class({
 
 				let created_unit = GameScene.seeder.placeFunction(options, "pos")
 
-				created_unit.health = unit.health;				
+				created_unit.player = unit.player;
+				created_unit.side = unit.side;
+				created_unit.squad = unit.squad;
+				created_unit.drawTint()
+				
+				created_unit.health = unit.health;
 				created_unit.alive = unit.alive;
 				created_unit.in_combat = unit.in_combat;
 
@@ -214,7 +219,7 @@ var GameScene = new Phaser.Class({
 				if(created_unit.sprite_ghost){
 					created_unit.sprite_ghost.angle = Phaser.Math.RadToDeg(unit.rotation);
 					created_unit.sprite_ghost.x -= GameScene.tile_size * created_unit.sprite_offset;
-					created_unit.sprite_ghost.y -= GameScene.tile_size * created_unit.sprite_offset;					
+					created_unit.sprite_ghost.y -= GameScene.tile_size * created_unit.sprite_offset;
 				}
 
 				// created_unit.drawHealth()

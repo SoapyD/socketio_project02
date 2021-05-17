@@ -66,24 +66,7 @@ const unit = class {
 		this.sprite.setDepth(1);
 		this.sprite.angle = options.angle;
 		
-		let colour = 0xFFFFFF;
-		switch(options.player){
-			case 0:
-				colour = 0xff3333; //red
-				break;
-			case 1:
-				colour = 0x3399ff; //blue
-				break;
-			case 2:
-				colour = 0x00FF00; //lime
-				break;
-			case 3:
-				colour = 0xFFFF00; //yellow
-				break;				
-		}
-		
-		this.colour = colour
-		this.sprite.setTint(this.colour)
+
 		this.sprite.parent = this
 		GameScene.unit_collisions[this.side].add(this.sprite)
 		this.sprite.on('pointerup', this.selectHander)
@@ -91,7 +74,6 @@ const unit = class {
 		if(GameScene.online === false || (GameScene.online === true && this.player === gameFunctions.params.player_number)){
 			this.sprite_ghost = options.scene.add.image(x,y,options.spritesheet).setInteractive();
 			this.sprite_ghost.alpha = 1; //0.5;
-			this.sprite_ghost.setTint(colour)
 			this.sprite_ghost.angle = options.angle;
 			this.sprite_ghost.parent = this;
 			this.sprite_ghost.is_ghost = true;
@@ -136,7 +118,7 @@ const unit = class {
 		// this.group.add(this.sprite)
 		// this.group.add(this.bar_graphic)
 		
-		
+		this.drawTint()
 		this.drawHealth();
 		this.drawInfo()
 		
@@ -332,6 +314,31 @@ const unit = class {
 // #     # #   #   ####### #  #  # 
 // #     # #    #  #     # #  #  # 
 // ######  #     # #     #  ## ##  	
+	
+	drawTint(){
+		let colour = 0xFFFFFF;
+		switch(this.player){
+			case 0:
+				colour = 0xff3333; //red
+				break;
+			case 1:
+				colour = 0x3399ff; //blue
+				break;
+			case 2:
+				colour = 0x00FF00; //lime
+				break;
+			case 3:
+				colour = 0xFFFF00; //yellow
+				break;				
+		}
+		
+		this.colour = colour
+		this.sprite.setTint(this.colour)
+		if(this.sprite_ghost){
+			this.sprite_ghost.setTint(this.colour)					
+		}
+
+	}
 	
 	updateUnitElements(){
 		this.drawHealth();
