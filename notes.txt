@@ -15,6 +15,9 @@
 
 
 
+-Need to get the player, side and squad values properly saved and passed back when the game reloads
+
+
 -test out a 3 side game
 -test out a 2 side, 4 player game
 

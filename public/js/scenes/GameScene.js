@@ -34,8 +34,8 @@ var GameScene = new Phaser.Class({
 		
 		
 		
-		GameScene.mode = '';
-		GameScene.current_player = -1;
+
+		
 		GameScene.bullets = [];
 		GameScene.selected_unit;
 		GameScene.left_click = false;
@@ -53,7 +53,7 @@ var GameScene = new Phaser.Class({
 		GameScene.rectangle.alpha = 0;
 		
 		
-		GameScene.units = []
+		// gameFunctions.units = []
 
 		let max_sides = 6;
 		GameScene.unit_collisions = []
@@ -169,10 +169,63 @@ var GameScene = new Phaser.Class({
 		GameScene.setupMap();
 		GameScene.setupCamera();
 		
-		GameScene.seed();
-		// GameScene.seed2();
+		if(gameFunctions.units_preload.length === 0){
+			GameScene.seed();
+			// GameScene.seed2();		
+		}
+		if(gameFunctions.units_preload.length > 0){
+			
+			let options = {
+				unit_list: gameFunctions.units,
+				scene: GameScene.scene,
+				player: 0,
+				side: 0,
+				angle : 90,
+				tile_size: GameScene.tile_size,
+				unit_types: GameScene.unit_types,
+				projectile_weapon_types: GameScene.projectile_weapon_types,
+				combat_weapon_types: GameScene.combat_weapon_types,
+				armour_types: GameScene.armour_types
+			}
+			GameScene.seeder = new seeder(options)
+			
+			// gameFunctions.units = [];
+			gameFunctions.units_preload.forEach((unit) => {
+
+				options.player = unit.player;
+				options.side = unit.side;
+				options.x = unit.x;
+				options.y = unit.y;
+				options.unit_name = unit.unit_name;
+				options.shoot_name = unit.shoot_name;
+				options.fight_name = unit.fight_name;
+				options.armour_name = unit.armour_name;
+
+				let created_unit = GameScene.seeder.placeFunction(options, "pos")
+
+				created_unit.health = unit.health;				
+				created_unit.alive = unit.alive;
+				created_unit.in_combat = unit.in_combat;
+
+				created_unit.sprite.angle = Phaser.Math.RadToDeg(unit.rotation);
+				created_unit.sprite.x -= GameScene.tile_size * created_unit.sprite_offset;
+				created_unit.sprite.y -= GameScene.tile_size * created_unit.sprite_offset;
+				
+				if(created_unit.sprite_ghost){
+					created_unit.sprite_ghost.angle = Phaser.Math.RadToDeg(unit.rotation);
+					created_unit.sprite_ghost.x -= GameScene.tile_size * created_unit.sprite_offset;
+					created_unit.sprite_ghost.y -= GameScene.tile_size * created_unit.sprite_offset;					
+				}
+
+				// created_unit.drawHealth()
+				created_unit.updateUnitElements()
+				
+			})			
+		}
 		
+
 		GameScene.advancePlayer()
+
 		
 		// GameScene.text_array = []
 		// GameScene.grid.forEach((row, y) => {
@@ -217,7 +270,7 @@ var GameScene = new Phaser.Class({
 		
 			if(GameScene.left_click === true){
 
-				switch(GameScene.mode) {
+				switch(gameFunctions.mode) {
 					case "move":
 						GameScene.selected_unit.findPath(GameScene, worldPoint);
 					break;
@@ -238,7 +291,7 @@ var GameScene = new Phaser.Class({
 			if(GameScene.right_click === true){
 				
 				GameScene.sfx['clear'].play();
-				switch(GameScene.mode) {
+				switch(gameFunctions.mode) {
 					case "move":
 					// 	GameScene.selected_unit.findPath(GameScene, pointer);
 						GameScene.selected_unit.resetMove();
@@ -276,9 +329,9 @@ var GameScene = new Phaser.Class({
 		
 		GameScene.bullets = bullets;
 		
-		if(GameScene.units){
-			GameScene.units.forEach((unit) => {
-				if(unit.player === GameScene.current_player){
+		if(gameFunctions.units){
+			gameFunctions.units.forEach((unit) => {
+				if(unit.player === gameFunctions.current_player){
 
 					if(unit.is_moving === true){
 						// unit.draw_health()
@@ -344,20 +397,20 @@ GameScene.clickHandler = function(pointer){
 
 GameScene.advancePlayer = () => {
 
-	GameScene.current_player += 1
-	if(GameScene.current_player >= gameFunctions.params.max_player){
-		GameScene.current_player = 0
+	gameFunctions.current_player += 1
+	if(gameFunctions.current_player >= gameFunctions.params.max_player){
+		gameFunctions.current_player = 0
 	}
 	
 	if(GameScene.online === true){
-		if(gameFunctions.params.player_number === GameScene.current_player){
+		if(gameFunctions.params.player_number === gameFunctions.current_player){
 			GameUIScene.showButtons()			
 		}else{
 			GameUIScene.hideButtons()
 		}
 	}
 	
-	GameScene.units.forEach((unit) => {
+	gameFunctions.units.forEach((unit) => {
 		unit.moves = 0;
 		unit.fights = 0;
 		unit.shots = 0;
@@ -497,7 +550,7 @@ GameScene.seed = () => {
 
 	
 	let options = {
-		unit_list: GameScene.units,
+		unit_list: gameFunctions.units,
 		scene: GameScene.scene,
 		player: 0,
 		side: 0,
@@ -525,7 +578,7 @@ GameScene.seed = () => {
 	
 	
 	options = {
-		unit_list: GameScene.units,
+		unit_list: gameFunctions.units,
 		scene: GameScene.scene,
 		player: 1,
 		side: 1,
@@ -558,7 +611,7 @@ GameScene.seed2 = () => {
 
 	
 	let options = {
-		unit_list: GameScene.units,
+		unit_list: gameFunctions.units,
 		scene: GameScene.scene,
 		player: 0,
 		side: 0,
@@ -571,26 +624,26 @@ GameScene.seed2 = () => {
 	}
 	GameScene.seeder = new seeder(options)
 
-	options = {x: 14, y:5}
-	GameScene.seeder.placeGeneral(options)		
+	options = {x: 14, y:2}
+	GameScene.seeder.placeTank(options)		
 
 	
-	options = {
-		unit_list: GameScene.units,
-		scene: GameScene.scene,
-		player: 1,
-		side: 1,
-		angle : -90,
-		tile_size: GameScene.tile_size,
-		unit_types: GameScene.unit_types,
-		projectile_weapon_types: GameScene.projectile_weapon_types,
-		combat_weapon_types: GameScene.combat_weapon_types,
-		armour_types: GameScene.armour_types
-	}
-	GameScene.seeder = new seeder(options)	
+	// options = {
+	// 	unit_list: gameFunctions.units,
+	// 	scene: GameScene.scene,
+	// 	player: 1,
+	// 	side: 1,
+	// 	angle : -90,
+	// 	tile_size: GameScene.tile_size,
+	// 	unit_types: GameScene.unit_types,
+	// 	projectile_weapon_types: GameScene.projectile_weapon_types,
+	// 	combat_weapon_types: GameScene.combat_weapon_types,
+	// 	armour_types: GameScene.armour_types
+	// }
+	// GameScene.seeder = new seeder(options)	
 	
-	options = {x: 14, y:2}
-	GameScene.seeder.placeSquad(options)
+	// options = {x: 14, y:2}
+	// GameScene.seeder.placeSquad(options)
 	// GameScene.seeder.placeGeneral(options)
 	
 }

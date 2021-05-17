@@ -4,7 +4,7 @@ const unit = class {
 		
 		// super(options);
 		
-		this.id = GameScene.units.length;
+		this.id = gameFunctions.units.length;
 		this.side = options.side; //this can be used if each side has multiple players
 		this.player = options.player; //this is the specific owner of the unit
 		this.squad = options.squad;; //this can be used for squad checks like unit cohesion
@@ -213,7 +213,7 @@ const unit = class {
 		this.sprite.alpha = 1;
 		
 		
-		if(GameScene.mode === "move" || GameScene.mode === "charge"){
+		if(gameFunctions.mode === "move" || gameFunctions.mode === "charge"){
 			if(this.cohesion > 0){
 				this.cohesionCheck();	
 			}
@@ -343,7 +343,7 @@ const unit = class {
 	drawInfo()
 	{
 		let string = ""
-		switch(GameScene.mode){
+		switch(gameFunctions.mode){
 			case "shoot":
 				string = this.targets.length + "/" + this.max_targets
 				break;
@@ -384,10 +384,15 @@ const unit = class {
 		
 		let angle = (270 / this.max_health) * this.health;
 		
-		let fill_colour = 0x00ff00;
-        if (this.health < 30)
+		let fill_colour = 0x2ECC40; //green
+        if (this.health < this.max_health / 2) 
         {
-            fill_colour = 0xff0000;
+
+            fill_colour = 0xffdb00; //yellow
+        }
+		if (this.health < this.max_health / 4)
+        {
+            fill_colour = 0xff0000; //red
         }
 	
 		
@@ -518,12 +523,12 @@ const unit = class {
 			}
 
 			
-			if (this.parent.player === GameScene.current_player && skip === false){
+			if (this.parent.player === gameFunctions.current_player && skip === false){
 				//TURN OLD SELECTED PLAYER MARKER, WHITE
 
 				if(GameScene.selected_unit){
 					GameScene.selected_unit.resetColours();
-					if(GameScene.mode === "fight"){
+					if(gameFunctions.mode === "fight"){
 						GameScene.selected_unit.resetFightRadius();
 					}
 					
@@ -536,7 +541,7 @@ const unit = class {
 					this.parent.resetGhost();
 				}
 				
-				if(GameScene.mode === "fight"){
+				if(gameFunctions.mode === "fight"){
 					this.parent.drawFightRadius()
 				}
 				
@@ -681,7 +686,7 @@ const unit = class {
 			
 			//SKIP PATH IF THE UNIT PLACEMENT OVERLAPS ANOTHER UNIT
 			let skip = false
-			GameScene.units.forEach((unit) => {
+			gameFunctions.units.forEach((unit) => {
 
 				if(unit.id !== this.id){
 					let check = false;
@@ -708,15 +713,15 @@ const unit = class {
 					skip = true;
 				}
 			}
-			// if(this.moves !== 0 && GameScene.mode === "move"){
+			// if(this.moves !== 0 && gameFunctions.mode === "move"){
 			// 	skip = true;
 			// }
-			// if(this.fights !== 0 && GameScene.mode === "fight"){
+			// if(this.fights !== 0 && gameFunctions.mode === "fight"){
 			// 	skip = true;
 			// }
 			
 			//DON'T ALLOW FIGHTING IF THERE'S NO FIGHT DAMAGE
-			if(this.fight_damage === 0 && GameScene.mode === "fight"){
+			if(this.fight_damage === 0 && gameFunctions.mode === "fight"){
 				skip = true;
 			}
 			
@@ -780,7 +785,7 @@ const unit = class {
 		
 		//GET THE UNITS IN THE SQUAD
 		let open = [];
-		GameScene.units.forEach((unit) => {
+		gameFunctions.units.forEach((unit) => {
 			if(unit.id !== this.id && unit.player === this.player && unit.squad === this.squad) //
 			{
 				open.push(unit);
@@ -839,7 +844,7 @@ const unit = class {
 	
 	cohesionCheck() {
 		
-		GameScene.units.forEach((unit) => {
+		gameFunctions.units.forEach((unit) => {
 			if(unit.player === this.player && unit.squad === this.squad) //unit.id !== this.id && 
 			{		
 		
@@ -1154,7 +1159,7 @@ const unit = class {
 
 		let check = false;
 		let found_unit;
-		GameScene.units.forEach((unit) => {
+		gameFunctions.units.forEach((unit) => {
 			check = unit.checkSpriteandPos(pointer);
 			if(check === true && unit.id !== this.id){
 				found_unit = unit
@@ -1179,7 +1184,7 @@ const unit = class {
 	checkCombat() {
 		
 		let in_combat_range = false
-		GameScene.units.forEach((unit) => {
+		gameFunctions.units.forEach((unit) => {
 			let clash = false;
 			if(unit.alive === true && unit.id !== this.id && unit.player !== this.player && unit.side !== this.side){
 				

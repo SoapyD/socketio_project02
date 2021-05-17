@@ -30,14 +30,14 @@ const seeder = class {
 		}
 	}	
 
-	placeUnit(options){
+	placeFunction(options, pos_type="grid"){
 		
 		let unit_options;
 
-		let unit_info = this.unit_types.find((e) => e.unit_name===options.unit)	
-		let projectile_weapon_info = this.projectile_weapon_types.find((e) => e.shoot_name===options.projectile_weapon)	
-		let combat_weapon_info = this.combat_weapon_types.find((e) => e.fight_name===options.combat_weapon)	
-		let armour_info = this.armour_types.find((e) => e.armour_name===options.armour)			
+		let unit_info = this.unit_types.find((e) => e.unit_name===options.unit_name)	
+		let projectile_weapon_info = this.projectile_weapon_types.find((e) => e.shoot_name===options.shoot_name)	
+		let combat_weapon_info = this.combat_weapon_types.find((e) => e.fight_name===options.fight_name)	
+		let armour_info = this.armour_types.find((e) => e.armour_name===options.armour_name)			
 
 
 		unit_options = {}
@@ -47,42 +47,51 @@ const seeder = class {
 		this.copyObject(unit_options, combat_weapon_info)
 		this.copyObject(unit_options, armour_info)	
 
-		unit_options.x = options.x * this.tile_size;
-		unit_options.y = options.y * this.tile_size;		
+		if(pos_type === "grid"){
+			unit_options.x = options.x * this.tile_size;
+			unit_options.y = options.y * this.tile_size;
+		}
+		else{
+			unit_options.x = options.x;
+			unit_options.y = options.y;	
+		}
 
+		let return_unit = new unit(unit_options)
+		this.unit_list.push(return_unit);
 		
-		this.unit_list.push(new unit(unit_options));		
+		return return_unit;
 		
 	}
+	
 	
 	placeSquad(options){
 		
 		let unit_options = {
-			unit: "marine",
-			projectile_weapon: "bolter",
-			combat_weapon: "sword",
-			armour: "basic",
+			unit_name: "marine",
+			shoot_name: "bolter",
+			fight_name: "sword",
+			armour_name: "basic",
 		}
 		
 		let leader_options = {
-			unit: "squad_leader",
-			projectile_weapon: "bolter",
-			combat_weapon: "sword",
-			armour: "basic",
+			unit_name: "squad_leader",
+			shoot_name: "bolter",
+			fight_name: "sword",
+			armour_name: "basic",
 		}		
 		
 		let special_options = {
-			unit: "special",
-			projectile_weapon: "plasma",
-			combat_weapon: "sword",
-			armour: "basic",
+			unit_name: "special",
+			shoot_name: "plasma",
+			fight_name: "sword",
+			armour_name: "basic",
 		}				
 		
 		let heavy_options = {
-			unit: "heavy",
-			projectile_weapon: "heavy",
-			combat_weapon: "sword",
-			armour: "basic",
+			unit_name: "heavy",
+			shoot_name: "heavy",
+			fight_name: "sword",
+			armour_name: "basic",
 		}		
 
 		let x_start = options.x;		
@@ -98,22 +107,22 @@ const seeder = class {
 						case 6:
 							special_options.x = x
 							special_options.y = y
-							this.placeUnit(special_options)
+							this.placeFunction(special_options)
 							break;
 						case 7:
 							leader_options.x = x
 							leader_options.y = y
-							this.placeUnit(leader_options)
+							this.placeFunction(leader_options)
 							break;
 						case 8:
 							heavy_options.x = x
 							heavy_options.y = y
-							this.placeUnit(heavy_options)
+							this.placeFunction(heavy_options)
 							break;
 						default:
 							unit_options.x = x
 							unit_options.y = y
-							this.placeUnit(unit_options)
+							this.placeFunction(unit_options)
 						break;
 					}					
 				}
@@ -123,22 +132,22 @@ const seeder = class {
 						case 1:
 							special_options.x = x
 							special_options.y = y
-							this.placeUnit(special_options)
+							this.placeFunction(special_options)
 							break;
 						case 2:
 							leader_options.x = x
 							leader_options.y = y
-							this.placeUnit(leader_options)
+							this.placeFunction(leader_options)
 							break;
 						case 3:
 							heavy_options.x = x
 							heavy_options.y = y
-							this.placeUnit(heavy_options)
+							this.placeFunction(heavy_options)
 							break;
 						default:
 							unit_options.x = x
 							unit_options.y = y
-							this.placeUnit(unit_options)
+							this.placeFunction(unit_options)
 						break;
 					}					
 				}				
@@ -155,16 +164,16 @@ const seeder = class {
 		
 		
 		let unit_options = {
-			unit: "general",
-			projectile_weapon: "bolter",
-			combat_weapon: "sword",
-			armour: "basic",
+			unit_name: "general",
+			shoot_name: "bolter",
+			fight_name: "sword",
+			armour_name: "basic",
 		}		
 		
 
 		unit_options.x = options.x
 		unit_options.y = options.y
-		this.placeUnit(unit_options)
+		this.placeFunction(unit_options)
 		
 		this.squad++;
 	}		
@@ -173,16 +182,16 @@ const seeder = class {
 		
 		
 		let unit_options = {
-			unit: "tank",
-			projectile_weapon: "heavy",
-			combat_weapon: "none",
-			armour: "heavy",
+			unit_name: "tank",
+			shoot_name: "heavy",
+			fight_name: "none",
+			armour_name: "heavy",
 		}		
 		
 
 		unit_options.x = options.x
 		unit_options.y = options.y
-		this.placeUnit(unit_options)
+		this.placeFunction(unit_options)
 		
 		this.squad++;
 	}	
@@ -228,7 +237,7 @@ GameScene.seeds = () => {
 	gameFunctions.copyObject(options, armour_info)	
 
 
-	GameScene.units.push(new unit(options));
+	gameFunctions.units.push(new unit(options));
 	
 	
 	options = {}
@@ -240,7 +249,7 @@ GameScene.seeds = () => {
 	options.x = GameScene.tile_size * 5
 	options.y = GameScene.tile_size * 2
 	
-	GameScene.units.push(new unit(options));
+	gameFunctions.units.push(new unit(options));
 	
 	
 	options = {}
@@ -252,7 +261,7 @@ GameScene.seeds = () => {
 	options.x = GameScene.tile_size * 4
 	options.y = GameScene.tile_size * 3
 	
-	GameScene.units.push(new unit(options));	
+	gameFunctions.units.push(new unit(options));	
 	
 	
 	options = {}
@@ -265,7 +274,7 @@ GameScene.seeds = () => {
 	options.x = GameScene.tile_size * 14
 	options.y = GameScene.tile_size * 2
 	
-	GameScene.units.push(new unit(options));	
+	gameFunctions.units.push(new unit(options));	
 	
 	
 	options = {}
@@ -277,7 +286,7 @@ GameScene.seeds = () => {
 	options.x = GameScene.tile_size * 16
 	options.y = GameScene.tile_size * 2
 	
-	GameScene.units.push(new unit(options));
+	gameFunctions.units.push(new unit(options));
 	
 	options = {}
 	gameFunctions.copyObject(options, core_data)
@@ -288,7 +297,7 @@ GameScene.seeds = () => {
 	options.x = GameScene.tile_size * 15
 	options.y = GameScene.tile_size * 3
 	
-	GameScene.units.push(new unit(options));	
+	gameFunctions.units.push(new unit(options));	
 	
 	
 	core_data.squad = 2;	
@@ -303,7 +312,7 @@ GameScene.seeds = () => {
 	options.x = GameScene.tile_size * 12
 	options.y = GameScene.tile_size * 2
 	
-	GameScene.units.push(new unit(options));
+	gameFunctions.units.push(new unit(options));
 	
 
 	core_data.squad = 3;	
@@ -318,7 +327,7 @@ GameScene.seeds = () => {
 	options.x = GameScene.tile_size * 8
 	options.y = GameScene.tile_size * 2
 	
-	GameScene.units.push(new unit(options));		
+	gameFunctions.units.push(new unit(options));		
 	
 	
 	//PLAYER 1
@@ -336,7 +345,7 @@ GameScene.seeds = () => {
 	options.x = GameScene.tile_size * 3
 	options.y = GameScene.tile_size * 37
 	
-	GameScene.units.push(new unit(options));
+	gameFunctions.units.push(new unit(options));
 	
 	
 	options = {}
@@ -348,7 +357,7 @@ GameScene.seeds = () => {
 	options.x = GameScene.tile_size * 5
 	options.y = GameScene.tile_size * 37
 	
-	GameScene.units.push(new unit(options));
+	gameFunctions.units.push(new unit(options));
 	
 	
 	options = {}
@@ -360,7 +369,7 @@ GameScene.seeds = () => {
 	options.x = GameScene.tile_size * 4
 	options.y = GameScene.tile_size * 36
 	
-	GameScene.units.push(new unit(options));	
+	gameFunctions.units.push(new unit(options));	
 	
 	
 	options = {}
@@ -373,7 +382,7 @@ GameScene.seeds = () => {
 	options.x = GameScene.tile_size * 14
 	options.y = GameScene.tile_size * 37
 	
-	GameScene.units.push(new unit(options));	
+	gameFunctions.units.push(new unit(options));	
 	
 	
 	options = {}
@@ -385,7 +394,7 @@ GameScene.seeds = () => {
 	options.x = GameScene.tile_size * 16
 	options.y = GameScene.tile_size * 37
 	
-	GameScene.units.push(new unit(options));
+	gameFunctions.units.push(new unit(options));
 	
 	options = {}
 	gameFunctions.copyObject(options, core_data)
@@ -396,7 +405,7 @@ GameScene.seeds = () => {
 	options.x = GameScene.tile_size * 15
 	options.y = GameScene.tile_size * 36
 	
-	GameScene.units.push(new unit(options));	
+	gameFunctions.units.push(new unit(options));	
 	
 
 	core_data.squad = 3;	
@@ -410,7 +419,7 @@ GameScene.seeds = () => {
 	options.x = GameScene.tile_size * 8
 	options.y = GameScene.tile_size * 38
 	
-	GameScene.units.push(new unit(options));	
+	gameFunctions.units.push(new unit(options));	
 	
 	
 	core_data.squad = 2;	
@@ -425,7 +434,7 @@ GameScene.seeds = () => {
 	options.x = GameScene.tile_size * 12
 	options.y = GameScene.tile_size * 37
 	
-	GameScene.units.push(new unit(options));	
+	gameFunctions.units.push(new unit(options));	
 	
 }
 
@@ -459,7 +468,7 @@ GameScene.seeds2 = () => {
 	gameFunctions.copyObject(options, armour_info)		
 	gameFunctions.copyObject(options, core_data)
 
-	GameScene.units.push(new unit(options));
+	gameFunctions.units.push(new unit(options));
 
 	
 	options = {}
@@ -475,7 +484,7 @@ GameScene.seeds2 = () => {
 	gameFunctions.copyObject(options, armour_info)			
 	gameFunctions.copyObject(options, core_data)	
 	
-	GameScene.units.push(new unit(options));	
+	gameFunctions.units.push(new unit(options));	
 	
 	
 	options = {}
@@ -493,7 +502,7 @@ GameScene.seeds2 = () => {
 	gameFunctions.copyObject(options, armour_info)		
 	gameFunctions.copyObject(options, core_data)
 
-	GameScene.units.push(new unit(options));	
+	gameFunctions.units.push(new unit(options));	
 	
 	
 	
@@ -508,7 +517,7 @@ GameScene.seeds2 = () => {
 	// options.x = GameScene.tile_size * 7
 	// options.y = GameScene.tile_size * 5
 	
-	// GameScene.units.push(new unit(options));		
+	// gameFunctions.units.push(new unit(options));		
 	
 	core_data.squad = 2;	
 	unit_info =GameScene.unit_types.find((e) => e.name==="tank")
@@ -522,7 +531,7 @@ GameScene.seeds2 = () => {
 	options.x = GameScene.tile_size * 7
 	options.y = GameScene.tile_size * 5
 	
-	GameScene.units.push(new unit(options));		
+	gameFunctions.units.push(new unit(options));		
 	
 	
 }

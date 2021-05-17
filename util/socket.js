@@ -229,6 +229,14 @@ exports.joinRoom = async(network, data)  => {
         network.io.of(network.namespace).emit("message_client", return_data)     
 
 		if(saved_room){
+			
+			let has_saved_data = false;
+			let next_scene = "ArmySelectMenuScene"
+			if(saved_room.units.length > 0){
+				has_saved_data = true
+				next_scene = "GameScene"
+			}
+			
 			//SEND THE CORE GAME DATA OT THE PLAYER
 			return_data = {
                 functionGroup: "connFunctions"
@@ -239,6 +247,8 @@ exports.joinRoom = async(network, data)  => {
 				,room_id: saved_room._id
 				,max_players: saved_room.max_players
 				,player_number: saved_room.users.indexOf(data.user_id)
+				,has_saved_data: has_saved_data
+				,room: saved_room
 			}
 			network.socket.join(data.roomName)
 			//send room info back to socket
@@ -250,7 +260,7 @@ exports.joinRoom = async(network, data)  => {
                 functionGroup: "connFunctions",
                 function: "sceneTransition",
                 message: "Room Joined",
-                scene: "ArmySelectMenuScene"
+                scene: next_scene
             }
 
             //send room info back to socket

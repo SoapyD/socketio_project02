@@ -1,6 +1,10 @@
 
 gameFunctions = []
 gameFunctions.btn_sprite = [];
+gameFunctions.units = [];
+gameFunctions.units_preload = [];
+gameFunctions.mode = '';
+gameFunctions.current_player = -1;
 
 
 gameFunctions.params = {

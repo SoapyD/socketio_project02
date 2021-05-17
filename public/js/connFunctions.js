@@ -79,12 +79,27 @@ connFunctions.test = (data) => {
 
 
 connFunctions.setRoomInfo = (data) => {
+
 	console.log(data)
+	
 	gameFunctions.params.room_name = data.room_name
 	gameFunctions.params.room_id = data.room_id
 	gameFunctions.params.player_number = data.player_number
 	gameFunctions.params.max_players = data.max_players
+	
+	if(data.has_saved_data === true){
+		
+		gameFunctions.current_player = data.room.config.current_player
+		gameFunctions.mode = data.room.config.mode	
+		
+		
+		gameFunctions.units_preload = data.room.units;
+		
+	}
 }
+
+
+
 
 connFunctions.sceneTransition = (data) => {
     // console.log(data.message)
@@ -127,17 +142,17 @@ connFunctions.uiSceneTransition = (data) => {
 
 connFunctions.runUnitFunction = function(data) {
 	if(data.parameters.path){
-		GameScene.units[data.parameters.id].path = data.parameters.path;
+		gameFunctions.units[data.parameters.id].path = data.parameters.path;
 	}
 	if(data.parameters.targets){
-		GameScene.units[data.parameters.id].targets = data.parameters.targets;
+		gameFunctions.units[data.parameters.id].targets = data.parameters.targets;
 	}	
 	
 	if(data.parameters.function_parameter){
-		GameScene.units[data.parameters.id][data.parameters.function](data.parameters.function_parameter)	
+		gameFunctions.units[data.parameters.id][data.parameters.function](data.parameters.function_parameter)	
 	}
 	else{
-		GameScene.units[data.parameters.id][data.parameters.function]()		
+		gameFunctions.units[data.parameters.id][data.parameters.function]()		
 	}
 
 }
@@ -149,9 +164,9 @@ connFunctions.saveGame = () => {
 		function: "updateRoom", //saveGame
 		message: "save game",
 		room_name: gameFunctions.params.room_name,
-		current_player: GameScene.current_player,
-		mode: GameScene.mode,
-		units: GameScene.units
+		current_player: gameFunctions.current_player,
+		mode: gameFunctions.mode,
+		units: gameFunctions.units
 	}
 	
 	connFunctions.messageServer(data)	

@@ -62,8 +62,8 @@ var GameUIScene = new Phaser.Class({
         //     // code block
         // }	         
 		
-		let text = "Current Player: "+GameScene.current_player+'\n'
-		text += "Phase: "+GameScene.mode+'\n'		
+		let text = "Current Player: "+gameFunctions.current_player+'\n'
+		text += "Phase: "+gameFunctions.mode+'\n'		
 		
 		GameUIScene.text.setText(text)		
     }
@@ -211,13 +211,13 @@ GameUIScene.selectMode = (options) => {
 	// GameScene.sfx['button'].play();
 	
 	if(options.mode){
-		GameScene.mode = options.mode
+		gameFunctions.mode = options.mode
 		GameScene.selected_unit = undefined;
 		
 		//RESET ALL PLAYER ACTIONS
-		if(GameScene.units){
-			GameScene.units.forEach((unit) => {
-				if(unit.player === GameScene.current_player){
+		if(gameFunctions.units){
+			gameFunctions.units.forEach((unit) => {
+				if(unit.player === gameFunctions.current_player){
 					unit.resetActions();
 				}
 			})
@@ -228,15 +228,15 @@ GameUIScene.selectMode = (options) => {
 GameUIScene.activateMovement = () => {
 	
 	let cohesion_check = true
-	GameScene.units.forEach((unit) => {
+	gameFunctions.units.forEach((unit) => {
 		if(unit.cohesion_check === false && unit.cohesion > 0){
 			cohesion_check = false;		
 		}
 	})		
 	
 	if(cohesion_check === true){
-		GameScene.units.forEach((unit) => {
-			if(unit.path.length > 0 && unit.player === GameScene.current_player){
+		gameFunctions.units.forEach((unit) => {
+			if(unit.path.length > 0 && unit.player === gameFunctions.current_player){
 				
 				if(GameScene.online === false){
 					unit.move();
@@ -263,13 +263,13 @@ GameUIScene.activateMovement = () => {
 }
 
 GameUIScene.activateShooting = () => {
-	GameScene.units.forEach((unit) => {
+	gameFunctions.units.forEach((unit) => {
 		
 		if(GameScene.online === false){
 			unit.shoot();
 		}else{
 
-			if(unit.targets.length > 0 && unit.player === GameScene.current_player){
+			if(unit.targets.length > 0 && unit.player === gameFunctions.current_player){
 				let data = {
 					functionGroup: "socketFunctions",  
 					function: "messageAll",
@@ -300,15 +300,15 @@ GameUIScene.activateCharging = () => {
 	//ALSO CHECK ALL CHARGING UNITS ARE NEXT TO AN ENEMY UNITS
 	let in_combat = false;
 	
-	GameScene.units.forEach((unit) => {
+	gameFunctions.units.forEach((unit) => {
 		if(unit.cohesion_check === false && unit.cohesion > 0){
 			cohesion_check = false;
 		}
 	})
 	
 	if(cohesion_check === true){
-		GameScene.units.forEach((unit) => {
-			if(unit.player === GameScene.current_player &&
+		gameFunctions.units.forEach((unit) => {
+			if(unit.player === gameFunctions.current_player &&
 			   unit.cohesion_check === true){
 				let in_combat_range = unit.checkCombat()
 				
@@ -320,9 +320,9 @@ GameUIScene.activateCharging = () => {
 	}
 	
 	if(cohesion_check === true && in_combat === true){
-		GameScene.units.forEach((unit) => {
+		gameFunctions.units.forEach((unit) => {
 			
-			if(unit.player === GameScene.current_player){
+			if(unit.player === gameFunctions.current_player){
 
 				if(GameScene.online === false){
 					
@@ -363,9 +363,9 @@ GameUIScene.activateCharging = () => {
 
 GameUIScene.activateFighting = () => {
 	
-	GameScene.units.forEach((unit) => {
+	gameFunctions.units.forEach((unit) => {
 
-		if(unit.player === GameScene.current_player){
+		if(unit.player === gameFunctions.current_player){
 
 			if(GameScene.online === false){
 
@@ -415,9 +415,9 @@ GameUIScene.nextPlayer = () => {
 	
 	connFunctions.saveGame();
 	
-	GameScene.mode = ""
-	GameScene.units.forEach((unit) => {
-		if(unit.player === GameScene.current_player){
+	gameFunctions.mode = ""
+	gameFunctions.units.forEach((unit) => {
+		if(unit.player === gameFunctions.current_player){
 			unit.resetActions();
 		}
 	})
@@ -452,15 +452,15 @@ GameUIScene.activateFighting = () => {
 	//ALSO CHECK ALL CHARGING UNITS ARE NEXT TO AN ENEMY UNITS
 	let in_combat = false;
 	
-	GameScene.units.forEach((unit) => {
+	gameFunctions.units.forEach((unit) => {
 		if(unit.cohesion_check === false && unit.cohesion > 0){
 			cohesion_check = false;
 		}
 	})
 	
 	if(cohesion_check === true){
-		GameScene.units.forEach((unit) => {
-			if(unit.player === GameScene.current_player &&
+		gameFunctions.units.forEach((unit) => {
+			if(unit.player === gameFunctions.current_player &&
 			   unit.cohesion_check === true){
 				let in_combat_range = unit.checkCombat()
 				
@@ -473,9 +473,9 @@ GameUIScene.activateFighting = () => {
 
 	
 	if(cohesion_check === true && in_combat === true){
-		GameScene.units.forEach((unit) => {
+		gameFunctions.units.forEach((unit) => {
 			
-			if(unit.player === GameScene.current_player){
+			if(unit.player === gameFunctions.current_player){
 
 				if(GameScene.online === false){
 					
