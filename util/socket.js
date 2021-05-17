@@ -51,7 +51,7 @@ exports.checkMessages = (io,namespace) => {
 
 exports.test = async(network, data)  => {
 
-	console.log(data.message)
+	console.log(data)
     let return_data = {
         functionGroup: "connFunctions",
         function: "test",
@@ -123,10 +123,10 @@ exports.createRoom = async(network, data)  => {
                 functionGroup: "connFunctions"
                 ,function: "setRoomInfo"
                 ,message: "Room Info"
-				,userName: data.userName
-				,roomName: data.roomName
+				,user_name: data.user_name
+				,room_name: data.room_name
 				,roomID: room._id
-				,maxPlayers: room.max_players
+				,max_players: room.max_players
 				,player_number: room.users.indexOf(data.user_id)
 			}
 			network.socket.join(data.roomName)
@@ -234,10 +234,10 @@ exports.joinRoom = async(network, data)  => {
                 functionGroup: "connFunctions"
                 ,function: "setRoomInfo"
                 ,message: "Room Info"
-				,userName: data.userName
-				,roomName: data.roomName
-				,roomID: saved_room._id
-				,maxPlayers: saved_room.max_players
+				,user_name: data.user_name
+				,room_name: data.room_name
+				,room_id: saved_room._id
+				,max_players: saved_room.max_players
 				,player_number: saved_room.users.indexOf(data.user_id)
 			}
 			network.socket.join(data.roomName)
@@ -333,8 +333,58 @@ exports.sceneTransition = (network, data) => {
 
 
 
+// ##################################################################################
+// ##################################################################################
+// ##################################################################################
+// #     # ######  ######     #    ####### ####### 
+// #     # #     # #     #   # #      #    #       
+// #     # #     # #     #  #   #     #    #       
+// #     # ######  #     # #     #    #    #####   
+// #     # #       #     # #######    #    #       
+// #     # #       #     # #     #    #    #       
+//  #####  #       ######  #     #    #    ####### 
+// ##################################################################################
+// ##################################################################################
+// ##################################################################################
 
+exports.updateRoom = async(network, data) => {
+	
 
+    let rooms;
+    try{
+        rooms = await queriesUtil.findRooms(data.room_name)
+    }
+    catch(err){
+        console.log("Error trying to find rooms")
+        console.log(err)
+    }
+	
+	if(rooms){
+		let room = rooms[0];
+		
+		if(room){
+			try{
+				room = await queriesUtil.updateRoom(room, data)
+
+				let return_data = {
+					functionGroup: "connFunctions",
+					function: "test",
+					message: "room updated"
+				}	
+
+				network.io.of(network.namespace).emit("message_client", return_data)
+			}
+			catch(err){
+				console.log("Error trying to update room")
+				console.log(err)			
+			}			
+		}
+	}
+	else{
+		console.log("room not found")
+	}
+	
+}
 
 
 

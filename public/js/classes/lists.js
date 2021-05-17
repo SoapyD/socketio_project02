@@ -1,7 +1,7 @@
 
 const unit_type = class {
 	constructor(options) {
-		this.name = options.name;
+		this.unit_name = options.unit_name;
 		this.spritesheet = options.spritesheet;
 		this.sprite_offset = options.sprite_offset;
 		this.size = options.size; //the grid size of the object used when plotting movement
@@ -20,7 +20,7 @@ const unit_type = class {
 
 const projectile_weapon_type = class {
 	constructor(options) {
-		this.name = options.name;
+		this.shoot_name = options.shoot_name;
 		this.shoot_range = options.shoot_range;
 		this.shoot_damage = options.shoot_damage;
 		this.shoot_ap = options.shoot_ap;
@@ -32,7 +32,7 @@ const projectile_weapon_type = class {
 
 const combat_weapon_type = class {
 	constructor(options) {
-		this.name = options.name;
+		this.fight_name = options.fight_name;
 		this.fight_damage = options.fight_damage;
 		this.fight_ap = options.fight_ap;
 		this.fight_max_targets = options.fight_max_targets
@@ -42,7 +42,7 @@ const combat_weapon_type = class {
 
 const armour_type = class {
 	constructor(options) {
-		this.name = options.name;
+		this.armour_name = options.armour_name;
 		this.armour = options.armour;
 	}
 }
@@ -55,7 +55,7 @@ const armour_types = []
 let options;
 
 options = {
-	name: 'general',
+	unit_name: 'general',
 	spritesheet: 'general',
 	size: 0,
 	sprite_offset: 0.5,
@@ -72,7 +72,7 @@ options = {
 unit_types.push(new unit_type(options))
 
 options = {
-	name: 'squad_leader',
+	unit_name: 'squad_leader',
 	spritesheet: 'squad_leader',
 	size: 0,
 	sprite_offset: 0.5,
@@ -89,7 +89,7 @@ options = {
 unit_types.push(new unit_type(options))
 
 options = {
-	name: 'heavy',
+	unit_name: 'heavy',
 	spritesheet: 'heavy',
 	size: 0,
 	sprite_offset: 0.5,
@@ -106,7 +106,7 @@ options = {
 unit_types.push(new unit_type(options))
 
 options = {
-	name: 'special',
+	unit_name: 'special',
 	spritesheet: 'special',
 	size: 0,
 	sprite_offset: 0.5,
@@ -123,7 +123,7 @@ options = {
 unit_types.push(new unit_type(options))
 
 options = {
-	name: 'marine',
+	unit_name: 'marine',
 	spritesheet: 'unit',
 	size: 0,
 	sprite_offset: 0.5,
@@ -141,7 +141,7 @@ unit_types.push(new unit_type(options))
 
 
 options = {
-	name: 'dread',
+	unit_name: 'dread',
 	spritesheet: 'dread',
 	size: 1,
 	sprite_offset: 0,	
@@ -158,7 +158,7 @@ unit_types.push(new unit_type(options))
 
 
 options = {
-	name: 'tank',
+	unit_name: 'tank',
 	spritesheet: 'tank',
 	size: 1,
 	sprite_offset: 0.5,	
@@ -177,7 +177,7 @@ unit_types.push(new unit_type(options))
 
 //PROJECTILE WEAPONS
 options = {
-	name: "bolter",
+	shoot_name: "bolter",
 	shoot_range: 300,
 	shoot_damage: 20,
 	max_targets: 2,
@@ -189,7 +189,7 @@ options = {
 projectile_weapon_types.push(new projectile_weapon_type(options))
 
 options = {
-	name: "plasma",
+	shoot_name: "plasma",
 	shoot_range: 250,
 	shoot_damage: 60,
 	max_targets: 1,
@@ -201,7 +201,7 @@ options = {
 projectile_weapon_types.push(new projectile_weapon_type(options))
 
 options = {
-	name: "heavy",
+	shoot_name: "heavy",
 	shoot_range: 400,
 	shoot_damage: 40,
 	max_targets: 1,
@@ -216,7 +216,7 @@ projectile_weapon_types.push(new projectile_weapon_type(options))
 
 //COMBAT WEAPONS
 options = {
-	name: "none",
+	fight_name: "none",
 	fight_damage: 0,
 	fight_ap: 0,
 	fight_max_targets : 0,
@@ -226,7 +226,7 @@ options = {
 combat_weapon_types.push(new combat_weapon_type(options))
 
 options = {
-	name: "sword",
+	fight_name: "sword",
 	fight_damage: 20,
 	fight_ap: 2,
 	fight_max_targets: 2,
@@ -236,14 +236,14 @@ options = {
 combat_weapon_types.push(new combat_weapon_type(options))
 
 options = {
-	name: "basic",
+	armour_name: "basic",
 	armour: 10,
 }
 
 armour_types.push(new armour_type(options))
 
 options = {
-	name: "heavy",
+	armour_name: "heavy",
 	armour: 15,
 }
 

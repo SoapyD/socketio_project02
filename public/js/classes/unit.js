@@ -21,33 +21,38 @@ const unit = class {
 		this.shots = 0;
 		this.fights = 0;
 		
+		this.unit_name = options.unit_name;
 		this.health = options.health;
 		this.max_health = options.health;
 		this.death_sfx = options.death_sfx;
-		
 		this.shooting_bonus = options.shooting_bonus,
 		this.fighting_bonus =  options.fighting_bonus,
 		
-		this.armour = options.armour;
 		
 		this.cohesion_check = true;		
 		this.movement = options.movement;
 		
-		this.blast_spritesheet = options.blast_spritesheet;
-		this.blast_radius = options.blast_radius;
+		this.shoot_name = options.shoot_name;
 		this.shoot_range = options.shoot_range;
 		this.shoot_damage = options.shoot_damage;
 		this.shoot_ap = options.shoot_ap;
+		this.blast_spritesheet = options.blast_spritesheet;
+		this.blast_radius = options.blast_radius;		
 		this.max_targets = options.max_targets;
 		this.targets = [];
 		
+		this.fight_name = options.fight_name;
 		this.fight_range = options.fight_range;
 		this.fight_ap = options.fight_ap;
 		this.fight_damage = options.fight_damage;
 		this.in_combat = false;
 		this.fight_max_targets = options.fight_max_targets;		
-		this.fight_targets = [];		
+		this.fight_targets = [];
 		
+		this.armour_name = options.armour_name;
+		this.armour = options.armour;
+		
+
 		this.sprite_offset = options.sprite_offset;
 		
 		let x = options.x + GameScene.tile_size * this.sprite_offset;

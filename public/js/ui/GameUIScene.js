@@ -413,6 +413,8 @@ GameUIScene.showButtons = () => {
 
 GameUIScene.nextPlayer = () => {
 	
+	connFunctions.saveGame();
+	
 	GameScene.mode = ""
 	GameScene.units.forEach((unit) => {
 		if(unit.player === GameScene.current_player){

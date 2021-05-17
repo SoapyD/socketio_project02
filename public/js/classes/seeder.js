@@ -34,10 +34,10 @@ const seeder = class {
 		
 		let unit_options;
 
-		let unit_info = this.unit_types.find((e) => e.name===options.unit)	
-		let projectile_weapon_info = this.projectile_weapon_types.find((e) => e.name===options.projectile_weapon)	
-		let combat_weapon_info = this.combat_weapon_types.find((e) => e.name===options.combat_weapon)	
-		let armour_info = this.armour_types.find((e) => e.name===options.armour)			
+		let unit_info = this.unit_types.find((e) => e.unit_name===options.unit)	
+		let projectile_weapon_info = this.projectile_weapon_types.find((e) => e.shoot_name===options.projectile_weapon)	
+		let combat_weapon_info = this.combat_weapon_types.find((e) => e.fight_name===options.combat_weapon)	
+		let armour_info = this.armour_types.find((e) => e.armour_name===options.armour)			
 
 
 		unit_options = {}

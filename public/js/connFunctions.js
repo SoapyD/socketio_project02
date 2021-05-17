@@ -79,7 +79,11 @@ connFunctions.test = (data) => {
 
 
 connFunctions.setRoomInfo = (data) => {
+	console.log(data)
+	gameFunctions.params.room_name = data.room_name
+	gameFunctions.params.room_id = data.room_id
 	gameFunctions.params.player_number = data.player_number
+	gameFunctions.params.max_players = data.max_players
 }
 
 connFunctions.sceneTransition = (data) => {
@@ -136,6 +140,22 @@ connFunctions.runUnitFunction = function(data) {
 		GameScene.units[data.parameters.id][data.parameters.function]()		
 	}
 
+}
+
+connFunctions.saveGame = () => {
+	
+	let data = {
+		functionGroup: "socketFunctions",  
+		function: "updateRoom", //saveGame
+		message: "save game",
+		room_name: gameFunctions.params.room_name,
+		current_player: GameScene.current_player,
+		mode: GameScene.mode,
+		units: GameScene.units
+	}
+	
+	connFunctions.messageServer(data)	
+	
 }
 
 

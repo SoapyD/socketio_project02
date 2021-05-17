@@ -10,12 +10,12 @@ const roomSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'User' 
     }]
-    ,characters: [{
-        id: Number
-        ,character_id: {type: Number, default: -1}
-        ,life: {type: Number, default: 0}
-        ,armour: {type: Number, default: 0}
-    }]
+    // ,characters: [{
+    //     id: Number
+    //     ,character_id: {type: Number, default: -1}
+    //     ,life: {type: Number, default: 0}
+    //     ,armour: {type: Number, default: 0}
+    // }]
 
 	,author: {
 		id: {
@@ -25,46 +25,38 @@ const roomSchema = new mongoose.Schema({
 		user_name: String
     }
 
-	,max_players: Number
-	,current_player: {type: Number, default: 0}
-	
-	
-	,config: {
-		cardSize: Number
-		,handCardSize: Number
-		,largeCardSize: Number
-		,tableWidth: Number
-		,tableHeight: Number
-		,card_back: Number
 
-		,depth_card_table: Number
-		,depth_card_table_graphic: Number
-		,depth_card_hand: Number
-		,depth_card_held: Number		
+
+	,config: {
+		max_players: Number
+		,current_player: {type: Number, default: 0}
+		,mode: String
 	}
 	
-	// ,cards: [{
-	// 	deck_id: Number
-    //     ,card_id: Number
-    //     ,card_type: String
-    //     ,locked: Boolean
-	// 	,angle: {type: Number, default: 0}
-	// 	,orientation: {type: Number, default: 0}		
-	// 	,x: {type: Number, default: 0}
-	// 	,y: {type: Number, default: 0}		
-	// 	,x_table_pos: {type: Number, default: 0}
-	// 	,y_table_pos: {type: Number, default: 0}		
-	// }]
-	// ,selected_card: {type: Number, default: -1}
-	// ,last_card: {type: Number, default: -1}
+	// ,selected_unit: {type: Number, default: -1}	
 	
-    // ,decks: [[Number]]
-    // ,matrix: [[{
-    //     deck_id : Number,
-    //     card_id : Number,
-    //     cards_array_id : Number,
-    //     orientation : Number
-    // }]]    
+	,units: [{
+		
+		id: Number
+		,side: Number
+		,player: Number
+		,squad: Number		
+		
+		,unit_name: String
+		,shoot_name: String
+		,fight_name: String
+		,armour_name: String
+		
+		,health: Number
+		,alive: Boolean
+		,in_combat: Boolean
+		
+		,x: {type: Number, default: 0}
+		,y: {type: Number, default: 0}
+		,rotation: {type: Number, default: 0}
+	}]
+	
+
 
    ,created_date: {type: Date, default: Date.now}
    ,updateddate: {type: Date, default: Date.now}	

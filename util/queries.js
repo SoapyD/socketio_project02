@@ -40,14 +40,15 @@ exports.createRoom = (data, socket_id) => {
     sockets.push(socket_id);
 
 	
-	let config = {    
-		tableWidth: 7 //7
-		,tableHeight: 5 //5
+	let config = {
+		max_players: 1
+		,current_player: 0
+		,mode: ""
 	}	
 	
-    let boardmatrix = boardController.setupBoardMatrix(config);	
+    // let boardmatrix = boardController.setupBoardMatrix(config);	
 	
-    let max_players = 1
+    // let max_players = 1
 
     // let armies = []
     // for (let i = 0; i < max_players; i++) {
@@ -65,13 +66,51 @@ exports.createRoom = (data, socket_id) => {
         ,sockets: sockets
         // ,armies: armies
 		
-		,max_players: max_players
+		// ,max_players: max_players
 		,config: config
         // ,decks: decks
-        ,matrix: boardmatrix
+        // ,matrix: boardmatrix
     })
 }
 
+
+exports.updateRoom = (room, data) => {
+	
+	room.config.current_player = data.current_player
+	room.config.mode = data.mode
+	room.units = [];
+	
+	data.units.forEach((unit) => {
+		
+		let info = {
+			id: unit.id
+			,side: unit.side
+			,player: unit.player
+			,squad: unit.squad		
+
+			,unit_name: unit.unit_name
+			,shoot_name: unit.shoot_name
+			,fight_name: unit.fight_name
+			,armour_name: unit.armour_name
+
+			,health: unit.health
+			,alive: unit.alive
+			,in_combat: unit.in_combat
+
+			,x: unit.sprite.x
+			,y: unit.sprite.y
+			,rotation: unit.sprite.rotation
+		}
+		
+		room.units.push(info)
+		
+	})
+	
+	room.markModified('config');
+	room.markModified('units');	
+	
+	return room.save()
+}
 
 
 // exports.setSelectedCard = (data) => {
