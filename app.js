@@ -22,7 +22,7 @@ const seedsUtil = require('./util/seeds');
 
 //MODELS
 const User = require("./models/user");
-const Room = require("./models/room");
+// const Room = require("./models/room");
 
 
 
@@ -59,7 +59,18 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 //SETUP ROUTES
-app.use(require("./routes/index"));
+// app.use(require("./routes/index"));
+// app.use(require("./routes/army"));
+
+const 
+IndexRoutes = require("./routes/index"),
+ArmyRoutes = require("./routes/army");
+
+//setup routes
+app.use(IndexRoutes);
+app.use("/army",ArmyRoutes);
+
+
 
 seedsUtil.seedDB();
 

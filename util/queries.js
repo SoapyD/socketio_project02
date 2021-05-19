@@ -1,6 +1,6 @@
+const models = require("../models");
 const Room = require("../models/room");
-// const deckController = require('../controllers/deck');
-const boardController = require('../controllers/board');
+
 
 exports.findRoom = (id) => {
     try{
@@ -45,18 +45,6 @@ exports.createRoom = (data, socket_id) => {
 		,current_player: 0
 		,mode: ""
 	}	
-	
-    // let boardmatrix = boardController.setupBoardMatrix(config);	
-	
-    // let max_players = 1
-
-    // let armies = []
-    // for (let i = 0; i < max_players; i++) {
-    //     let curent_army = {
-    //         id: i
-    //     }
-    //     armies.push(curent_army)
-    // }
 
     return Room.create ({
         room_name: data.room_name
@@ -72,6 +60,20 @@ exports.createRoom = (data, socket_id) => {
         // ,matrix: boardmatrix
     })
 }
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ######  ####### ####### #     # 
+// #     # #     # #     # ##   ## 
+// #     # #     # #     # # # # # 
+// ######  #     # #     # #  #  # 
+// #   #   #     # #     # #     # 
+// #    #  #     # #     # #     # 
+// #     # ####### ####### #     # 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 exports.updateRoom = (room, data) => {
@@ -113,41 +115,131 @@ exports.updateRoom = (room, data) => {
 }
 
 
-// exports.setSelectedCard = (data) => {
-//     return new Promise(function(resolve,reject)
-//     {
-// 		let saved = false;
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//    #    #       #       
+//   # #   #       #       
+//  #   #  #       #       
+// #     # #       #       
+// ####### #       #       
+// #     # #       #       
+// #     # ####### ####### 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//         exports.findRoom(data.roomID)
-//         .then((room) => {
+
+// ####### ### #     # ######        ######     #    #######    #    
+// #        #  ##    # #     #       #     #   # #      #      # #   
+// #        #  # #   # #     #       #     #  #   #     #     #   #  
+// #####    #  #  #  # #     # ##### #     # #     #    #    #     # 
+// #        #  #   # # #     #       #     # #######    #    ####### 
+// #        #  #    ## #     #       #     # #     #    #    #     # 
+// #       ### #     # ######        ######  #     #    #    #     # 
+
+exports.findData = async(find_list) => {
+
+    let promises = [];
+
+    find_list.forEach((list) => {
+
+        if (list.params)
+        {
+            list.params.forEach((item) => {
+                promises.push(models[list.model][list.search_type](item))
+            })
+        }
+        else{
+            promises.push(models[list.model][list.search_type]())
+        }
+    })
+
+    return Promise.all(promises)
+    .catch((err) => {
+        console.log(err)
+    })    
+}
+
+//  #####  ######  #######    #    ####### #######       ######  #######  #####  ####### ######  ######  
+// #     # #     # #         # #      #    #             #     # #       #     # #     # #     # #     # 
+// #       #     # #        #   #     #    #             #     # #       #       #     # #     # #     # 
+// #       ######  #####   #     #    #    #####   ##### ######  #####   #       #     # ######  #     # 
+// #       #   #   #       #######    #    #             #   #   #       #       #     # #   #   #     # 
+// #     # #    #  #       #     #    #    #             #    #  #       #     # #     # #    #  #     # 
+//  #####  #     # ####### #     #    #    #######       #     # #######  #####  ####### #     # ######  
+
+exports.createData = async(creation_list, search_type="findOrCreate") => {
+
+    let promises = [];
+
+    creation_list.forEach((list) => {
+        list.params.forEach((item) => {
+            promises.push(models[list.model][search_type](item))
+        })
+    })
+
+    return Promise.all(promises)
+    .catch((err) => {
+        console.log(err)
+    })  
+}
+
+
+// #     # ######  ######     #    ####### #######       ######     #    #######    #    
+// #     # #     # #     #   # #      #    #             #     #   # #      #      # #   
+// #     # #     # #     #  #   #     #    #             #     #  #   #     #     #   #  
+// #     # ######  #     # #     #    #    #####   ##### #     # #     #    #    #     # 
+// #     # #       #     # #######    #    #             #     # #######    #    ####### 
+// #     # #       #     # #     #    #    #             #     # #     #    #    #     # 
+//  #####  #       ######  #     #    #    #######       ######  #     #    #    #     # 
+
+exports.updateData = async(item, update_list) => {
+
+    let promises = [];
+
+    update_list.forEach((list) => {
+
+        list.params.forEach((param_item) => {
+            for(const key in param_item){
+                item[key] = param_item[key]
+            }
+        })
+        promises.push(item.save())
+    })  
     
-//             if (room){
-// 				room.selected_card = data.cards_array_id
-				
-	
-// 				let card = room.cards[data.cards_array_id] 				
-				
-// 				card.x = data.card_x
-// 				card.y = data.card_y				
-				
-// 				//SET THE ARD SNAPPING TO A GRID POSITION
-// 				card.x_table_pos = Math.floor(card.x / room.config.cardSize);
-// 				card.y_table_pos = Math.floor(card.y / room.config.cardSize);				
-// 				card.x = card.x_table_pos * room.config.cardSize + (room.config.cardSize / 2)
-// 				card.y = card.y_table_pos * room.config.cardSize + (room.config.cardSize / 2)				
-				
+    return Promise.all(promises)
+    .catch((err) => {
+        console.log(err)
+    })      
+}
 
-// 				room.cards[data.cards_array_id] = card
-				
-// 				room.markModified('selected_card');
-// 				room.markModified('cards');
-// 				room.save((err, room)=>{
-// 					resolve(room)
-// 				})	
-//             }
-// 			else{
-// 				resolve(room)
-// 			}
-//         })
-//     })	
-// }
+
+// ######  #######  #####  ####### ######  ####### #     #       ######     #    #######    #    
+// #     # #       #     #    #    #     # #     #  #   #        #     #   # #      #      # #   
+// #     # #       #          #    #     # #     #   # #         #     #  #   #     #     #   #  
+// #     # #####    #####     #    ######  #     #    #    ##### #     # #     #    #    #     # 
+// #     # #             #    #    #   #   #     #    #          #     # #######    #    ####### 
+// #     # #       #     #    #    #    #  #     #    #          #     # #     #    #    #     # 
+// ######  #######  #####     #    #     # #######    #          ######  #     #    #    #     # 
+
+exports.destroyData = async(destroy_list) => {
+
+    let promises = [];
+
+    destroy_list.forEach((list) => {
+
+        list.params.forEach((item) => {
+            promises.push(models[list.model].destroy(item))
+        })
+    })  
+
+    return Promise.all(promises)
+    .catch((err) => {
+        console.log(err)
+    })      
+}
+
+
+
+
+
+
