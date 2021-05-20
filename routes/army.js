@@ -16,7 +16,7 @@ router.get("/", middleware.isLoggedIn, controller.getAll)
 // router.get("/new", middleware.isLoggedIn, controller.getFormCreate)
 
 //SHOW - show details
-// router.get("/:id", middleware.isLoggedIn, controller.get)
+// router.get("/:id", middleware.isLoggedIn, controller.getSingle)
 
 //EDIT PRODUCT
 // router.get("/:id/edit", middleware.isLoggedIn, controller.getEdit)

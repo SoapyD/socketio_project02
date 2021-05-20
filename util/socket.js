@@ -117,7 +117,6 @@ exports.createRoom = async(network, data)  => {
         else{
             let room = await queriesUtil.createRoom(data, network.socket.id)
     
-			
 			//SEND THE CORE GAME DATA OT THE PLAYER
 			let return_data = {
                 functionGroup: "connFunctions"
@@ -125,8 +124,8 @@ exports.createRoom = async(network, data)  => {
                 ,message: "Room Info"
 				,user_name: data.user_name
 				,room_name: data.room_name
-				,roomID: room._id
-				,max_players: room.max_players
+				,room_id: room._id
+				,max_players: room.config.max_players
 				,player_number: room.users.indexOf(data.user_id)
 			}
 			network.socket.join(data.roomName)
@@ -245,7 +244,7 @@ exports.joinRoom = async(network, data)  => {
 				,user_name: data.user_name
 				,room_name: data.room_name
 				,room_id: saved_room._id
-				,max_players: saved_room.max_players
+				,max_players: saved_room.config.max_players
 				,player_number: saved_room.users.indexOf(data.user_id)
 				,has_saved_data: has_saved_data
 				,room: saved_room

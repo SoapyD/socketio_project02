@@ -30,6 +30,11 @@
                         <input class="form-control" type="text" id="password">
                     </div>
         
+                    <div class="form-group">
+                        <p>Players:</p>
+                        <input class="form-control" type="number" id="players">
+                    </div>					
+					
 					<% if(user) { %>
                     <div class="form-group">
                         <!-- <p>User Name:</p> -->
@@ -87,7 +92,7 @@
 <script src="/js/classes/unit.js"></script>
 <script src="/js/classes/bullet.js"></script>
 <script src="/js/classes/pathfinder.js"></script>
-<script src="/js/classes/seeder.js"></script>
+<script src="/js/classes/unit_setup.js"></script>
 
 <script src="/socket.io/socket.io.js"></script>
 
@@ -100,6 +105,7 @@
 <script src="/js/ui/GameUIScene.js"></script>
 
 
+<script src="/js/seeder.js"></script>
 <script src="/js/connFunctions.js"></script>
 <script src="/js/classes/lists.js"></script>
 

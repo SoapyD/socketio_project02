@@ -1,6 +1,6 @@
 
 
-const seeder = class {
+const unit_setup = class {
 	constructor(options) {	
 		
 		this.unit_list = options.unit_list

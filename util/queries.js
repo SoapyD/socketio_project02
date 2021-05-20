@@ -41,7 +41,7 @@ exports.createRoom = (data, socket_id) => {
 
 	
 	let config = {
-		max_players: 1
+		max_players: data.players
 		,current_player: 0
 		,mode: ""
 	}	

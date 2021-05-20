@@ -413,8 +413,6 @@ GameUIScene.showButtons = () => {
 
 GameUIScene.nextPlayer = () => {
 	
-	connFunctions.saveGame();
-	
 	gameFunctions.mode = ""
 	gameFunctions.units.forEach((unit) => {
 		if(unit.player === gameFunctions.current_player){
@@ -427,6 +425,9 @@ GameUIScene.nextPlayer = () => {
 	if(GameScene.online === false){
 		GameScene.advancePlayer()
 	}else{
+		
+		connFunctions.saveGame();		
+		
 		let data = {
 			functionGroup: "socketFunctions",  
 			function: "messageAll",

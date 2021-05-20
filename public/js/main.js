@@ -11,7 +11,7 @@ gameFunctions.params = {
 	room_name: "",
 	room_id: "",
 	player_number: -1,
-	max_player: 2
+	max_players: 2
 }
 
 

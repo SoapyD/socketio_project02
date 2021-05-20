@@ -34,6 +34,7 @@ connFunctions.checkMessages = (socket) => {
             user_name: document.querySelector('#userName').value,
             room_name: document.querySelector('#roomName').value,
             password: document.querySelector('#password').value,
+			players: document.querySelector('#players').value,
 
         }
         // socket.emit('message_server', data)
@@ -79,8 +80,6 @@ connFunctions.test = (data) => {
 
 
 connFunctions.setRoomInfo = (data) => {
-
-	console.log(data)
 	
 	gameFunctions.params.room_name = data.room_name
 	gameFunctions.params.room_id = data.room_id

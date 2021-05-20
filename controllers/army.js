@@ -15,7 +15,7 @@ exports.getAll = (req,res) => {
 	// });	
 };
 
-// exports.getProduct = (req, res) => { //middleware.isLoggedIn, 
+// exports.getSingle = (req, res) => { //middleware.isLoggedIn, 
 // 	//find product with provided ID
 
 // 	Product.findById(req.params.id).exec(function(err, product){
@@ -27,7 +27,7 @@ exports.getAll = (req,res) => {
 // 	});		
 // };
 
-// exports.getEditProduct = (req,res) => { //, middleware.isCampGroundOwnership
+// exports.getEdit = (req,res) => { //, middleware.isCampGroundOwnership
 
 // 	Product.findById(req.params.id).exec(function(err, product){
 // 		if(err){
@@ -38,11 +38,11 @@ exports.getAll = (req,res) => {
 // 	});		
 // };
 
-// exports.getFormCreateProduct = (req,res) => { //middleware.isLoggedIn, 
+// exports.getFormCreate = (req,res) => { //middleware.isLoggedIn, 
 // 	res.render("products/new");
 // };
 
-// exports.createProduct = (req,res) => { //, middleware.isLoggedIn
+// exports.create = (req,res) => { //, middleware.isLoggedIn
 	
 // 	// let author = {
 // 	// 	id: req.user._id,
@@ -69,7 +69,7 @@ exports.getAll = (req,res) => {
 // 	});	
 // };
 
-// exports.updateProduct = (req,res) => { //, middleware.isCampGroundOwnership
+// exports.update = (req,res) => { //, middleware.isCampGroundOwnership
 	
 // 	Product.findByIdAndUpdate(req.params.id, req.body.product, function(err, product){
 // 		if(err){
@@ -81,72 +81,8 @@ exports.getAll = (req,res) => {
 // 	})		
 // };
 
-// exports.updateStatusProduct = (req,res) => { //, middleware.isCampGroundOwnership
-	
-// 	// console.log(req.params)
-// 	Product.findById(req.params.id).exec(function(err, product){
-// 		if(err){
-// 			console.log("Couldn't run 'find' function");
-// 		} else{
 
-// 			let toggle_state = ''
-// 			if (product.active === true)
-// 			{
-// 				product.active = false;
-// 				toggle_state = 'deactivate';
-// 			}
-// 			else
-// 			{
-// 				product.active = true;
-// 				toggle_state = 'activate';				
-// 			}
-
-// 			Pack.find({products: product._id.toString(), active:true}, function(err, packs){
-// 				if(err){
-// 					console.log("there's been an error returning product list");
-// 					console.log(err);
-// 				}
-// 				else{
-// 					// console.log(packs)
-// 					if (packs.length > 0 && toggle_state === 'deactivate')
-// 					{
-// 						let pack_list = "";
-// 						let pack_text = "pack"
-// 						packs.forEach( function(pack, index){
-// 							if (pack_list != "")
-// 							{
-// 								pack_list += ', '
-// 								pack_text = "packs"
-// 							}
-// 							pack_list += '"' + pack.name + '"'
-// 						})
-// 						if (pack_list.length > 100){
-// 							pack_list = pack_list.substring(1,100)+'...'
-// 						}
-// 						req.flash("error", "Can't Deactive product as it's included in "+packs.length.toString()+" active "+pack_text+": "+pack_list);
-// 						res.redirect("/products/"+req.params.id)	
-// 					}
-// 					else
-// 					{
-// 						// console.log("find to deactive product")	
-// 						product.save(function(err,product){
-// 							if(err){
-// 								console.log("there's been an error saving the pack with products");
-// 								console.log(err);
-// 							}
-// 							else{
-// 								req.flash("success", 'Sucessfully made "' + product.name + '" '+toggle_state);
-// 								res.redirect("/products/")						
-// 							}
-// 						})										
-// 					}
-// 				}					
-// 			})
-// 		}
-// 	});	
-// };
-
-// exports.deleteProduct = (req,res) => { //, middleware.isCampGroundOwnership
+// exports.delete = (req,res) => { //, middleware.isCampGroundOwnership
 	
 // 	Product.findByIdAndDelete(req.params.id, req.body.product, function(err, product){
 // 		if(err){

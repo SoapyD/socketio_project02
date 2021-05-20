@@ -183,7 +183,7 @@ options = {
 	max_targets: 2,
 	blast_spritesheet: "explosion",
 	blast_radius: 1,
-	shoot_ap: 2
+	shoot_ap: 4
 }
 
 projectile_weapon_types.push(new projectile_weapon_type(options))
@@ -207,7 +207,7 @@ options = {
 	max_targets: 1,
 	blast_spritesheet: "heavy_blast",
 	blast_radius: 6,
-	shoot_ap: 4
+	shoot_ap: 2
 }
 
 projectile_weapon_types.push(new projectile_weapon_type(options))

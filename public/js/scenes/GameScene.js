@@ -20,19 +20,21 @@ var GameScene = new Phaser.Class({
 		switch(instance_type){
 			case "DEV":
 				GameScene.master_volume = 0;
+				GameScene.master_volume = 0.05;
 				GameScene.online = false;
 				break;
 			case "DEV-ONLINE":
-				GameScene.master_volume = 0;
+				// GameScene.master_volume = 0;
+				GameScene.master_volume = 0.05;
 				GameScene.online = true;
 				break;				
 			default:
-				GameScene.master_volume = 0.35;
+				GameScene.master_volume = 0.2;
 				GameScene.online = true;
 				break;
 		}
 		
-		
+		GameScene.master_sfx_volume = 0.3;
 		
 
 		
@@ -119,21 +121,21 @@ var GameScene = new Phaser.Class({
     {
 		//SFX can only be set in the creation method once theyve been pre-loaded
 		GameScene.sfx = {}		
-		GameScene.sfx.select = this.sound.add('select', {volume: 0.1});
-		GameScene.sfx.clear = this.sound.add('clear');
-		GameScene.sfx.button = this.sound.add('button');
+		GameScene.sfx.select = this.sound.add('select', {volume: 0.1 * GameScene.master_sfx_volume});
+		GameScene.sfx.clear = this.sound.add('clear', {volume: 1 * GameScene.master_sfx_volume});
+		GameScene.sfx.button = this.sound.add('button', {volume: 1 * GameScene.master_sfx_volume});
 		
-		GameScene.sfx.action = this.sound.add('action', {volume: 0.1});
-		GameScene.sfx.end_path = this.sound.add('end_path', {volume: 0.08});
-		GameScene.sfx.end_turn = this.sound.add('end_turn', {volume: 0.5});
+		GameScene.sfx.action = this.sound.add('action', {volume: 0.1 * GameScene.master_sfx_volume});
+		GameScene.sfx.end_path = this.sound.add('end_path', {volume: 0.04 * GameScene.master_sfx_volume});
+		GameScene.sfx.end_turn = this.sound.add('end_turn', {volume: 0.5 * GameScene.master_sfx_volume});
 		
-		GameScene.sfx.movement = this.sound.add('movement', {volume: 0.2});
-		GameScene.sfx.sword = this.sound.add('sword');
-		GameScene.sfx.blast = this.sound.add('blast', {volume: 0.5});
-		GameScene.sfx.shot = this.sound.add('shot', {volume: 0.5});
+		GameScene.sfx.movement = this.sound.add('movement', {volume: 0.1 * GameScene.master_sfx_volume});
+		GameScene.sfx.sword = this.sound.add('sword', {volume: 0.5 * GameScene.master_sfx_volume});
+		GameScene.sfx.blast = this.sound.add('blast', {volume: 0.2 * GameScene.master_sfx_volume});
+		GameScene.sfx.shot = this.sound.add('shot', {volume: 0.2 * GameScene.master_sfx_volume});
 		
-		GameScene.sfx.death_man = this.sound.add('death_man', {volume: 0.3});
-		GameScene.sfx.death_machine = this.sound.add('death_machine', {volume: 0.3});
+		GameScene.sfx.death_man = this.sound.add('death_man', {volume: 0.3 * GameScene.master_sfx_volume});
+		GameScene.sfx.death_machine = this.sound.add('death_machine', {volume: 0.3 * GameScene.master_sfx_volume});
 		
 		
 		
@@ -170,8 +172,29 @@ var GameScene = new Phaser.Class({
 		GameScene.setupCamera();
 		
 		if(gameFunctions.units_preload.length === 0){
-			GameScene.seed();
-			// GameScene.seed2();		
+			// GameScene.seed();
+			
+
+			switch(instance_type){
+				case "DEV":
+					GameScene.seed();
+					break;
+				case "DEV-ONLINE":
+					if(gameFunctions.params.max_players > 2){
+						GameScene.seed2();
+					}else{
+						GameScene.seed();
+					}
+					break;				
+				default:
+					if(gameFunctions.params.max_players > 2){
+						GameScene.seed2();
+					}else{
+						GameScene.seed();
+					}
+					break;
+			}			
+			
 		}
 		if(gameFunctions.units_preload.length > 0){
 			
@@ -187,7 +210,7 @@ var GameScene = new Phaser.Class({
 				combat_weapon_types: GameScene.combat_weapon_types,
 				armour_types: GameScene.armour_types
 			}
-			GameScene.seeder = new seeder(options)
+			GameScene.unit_setup = new unit_setup(options)
 			
 			// gameFunctions.units = [];
 			gameFunctions.units_preload.forEach((unit) => {
@@ -201,7 +224,7 @@ var GameScene = new Phaser.Class({
 				options.fight_name = unit.fight_name;
 				options.armour_name = unit.armour_name;
 
-				let created_unit = GameScene.seeder.placeFunction(options, "pos")
+				let created_unit = GameScene.unit_setup.placeFunction(options, "pos")
 
 				created_unit.player = unit.player;
 				created_unit.side = unit.side;
@@ -403,7 +426,7 @@ GameScene.clickHandler = function(pointer){
 GameScene.advancePlayer = () => {
 
 	gameFunctions.current_player += 1
-	if(gameFunctions.current_player >= gameFunctions.params.max_player){
+	if(gameFunctions.current_player >= gameFunctions.params.max_players){
 		gameFunctions.current_player = 0
 	}
 	
@@ -550,105 +573,3 @@ GameScene.setupCamera = () => {
 }
 
 
-
-GameScene.seed = () => {
-
-	
-	let options = {
-		unit_list: gameFunctions.units,
-		scene: GameScene.scene,
-		player: 0,
-		side: 0,
-		angle : 90,
-		tile_size: GameScene.tile_size,
-		unit_types: GameScene.unit_types,
-		projectile_weapon_types: GameScene.projectile_weapon_types,
-		combat_weapon_types: GameScene.combat_weapon_types,
-		armour_types: GameScene.armour_types
-	}
-	GameScene.seeder = new seeder(options)
-
-
-	options = {x: 3, y:2}
-	GameScene.seeder.placeSquad(options)
-
-	options = {x: 14, y:2}
-	GameScene.seeder.placeTank(options)
-	
-	options = {x: 14, y:5}
-	GameScene.seeder.placeGeneral(options)		
-	
-	options = {x: 17, y:2}
-	GameScene.seeder.placeSquad(options)	
-	
-	
-	options = {
-		unit_list: gameFunctions.units,
-		scene: GameScene.scene,
-		player: 1,
-		side: 1,
-		angle : -90,
-		tile_size: GameScene.tile_size,
-		unit_types: GameScene.unit_types,
-		projectile_weapon_types: GameScene.projectile_weapon_types,
-		combat_weapon_types: GameScene.combat_weapon_types,
-		armour_types: GameScene.armour_types
-	}
-	GameScene.seeder = new seeder(options)	
-	
-	
-	options = {x: 3, y:35}
-	GameScene.seeder.placeSquad(options)
-
-	options = {x: 14, y:37}
-	GameScene.seeder.placeTank(options)	
-	
-	options = {x: 14, y:34}
-	GameScene.seeder.placeGeneral(options)		
-	
-	options = {x: 17, y:35}
-	GameScene.seeder.placeSquad(options)
-	
-}
-
-
-GameScene.seed2 = () => {
-
-	
-	let options = {
-		unit_list: gameFunctions.units,
-		scene: GameScene.scene,
-		player: 0,
-		side: 0,
-		angle : 90,
-		tile_size: GameScene.tile_size,
-		unit_types: GameScene.unit_types,
-		projectile_weapon_types: GameScene.projectile_weapon_types,
-		combat_weapon_types: GameScene.combat_weapon_types,
-		armour_types: GameScene.armour_types
-	}
-	GameScene.seeder = new seeder(options)
-
-	options = {x: 14, y:2}
-	GameScene.seeder.placeTank(options)		
-
-	
-	// options = {
-	// 	unit_list: gameFunctions.units,
-	// 	scene: GameScene.scene,
-	// 	player: 1,
-	// 	side: 1,
-	// 	angle : -90,
-	// 	tile_size: GameScene.tile_size,
-	// 	unit_types: GameScene.unit_types,
-	// 	projectile_weapon_types: GameScene.projectile_weapon_types,
-	// 	combat_weapon_types: GameScene.combat_weapon_types,
-	// 	armour_types: GameScene.armour_types
-	// }
-	// GameScene.seeder = new seeder(options)	
-	
-	// options = {x: 14, y:2}
-	// GameScene.seeder.placeSquad(options)
-	// GameScene.seeder.placeGeneral(options)
-	
-}
