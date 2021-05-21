@@ -64,7 +64,7 @@ const unit = class {
 		this.spritesheet = options.spritesheet;
 		this.sprite = options.scene.physics.add.image(x,y,options.spritesheet).setInteractive();
 		this.sprite.setImmovable(true)
-		this.sprite.setDepth(1);
+		this.sprite.setDepth(3);
 		this.sprite.angle = options.angle;
 		
 
@@ -78,6 +78,7 @@ const unit = class {
 			this.sprite_ghost.angle = options.angle;
 			this.sprite_ghost.parent = this;
 			this.sprite_ghost.is_ghost = true;
+			this.sprite_ghost.setDepth(2);
 			this.sprite_ghost.on('pointerup', this.selectHander)
 		}
 
@@ -448,9 +449,9 @@ const unit = class {
 			
 		}
 		
-		this.cohesion_graphic.lineStyle(colours.width, colours.line_colour, colours.circle_alpha);
+		this.cohesion_graphic.lineStyle(colours.line_width, colours.line_colour, colours.circle_alpha);
 		this.cohesion_graphic.fillStyle(colours.fill_colour, colours.fill_alpha);
-		let circle = new Phaser.Geom.Circle(last_pos.x * GameScene.tile_size, last_pos.y * GameScene.tile_size, this.cohesion);
+		let circle = new Phaser.Geom.Circle(last_pos.x * GameScene.tile_size, last_pos.y * GameScene.tile_size, this.cohesion / 2);
 		this.cohesion_graphic.fillCircleShape(circle);
 
 		this.cohesion_graphic.strokePath();		
@@ -485,7 +486,7 @@ const unit = class {
 					// blast_graphic.lineStyle(3 * GameScene.tile_size, colours.line_colour, 0.5);
 					blast_graphic.fillStyle(0x0000FF, 0.5);
 					let circle = new Phaser.Geom.Circle(pos.x, pos.y, (blast_radius / 2) * GameScene.tile_size);
-					blast_graphic.fillCircleShape(circle);
+					blast_graphic.fillCircleShape(circle).setDepth(1);
 
 					blast_graphic.strokePath();
 				}
@@ -712,21 +713,7 @@ const unit = class {
 					}
 				}
 			})
-			//SKIP IF IN COMBAT
-			// if(this.in_combat === true){
-			// 	//DOUBLE CHECK THE UNIT IS STILL IN COMBAT
-			// 	this.in_combat = this.checkCombat();
 
-			// 	if(this.in_combat === true){
-			// 		skip = true;
-			// 	}
-			// }
-			// if(this.moves !== 0 && gameFunctions.mode === "move"){
-			// 	skip = true;
-			// }
-			// if(this.fights !== 0 && gameFunctions.mode === "fight"){
-			// 	skip = true;
-			// }
 			
 			//DON'T ALLOW FIGHTING IF THERE'S NO FIGHT DAMAGE
 			if(this.fight_damage === 0 && gameFunctions.mode === "fight"){
@@ -749,6 +736,7 @@ const unit = class {
 				GameScene.sfx['clear'].play();				
 			}			
 			
+			console.log("skip: ",skip,"path: ",this.path)
 			
 			//IF THE GHOST CLASHES WITH ANOTHER SPRITE OR GHOST, CANCEL THE MOVE
 			if(skip === true){
@@ -860,22 +848,25 @@ const unit = class {
 					fill_colour: 0x2ECC40,
 					line_alpha: 0.75,
 					circle_alpha: 0.75,
-					fill_alpha: 0.25,
-					width: 5
+					fill_alpha: 0.75,
+					width: 5,
+					line_width: 5
 				}
 				// this.cohesion_check = true
 
 				if(unit.cohesion_check === false){
 					colours.line_colour = 0x00cccc;
 					colours.fill_colour = 0xFF0000; //0x6666ff	
-					colours.width = 2.5;
+					// colours.width = 1.0;
+					colours.line_width = 1.0;
+					colours.fill_alpha = 0.5;
 				}
 
 				if(unit.id !== this.id){
 					colours.circle_alpha = 0.4,
-					colours.fill_alpha = 0.05,					
+					colours.fill_alpha = 0.25,
 					colours.line_colour = 0x808080; //grey
-					colours.line_alpha = 0.1;
+					colours.line_alpha = 0.35;
 				}
 
 				unit.drawPath(colours)

@@ -61,7 +61,7 @@ options = {
 	sprite_offset: 0.5,
 	cohesion: 0,
 	health: 160,
-	movement: 10,
+	movement: 12,
 	death_sfx: "death_man",
 	
 	shooting_bonus: -2,
@@ -78,7 +78,7 @@ options = {
 	sprite_offset: 0.5,
 	cohesion: 75,
 	health: 120,
-	movement: 8,
+	movement: 12,
 	death_sfx: "death_man",
 	
 	shooting_bonus: -1,
@@ -95,7 +95,7 @@ options = {
 	sprite_offset: 0.5,
 	cohesion: 75,
 	health: 100,
-	movement: 8,
+	movement: 12,
 	death_sfx: "death_man",
 	
 	shooting_bonus: -2,
@@ -112,7 +112,7 @@ options = {
 	sprite_offset: 0.5,
 	cohesion: 75,
 	health: 100,
-	movement: 8,
+	movement: 12,
 	death_sfx: "death_man",
 	
 	shooting_bonus: -1,
@@ -129,7 +129,7 @@ options = {
 	sprite_offset: 0.5,
 	cohesion: 75,
 	health: 100,
-	movement: 8,
+	movement: 12,
 	death_sfx: "death_man",
 	shooting_bonus: 0,
 	fighting_bonus: 0,
@@ -147,7 +147,7 @@ options = {
 	sprite_offset: 0,	
 	cohesion: 0,
 	health: 200,
-	movement: 6,
+	movement: 10,
 	death_sfx: "death_machine",
 	shooting_bonus: -1,
 	fighting_bonus: -2,
@@ -164,7 +164,7 @@ options = {
 	sprite_offset: 0.5,	
 	cohesion: 0,
 	health: 200,
-	movement: 10,
+	movement: 14,
 	death_sfx: "death_machine",
 	shooting_bonus: 0,
 	fighting_bonus: -2,
@@ -178,7 +178,7 @@ unit_types.push(new unit_type(options))
 //PROJECTILE WEAPONS
 options = {
 	shoot_name: "bolter",
-	shoot_range: 300,
+	shoot_range: 400,
 	shoot_damage: 20,
 	max_targets: 2,
 	blast_spritesheet: "explosion",
@@ -190,7 +190,7 @@ projectile_weapon_types.push(new projectile_weapon_type(options))
 
 options = {
 	shoot_name: "plasma",
-	shoot_range: 250,
+	shoot_range: 300,
 	shoot_damage: 60,
 	max_targets: 1,
 	blast_spritesheet: "special_blast",
@@ -202,7 +202,7 @@ projectile_weapon_types.push(new projectile_weapon_type(options))
 
 options = {
 	shoot_name: "heavy",
-	shoot_range: 400,
+	shoot_range: 500,
 	shoot_damage: 40,
 	max_targets: 1,
 	blast_spritesheet: "heavy_blast",

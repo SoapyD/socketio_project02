@@ -40,7 +40,8 @@ var ArmySelectUIScene = new Phaser.Class({
 		
 		
         //ADD THE CHARACTER SELECTION MENU
-        character_form = this.add.dom(this.cameras.main.centerX, this.cameras.main.centerY).createFromCache('character_form');
+        // character_form = this.add.dom(this.cameras.main.centerX, this.cameras.main.centerY).createFromCache('character_form');
+		character_form = this.add.dom((gameFunctions.config.width / 2), this.cameras.main.centerY).createFromCache('character_form');
         character_form.setScrollFactor(0);
         character_form.setPerspective(800);
         character_form.setAlpha(0)
