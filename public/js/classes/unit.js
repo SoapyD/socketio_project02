@@ -46,6 +46,7 @@ const unit = class {
 		this.fight_ap = options.fight_ap;
 		this.fight_damage = options.fight_damage;
 		this.in_combat = false;
+		this.in_combat_with = [];
 		this.fight_max_targets = options.fight_max_targets;		
 		this.fight_targets = [];
 		
@@ -712,14 +713,14 @@ const unit = class {
 				}
 			})
 			//SKIP IF IN COMBAT
-			if(this.in_combat === true){
-				//DOUBLE CHECK THE UNIT IS STILL IN COMBAT
-				this.in_combat = this.checkCombat();
+			// if(this.in_combat === true){
+			// 	//DOUBLE CHECK THE UNIT IS STILL IN COMBAT
+			// 	this.in_combat = this.checkCombat();
 
-				if(this.in_combat === true){
-					skip = true;
-				}
-			}
+			// 	if(this.in_combat === true){
+			// 		skip = true;
+			// 	}
+			// }
 			// if(this.moves !== 0 && gameFunctions.mode === "move"){
 			// 	skip = true;
 			// }
@@ -830,19 +831,16 @@ const unit = class {
 			
 			//
 			if(any_closed === false){
-				// console.log("no cohesion")
 				return false;
 				// break;
 			}
 			if(new_open.length === 0){
-				// console.log("cohesion found!")
 				return true;
 				// break;				
 			}
 			
 			// closed.concat(closed_add)
 			closed = closed_add
-			// console.log(closed.length)
 			open = new_open
 				
 			
@@ -901,6 +899,10 @@ const unit = class {
 			
 			this.is_moving = true;
 			
+			//check if unit is in combat before movement
+			this.in_combat = this.checkCombat();
+			// this.in_combat_with = [];
+			
 			GameScene.sfx['movement'].play();
 			let tweens = []
 			for(let i = 0; i < this.path.length-1; i++){
@@ -923,6 +925,27 @@ const unit = class {
 					{
 						
 						let end_path = this.path[this.path.length - 1];
+
+						
+						//CHECK IF THE UNIT PASSES AN ENEMY UNIT
+						let old_status = this.in_combat
+						this.in_combat = this.checkCombat();
+						
+
+						if(this.in_combat === false && old_status === true){
+
+							if(this.in_combat_with){
+								this.in_combat_with.forEach((unit) => {
+									unit.fight_targets.push(this.sprite)
+									
+									unit.fight();
+								})
+								
+								this.in_combat_with = [];
+							}
+						}
+					
+						
 						
 						//WHEN THE END OF THE PATH IS REACHED
 						if(this.sprite.x / GameScene.tile_size === end_path.x && this.sprite.y / GameScene.tile_size === end_path.y){
@@ -1191,11 +1214,12 @@ const unit = class {
 	checkCombat() {
 		
 		let in_combat_range = false
+
 		gameFunctions.units.forEach((unit) => {
 			let clash = false;
 			if(unit.alive === true && unit.id !== this.id && unit.player !== this.player && unit.side !== this.side){
 				
-				if(this.path.length > 0){
+				if(this.path.length > 0 && this.is_moving === false){
 					//check to see if movement ends in an attack
 					if(this.sprite_ghost){
 						clash = this.checkSpriteOverlap(this.sprite_ghost, unit.sprite, true)
@@ -1205,6 +1229,13 @@ const unit = class {
 				}
 
 				if(clash === true){
+					
+					const found = this.in_combat_with.some(el => el.id === unit.id);
+					// if (!found) arr.push({ id, username: name });
+					if(found === false){
+						this.in_combat_with.push(unit)						
+					}
+
 					in_combat_range = true;
 					
 					//SET BOTH UNITS AS FIGHTING EACH OTHER

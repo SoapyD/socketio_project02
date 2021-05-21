@@ -175,7 +175,26 @@ GameScene.seed3 = () => {
 	GameScene.unit_setup = new unit_setup(options)
 
 	options = {x: 14, y:2}
-	GameScene.unit_setup.placeTank(options)		
+	GameScene.unit_setup.placeGeneral(options)		
 
+	options = {
+		unit_list: gameFunctions.units,
+		scene: GameScene.scene,
+		player: 1,
+		side: 1,
+		angle : 90,
+		tile_size: GameScene.tile_size,
+		unit_types: GameScene.unit_types,
+		projectile_weapon_types: GameScene.projectile_weapon_types,
+		combat_weapon_types: GameScene.combat_weapon_types,
+		armour_types: GameScene.armour_types
+	}
+	GameScene.unit_setup = new unit_setup(options)
+
+	options = {x: 14, y:4}
+	GameScene.unit_setup.placeGeneral(options)
+	
+	options = {x: 16, y:4}
+	GameScene.unit_setup.placeGeneral(options)	
 	
 }

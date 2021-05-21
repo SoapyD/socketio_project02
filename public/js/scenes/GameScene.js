@@ -20,7 +20,6 @@ var GameScene = new Phaser.Class({
 		switch(instance_type){
 			case "DEV":
 				GameScene.master_volume = 0;
-				GameScene.master_volume = 0.05;
 				GameScene.online = false;
 				break;
 			case "DEV-ONLINE":
@@ -177,7 +176,7 @@ var GameScene = new Phaser.Class({
 
 			switch(instance_type){
 				case "DEV":
-					GameScene.seed();
+					GameScene.seed3();
 					break;
 				case "DEV-ONLINE":
 					if(gameFunctions.params.max_players > 2){

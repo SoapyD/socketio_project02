@@ -19,6 +19,7 @@ const particle = class {
 		}
 		
 		if(options.key){
+			this.key = options.key;
 			//THIS EXPLOSION
 			options.scene.anims.create({
 			key: options.key,
@@ -61,7 +62,6 @@ const particle = class {
                 }
 			}); 
 		}
-		
 	}
 	
 }
