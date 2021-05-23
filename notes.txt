@@ -15,6 +15,9 @@
 
 
 
+-Need to make sure dead units are checked for cohesion checks
+
+
 -Need to get the player, side and squad values properly saved and passed back when the game reloads
 
 

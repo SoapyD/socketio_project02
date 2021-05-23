@@ -159,6 +159,10 @@ const unit = class {
 		this.fought = false;		
 	}
 	
+	resetCohesionGraphic() {
+		this.cohesion_graphic.clear()
+	}
+	
 	resetActions() {
 		this.path = [];
 		this.targets = [];
@@ -813,7 +817,7 @@ const unit = class {
 		//GET THE UNITS IN THE SQUAD
 		let open = [];
 		gameFunctions.units.forEach((unit) => {
-			if(unit.id !== this.id && unit.player === this.player && unit.squad === this.squad) //
+			if(unit.alive === true && unit.id !== this.id && unit.player === this.player && unit.squad === this.squad) //
 			{
 				open.push(unit);
 			}
@@ -869,7 +873,7 @@ const unit = class {
 	cohesionCheck() {
 		
 		gameFunctions.units.forEach((unit) => {
-			if(unit.player === this.player && unit.squad === this.squad) //unit.id !== this.id && 
+			if(unit.alive === true && unit.player === this.player && unit.squad === this.squad) //unit.id !== this.id && 
 			{		
 		
 				unit.cohesion_check = unit.cohesionCheck2();
@@ -909,7 +913,8 @@ const unit = class {
 	
 	move(endFunction="move") {
 		
-		this.cohesion_graphic.clear()
+		// this.cohesion_graphic.clear()
+		this.resetCohesionGraphic();
 		this.sprite.setTint(this.colour)
 		this.sprite.alpha = 1;
 		

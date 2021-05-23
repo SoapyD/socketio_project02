@@ -236,7 +236,8 @@ GameUIScene.activateMovement = () => {
 	
 	if(cohesion_check === true){
 		gameFunctions.units.forEach((unit) => {
-			if(unit.path.length > 0 && unit.player === gameFunctions.current_player){
+			if(unit.player === gameFunctions.current_player){
+				//unit.path.length > 0 &&
 				
 				if(GameScene.online === false){
 					unit.move();

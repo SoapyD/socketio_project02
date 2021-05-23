@@ -176,7 +176,7 @@ var GameScene = new Phaser.Class({
 
 			switch(instance_type){
 				case "DEV":
-					GameScene.seed();
+					GameScene.seed3();
 					break;
 				case "DEV-ONLINE":
 					if(gameFunctions.params.max_players > 2){
