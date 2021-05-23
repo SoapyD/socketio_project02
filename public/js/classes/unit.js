@@ -59,18 +59,28 @@ const unit = class {
 		let x = options.x + GameScene.tile_size * this.sprite_offset;
 		let y = options.y + GameScene.tile_size * this.sprite_offset;
 		
+		this.depth_sprite = 4;
+		this.depth_sprite_ghost = 5;
+		this.depth_sprite_symbol = 10;
+		this.depth_path = 1;
+		this.depth_explosion = 1;
+		this.depth_health = 2;
+		this.depth_path = 1;
+		this.depth_cohesion = 1;
+		this.depth_fight_radius = 1;
+		this.depth_text = 20;
+		
 		
 		//SPRITES
 		this.spritesheet = options.spritesheet;
-		this.sprite = options.scene.physics.add.image(x,y,options.spritesheet).setInteractive();
+		this.sprite = options.scene.physics.add.image(x,y,options.spritesheet) //.setInteractive();
 		this.sprite.setImmovable(true)
-		this.sprite.setDepth(3);
+		this.sprite.setDepth(this.depth_sprite);
 		this.sprite.angle = options.angle;
-		
-
 		this.sprite.parent = this
 		GameScene.unit_collisions[this.side].add(this.sprite)
-		this.sprite.on('pointerup', this.selectHander)
+		// this.sprite.on('pointerup', this.selectHander)
+		
 		
 		if(GameScene.online === false || (GameScene.online === true && this.player === gameFunctions.params.player_number)){
 			this.sprite_ghost = options.scene.add.image(x,y,options.spritesheet).setInteractive();
@@ -78,14 +88,14 @@ const unit = class {
 			this.sprite_ghost.angle = options.angle;
 			this.sprite_ghost.parent = this;
 			this.sprite_ghost.is_ghost = true;
-			this.sprite_ghost.setDepth(2);
+			this.sprite_ghost.setDepth(this.depth_sprite_ghost);
 			this.sprite_ghost.on('pointerup', this.selectHander)
 		}
 
 		this.sprite_symbol = options.scene.add.image(x,y,"symbols").setScale(0.08)
 		this.sprite_symbol.x += (this.sprite.displayWidth / 2) //- (this.sprite_symbol.displayWidth / 2)
 		this.sprite_symbol.y -= (this.sprite.displayHeight / 2) //- (this.sprite_symbol.displayHeight / 2)
-		this.sprite_symbol.setFrame(options.symbol_id).setDepth(10);
+		this.sprite_symbol.setFrame(options.symbol_id).setDepth(this.depth_sprite_symbol);
 		
 		
 		//THIS EXPLOSION
@@ -97,12 +107,12 @@ const unit = class {
 		
 		
 		//SETUP GRAPHICS THAT CAN BE USED TO DRAW ACTIONS
-		this.bar_graphic = options.scene.add.graphics();
-		this.path_graphic = options.scene.add.graphics();
-		this.cohesion_graphic = options.scene.add.graphics();
+		this.bar_graphic = options.scene.add.graphics().setDepth(this.depth_health);
+		this.path_graphic = options.scene.add.graphics().setDepth(this.depth_path);
+		this.cohesion_graphic = options.scene.add.graphics().setDepth(this.depth_cohesion);
 		this.blast_graphics = [];
 		for(let i=0; i<10; i++){
-			this.blast_graphics.push(options.scene.add.graphics());
+			this.blast_graphics.push(options.scene.add.graphics().setDepth(this.depth_explosion));
 		}
 
 		
@@ -113,16 +123,18 @@ const unit = class {
 			stroke: "#000000",
 			strokeThickness: 1
 		},		
-		this.text = options.scene.add.text(this.sprite.x, this.sprite.y - (this.sprite.displayHeight / 2), "", this.text_style).setDepth(20);
+		this.text = options.scene.add.text(this.sprite.x, this.sprite.y - (this.sprite.displayHeight / 2), "", this.text_style).setDepth(this.depth_text);
 		this.text_graphic = options.scene.add.graphics();
+		
 		
 		// this.group = options.scene.add.group();		
 		// this.group.add(this.sprite)
 		// this.group.add(this.bar_graphic)
 		
 		this.drawTint()
-		this.drawHealth();
-		this.drawInfo()
+		// this.drawHealth(this.sprite);
+		// this.drawInfo(this.sprite)
+		this.updateElements(this.sprite);
 		
 		this.selectHander = this.selectHander.bind(this);
 	}
@@ -191,6 +203,20 @@ const unit = class {
 		this.path = [];
 		this.path_graphic.clear();		
 		this.resetGhost();
+		this.updateElements(this.sprite_ghost);
+		
+		//CHECK TO SEE IF THE RESET AFFECTS ANY OTHER UNITS THAT'VE MOVED
+		//IF SO, RESET THOSE UNIT MOVES AS WELL
+		gameFunctions.units.forEach((unit) => {
+			if(unit.id !== this.id){
+				let check = this.checkSpriteOverlap(this.sprite_ghost, unit.sprite_ghost)
+				if(check === true){
+					unit.resetMove();
+					// unit.updateElements(unit.sprite_ghost);
+				}
+			}
+
+		})
 	}
 	
 	resetFightRadius() {
@@ -221,13 +247,15 @@ const unit = class {
 			graphic.clear();
 		})		
 		this.drawTarget(this.targets, this.blast_radius);
-		this.drawInfo();
+		// this.drawInfo(this.sprite);
+		this.updateElements(this.sprite);
 	}
 	
 	removeFightTarget() {
 		this.fight_targets.pop();	
 		this.drawTarget(this.fight_targets, 0);
-		this.drawInfo();
+		// this.drawInfo(this.sprite);
+		this.updateElements(this.sprite);
 	}	
 	
 	resetDrawInfo(){
@@ -312,7 +340,7 @@ const unit = class {
 		new particle(part_options)		
 		
 		target.health -= options.damage;
-		target.drawHealth()
+		target.drawHealth(this.sprite)
 		if(target.health <= 0){
 			target.kill();
 		}
@@ -353,14 +381,21 @@ const unit = class {
 
 	}
 	
-	updateUnitElements(){
-		this.drawHealth();
-		this.sprite_symbol.x = this.sprite.x + (this.sprite.displayWidth / 2) //- (this.sprite_symbol.displayWidth / 2)
-		this.sprite_symbol.y = this.sprite.y - (this.sprite.displayHeight / 2) //- (this.sprite_symbol.displayHeight / 2)
+	
+	updateElements(sprite){
+		this.updateUnitElements(sprite);
+		this.drawInfo(sprite);
+		this.drawHealth(sprite);
+	}
+	
+	updateUnitElements(sprite){
+		this.drawHealth(sprite);
+		this.sprite_symbol.x = sprite.x + (this.sprite.displayWidth / 2) //- (this.sprite_symbol.displayWidth / 2)
+		this.sprite_symbol.y = sprite.y - (this.sprite.displayHeight / 2) //- (this.sprite_symbol.displayHeight / 2)
 	}	
 	
 	
-	drawInfo()
+	drawInfo(sprite)
 	{
 		let string = ""
 		switch(gameFunctions.mode){
@@ -375,18 +410,17 @@ const unit = class {
 		if(string !== ""){
 
 			this.text.setText(string);
-			this.text.x = this.sprite.x -(this.text.width / 2) + (this.sprite.displayWidth / 2)
-			this.text.y = this.sprite.y - (this.sprite.displayHeight / 2) + 10
+			this.text.x = sprite.x -(this.text.width / 2) + (this.sprite.displayWidth / 2)
+			this.text.y = sprite.y - (this.sprite.displayHeight / 2) + 10
 
-			
 			this.text_graphic.clear();
-			this.text_graphic.fillStyle(0xFFFFFF).setDepth(19);
+			this.text_graphic.fillStyle(0xFFFFFF).setDepth(this.depth_text);
 			this.text_graphic.fillRect(this.text.x, this.text.y, this.text.width, this.text.height);
 		}
 
 	}
 	
-    drawHealth()
+    drawHealth(sprite)
     {
         this.bar_graphic.clear();
 		let width = this.sprite.width;
@@ -394,8 +428,8 @@ const unit = class {
 		
 		
 		let pos = {
-			x: this.sprite.x,
-			y: this.sprite.y
+			x: sprite.x,
+			y: sprite.y
 		}		
 		
 		//  Without this the arc will appear closed when stroked
@@ -456,7 +490,7 @@ const unit = class {
 			this.path_graphic.strokePath();				
 	
 			this.sprite.setTint(0x808080) //turn unit grey if it has a ghost path
-			this.sprite.alpha = 0.25;
+			this.sprite.alpha = 0 //.25;
 			
 		}
 		
@@ -497,7 +531,7 @@ const unit = class {
 					// blast_graphic.lineStyle(3 * GameScene.tile_size, colours.line_colour, 0.5);
 					blast_graphic.fillStyle(0x0000FF, 0.5);
 					let circle = new Phaser.Geom.Circle(pos.x, pos.y, (blast_radius / 2) * GameScene.tile_size);
-					blast_graphic.fillCircleShape(circle).setDepth(1);
+					blast_graphic.fillCircleShape(circle).setDepth(this.depth_explosion);
 
 					blast_graphic.strokePath();
 				}
@@ -513,7 +547,7 @@ const unit = class {
 		radius_graphic.lineStyle(1, 0x0000FF, 0.5);
 		radius_graphic.fillStyle(0x0000FF, 0.2);
 		let circle = new Phaser.Geom.Circle(this.sprite.x, this.sprite.y, (this.fight_range / 2));
-		radius_graphic.fillCircleShape(circle).setDepth(1);
+		radius_graphic.fillCircleShape(circle).setDepth(this.depth_fight_radius);
 
 		radius_graphic.strokePath();		
 	}	
@@ -702,10 +736,10 @@ const unit = class {
 						this.sprite_ghost.y = pos.y * GameScene.tile_size;
 
 						let temp_check = false
-						temp_check = this.checkSpriteOverlap(unit.sprite, this.sprite_ghost)
-						if(temp_check === true){
-							check = temp_check
-						}
+						// temp_check = this.checkSpriteOverlap(unit.sprite, this.sprite_ghost)
+						// if(temp_check === true){
+						// 	check = temp_check
+						// }
 						
 						temp_check = this.checkSpriteOverlap(unit.sprite_ghost, this.sprite_ghost)
 						if(temp_check === true){
@@ -784,6 +818,8 @@ const unit = class {
 						this.sprite_ghost.x = pos.x * GameScene.tile_size;
 						this.sprite_ghost.y = pos.y * GameScene.tile_size;
 						this.sprite_ghost.angle = angle;
+						
+						this.updateElements(this.sprite_ghost)
 					}
 				}
 				
@@ -1148,7 +1184,8 @@ const unit = class {
 			this.drawTarget(this.targets, this.blast_radius);
 			GameScene.sfx['action'].play();
 			
-			this.drawInfo()
+			// this.drawInfo(this.sprite)
+			this.updateElements(this.sprite)
 		}
 		
 	}
@@ -1250,7 +1287,8 @@ const unit = class {
 			this.drawTarget(this.fight_targets, 0);
 			GameScene.sfx['action'].play();
 			
-			this.drawInfo()
+			// this.drawInfo(this.sprite)
+			this.updateElements(this.sprite)
 		}
 		
 	}	

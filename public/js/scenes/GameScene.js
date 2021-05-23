@@ -362,7 +362,7 @@ var GameScene = new Phaser.Class({
 
 					if(unit.is_moving === true){
 						// unit.draw_health()
-						unit.updateUnitElements();
+						unit.updateUnitElements(unit.sprite);
 					}
 				}
 			})

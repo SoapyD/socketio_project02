@@ -12,10 +12,7 @@
 -DONE -move the ghost when online, otherwise it doesn't register. In fact, don't have opponent ghosts generate if online
 -DONE -stop a player from being able to interact with another players units
 -DONE -Hide action buttons when it's not a players turn
-
-
-
--Need to make sure dead units are checked for cohesion checks
+-DONE -Need to make sure dead units are checked for cohesion checks
 
 
 -Need to get the player, side and squad values properly saved and passed back when the game reloads
