@@ -17,9 +17,9 @@ const unit = class {
 		this.is_moving = false;
 
 
-		this.moves = 0;
-		this.shots = 0;
-		this.fights = 0;
+		this.moved = false;
+		this.shot = false;
+		this.fought = false;
 		
 		this.unit_name = options.unit_name;
 		this.health = options.health;
@@ -153,10 +153,17 @@ const unit = class {
 		
 	}
 	
+	resetLocks() {
+		this.moved = false;
+		this.shot = false;
+		this.fought = false;		
+	}
+	
 	resetActions() {
 		this.path = [];
 		this.targets = [];
 		this.fight_targets = [];	
+
 		
 		// this.resetGhost();
 		if(this.sprite_ghost){
@@ -666,7 +673,7 @@ const unit = class {
 			})			
 			
 			//STRIP PATH BACK TO MAX MOVEMENT LENGTH
-			this.path = this.path.slice(0,this.movement - 1)			
+			this.path = this.path.slice(0,this.movement + 1)
 
 			
 			//OFFSET PATH SO THEY'RE IN THE MIDDLE OF EACH TILE
@@ -676,48 +683,66 @@ const unit = class {
 			})
 			
 			
-			//UPDATE THE POSITIONAL DATA
-			if(this.path.length > 1){
-				let pos = this.path[this.path.length - 1];
-				
-				let angle = this.checkAngle(this.path[this.path.length - 2], this.path[this.path.length - 1])
-				
-				if(this.sprite_ghost){
-					// this.sprite_ghost.alpha = 0.5;
-					this.sprite_ghost.x = pos.x * GameScene.tile_size;
-					this.sprite_ghost.y = pos.y * GameScene.tile_size;
-					// this.resetGhost();				
-					this.sprite_ghost.angle = angle;					
-				}
-
-			}			
-			
-			
 			//SKIP PATH IF THE UNIT PLACEMENT OVERLAPS ANOTHER UNIT
 			let skip = false
-			gameFunctions.units.forEach((unit) => {
+			let last_path_pos = 0
+			
+			//CHECK THROUGH THE PATH AND KEEP TRACK OF THE LAST SPACE THAT DOESN'T INTERSECT ANOTHER PLAYER
+			this.path.forEach((pos, i) => {
+				let check = false;				
+				gameFunctions.units.forEach((unit) => {
+					
+					if(unit.id !== this.id){
+						
+						this.sprite_ghost.x = pos.x * GameScene.tile_size;
+						this.sprite_ghost.y = pos.y * GameScene.tile_size;
 
-				if(unit.id !== this.id){
-					let check = false;
-					if(this.sprite_ghost){
-						check = this.checkSpriteOverlap(unit.sprite, this.sprite_ghost)
-						if(check === true){
-							skip = true;
+						let temp_check = false
+						temp_check = this.checkSpriteOverlap(unit.sprite, this.sprite_ghost)
+						if(temp_check === true){
+							check = temp_check
 						}
-					}
-					if(this.sprite_ghost && unit.sprite_ghost){
-						check = this.checkSpriteOverlap(unit.sprite_ghost, this.sprite_ghost)
-						if(check === true){
-							skip = true;
+						
+						temp_check = this.checkSpriteOverlap(unit.sprite_ghost, this.sprite_ghost)
+						if(temp_check === true){
+							check = temp_check
 						}
+						
 					}
+
+				})
+				
+				// 
+				if(check === false){
+					last_path_pos = i;
 				}
 			})
-
 			
-			//DON'T ALLOW FIGHTING IF THERE'S NO FIGHT DAMAGE
-			if(this.fight_damage === 0 && gameFunctions.mode === "fight"){
+			// console.log(this.path.length, last_path_pos + 1)
+			
+			//UPDATE THE PATH IF IT'S LENGTH INTERSECTS ANOTHER UNIT
+			if(this.path.length >= last_path_pos + 1){
+				this.path = this.path.slice(0,last_path_pos + 1)
+			}
+
+						
+			//DON'T ALLOW PATH TO GENERATE IF MODE IS CHARGE AND UNIT HAS NO FIGHTING DAMAGE
+			// if(this.fight_damage === 0 && gameFunctions.mode === "fight"){
+			// 	skip = true;
+			// }
+			
+			//SKIP IF IN CHARGE MODE AND UNIT HAD ALREADY SHOT
+			if(this.shot === true && gameFunctions.mode === "charge"){
 				skip = true;
+				let options = {
+					scene: GameScene.scene,
+					pos: {
+						x: GameScene.rectangle.x,
+						y: GameScene.rectangle.y
+					},
+					text: "cannot charge, unit has shot"
+				}
+				new popup(options)
 			}
 			
 			if(this.path.length === 0){
@@ -736,22 +761,28 @@ const unit = class {
 				GameScene.sfx['clear'].play();				
 			}			
 			
-			console.log("skip: ",skip,"path: ",this.path)
+			// console.log("skip: ",skip,"path: ",this.path)
 			
 			//IF THE GHOST CLASHES WITH ANOTHER SPRITE OR GHOST, CANCEL THE MOVE
 			if(skip === true){
-				// this.resetGhost();
-				// this.path = [];
-				// this.path_graphic.clear();
-				
 				this.resetMove();
-				// if(this.path.length === 0){
-				// 	GameScene.sfx['clear'].play();
-				// }
 				
 			}
 			else{
-			
+							
+				//UPDATE THE POSITIONAL DATA AND ANGLE OF THE SPRITE GHOST
+				if(this.path.length > 1){
+					let pos = this.path[this.path.length - 1];
+
+					let angle = this.checkAngle(this.path[this.path.length - 2], this.path[this.path.length - 1])
+
+					if(this.sprite_ghost){
+						this.sprite_ghost.x = pos.x * GameScene.tile_size;
+						this.sprite_ghost.y = pos.y * GameScene.tile_size;
+						this.sprite_ghost.angle = angle;
+					}
+				}
+				
 				//if there's any cohesion needed, check it, otherwise just draw path
 				if(this.cohesion > 0){
 					this.cohesionCheck()
@@ -947,7 +978,7 @@ const unit = class {
 							if(endFunction){
 								switch(endFunction){
 									case "move":
-										this.moves = 1;
+										this.moved = true;
 										this.combat_check = this.checkCombat();
 										GameScene.sfx["end_path"].play();
 										 
@@ -1047,20 +1078,39 @@ const unit = class {
 		//CHECK THE BULLET PATH TO MAKE SURE THERE'S NO OBJECTS BLOCKING SIGHT
 		let dest = {}
 		let skip = false;
-		pos.cells.forEach((cell) => {
+		let add_dest = true;
+		pos.cells.forEach((cell) => {			
+
 			let grid_x = Math.floor(cell.x / GameScene.tile_size);
 			let grid_y = Math.floor(cell.y / GameScene.tile_size);					
-			
+			let grid_cell = GameScene.grid[grid_y][grid_x]
 			// this.temp_sprites.push(scene.physics.add.image(cell.x,cell.y,"marker").setDepth(0))	
 			// this.temp_sprites.push(scene.physics.add.image(grid_x * GameScene.tile_size,grid_y * GameScene.tile_size,"marker").setTint(0xff0000).setDepth(0.5));
-			
-			//RETURN THE GRID CELL POSITION SO WE CAN CHECK IT'S EMPTY
-			let grid_cell = GameScene.grid[grid_y][grid_x]
-			dest.x = cell.x
-			dest.y = cell.y
-			
+
 			if (!GameScene.pathfinder.acceptable_tiles.includes(grid_cell)){
-				skip = true;
+				// skip = true;
+				add_dest = false;
+			}
+			
+			//STOP THE BULLET PATH IF IT HITS A UNIT NOT ON THE SAME SIDE
+			if(add_dest === true){
+				gameFunctions.units.forEach((unit) => {
+
+					if(unit.id !== this.id && unit.side !== this.side){
+						let check = unit.checkSpriteandPos(cell)
+						if(check === true){
+							add_dest = false;
+						}	
+					}
+
+				})	
+			}
+
+
+			if(add_dest === true){
+				//RETURN THE GRID CELL POSITION SO WE CAN CHECK IT'S EMPTY
+				dest.x = cell.x
+				dest.y = cell.y
 			}
 		})		
 		
@@ -1127,7 +1177,7 @@ const unit = class {
 					//BULLET DEATH KILLS THE GRAPHIC
 				}
 			})
-			this.shots = 1;
+			this.shot = true;
 			this.targets = [];
 		}		
 		
@@ -1245,7 +1295,7 @@ const unit = class {
 	
 	
 	fight(){
-		this.fights = 1;
+		this.fought = true;
 		this.checkCombat()	
 		
 		this.fight_targets.forEach( async(target, i) => {

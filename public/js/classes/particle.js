@@ -62,6 +62,7 @@ const particle = class {
                 }
 			}); 
 		}
+		
 	}
 	
 }

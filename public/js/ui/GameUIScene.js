@@ -306,20 +306,21 @@ GameUIScene.activateCharging = () => {
 		}
 	})
 	
-	if(cohesion_check === true){
-		gameFunctions.units.forEach((unit) => {
-			if(unit.player === gameFunctions.current_player &&
-			   unit.cohesion_check === true){
-				let in_combat_range = unit.checkCombat()
+	//ONLY ALLOW CHARGE IF ALL CHARGING UNTIS ARE IN COMBAT DISTANCE
+	// if(cohesion_check === true){
+	// 	gameFunctions.units.forEach((unit) => {
+	// 		if(unit.player === gameFunctions.current_player &&
+	// 		   unit.cohesion_check === true){
+	// 			let in_combat_range = unit.checkCombat()
 				
-				if(in_combat_range === true){
-					in_combat = true;
-				}
-			}
-		})		
-	}
+	// 			if(in_combat_range === true){
+	// 				in_combat = true;
+	// 			}
+	// 		}
+	// 	})		
+	// }
 	
-	if(cohesion_check === true && in_combat === true){
+	if(cohesion_check === true){ // && in_combat === true){
 		gameFunctions.units.forEach((unit) => {
 			
 			if(unit.player === gameFunctions.current_player){
@@ -417,6 +418,7 @@ GameUIScene.nextPlayer = () => {
 	gameFunctions.units.forEach((unit) => {
 		if(unit.player === gameFunctions.current_player){
 			unit.resetActions();
+			unit.resetLocks();
 		}
 	})
 	// GameScene.sfx["end_turn"].play();

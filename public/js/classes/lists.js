@@ -61,7 +61,7 @@ options = {
 	sprite_offset: 0.5,
 	cohesion: 0,
 	health: 160,
-	movement: 12,
+	movement: 6,
 	death_sfx: "death_man",
 	
 	shooting_bonus: -2,
@@ -78,7 +78,7 @@ options = {
 	sprite_offset: 0.5,
 	cohesion: 75,
 	health: 120,
-	movement: 12,
+	movement: 6,
 	death_sfx: "death_man",
 	
 	shooting_bonus: -1,
@@ -95,7 +95,7 @@ options = {
 	sprite_offset: 0.5,
 	cohesion: 75,
 	health: 100,
-	movement: 12,
+	movement: 6,
 	death_sfx: "death_man",
 	
 	shooting_bonus: -2,
@@ -112,7 +112,7 @@ options = {
 	sprite_offset: 0.5,
 	cohesion: 75,
 	health: 100,
-	movement: 12,
+	movement: 6,
 	death_sfx: "death_man",
 	
 	shooting_bonus: -1,
@@ -129,7 +129,7 @@ options = {
 	sprite_offset: 0.5,
 	cohesion: 75,
 	health: 100,
-	movement: 12,
+	movement: 6,
 	death_sfx: "death_man",
 	shooting_bonus: 0,
 	fighting_bonus: 0,

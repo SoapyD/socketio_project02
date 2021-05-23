@@ -141,7 +141,7 @@ const bullet = class {
 		let cell = GameScene.grid[gridY][gridX]
 		
 
-		if(!GameScene.pathfinder.acceptable_tiles.includes(cell)){
+		if(!GameScene.pathfinder.acceptable_tiles.includes(cell) && this.delete === false){
 			// this.sprite.disableBody(true, true);
 			// GameScene.bullets = [];
 			
