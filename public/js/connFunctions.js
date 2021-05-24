@@ -97,6 +97,21 @@ connFunctions.setRoomInfo = (data) => {
 	}
 }
 
+connFunctions.saveGame = () => {
+	
+	let data = {
+		functionGroup: "socketFunctions",  
+		function: "updateRoom", //saveGame
+		message: "save game",
+		room_name: gameFunctions.params.room_name,
+		current_player: gameFunctions.current_player,
+		mode: gameFunctions.mode,
+		units: gameFunctions.units
+	}
+	
+	connFunctions.messageServer(data)	
+}
+
 
 
 
@@ -146,6 +161,10 @@ connFunctions.runUnitFunction = function(data) {
 	if(data.parameters.targets){
 		gameFunctions.units[data.parameters.id].targets = data.parameters.targets;
 	}	
+	if(data.parameters.fight_targets){
+		gameFunctions.units[data.parameters.id].fight_targets = data.parameters.fight_targets;
+	}	
+		
 	
 	if(data.parameters.function_parameter){
 		gameFunctions.units[data.parameters.id][data.parameters.function](data.parameters.function_parameter)	
@@ -156,21 +175,7 @@ connFunctions.runUnitFunction = function(data) {
 
 }
 
-connFunctions.saveGame = () => {
-	
-	let data = {
-		functionGroup: "socketFunctions",  
-		function: "updateRoom", //saveGame
-		message: "save game",
-		room_name: gameFunctions.params.room_name,
-		current_player: gameFunctions.current_player,
-		mode: gameFunctions.mode,
-		units: gameFunctions.units
-	}
-	
-	connFunctions.messageServer(data)	
-	
-}
+
 
 
 availableFunctions = {

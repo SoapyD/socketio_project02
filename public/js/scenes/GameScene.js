@@ -176,15 +176,16 @@ var GameScene = new Phaser.Class({
 
 			switch(instance_type){
 				case "DEV":
-					GameScene.seed();
+					GameScene.seed3();
 					break;
 				case "DEV-ONLINE":
-					if(gameFunctions.params.max_players > 2){
-						GameScene.seed2();
-					}else{
-						GameScene.seed();
-					}
-					break;				
+					// if(gameFunctions.params.max_players > 2){
+					// 	GameScene.seed2();
+					// }else{
+					// 	GameScene.seed();
+					// }
+					GameScene.seed3();
+					break;
 				default:
 					if(gameFunctions.params.max_players > 2){
 						GameScene.seed2();
@@ -299,16 +300,89 @@ var GameScene = new Phaser.Class({
 
 				switch(gameFunctions.mode) {
 					case "move":
-						GameScene.selected_unit.findPath(GameScene, worldPoint);
+						// GameScene.selected_unit.findPath(GameScene, worldPoint);
+						
+						if(GameScene.online === false){
+							GameScene.selected_unit.findPath({pointer: worldPoint});
+						}else{
+
+							let data = {
+								functionGroup: "socketFunctions",  
+								function: "messageAll",
+								returnFunctionGroup: "connFunctions",
+								returnFunction: "runUnitFunction", //test
+								returnParameters: {
+									id: GameScene.selected_unit.id, 
+									function: "findPath",
+									function_parameter: {pointer: worldPoint}
+								},
+								message: "set move"
+							}
+							connFunctions.messageServer(data)
+						}
 					break;
 					case "shoot":
-						GameScene.selected_unit.findTarget(this, worldPoint);
+						// GameScene.selected_unit.findTarget(this, worldPoint);
+						if(GameScene.online === false){
+							GameScene.selected_unit.findTarget({pointer: worldPoint});
+						}else{
+
+							let data = {
+								functionGroup: "socketFunctions",  
+								function: "messageAll",
+								returnFunctionGroup: "connFunctions",
+								returnFunction: "runUnitFunction", //test
+								returnParameters: {
+									id: GameScene.selected_unit.id, 
+									function: "findTarget",
+									function_parameter: {pointer: worldPoint}
+								},
+								message: "set shot target"
+							}
+							connFunctions.messageServer(data)
+						}
 					break;
 					case "charge":
-						GameScene.selected_unit.findPath(GameScene, worldPoint);
+						// GameScene.selected_unit.findPath(GameScene, worldPoint);
+						if(GameScene.online === false){
+							GameScene.selected_unit.findPath({pointer: worldPoint});
+						}else{
+
+							let data = {
+								functionGroup: "socketFunctions",  
+								function: "messageAll",
+								returnFunctionGroup: "connFunctions",
+								returnFunction: "runUnitFunction", //test
+								returnParameters: {
+									id: GameScene.selected_unit.id, 
+									function: "findPath",
+									function_parameter: {pointer: worldPoint}
+								},
+								message: "set charge"
+							}
+							connFunctions.messageServer(data)
+						}						
 					break;		
 					case "fight":
-						GameScene.selected_unit.findFightTarget(this, worldPoint);
+						// GameScene.selected_unit.findFightTarget(this, worldPoint);
+						if(GameScene.online === false){
+							GameScene.selected_unit.findFightTarget({pointer: worldPoint});
+						}else{
+
+							let data = {
+								functionGroup: "socketFunctions",  
+								function: "messageAll",
+								returnFunctionGroup: "connFunctions",
+								returnFunction: "runUnitFunction", //test
+								returnParameters: {
+									id: GameScene.selected_unit.id, 
+									function: "findFightTarget",
+									function_parameter: {pointer: worldPoint}
+								},
+								message: "set fight target"
+							}
+							connFunctions.messageServer(data)
+						}
 					break;					
 					default:
 					// code block
@@ -320,21 +394,90 @@ var GameScene = new Phaser.Class({
 				GameScene.sfx['clear'].play();
 				switch(gameFunctions.mode) {
 					case "move":
-					// 	GameScene.selected_unit.findPath(GameScene, pointer);
-						GameScene.selected_unit.resetMove();
+						// GameScene.selected_unit.resetMove();
+
+						if(GameScene.online === false){
+							GameScene.selected_unit.resetMove();
+						}else{
+
+							let data = {
+								functionGroup: "socketFunctions",  
+								function: "messageAll",
+								returnFunctionGroup: "connFunctions",
+								returnFunction: "runUnitFunction", //test
+								returnParameters: {
+									id: GameScene.selected_unit.id, 
+									function: "resetMove",
+								},
+								message: "reset path"
+							}
+							connFunctions.messageServer(data)
+						}
+						
 					break;
 					case "shoot":
-						GameScene.selected_unit.removeTarget();
+						// GameScene.selected_unit.removeTarget();
+						if(GameScene.online === false){
+							GameScene.selected_unit.removeTarget();
+						}else{
+
+							let data = {
+								functionGroup: "socketFunctions",  
+								function: "messageAll",
+								returnFunctionGroup: "connFunctions",
+								returnFunction: "runUnitFunction", //test
+								returnParameters: {
+									id: GameScene.selected_unit.id, 
+									function: "removeTarget",
+								},
+								message: "remove target"
+							}
+							connFunctions.messageServer(data)
+						}						
 					break;
 					case "charge":
-						GameScene.selected_unit.resetMove();
+						// GameScene.selected_unit.resetMove();
+						if(GameScene.online === false){
+							GameScene.selected_unit.resetMove();
+						}else{
+
+							let data = {
+								functionGroup: "socketFunctions",  
+								function: "messageAll",
+								returnFunctionGroup: "connFunctions",
+								returnFunction: "runUnitFunction", //test
+								returnParameters: {
+									id: GameScene.selected_unit.id, 
+									function: "resetMove",
+								},
+								message: "reset path"
+							}
+							connFunctions.messageServer(data)
+						}						
 					break;
 					case "fight":
-						GameScene.selected_unit.removeFightTarget();
+						// GameScene.selected_unit.removeFightTarget();
+						if(GameScene.online === false){
+							GameScene.selected_unit.removeFightTarget();
+						}else{
+
+							let data = {
+								functionGroup: "socketFunctions",  
+								function: "messageAll",
+								returnFunctionGroup: "connFunctions",
+								returnFunction: "runUnitFunction", //test
+								returnParameters: {
+									id: GameScene.selected_unit.id, 
+									function: "removeFightTarget",
+								},
+								message: "remove fight target"
+							}
+							connFunctions.messageServer(data)
+						}
 					break;	
 					default:
 					// code block
-				}					
+				}
 			}
 			
 		}

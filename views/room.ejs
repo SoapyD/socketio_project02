@@ -85,6 +85,7 @@
 	socket_address = "<%= address %>";
 	instance_type = "<%= instance_type %>";
 	console.log(instance_type)
+	
 </script>
 
 
@@ -114,6 +115,14 @@
 <!-- <script src="/js/easystar.js"></script> -->
 <script src="/js/functions.js"></script>
 
+<script>
+// 	ADDED THE BELOW AS, FOR SOME REASON THE DOM ALYER FOR THE WINDOW IS MISALIGNED
+$( document ).ready(function() {
+    $('#gameContainer').children()[0].style.transform = "";
+});
+	
+	
+</script>
 
 
 

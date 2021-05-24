@@ -13,9 +13,7 @@
 -DONE -stop a player from being able to interact with another players units
 -DONE -Hide action buttons when it's not a players turn
 -DONE -Need to make sure dead units are checked for cohesion checks
-
-
--Need to get the player, side and squad values properly saved and passed back when the game reloads
+-DONE -Need to get the player, side and squad values properly saved and passed back when the game reloads
 
 
 -test out a 3 side game

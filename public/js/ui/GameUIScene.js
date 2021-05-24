@@ -382,7 +382,7 @@ GameUIScene.activateFighting = () => {
 					returnFunction: "runUnitFunction",
 					returnParameters: {
 						id: unit.id, 
-						path: unit.path,
+						fight_targets: unit.fight_targets,
 						function: "fight"
 					},
 					message: "fight units"

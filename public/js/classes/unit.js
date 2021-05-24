@@ -3,6 +3,7 @@ const unit = class {
 	constructor(options) {
 		
 		// super(options);
+		this.scene = options.scene;
 		
 		this.id = gameFunctions.units.length;
 		this.side = options.side; //this can be used if each side has multiple players
@@ -82,7 +83,7 @@ const unit = class {
 		// this.sprite.on('pointerup', this.selectHander)
 		
 		
-		if(GameScene.online === false || (GameScene.online === true && this.player === gameFunctions.params.player_number)){
+		// if(GameScene.online === false || (GameScene.online === true && this.player === gameFunctions.params.player_number)){
 			this.sprite_ghost = options.scene.add.image(x,y,options.spritesheet).setInteractive();
 			this.sprite_ghost.alpha = 1; //0.5;
 			this.sprite_ghost.angle = options.angle;
@@ -90,7 +91,7 @@ const unit = class {
 			this.sprite_ghost.is_ghost = true;
 			this.sprite_ghost.setDepth(this.depth_sprite_ghost);
 			this.sprite_ghost.on('pointerup', this.selectHander)
-		}
+		// }
 
 		this.sprite_symbol = options.scene.add.image(x,y,"symbols").setScale(0.08)
 		this.sprite_symbol.x += (this.sprite.displayWidth / 2) //- (this.sprite_symbol.displayWidth / 2)
@@ -460,7 +461,22 @@ const unit = class {
 	//CALLED AS PART OF CALLBACK IN "FINDPATH"
 	drawPath(colours) {
 		
+		//UPDATE THE POSITIONAL DATA AND ANGLE OF THE SPRITE GHOST
+		if(this.path.length > 1){
+			let pos = this.path[this.path.length - 1];
 
+			let angle = this.checkAngle(this.path[this.path.length - 2], this.path[this.path.length - 1])
+
+			if(this.sprite_ghost){
+				this.sprite_ghost.x = pos.x * GameScene.tile_size;
+				this.sprite_ghost.y = pos.y * GameScene.tile_size;
+				this.sprite_ghost.angle = angle;
+
+				this.updateElements(this.sprite_ghost)
+			}
+		}
+		
+		
 		let last_pos = {
 			x: this.sprite.x / GameScene.tile_size,
 			y: this.sprite.y / GameScene.tile_size
@@ -686,7 +702,12 @@ const unit = class {
 // #     # #     #   # #   #       
 // #     # #######    #    ####### 	
 	
-	findPath(scene, pointer) {
+	// findPath(scene, pointer) {
+	findPath(options) {
+
+		let scene = this.scene;
+		let pointer = options.pointer;
+
 		var x = pointer.x;
 		var y = pointer.y;		
 		var toX = Math.floor(x/GameScene.tile_size);
@@ -807,21 +828,6 @@ const unit = class {
 				
 			}
 			else{
-							
-				//UPDATE THE POSITIONAL DATA AND ANGLE OF THE SPRITE GHOST
-				if(this.path.length > 1){
-					let pos = this.path[this.path.length - 1];
-
-					let angle = this.checkAngle(this.path[this.path.length - 2], this.path[this.path.length - 1])
-
-					if(this.sprite_ghost){
-						this.sprite_ghost.x = pos.x * GameScene.tile_size;
-						this.sprite_ghost.y = pos.y * GameScene.tile_size;
-						this.sprite_ghost.angle = angle;
-						
-						this.updateElements(this.sprite_ghost)
-					}
-				}
 				
 				//if there's any cohesion needed, check it, otherwise just draw path
 				if(this.cohesion > 0){
@@ -840,6 +846,30 @@ const unit = class {
 					}
 
 					this.drawPath(colours)
+					
+					// if(GameScene.online === false){
+
+					// 	this.drawPath(colours)
+
+					// }else{
+
+					// 	let data = {
+					// 		functionGroup: "socketFunctions",  
+					// 		function: "messageAll",
+					// 		returnFunctionGroup: "connFunctions",
+					// 		returnFunction: "runUnitFunction", //test
+					// 		returnParameters: {
+					// 			id: this.id, 
+					// 			path: this.path,
+					// 			function: "drawPath",
+					// 			function_parameter: colours
+					// 		},
+					// 		message: "draw path"
+					// 	}
+
+					// 	connFunctions.messageServer(data)
+					// }
+					
 					
 					GameScene.sfx['action'].play();
 				}
@@ -941,6 +971,31 @@ const unit = class {
 				}
 
 				unit.drawPath(colours)
+				
+				// if(GameScene.online === false){
+
+				// 	unit.drawPath(colours)
+
+				// }else{
+
+				// 	let data = {
+				// 		functionGroup: "socketFunctions",  
+				// 		function: "messageAll",
+				// 		returnFunctionGroup: "connFunctions",
+				// 		returnFunction: "runUnitFunction", //test
+				// 		returnParameters: {
+				// 			id: unit.id, 
+				// 			path: unit.path,
+				// 			function: "drawPath",
+				// 			function_parameter: colours
+				// 		},
+				// 		message: "draw path"
+				// 	}
+
+				// 	connFunctions.messageServer(data)
+				// }				
+				
+				
 			}
 		})
 		
@@ -1058,7 +1113,10 @@ const unit = class {
 // #     # #     # #     # #     #    #    
 //  #####  #     # ####### #######    #   	
 	
-	findTarget (scene, pointer) {
+	findTarget (options) {
+		
+		let scene = this.scene;
+		let pointer = options.pointer;		
 		
 		//GET BASE POSITIONAL DATA
 		let pos = {
@@ -1235,7 +1293,9 @@ const unit = class {
 // #       ###  #####  #     #    #    		
 	
 	
-	findFightTarget (scene, pointer) {
+	findFightTarget (options) {
+		let scene = this.scene;
+		let pointer = options.pointer;		
 		
 		//GET BASE POSITIONAL DATA
 		let pos = {
