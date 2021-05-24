@@ -563,6 +563,27 @@ GameScene.clickHandler = function(pointer){
 	}			
 };
 
+GameScene.selectMode = (options) => {
+	
+	if(options.parameters){
+		options = options.parameters.options
+	}
+	console.log("returned",options)	
+	
+	if(options.mode){
+		gameFunctions.mode = options.mode
+		GameScene.selected_unit = undefined;
+		
+		//RESET ALL PLAYER ACTIONS
+		if(gameFunctions.units){
+			gameFunctions.units.forEach((unit) => {
+				if(unit.player === gameFunctions.current_player){
+					unit.resetActions();
+				}
+			})
+		}
+	}	
+}
 
 
 GameScene.advancePlayer = () => {

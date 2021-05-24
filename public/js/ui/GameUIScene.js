@@ -209,20 +209,23 @@ GameUIScene.advanceMode = () => {
 GameUIScene.selectMode = (options) => {
 	
 	// GameScene.sfx['button'].play();
-	
-	if(options.mode){
-		gameFunctions.mode = options.mode
-		GameScene.selected_unit = undefined;
-		
-		//RESET ALL PLAYER ACTIONS
-		if(gameFunctions.units){
-			gameFunctions.units.forEach((unit) => {
-				if(unit.player === gameFunctions.current_player){
-					unit.resetActions();
-				}
-			})
+	if(GameScene.online === false){
+		GameScene.selectMode(options);
+	}else{
+
+		let data = {
+			functionGroup: "socketFunctions",  
+			function: "messageAll",
+			returnFunctionGroup: "GameScene",
+			returnFunction: "selectMode", //selectMode
+			message: "select mode",
+			returnParameters: {
+				options: options
+			}
 		}
-	}
+		connFunctions.messageServer(data)
+	}	
+
 }
 
 GameUIScene.activateMovement = () => {
