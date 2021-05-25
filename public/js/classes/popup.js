@@ -13,7 +13,7 @@ const popup = class {
 		this.text = options.scene.add.text(options.pos.x, options.pos.y, options.text, text_style).setDepth(100);
 		this.text.x -= this.text.width / 2;
 
-		this.rectangle = options.scene.add.rectangle(options.pos.x, options.pos.y + (this.text.height / 2), this.text.width, this.text.height, 0xffffff).setDepth(99);		
+		this.rectangle = options.scene.add.rectangle(options.pos.x, options.pos.y + (this.text.height / 2), this.text.width, this.text.height, 0xffffff).setDepth(99);
 		
 		// console.log(this.text)
 		

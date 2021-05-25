@@ -36,7 +36,7 @@ var GameScene = new Phaser.Class({
 		GameScene.master_sfx_volume = 0.3;
 		
 
-		
+		GameScene.active_actions = 0;
 		GameScene.bullets = [];
 		GameScene.selected_unit;
 		GameScene.left_click = false;
@@ -568,7 +568,7 @@ GameScene.selectMode = (options) => {
 	if(options.parameters){
 		options = options.parameters.options
 	}
-	console.log("returned",options)	
+	// console.log("returned",options)	
 	
 	if(options.mode){
 		gameFunctions.mode = options.mode

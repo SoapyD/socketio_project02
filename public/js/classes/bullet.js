@@ -122,6 +122,7 @@ const bullet = class {
 		
 		
 		this.sprite.destroy();
+		GameScene.active_actions--;
 		this.delete = true;
 
 		// this.sprite.disableBody(true, true);

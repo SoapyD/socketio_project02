@@ -1013,7 +1013,11 @@ const unit = class {
 			this.sprite_ghost.alpha = 0.5;
 		}
 		
-		if (this.path && this.is_moving === false){
+		if (this.path.length > 1 && this.is_moving === false){
+			
+			// if(this.path.length > 1){
+				GameScene.active_actions++;	
+			// }
 			
 			this.is_moving = true;
 			
@@ -1070,6 +1074,7 @@ const unit = class {
 							this.path_graphic.clear()
 							this.path = [];
 							this.is_moving = false;
+							GameScene.active_actions--;
 							
 							if(endFunction){
 								switch(endFunction){
@@ -1254,6 +1259,8 @@ const unit = class {
 		if(this.targets){
 
 			this.targets.forEach( async(target, i) => {
+				
+				GameScene.active_actions++;
 
 				await this.delay(2000 * i)
 				
@@ -1277,7 +1284,10 @@ const unit = class {
 					//BULLET DEATH KILLS THE GRAPHIC
 				}
 			})
-			this.shot = true;
+			if(this.targets.length > 0){
+				this.shot = true;
+			}
+			
 			this.targets = [];
 		}		
 		
@@ -1398,10 +1408,11 @@ const unit = class {
 	
 	
 	fight(){
-		this.fought = true;
+		// this.fought = true;
 		this.checkCombat()	
 		
 		this.fight_targets.forEach( async(target, i) => {
+			GameScene.active_actions++;
 			
 			await this.delay(2000 * i)
 			
@@ -1428,8 +1439,12 @@ const unit = class {
 				attacker: this
 			}
 			target.parent.wound(options);
+			GameScene.active_actions--;
 		})
 		
+		if(this.fight_targets.length > 0){
+			this.fought = true;
+		}		
 		this.fight_targets = [];
 	}
 	

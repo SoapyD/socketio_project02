@@ -21,6 +21,7 @@
 
 -error socket messages need to be returned to the originating player only
 
+-BUG - once a movement has been made, the unit elements don't move with their parent
 
 
 
