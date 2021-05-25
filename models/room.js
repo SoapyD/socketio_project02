@@ -29,7 +29,9 @@ const roomSchema = new mongoose.Schema({
 
 	,config: {
 		max_players: Number
+		,max_sides: Number
 		,current_player: {type: Number, default: 0}
+		,current_side: {type: Number, default: 0}
 		,mode: String
 	}
 	

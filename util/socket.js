@@ -117,6 +117,15 @@ exports.createRoom = async(network, data)  => {
         else{
             let room = await queriesUtil.createRoom(data, network.socket.id)
     
+			let player_number = room.users.indexOf(data.user_id)
+			let side = -1;
+			if(player_number === 0 || player_number === 1){
+				side = 0;
+			}
+			if(player_number === 2 || player_number === 3){
+				side = 1;
+			}			
+			
 			//SEND THE CORE GAME DATA OT THE PLAYER
 			let return_data = {
                 functionGroup: "connFunctions"
@@ -126,11 +135,13 @@ exports.createRoom = async(network, data)  => {
 				,room_name: data.room_name
 				,room_id: room._id
 				,max_players: room.config.max_players
-				,player_number: room.users.indexOf(data.user_id)
+				,player_number: player_number
+				,max_sides: room.config.max_sides
+				,player_side: side
 			}
 			network.socket.join(data.roomName)
 			//send room info back to socket
-			network.io.to(network.socket.id).emit('message_client', return_data);			
+			network.io.to(network.socket.id).emit('message_client', return_data);
 			
 			
 			
@@ -192,7 +203,7 @@ exports.joinRoom = async(network, data)  => {
                 if(room.users.indexOf(data.user_id) > -1){
                     //IF THE USER IS STILL IN THE ROOM
                     if(room.sockets.indexOf(network.socket.id) > -1){
-                        return_data.message = "You're already in this room";							
+                        return_data.message = "You're already in this room";
                     }else{
                         return_data.message = "Rejoined room.";	
                                         
@@ -236,6 +247,15 @@ exports.joinRoom = async(network, data)  => {
 				next_scene = "GameScene"
 			}
 			
+			let player_number = saved_room.users.indexOf(data.user_id)
+			let side = -1;
+			if(player_number === 0 || player_number === 1){
+				side = 0;
+			}
+			if(player_number === 2 || player_number === 3){
+				side = 1;
+			}				
+			
 			//SEND THE CORE GAME DATA OT THE PLAYER
 			return_data = {
                 functionGroup: "connFunctions"
@@ -245,7 +265,9 @@ exports.joinRoom = async(network, data)  => {
 				,room_name: data.room_name
 				,room_id: saved_room._id
 				,max_players: saved_room.config.max_players
-				,player_number: saved_room.users.indexOf(data.user_id)
+				,player_number: player_number
+				,max_sides: saved_room.config.max_sides
+				,player_side: side				
 				,has_saved_data: has_saved_data
 				,room: saved_room
 			}

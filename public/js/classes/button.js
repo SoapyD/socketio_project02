@@ -93,6 +93,8 @@ const button = class {
 	hideButton(){
 		this.text.setText("");
 		this.btn.alpha = 0;
+		this.btn.setInteractive(false);
+		
 		if(this.border){
 			this.border.alpha = 0;
 		}
@@ -101,8 +103,9 @@ const button = class {
 	showButton(){
 		this.text.setText(this.label);
 		this.btn.alpha = 1;
+		this.btn.setInteractive(true);
 		if(this.border){
 			this.border.alpha = 1;
-		}		
+		}
 	}	
 }

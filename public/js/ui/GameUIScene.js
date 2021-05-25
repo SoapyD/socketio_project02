@@ -17,7 +17,7 @@ var GameUIScene = new Phaser.Class({
 		GameUIScene.scene = this.scene.get('GameUIScene')
 		GameUIScene.text = this.add.text(0, 0, "", { fill: '#00ff00' }).setDepth(20);
 		
-		GameUIScene.mode_state = -1;
+		GameUIScene.mode_state = 0;
 		GameUIScene.mode_check_state = 0;
     },
 
@@ -35,7 +35,8 @@ var GameUIScene = new Phaser.Class({
 				// GameUIScene.loadSingleButton(this)
 				break;
 			case "DEV-ONLINE":
-				GameUIScene.loadFullButtons(this)
+				// GameUIScene.loadFullButtons(this)
+				GameUIScene.loadSingleButton(this)
 				break;
 			default:
 				GameUIScene.loadSingleButton(this)
@@ -66,11 +67,17 @@ var GameUIScene = new Phaser.Class({
 		
 		switch(GameUIScene.mode_check_state){
 			case 2:
+				if(GameScene.active_actions > 0){
+					GameUIScene.mode_check_state = 3;
+				}
+				break;
+			case 3:
 				if(GameScene.active_actions === 0){
+					GameUIScene.mode_state++;
 					GameUIScene.advanceMode()
 					GameUIScene.mode_check_state = 0;
 				}
-				break;
+				break;				
 			case 1:
 				// if(GameScene.active_actions > 1){
 					GameUIScene.mode_check_state = 2;
@@ -80,6 +87,11 @@ var GameUIScene = new Phaser.Class({
 		
 		
 		let text = "Current Side: "+gameFunctions.current_side+'\n'
+		
+		if(GameScene.selected_unit){
+			text += "Selected Unit: "+GameScene.selected_unit.id+'\n'	
+		}
+
 		text += "Phase: "+gameFunctions.mode+'\n'
 		text += "Check: "+GameUIScene.mode_check_state+'\n'
 		
@@ -202,44 +214,21 @@ GameUIScene.loadFullButtons = (scene) => {
 	gameFunctions.btn_sprite.push(new button(options))
 		
 	
-	// callbackParams = {mode:"move"};
-	// gameFunctions.createButton(scene, gameFunctions.config.width - 150, 25, "+", GameUIScene.selectMode, callbackParams, gameFunctions.btn_sprite);
-	// callbackParams = {};
-	// gameFunctions.createButton(scene, gameFunctions.config.width - 50, 25, "move", GameUIScene.activateMovement, callbackParams, gameFunctions.btn_sprite);
-
-	// callbackParams = {mode:"shoot"};
-	// gameFunctions.createButton(scene, gameFunctions.config.width - 150, 75, "+", GameUIScene.selectMode, callbackParams, gameFunctions.btn_sprite);
-	// callbackParams = {};
-	// gameFunctions.createButton(scene, gameFunctions.config.width - 50, 75, "shoot", GameUIScene.activateShooting, callbackParams, gameFunctions.btn_sprite);
-
-	// callbackParams = {mode:"charge"};
-	// gameFunctions.createButton(scene, gameFunctions.config.width - 150, 125, "+", GameUIScene.selectMode, callbackParams, gameFunctions.btn_sprite);	
-	// callbackParams = {};
-	// gameFunctions.createButton(scene, gameFunctions.config.width - 50, 125, "charge", GameUIScene.activateCharging, callbackParams, gameFunctions.btn_sprite);
-
-	// callbackParams = {mode:"fight"};
-	// gameFunctions.createButton(scene, gameFunctions.config.width - 150, 175, "+", GameUIScene.selectMode, callbackParams, gameFunctions.btn_sprite);	
-	// callbackParams = {};
-	// gameFunctions.createButton(scene, gameFunctions.config.width - 50, 175, "fight", GameUIScene.activateFighting, callbackParams, gameFunctions.btn_sprite);		
-
-	// callbackParams = {};
-	// gameFunctions.createButton(scene, gameFunctions.config.width - 150, 225, "End Turn", GameUIScene.nextPlayer, callbackParams, gameFunctions.btn_sprite);	
 }
 
 
 GameUIScene.advanceMode = () => {
 
 	
-	if(GameUIScene.mode_state !== -1){
-		GameScene.sfxHandler("button")
-	}
-	
-	GameUIScene.mode_state++;
-	// if(GameUIScene.mode_state >= 2){
-	// 	GameUIScene.mode_state = 0;
+	// if(GameUIScene.mode_state !== -1){
+	// 	if(GameScene.sfx){
+	// 		GameScene.sfxHandler("button")	
+	// 	}
+		
 	// }
-	// console.log("mode advanced")
-	
+
+	// let mode_triggered = false;
+		
 	
 	let options = {}
 	let btn;
@@ -249,16 +238,18 @@ GameUIScene.advanceMode = () => {
 			options.mode = "move"
 			GameUIScene.selectMode(options);	
 			gameFunctions.btn_sprite[0].updateText("trigger move")
-
+			GameUIScene.mode_state++;
 			break;
 		case 1:
 			//activate movement
-			GameUIScene.activateMovement();
+			GameScene.sfxHandler("button");
+			let activated = GameUIScene.activateMovement();
 
-			// btn = gameFunctions.btn_sprite[0]
-			// btn.text.setText("next");	
-			gameFunctions.btn_sprite[0].hideButton()
-			GameUIScene.mode_check_state = 1;
+			if(activated === true){
+				gameFunctions.btn_sprite[0].hideButton()
+				GameUIScene.mode_check_state = 1;
+				// mode_triggered = true;
+			}
 			break;
 			
 		case 2:
@@ -267,9 +258,11 @@ GameUIScene.advanceMode = () => {
 			GameUIScene.selectMode(options);
 			gameFunctions.btn_sprite[0].updateText("trigger shoot")
 			gameFunctions.btn_sprite[0].showButton();
+			GameUIScene.mode_state++;
 			break;
 		case 3:
 			//activate shoot
+			GameScene.sfxHandler("button");			
 			GameUIScene.activateShooting();
 			// btn = gameFunctions.btn_sprite[0]
 			// btn.text.setText("next");
@@ -282,15 +275,19 @@ GameUIScene.advanceMode = () => {
 			options.mode = "charge"
 			GameUIScene.selectMode(options);
 			gameFunctions.btn_sprite[0].updateText("trigger charge")
-			gameFunctions.btn_sprite[0].showButton();			
+			gameFunctions.btn_sprite[0].showButton();
+			GameUIScene.mode_state++;
 			break;
 		case 5:
 			//activate shoot
-			GameUIScene.activateCharging();
-			// btn = gameFunctions.btn_sprite[0]
-			// btn.text.setText("next");
-			gameFunctions.btn_sprite[0].hideButton()
-			GameUIScene.mode_check_state = 1;			
+			GameScene.sfxHandler("button");			
+			activated = GameUIScene.activateCharging();
+
+			if(activated === true){
+				gameFunctions.btn_sprite[0].hideButton()
+				GameUIScene.mode_check_state = 1;
+				// mode_triggered = true;
+			}					
 			break;			
 			
 		case 6:
@@ -298,10 +295,12 @@ GameUIScene.advanceMode = () => {
 			options.mode = "fight"
 			GameUIScene.selectMode(options);
 			gameFunctions.btn_sprite[0].updateText("trigger fight")
-			gameFunctions.btn_sprite[0].showButton();			
+			gameFunctions.btn_sprite[0].showButton();
+			GameUIScene.mode_state++;
 			break;
 		case 7:
 			//activate fight
+			GameScene.sfxHandler("button");	
 			GameUIScene.activateFighting();
 			// btn = gameFunctions.btn_sprite[0]
 			// btn.text.setText("next");
@@ -314,15 +313,20 @@ GameUIScene.advanceMode = () => {
 			GameUIScene.selectMode(options);
 			gameFunctions.btn_sprite[0].updateText("end turn")
 			gameFunctions.btn_sprite[0].showButton();
+			GameUIScene.mode_state++;
 			break;
 		case 9:
 			//activate end turn
 			GameScene.sfxHandler("end_turn")
-			GameUIScene.nextPlayer();
-			GameUIScene.mode_state = -1;
+			GameUIScene.nextSide();
+			GameUIScene.mode_state = 0;
 			GameUIScene.advanceMode()
 			break;			
 	}
+	
+	// if(mode_triggered === true){
+	// 	GameUIScene.mode_state++;	
+	// }
 }
 
 
@@ -357,6 +361,7 @@ GameUIScene.activateMovement = () => {
 		}
 	})		
 	
+	let activated = true;
 	if(cohesion_check === true){
 		gameFunctions.units.forEach((unit) => {
 			if(unit.side === gameFunctions.current_side){
@@ -382,8 +387,22 @@ GameUIScene.activateMovement = () => {
 				}
 					
 			}
-		})	
+		})
+	}else{
+		let options = {
+			scene: GameScene.scene,
+			pos: {
+				x: GameScene.rectangle.x,
+				y: GameScene.rectangle.y
+			},
+			text: "Cannot move unless all unit coherency is met."
+		}
+		new popup(options)
+		activated = false;
 	}
+	
+	
+	return activated;
 }
 
 GameUIScene.activateShooting = () => {
@@ -443,7 +462,7 @@ GameUIScene.activateCharging = () => {
 	// 		}
 	// 	})		
 	// }
-	
+	let activated = true;
 	if(cohesion_check === true){ // && in_combat === true){
 		gameFunctions.units.forEach((unit) => {
 			
@@ -480,9 +499,23 @@ GameUIScene.activateCharging = () => {
 			}
 
 		})
+		
+	}else{
+		let options = {
+			scene: GameScene.scene,
+			pos: {
+				x: GameScene.rectangle.x,
+				y: GameScene.rectangle.y
+			},
+			text: "Cannot charge unless all unit coherency is met."
+		}
+		new popup(options)
+		activated = false;
 	}
 	
 	//TRIGGER COMBAT WHEN UNITS HAVE MOVED
+	
+	return activated;
 }
 
 
@@ -522,21 +555,17 @@ GameUIScene.activateFighting = () => {
 
 GameUIScene.hideButtons = () => {
 	gameFunctions.btn_sprite.forEach((btn) => {
-		btn.setInteractive(false);
-		btn.setAlpha(0);
-		btn.text.setAlpha(0);
+		btn.hideButton();
 	})
 }
 
 GameUIScene.showButtons = () => {
 	gameFunctions.btn_sprite.forEach((btn) => {
-		btn.setInteractive(true);
-		btn.setAlpha(1);
-		btn.text.setAlpha(1);		
+		btn.showButton();	
 	})
 }
 
-GameUIScene.nextPlayer = () => {
+GameUIScene.nextSide = () => {
 	
 	gameFunctions.mode = ""
 	gameFunctions.units.forEach((unit) => {

@@ -184,7 +184,7 @@ var GameScene = new Phaser.Class({
 					// }else{
 					// 	GameScene.seed();
 					// }
-					GameScene.seed3();
+					GameScene.seed2();
 					break;
 				default:
 					if(gameFunctions.params.max_players > 2){

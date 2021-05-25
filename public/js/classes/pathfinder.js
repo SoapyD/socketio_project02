@@ -136,7 +136,7 @@ const pathfinder = class {
 		}
 
         if(path_found === true){
-            console.log("PATH FOUND!")
+            // console.log("PATH FOUND!")
             // console.log(this.closed[this.closed.length - 1])
             let index = this.closed.length - 1
             let node;
@@ -161,7 +161,7 @@ const pathfinder = class {
             // }
         }
         else{
-            console.log("PATH NOT FOUND")            
+            // console.log("PATH NOT FOUND")            
         }
 
 

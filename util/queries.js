@@ -42,7 +42,9 @@ exports.createRoom = (data, socket_id) => {
 	
 	let config = {
 		max_players: data.players
+		,max_sides: 2 //data.sides
 		,current_player: 0
+		,current_side: 0
 		,mode: ""
 	}	
 

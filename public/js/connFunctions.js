@@ -85,6 +85,8 @@ connFunctions.setRoomInfo = (data) => {
 	gameFunctions.params.room_id = data.room_id
 	gameFunctions.params.player_number = data.player_number
 	gameFunctions.params.max_players = data.max_players
+	gameFunctions.params.player_side = data.player_side
+	gameFunctions.params.max_sides = data.max_sides	
 	
 	if(data.has_saved_data === true){
 		
