@@ -4,14 +4,17 @@ gameFunctions.btn_sprite = [];
 gameFunctions.units = [];
 gameFunctions.units_preload = [];
 gameFunctions.mode = '';
-gameFunctions.current_player = -1;
+// gameFunctions.current_player = -1;
+gameFunctions.current_side = -1;
 
 
 gameFunctions.params = {
 	room_name: "",
 	room_id: "",
 	player_number: -1,
-	max_players: 2
+	player_side: -1,
+	max_players: 2,
+	max_sides: 2
 }
 
 

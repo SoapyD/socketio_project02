@@ -252,7 +252,7 @@ var GameScene = new Phaser.Class({
 		}
 		
 
-		GameScene.advancePlayer()
+		GameScene.advanceSide()
 
 		
 		// GameScene.text_array = []
@@ -300,7 +300,6 @@ var GameScene = new Phaser.Class({
 
 				switch(gameFunctions.mode) {
 					case "move":
-						// GameScene.selected_unit.findPath(GameScene, worldPoint);
 						
 						if(GameScene.online === false){
 							GameScene.selected_unit.findPath({pointer: worldPoint});
@@ -322,7 +321,7 @@ var GameScene = new Phaser.Class({
 						}
 					break;
 					case "shoot":
-						// GameScene.selected_unit.findTarget(this, worldPoint);
+
 						if(GameScene.online === false){
 							GameScene.selected_unit.findTarget({pointer: worldPoint});
 						}else{
@@ -343,7 +342,7 @@ var GameScene = new Phaser.Class({
 						}
 					break;
 					case "charge":
-						// GameScene.selected_unit.findPath(GameScene, worldPoint);
+
 						if(GameScene.online === false){
 							GameScene.selected_unit.findPath({pointer: worldPoint});
 						}else{
@@ -364,7 +363,7 @@ var GameScene = new Phaser.Class({
 						}						
 					break;		
 					case "fight":
-						// GameScene.selected_unit.findFightTarget(this, worldPoint);
+
 						if(GameScene.online === false){
 							GameScene.selected_unit.findFightTarget({pointer: worldPoint});
 						}else{
@@ -394,7 +393,6 @@ var GameScene = new Phaser.Class({
 				GameScene.sfx['clear'].play();
 				switch(gameFunctions.mode) {
 					case "move":
-						// GameScene.selected_unit.resetMove();
 
 						if(GameScene.online === false){
 							GameScene.selected_unit.resetMove();
@@ -416,7 +414,7 @@ var GameScene = new Phaser.Class({
 						
 					break;
 					case "shoot":
-						// GameScene.selected_unit.removeTarget();
+
 						if(GameScene.online === false){
 							GameScene.selected_unit.removeTarget();
 						}else{
@@ -436,7 +434,7 @@ var GameScene = new Phaser.Class({
 						}						
 					break;
 					case "charge":
-						// GameScene.selected_unit.resetMove();
+
 						if(GameScene.online === false){
 							GameScene.selected_unit.resetMove();
 						}else{
@@ -456,7 +454,7 @@ var GameScene = new Phaser.Class({
 						}						
 					break;
 					case "fight":
-						// GameScene.selected_unit.removeFightTarget();
+
 						if(GameScene.online === false){
 							GameScene.selected_unit.removeFightTarget();
 						}else{
@@ -501,7 +499,7 @@ var GameScene = new Phaser.Class({
 		
 		if(gameFunctions.units){
 			gameFunctions.units.forEach((unit) => {
-				if(unit.player === gameFunctions.current_player){
+				if(unit.side === gameFunctions.current_side){
 
 					if(unit.is_moving === true){
 						// unit.draw_health()
@@ -577,7 +575,7 @@ GameScene.selectMode = (options) => {
 		//RESET ALL PLAYER ACTIONS
 		if(gameFunctions.units){
 			gameFunctions.units.forEach((unit) => {
-				if(unit.player === gameFunctions.current_player){
+				if(unit.side === gameFunctions.current_side){
 					unit.resetActions();
 				}
 			})
@@ -586,15 +584,37 @@ GameScene.selectMode = (options) => {
 }
 
 
-GameScene.advancePlayer = () => {
+// GameScene.advancePlayer = () => {
 
-	gameFunctions.current_player += 1
-	if(gameFunctions.current_player >= gameFunctions.params.max_players){
-		gameFunctions.current_player = 0
+// 	gameFunctions.current_player += 1
+// 	if(gameFunctions.current_player >= gameFunctions.params.max_players){
+// 		gameFunctions.current_player = 0
+// 	}
+	
+// 	if(GameScene.online === true){
+// 		if(gameFunctions.params.player_number === gameFunctions.current_player){
+// 			GameUIScene.showButtons()			
+// 		}else{
+// 			GameUIScene.hideButtons()
+// 		}
+// 	}
+	
+// 	gameFunctions.units.forEach((unit) => {
+// 		unit.moves = 0;
+// 		unit.fights = 0;
+// 		unit.shots = 0;
+// 	})
+// }
+
+GameScene.advanceSide = () => {
+
+	gameFunctions.current_side += 1
+	if(gameFunctions.current_side >= gameFunctions.params.max_sides){
+		gameFunctions.current_side = 0
 	}
 	
 	if(GameScene.online === true){
-		if(gameFunctions.params.player_number === gameFunctions.current_player){
+		if(gameFunctions.params.player_side === gameFunctions.current_side){
 			GameUIScene.showButtons()			
 		}else{
 			GameUIScene.hideButtons()
@@ -607,6 +627,7 @@ GameScene.advancePlayer = () => {
 		unit.shots = 0;
 	})
 }
+
 
 
 GameScene.checkCollision = function(x,y){

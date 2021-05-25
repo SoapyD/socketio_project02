@@ -593,7 +593,7 @@ const unit = class {
 			}
 
 			
-			if (this.parent.player === gameFunctions.current_player && skip === false){
+			if (this.parent.side === gameFunctions.current_side && skip === false){
 				//TURN OLD SELECTED PLAYER MARKER, WHITE
 
 				if(GameScene.selected_unit){
@@ -1104,8 +1104,6 @@ const unit = class {
 				tweens: tweens
 			});
 			
-			
-			GameScene.selected_unit = undefined;
 		}
 	}
 	

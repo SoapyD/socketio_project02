@@ -31,8 +31,8 @@ var GameUIScene = new Phaser.Class({
 
 		switch(instance_type){
 			case "DEV":
-				// GameUIScene.loadFullButtons(this)
-				GameUIScene.loadSingleButton(this)
+				GameUIScene.loadFullButtons(this)
+				// GameUIScene.loadSingleButton(this)
 				break;
 			case "DEV-ONLINE":
 				GameUIScene.loadFullButtons(this)
@@ -79,7 +79,7 @@ var GameUIScene = new Phaser.Class({
 		}
 		
 		
-		let text = "Current Player: "+gameFunctions.current_player+'\n'
+		let text = "Current Side: "+gameFunctions.current_side+'\n'
 		text += "Phase: "+gameFunctions.mode+'\n'
 		text += "Check: "+GameUIScene.mode_check_state+'\n'
 		
@@ -359,7 +359,7 @@ GameUIScene.activateMovement = () => {
 	
 	if(cohesion_check === true){
 		gameFunctions.units.forEach((unit) => {
-			if(unit.player === gameFunctions.current_player){
+			if(unit.side === gameFunctions.current_side){
 				//unit.path.length > 0 &&
 				
 				if(GameScene.online === false){
@@ -393,7 +393,7 @@ GameUIScene.activateShooting = () => {
 			unit.shoot();
 		}else{
 
-			if(unit.targets.length > 0 && unit.player === gameFunctions.current_player){
+			if(unit.targets.length > 0 && unit.side === gameFunctions.current_side){
 				let data = {
 					functionGroup: "socketFunctions",  
 					function: "messageAll",
@@ -433,7 +433,7 @@ GameUIScene.activateCharging = () => {
 	//ONLY ALLOW CHARGE IF ALL CHARGING UNTIS ARE IN COMBAT DISTANCE
 	// if(cohesion_check === true){
 	// 	gameFunctions.units.forEach((unit) => {
-	// 		if(unit.player === gameFunctions.current_player &&
+	// 		if(unit.side === gameFunctions.current_side &&
 	// 		   unit.cohesion_check === true){
 	// 			let in_combat_range = unit.checkCombat()
 				
@@ -447,7 +447,7 @@ GameUIScene.activateCharging = () => {
 	if(cohesion_check === true){ // && in_combat === true){
 		gameFunctions.units.forEach((unit) => {
 			
-			if(unit.player === gameFunctions.current_player){
+			if(unit.side === gameFunctions.current_side){
 
 				if(GameScene.online === false){
 					
@@ -490,7 +490,7 @@ GameUIScene.activateFighting = () => {
 	
 	gameFunctions.units.forEach((unit) => {
 
-		if(unit.player === gameFunctions.current_player){
+		if(unit.side === gameFunctions.current_side){
 
 			if(GameScene.online === false){
 
@@ -540,7 +540,7 @@ GameUIScene.nextPlayer = () => {
 	
 	gameFunctions.mode = ""
 	gameFunctions.units.forEach((unit) => {
-		if(unit.player === gameFunctions.current_player){
+		if(unit.side === gameFunctions.current_side){
 			unit.resetActions();
 			unit.resetLocks();
 		}
@@ -549,7 +549,7 @@ GameUIScene.nextPlayer = () => {
 	GameScene.sfxHandler("end_turn")
 	
 	if(GameScene.online === false){
-		GameScene.advancePlayer()
+		GameScene.advanceSide()
 	}else{
 		
 		connFunctions.saveGame();		
@@ -558,7 +558,7 @@ GameUIScene.nextPlayer = () => {
 			functionGroup: "socketFunctions",  
 			function: "messageAll",
 			returnFunctionGroup: "GameScene",
-			returnFunction: "advancePlayer",
+			returnFunction: "advanceSide",
 			returnParameters: {},
 			message: "next player"
 		}
@@ -587,7 +587,7 @@ GameUIScene.activateFighting = () => {
 	
 	if(cohesion_check === true){
 		gameFunctions.units.forEach((unit) => {
-			if(unit.player === gameFunctions.current_player &&
+			if(unit.side === gameFunctions.current_side &&
 			   unit.cohesion_check === true){
 				let in_combat_range = unit.checkCombat()
 				
@@ -602,7 +602,7 @@ GameUIScene.activateFighting = () => {
 	if(cohesion_check === true && in_combat === true){
 		gameFunctions.units.forEach((unit) => {
 			
-			if(unit.player === gameFunctions.current_player){
+			if(unit.side === gameFunctions.current_side){
 
 				if(GameScene.online === false){
 					
