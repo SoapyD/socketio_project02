@@ -46,21 +46,22 @@ var ArmySelectUIScene = new Phaser.Class({
         // character_form.setPerspective(800);
         character_form.setAlpha(0)
         character_form.addListener('click');
+		console.log(character_form)
         
         //ADD CLICK FUNCTIONALITY TO THE CHARACTER SELECTOR
         character_form.on('click', function (event) {
-            if (event.target.name === 'select')
-            {
-                var character = this.getChildByName('characters');
+			// if (event.target.name === 'select')
+			// {
+			// var character = this.getChildByName('characters');
 
-                let data = {
-					functionGroup: "socketFunctions",  
-					function: "selectArmy",			
-                }
-                    
-                connFunctions.messageServer(data)
-            
-            }
+			// let data = {
+			// functionGroup: "socketFunctions",  
+			// function: "selectArmy",			
+			// }
+
+			// connFunctions.messageServer(data)
+
+			// }
 
             if (event.target.name === 'start')
             {        
@@ -86,11 +87,48 @@ var ArmySelectUIScene = new Phaser.Class({
 			{
 				character_form.setVisible(true);
 			}
-			});    				
+			});
 		
 		
 		
+		// let sheet_functions = {}
+		// sheet_functions.add_player = (options) => {
+			
+		// 	let dropdown_markup = "";
+		// 	options.armies.forEach((army, i) => {
+		// 		dropdown_markup += '<option value="'+i+'">'+army+'</option>'
+		// 	})
+			
+		// 	let markup = `
+		// 	<label id="`+options.i+`_player">`+options.name+`</label>
+
+		// 	<select name="characters" id="`+options.i+`_character-select">
+		// 		<option value="">--Please choose a force--</option>
+		// 		`+dropdown_markup+`
+		// 	</select>
+		// 	`
+			
+		// 	$(".players").append(markup)
+		// 	}
 		
+		
+		// $( document ).ready(function() {
+			
+		// 	let options = {
+		// 		name: "Player 1",
+		// 		i: 0,
+		// 		armies: ['Army 1','Army 2','Army 3']
+		// 	}
+			
+		// 	sheet_functions.add_player(options)
+			
+		// 	options.name = 'Player 2';
+		// 	options.i = 1;
+		// 	sheet_functions.add_player(options)
+		// });				
+		
+		
+		console.log("loaded")
 		gameFunctions.current_uiscene = this.scene.get('ArmySelectUIScene');
 		
 		
@@ -108,3 +146,24 @@ var ArmySelectUIScene = new Phaser.Class({
         // }	                 
     }
 });
+
+
+ArmySelectUIScene.add_player = (options) => {
+			
+	let dropdown_markup = "";
+	options.armies.forEach((army, i) => {
+		dropdown_markup += '<option value="'+i+'">'+army+'</option>'
+	})
+
+	let markup = `
+	<label id="`+options.i+`_player">`+options.name+`</label>
+
+	<select name="characters" id="`+options.i+`_character-select">
+		<option value="">--Please choose a force--</option>
+		`+dropdown_markup+`
+	</select>
+	`
+
+	$(".players").append(markup)
+}
+

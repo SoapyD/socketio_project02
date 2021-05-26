@@ -126,8 +126,21 @@ exports.createRoom = async(network, data)  => {
 				side = 1;
 			}			
 			
+			let return_data;
+			
+			//TRANSITION TO THE NEXT GAME SCREEN
+            return_data = {
+                functionGroup: "connFunctions",
+                function: "sceneTransition",
+                message: "Room Created",
+                scene: "ArmySelectMenuScene"
+            }
+            //send room info back to socket
+            network.io.to(network.socket.id).emit("message_client", return_data)  			
+			
+			
 			//SEND THE CORE GAME DATA OT THE PLAYER
-			let return_data = {
+			return_data = {
                 functionGroup: "connFunctions"
                 ,function: "setRoomInfo"
                 ,message: "Room Info"
@@ -142,19 +155,6 @@ exports.createRoom = async(network, data)  => {
 			network.socket.join(data.roomName)
 			//send room info back to socket
 			network.io.to(network.socket.id).emit('message_client', return_data);
-			
-			
-			
-			//TRANSITION TO THE NEXT GAME SCREEN
-            return_data = {
-                functionGroup: "connFunctions",
-                function: "sceneTransition",
-                message: "Room Created",
-                scene: "ArmySelectMenuScene"
-            }
-
-            //send room info back to socket
-            network.io.to(network.socket.id).emit("message_client", return_data)  
          
         }
     }
@@ -256,6 +256,18 @@ exports.joinRoom = async(network, data)  => {
 				side = 1;
 			}				
 			
+			
+			//TRANSITION TO THE NEXT GAME SCREEN
+			return_data = {
+                functionGroup: "connFunctions",
+                function: "sceneTransition",
+                message: "Room Joined",
+                scene: next_scene
+            }
+            //send room info back to socket
+            network.io.to(network.socket.id).emit("message_client", return_data)			
+			
+			
 			//SEND THE CORE GAME DATA OT THE PLAYER
 			return_data = {
                 functionGroup: "connFunctions"
@@ -275,17 +287,6 @@ exports.joinRoom = async(network, data)  => {
 			//send room info back to socket
 			network.io.to(network.socket.id).emit('message_client', return_data);		
 			
-			
-			//TRANSITION TO THE NEXT GAME SCREEN
-			return_data = {
-                functionGroup: "connFunctions",
-                function: "sceneTransition",
-                message: "Room Joined",
-                scene: next_scene
-            }
-
-            //send room info back to socket
-            network.io.to(network.socket.id).emit("message_client", return_data) 			
 		}
 		
 		//TRANSITION TO THE NEXT GAME SCREEN

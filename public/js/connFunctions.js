@@ -96,6 +96,15 @@ connFunctions.setRoomInfo = (data) => {
 		
 		gameFunctions.units_preload = data.room.units;
 		
+	}else{
+		console.log("info")
+		let options = {
+			name: "Player 1",
+			i: 0,
+			armies: ['Army 1','Army 2','Army 3']
+		}
+
+		ArmySelectUIScene.add_player(options)		
 	}
 }
 
