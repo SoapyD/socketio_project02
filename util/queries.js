@@ -12,9 +12,14 @@ exports.findRoom = (id) => {
     }
 }
 
-exports.findRooms = (room_name) => {
+exports.findRooms = (room_name, include_users=true) => {
     try{
-        return Room.find({room_name: room_name})
+		if(include_users === true){
+        	return Room.find({room_name: room_name}).populate("users").exec();
+		}else{
+        	return Room.find({room_name: room_name})	
+		}
+
     }
     catch(err){
         console.log("Error trying to find room by room_name")

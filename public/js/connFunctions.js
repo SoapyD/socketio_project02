@@ -64,6 +64,7 @@ connFunctions.checkMessages = (socket) => {
 
 		if(data.message){
 			console.log(data.message)			
+			// console.log(data)
 		}		
 		
 		if(data.functionGroup && data.function){
@@ -83,6 +84,8 @@ connFunctions.setRoomInfo = (data) => {
 	
 	gameFunctions.params.room_name = data.room_name
 	gameFunctions.params.room_id = data.room_id
+	gameFunctions.params.users = data.users	
+	// gameFunctions.params.user_name = data.user_name
 	gameFunctions.params.player_number = data.player_number
 	gameFunctions.params.max_players = data.max_players
 	gameFunctions.params.player_side = data.player_side
@@ -93,19 +96,19 @@ connFunctions.setRoomInfo = (data) => {
 		gameFunctions.current_player = data.room.config.current_player
 		gameFunctions.mode = data.room.config.mode	
 		
-		
 		gameFunctions.units_preload = data.room.units;
-		
-	}else{
-		console.log("info")
-		let options = {
-			name: "Player 1",
-			i: 0,
-			armies: ['Army 1','Army 2','Army 3']
-		}
-
-		ArmySelectUIScene.add_player(options)		
 	}
+	
+	if(data.scene){
+		connFunctions.sceneTransition(data);
+	}
+}
+
+connFunctions.updateRoomInfo = (data) => {
+	
+	gameFunctions.params.users = data.users	
+	ArmySelectUIScene.updatePlayers();
+	
 }
 
 connFunctions.saveGame = () => {

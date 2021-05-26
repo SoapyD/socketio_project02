@@ -11,6 +11,8 @@ gameFunctions.current_side = -1;
 gameFunctions.params = {
 	room_name: "",
 	room_id: "",
+	// user_name: "",
+	users: [],
 	player_number: -1,
 	player_side: -1,
 	max_players: 2,
