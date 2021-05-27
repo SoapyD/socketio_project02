@@ -37,6 +37,17 @@ const roomSchema = new mongoose.Schema({
 	
 	// ,selected_unit: {type: Number, default: -1}	
 	
+	,forces: [{
+		player_number: Number
+		,user_id: {type: String, default: ""}
+		// {
+		// 	type: mongoose.Schema.Types.ObjectId,
+		// 	ref: "User"
+		// }		
+		,side: {type: Number, default: -1}
+		,army_id: {type: Number, default: -1}
+	}]
+	
 	,units: [{
 		
 		id: Number

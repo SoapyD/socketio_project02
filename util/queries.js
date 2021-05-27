@@ -51,7 +51,15 @@ exports.createRoom = (data, socket_id) => {
 		,current_player: 0
 		,current_side: 0
 		,mode: ""
-	}	
+	}
+	
+	let forces = [];
+	for(let i=0;i<config.max_players;i++){
+		let force = {
+			player_number: i
+		}
+		forces.push(force)
+	}
 
     return Room.create ({
         room_name: data.room_name
@@ -63,8 +71,7 @@ exports.createRoom = (data, socket_id) => {
 		
 		// ,max_players: max_players
 		,config: config
-        // ,decks: decks
-        // ,matrix: boardmatrix
+        ,forces: forces
     })
 }
 
