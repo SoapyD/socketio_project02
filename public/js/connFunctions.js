@@ -109,6 +109,12 @@ connFunctions.updateRoomInfo = (data) => {
 	gameFunctions.params.users = data.users	
 	ArmySelectUIScene.updatePlayers();
 	
+	//UNHIDE THE START BUTTON IF THIS IS THE CREATING PLAYER
+	if(gameFunctions.params.users.length === gameFunctions.params.max_players && gameFunctions.params.player_number === 0){
+		var x = document.getElementById("start");
+		x.style.display = "block";
+	}
+	
 }
 
 connFunctions.saveGame = () => {
