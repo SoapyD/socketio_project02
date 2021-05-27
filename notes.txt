@@ -19,6 +19,11 @@
 -test out a 3 side game
 -test out a 2 side, 4 player game
 
+-Add a connection function to update side selection and army selection to all dropdowns
+-Only allow the start button to show when sides and armies are selected for all players
+
+
+
 -error socket messages need to be returned to the originating player only
 
 -BUG - once a movement has been made, the unit elements don't move with their parent
