@@ -65,11 +65,43 @@ var ArmySelectUIScene = new Phaser.Class({
 
             if (event.target.name === 'sides')
             {
-				console.log(event.target.value);
+				let num = event.target.id.indexOf('_')
+				let player_number = event.target.id.substring(0,num)
+				// console.log(player_id);
+				
+				let data = {
+					functionGroup: "socketFunctions",  
+					function: "messageAll",
+					returnFunctionGroup: "connFunctions",
+					returnFunction: "updateRoomInfo", //test
+					returnParameters: {
+						player_number: player_number,
+						type: "side",
+						value: event.target.value
+					},
+					message: "set side for player "+player_number
+				}
+				connFunctions.messageServer(data)
+				
 			}
             if (event.target.name === 'armies')
             {
-				console.log(event.target.value);
+				// console.log(event.target.value);
+				
+				let data = {
+					functionGroup: "socketFunctions",  
+					function: "messageAll",
+					returnFunctionGroup: "connFunctions",
+					returnFunction: "updateRoomInfo", //test
+					returnParameters: {
+						player_number: gameFunctions.params.player_number,
+						type: "army",
+						value: event.target.value
+					},
+					message: "set army for player "+gameFunctions.params.player_number
+				}
+				connFunctions.messageServer(data)				
+				
 			}			
 			
             if (event.target.name === 'start')
@@ -188,12 +220,12 @@ ArmySelectUIScene.addPlayer = (options) => {
 	<label id="`+options.i+`_player">`+options.name+`</label>
 
 	<select class="sides" name="sides" id="`+options.i+`_side-select" `+disable_check+`>
-		<option value="">--Side--</option>
+		<option value="-1">--Side--</option>
 		`+dropdown_sides+`
 	</select>
 
 	<select class="armies" name="armies" id="`+options.i+`_army-select" `+disable_check2+`>
-		<option value="">--Army--</option>
+		<option value="-1">--Army--</option>
 		`+dropdown_markup+`
 	</select>
 	`
@@ -211,3 +243,31 @@ ArmySelectUIScene.updatePlayers = () => {
 	})
 }
 
+ArmySelectUIScene.updateSides = (options) => {
+	let id = '#'+options.player_number+'_'+options.type+'-select';
+	$(id).val(parseInt(options.value));	
+}
+
+
+ArmySelectUIScene.checkComplete = () => {
+	let value_count = 0;
+	for(let i=0;i<gameFunctions.params.max_players;i++){
+		let id = '#'+i+'_side-select';
+		let val = $(id).val();
+		if(parseInt(val) > -1){
+			value_count++;
+		}
+		
+		id = '#'+i+'_army-select';
+		val = $(id).val();
+		if(parseInt(val) > -1){
+			value_count++;
+		}		
+	}
+	
+	let check = false;
+	if(value_count === gameFunctions.params.max_players * 2){
+		check = true;
+	}
+	return check;
+}

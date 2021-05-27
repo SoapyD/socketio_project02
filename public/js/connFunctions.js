@@ -106,13 +106,29 @@ connFunctions.setRoomInfo = (data) => {
 
 connFunctions.updateRoomInfo = (data) => {
 	
-	gameFunctions.params.users = data.users	
-	ArmySelectUIScene.updatePlayers();
+	// console.log(data)
+	
+	//UPDATE PLAYER DATA IF IT'S AVAILABLE
+	if(data.users){
+		gameFunctions.params.users = data.users	
+		ArmySelectUIScene.updatePlayers();		
+	}
+	if(data.parameters){
+		if(data.parameters.value){
+			ArmySelectUIScene.updateSides(data.parameters)
+		}		
+	}
+
+
 	
 	//UNHIDE THE START BUTTON IF THIS IS THE CREATING PLAYER
 	if(gameFunctions.params.users.length === gameFunctions.params.max_players && gameFunctions.params.player_number === 0){
-		var x = document.getElementById("start");
-		x.style.display = "block";
+		let check = ArmySelectUIScene.checkComplete();
+		if(check === true){
+			var x = document.getElementById("start");
+			x.style.display = "block";			
+		}
+
 	}
 	
 }
