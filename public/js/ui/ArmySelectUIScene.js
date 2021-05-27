@@ -63,6 +63,15 @@ var ArmySelectUIScene = new Phaser.Class({
 
 			// }
 
+            if (event.target.name === 'sides')
+            {
+				console.log(event.target.value);
+			}
+            if (event.target.name === 'armies')
+            {
+				console.log(event.target.value);
+			}			
+			
             if (event.target.name === 'start')
             {        
                 let data = {
