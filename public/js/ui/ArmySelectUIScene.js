@@ -169,7 +169,7 @@ var ArmySelectUIScene = new Phaser.Class({
 			ArmySelectUIScene.addPlayer(options)
 		}
 		
-		character_form.y -= (character_form.height / 2)
+		// character_form.y -= (character_form.height / 2)
 		
 		
 		gameFunctions.current_uiscene = this.scene.get('ArmySelectUIScene');
