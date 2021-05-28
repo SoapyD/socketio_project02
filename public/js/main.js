@@ -13,6 +13,7 @@ gameFunctions.params = {
 	room_id: "",
 	// user_name: "",
 	users: [],
+	forces: [],
 	player_number: -1,
 	player_side: -1,
 	max_players: 2,

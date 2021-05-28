@@ -148,7 +148,8 @@ exports.createRoom = async(network, data)  => {
                 functionGroup: "connFunctions"
                 ,function: "setRoomInfo"
                 ,message: "Room Info"
-				,users: room.users				
+				,users: room.users
+				,forces: room.forces
 				// ,user_name: data.user_name
 				,room_name: data.room_name
 				,room_id: room._id
@@ -285,6 +286,7 @@ exports.joinRoom = async(network, data)  => {
                 ,function: "setRoomInfo"
                 ,message: "Room Info"
 				,users: saved_room.users
+				,forces: saved_room.forces
 				// ,user_name: data.user_name
 				,room_name: data.room_name
 				,room_id: saved_room._id
@@ -293,7 +295,7 @@ exports.joinRoom = async(network, data)  => {
 				,max_sides: saved_room.config.max_sides
 				,player_side: side
 				,has_saved_data: has_saved_data
-				,room: saved_room
+				// ,room: saved_room
 				,scene: next_scene
 			}
 			network.socket.join(data.roomName)
@@ -416,15 +418,39 @@ exports.updateRoom = async(network, data) => {
 		
 		if(room){
 			try{
-				room = await queriesUtil.updateRoom(room, data)
+				let return_data;
+				
+				switch(data.type){
+					case 'save room':
+						room = await queriesUtil.updateRoom(room, data)
+												
+						return_data = {
+							functionGroup: "connFunctions",
+							function: "test",
+							message: "room updated"
+						}	
 
-				let return_data = {
-					functionGroup: "connFunctions",
-					function: "test",
-					message: "room updated"
-				}	
+						network.io.of(network.namespace).emit("message_client", return_data)
+						
+						break;
+					case 'save config':
+						room = await queriesUtil.updateRoomConfig(room, data)
+						
+						return_data = {
+							functionGroup: "connFunctions",
+							function: "updateRoomInfo",
+							message: "selection updated",
+							parameters: {
+								player_number: data.player_number,
+								subtype: data.subtype,
+								value: data.value
+							}
+						}	
 
-				network.io.of(network.namespace).emit("message_client", return_data)
+						network.io.of(network.namespace).emit("message_client", return_data)						
+						break;	
+				}
+				
 			}
 			catch(err){
 				console.log("Error trying to update room")

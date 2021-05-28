@@ -66,41 +66,94 @@ var ArmySelectUIScene = new Phaser.Class({
             if (event.target.name === 'sides')
             {
 				let num = event.target.id.indexOf('_')
-				let player_number = event.target.id.substring(0,num)
+				let player_number = parseInt(event.target.id.substring(0,num))
 				// console.log(player_id);
 				
+				// let data = {
+				// 	functionGroup: "socketFunctions",  
+				// 	function: "messageAll",
+				// 	returnFunctionGroup: "connFunctions",
+				// 	returnFunction: "updateRoomInfo", //test
+				// 	returnParameters: {
+				// 		player_number: player_number,
+				// 		type: "side",
+				// 		value: event.target.value
+				// 	},
+				// 	message: "set side for player "+player_number
+				// }
 				let data = {
 					functionGroup: "socketFunctions",  
-					function: "messageAll",
-					returnFunctionGroup: "connFunctions",
-					returnFunction: "updateRoomInfo", //test
-					returnParameters: {
-						player_number: player_number,
-						type: "side",
-						value: event.target.value
-					},
+					function: "updateRoom",
+					room_name: gameFunctions.params.room_name,
+					type: "save config",
+					subtype: "side",
+					player_number: player_number,
+					value: parseInt(event.target.value),
 					message: "set side for player "+player_number
-				}
+				}				
 				connFunctions.messageServer(data)
 				
 			}
+            if (event.target.name === 'starts')
+            {
+				let num = event.target.id.indexOf('_')
+				let player_number = parseInt(event.target.id.substring(0,num))
+				// console.log(player_id);
+				
+				// let data = {
+				// 	functionGroup: "socketFunctions",  
+				// 	function: "messageAll",
+				// 	returnFunctionGroup: "connFunctions",
+				// 	returnFunction: "updateRoomInfo", //test
+				// 	returnParameters: {
+				// 		player_number: player_number,
+				// 		type: "start",
+				// 		value: event.target.value
+				// 	},
+				// 	message: "set start for player "+player_number
+				// }
+				// connFunctions.messageServer(data)
+				let data = {
+					functionGroup: "socketFunctions",  
+					function: "updateRoom",
+					room_name: gameFunctions.params.room_name,
+					type: "save config",
+					subtype: "start",
+					player_number: player_number,
+					value: parseInt(event.target.value),
+					message: "set start for player "+player_number
+				}				
+				connFunctions.messageServer(data)				
+				
+			}			
             if (event.target.name === 'armies')
             {
 				// console.log(event.target.value);
 				
+				// let data = {
+				// 	functionGroup: "socketFunctions",  
+				// 	function: "messageAll",
+				// 	returnFunctionGroup: "connFunctions",
+				// 	returnFunction: "updateRoomInfo", //test
+				// 	returnParameters: {
+				// 		player_number: gameFunctions.params.player_number,
+				// 		type: "army",
+				// 		value: event.target.value
+				// 	},
+				// 	message: "set army for player "+gameFunctions.params.player_number
+				// }
+				// connFunctions.messageServer(data)
 				let data = {
 					functionGroup: "socketFunctions",  
-					function: "messageAll",
-					returnFunctionGroup: "connFunctions",
-					returnFunction: "updateRoomInfo", //test
-					returnParameters: {
-						player_number: gameFunctions.params.player_number,
-						type: "army",
-						value: event.target.value
-					},
+					function: "updateRoom",
+					room_name: gameFunctions.params.room_name,
+					type: "save config",
+					subtype: "army",
+					player_number: gameFunctions.params.player_number,
+					value: parseInt(event.target.value),
 					message: "set army for player "+gameFunctions.params.player_number
-				}
-				connFunctions.messageServer(data)				
+				}				
+				connFunctions.messageServer(data)
 				
 			}			
 			
@@ -162,14 +215,43 @@ var ArmySelectUIScene = new Phaser.Class({
 			let options = {
 				name: player_name,
 				i: i,
-				armies: ['Army 1','Army 2','Army 3'],
-				sides: gameFunctions.params.max_sides
+				armies: ['Army 1'],
+				sides: gameFunctions.params.max_sides,
+				starts: 4
 			}
 			
 			ArmySelectUIScene.addPlayer(options)
 		}
 		
 		// character_form.y -= (character_form.height / 2)
+		
+		//UPDATE SELECTION WITH PRE-LOADED INFO
+		if(gameFunctions.params.forces){
+			gameFunctions.params.forces.forEach((force, i) => {
+
+				let options = {};
+				if(force.side > -1){
+					options.subtype = "side"
+					options.player_number = force.player_number
+					options.value = force.side
+					ArmySelectUIScene.updateSelections(options)
+				}
+				if(force.start > -1){
+					options.subtype = "start"
+					options.player_number = force.player_number
+					options.value = force.start
+					ArmySelectUIScene.updateSelections(options)
+				}
+				if(force.army > -1){
+					options.subtype = "army"
+					options.player_number = force.player_number
+					options.value = force.army
+					ArmySelectUIScene.updateSelections(options)
+				}		
+
+			})		
+		}		
+		
 		
 		
 		gameFunctions.current_uiscene = this.scene.get('ArmySelectUIScene');
@@ -203,6 +285,11 @@ ArmySelectUIScene.addPlayer = (options) => {
 		dropdown_sides += '<option value="'+i+'">'+i+'</option>'
 	}	
 
+	let dropdown_starts = "";
+	for(let i=0;i<options.starts;i++){
+		dropdown_starts += '<option value="'+i+'">'+i+'</option>'
+	}		
+	
 	//ONLY ALLOW SIDE SELECTION FOR PLAYER WHO CREATED THE GAME
 	let disable_check = ""
 	if(gameFunctions.params.player_number !== 0){
@@ -224,6 +311,11 @@ ArmySelectUIScene.addPlayer = (options) => {
 		`+dropdown_sides+`
 	</select>
 
+	<select class="starts" name="starts" id="`+options.i+`_start-select" `+disable_check+`>
+		<option value="-1">--Start--</option>
+		`+dropdown_starts+`
+	</select>
+
 	<select class="armies" name="armies" id="`+options.i+`_army-select" `+disable_check2+`>
 		<option value="-1">--Army--</option>
 		`+dropdown_markup+`
@@ -243,8 +335,8 @@ ArmySelectUIScene.updatePlayers = () => {
 	})
 }
 
-ArmySelectUIScene.updateSides = (options) => {
-	let id = '#'+options.player_number+'_'+options.type+'-select';
+ArmySelectUIScene.updateSelections = (options) => {
+	let id = '#'+options.player_number+'_'+options.subtype+'-select';
 	$(id).val(parseInt(options.value));	
 }
 

@@ -45,7 +45,9 @@ const roomSchema = new mongoose.Schema({
 		// 	ref: "User"
 		// }		
 		,side: {type: Number, default: -1}
-		,army_id: {type: Number, default: -1}
+		,start: {type: Number, default: -1}
+		,army: {type: Number, default: -1}
+		,army_id: {type: String, default: ""}
 	}]
 	
 	,units: [{

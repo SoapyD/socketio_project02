@@ -85,6 +85,7 @@ connFunctions.setRoomInfo = (data) => {
 	gameFunctions.params.room_name = data.room_name
 	gameFunctions.params.room_id = data.room_id
 	gameFunctions.params.users = data.users	
+	gameFunctions.params.forces = data.forces
 	// gameFunctions.params.user_name = data.user_name
 	gameFunctions.params.player_number = data.player_number
 	gameFunctions.params.max_players = data.max_players
@@ -106,17 +107,20 @@ connFunctions.setRoomInfo = (data) => {
 
 connFunctions.updateRoomInfo = (data) => {
 	
-	// console.log(data)
-	
 	//UPDATE PLAYER DATA IF IT'S AVAILABLE
 	if(data.users){
 		gameFunctions.params.users = data.users	
 		ArmySelectUIScene.updatePlayers();		
 	}
 	if(data.parameters){
-		if(data.parameters.value){
-			ArmySelectUIScene.updateSides(data.parameters)
-		}		
+		// if(data.parameters.value){
+		try{
+			ArmySelectUIScene.updateSelections(data.parameters)
+		}catch(err){
+			console.log("couldn't update selection")
+		}
+			
+		// }		
 	}
 
 
@@ -139,7 +143,9 @@ connFunctions.saveGame = () => {
 		functionGroup: "socketFunctions",  
 		function: "updateRoom", //saveGame
 		message: "save game",
+		type: "save game",
 		room_name: gameFunctions.params.room_name,
+		current_side: gameFunctions.current_side,
 		current_player: gameFunctions.current_player,
 		mode: gameFunctions.mode,
 		units: gameFunctions.units

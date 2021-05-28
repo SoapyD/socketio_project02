@@ -92,6 +92,7 @@ exports.createRoom = (data, socket_id) => {
 
 exports.updateRoom = (room, data) => {
 	
+	room.config.current_side = data.current_side
 	room.config.current_player = data.current_player
 	room.config.mode = data.mode
 	room.units = [];
@@ -119,14 +120,39 @@ exports.updateRoom = (room, data) => {
 		}
 		
 		room.units.push(info)
-		
 	})
 	
 	room.markModified('config');
 	room.markModified('units');	
-	
+
 	return room.save()
 }
+
+exports.updateRoomConfig = (room, data) => {
+	
+	// console.log(data)
+	// console.log(room)
+	
+	if(data.subtype){
+		switch(data.subtype){
+			case 'side':
+				room.forces[data.player_number].side = data.value;
+				break;
+			case 'start':
+				room.forces[data.player_number].start = data.value;
+				break;
+			case 'army':
+				room.forces[data.player_number].army = data.value;
+				break;
+		}		
+	}
+
+	
+	room.markModified('forces');
+
+	return room.save()
+}
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
