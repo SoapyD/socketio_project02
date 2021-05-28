@@ -254,8 +254,6 @@ exports.joinRoom = async(network, data)  => {
 				next_scene = "GameScene"
 			}
 
-			console.log(saved_room)
-			console.log(data)
 			let player_number = saved_room.users.indexOf(data.user_id)			
 			//SEARCH FOR ROOM TO GET LINKED USER DATA
 			saved_room = await queriesUtil.findRoom(saved_room._id)			

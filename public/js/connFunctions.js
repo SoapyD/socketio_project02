@@ -115,6 +115,7 @@ connFunctions.updateRoomInfo = (data) => {
 	if(data.parameters){
 		// if(data.parameters.value){
 		try{
+			gameFunctions.params.forces[data.parameters.player_number][data.parameters.subtype] = data.parameters.value
 			ArmySelectUIScene.updateSelections(data.parameters)
 		}catch(err){
 			console.log("couldn't update selection")

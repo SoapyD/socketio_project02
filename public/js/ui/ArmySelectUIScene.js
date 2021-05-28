@@ -349,16 +349,22 @@ ArmySelectUIScene.checkComplete = () => {
 		if(parseInt(val) > -1){
 			value_count++;
 		}
+
+		id = '#'+i+'_start-select';
+		val = $(id).val();
+		if(parseInt(val) > -1){
+			value_count++;
+		}		
 		
 		id = '#'+i+'_army-select';
 		val = $(id).val();
 		if(parseInt(val) > -1){
 			value_count++;
-		}		
+		}
 	}
 	
 	let check = false;
-	if(value_count === gameFunctions.params.max_players * 2){
+	if(value_count === gameFunctions.params.max_players * 3){
 		check = true;
 	}
 	return check;

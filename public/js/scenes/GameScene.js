@@ -8,7 +8,7 @@ var GameScene = new Phaser.Class({
 
     function GameScene ()
     {
-        Phaser.Scene.call(this, { key: 'GameScene' });			
+        Phaser.Scene.call(this, { key: 'GameScene' });
     },
 
     preload: function()
@@ -179,12 +179,12 @@ var GameScene = new Phaser.Class({
 					GameScene.seed3();
 					break;
 				case "DEV-ONLINE":
-					// if(gameFunctions.params.max_players > 2){
-					// 	GameScene.seed2();
-					// }else{
-					// 	GameScene.seed();
-					// }
-					GameScene.seed2();
+					if(gameFunctions.params.max_players > 2){
+						GameScene.seed2();
+					}else{
+						GameScene.seed();
+					}
+					// GameScene.seed2();
 					break;
 				default:
 					if(gameFunctions.params.max_players > 2){

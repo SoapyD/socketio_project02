@@ -79,9 +79,12 @@ var GameUIScene = new Phaser.Class({
 				}
 				break;				
 			case 1:
-				// if(GameScene.active_actions > 1){
-					GameUIScene.mode_check_state = 2;
-				// }
+				GameUIScene.mode_check_state = 2;
+				// if(GameScene.active_actions === 0){
+				// 	GameUIScene.mode_state++;
+				// 	GameUIScene.advanceMode()
+				// 	GameUIScene.mode_check_state = 0;
+				// }				
 				break;
 		}
 		
@@ -385,6 +388,10 @@ GameUIScene.activateMovement = () => {
 
 					connFunctions.messageServer(data)
 				}
+				
+				// if(unit.path.length > 1){
+				// 	GameScene.active_actions++;	
+				// }
 					
 			}
 		})
@@ -428,7 +435,11 @@ GameUIScene.activateShooting = () => {
 
 				// console.log(data)
 				connFunctions.messageServer(data)			
-			}			
+			}
+			
+			// if(unit.targets.length > 1){
+			// 	GameScene.active_actions+=unit.targets.length;	
+			// }			
 		}
 
 	})	
@@ -496,6 +507,10 @@ GameUIScene.activateCharging = () => {
 
 					}
 				}
+				
+				// if(unit.path.length > 1){
+				// 	GameScene.active_actions++;	
+				// }
 			}
 
 		})
@@ -546,6 +561,10 @@ GameUIScene.activateFighting = () => {
 
 				connFunctions.messageServer(data)
 			}
+			
+			// if(unit.fight_targets.length > 1){
+			// 	GameScene.active_actions+=unit.fight_targets.length;	
+			// }	
 		}
 
 	})
