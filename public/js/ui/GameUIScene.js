@@ -18,7 +18,9 @@ var GameUIScene = new Phaser.Class({
 		GameUIScene.text = this.add.text(0, 0, "", { fill: '#00ff00' }).setDepth(20);
 		
 		GameUIScene.mode_state = 0;
+		
 		GameUIScene.mode_check_state = 0;
+		GameUIScene.mode_check_timer = 0;
     },
 
     create: function()
@@ -31,8 +33,8 @@ var GameUIScene = new Phaser.Class({
 
 		switch(instance_type){
 			case "DEV":
-				GameUIScene.loadFullButtons(this)
-				// GameUIScene.loadSingleButton(this)
+				// GameUIScene.loadFullButtons(this)
+				GameUIScene.loadSingleButton(this)
 				break;
 			case "DEV-ONLINE":
 				// GameUIScene.loadFullButtons(this)
@@ -54,7 +56,7 @@ var GameUIScene = new Phaser.Class({
 		
     },
 
-    update: function (time, delta)
+    update: async function (time, delta)
     {
         // switch( gameFunctions.config.game_state) {
         //     case 0:
@@ -63,13 +65,18 @@ var GameUIScene = new Phaser.Class({
 
         //     default:
         //     // code block
-        // }	         
+        // }
+		
+		// console.log(GameUIScene.mode_check_state)
 		
 		switch(GameUIScene.mode_check_state){
 			case 2:
-				if(GameScene.active_actions > 0){
+				if(GameUIScene.mode_check_timer === 0){
 					GameUIScene.mode_check_state = 3;
 				}
+				
+				// await GameUIScene.delay(2000)
+				// GameUIScene.mode_check_state = 3;
 				break;
 			case 3:
 				if(GameScene.active_actions === 0){
@@ -80,12 +87,19 @@ var GameUIScene = new Phaser.Class({
 				break;				
 			case 1:
 				GameUIScene.mode_check_state = 2;
+				GameUIScene.mode_check_timer = 300;
 				// if(GameScene.active_actions === 0){
 				// 	GameUIScene.mode_state++;
 				// 	GameUIScene.advanceMode()
 				// 	GameUIScene.mode_check_state = 0;
 				// }				
 				break;
+			default:
+				// console.log("zero")
+				break;
+		}
+		if(GameUIScene.mode_check_timer > 0){
+			GameUIScene.mode_check_timer--;
 		}
 		
 		
@@ -96,7 +110,12 @@ var GameUIScene = new Phaser.Class({
 		}
 
 		text += "Phase: "+gameFunctions.mode+'\n'
+
+		text += "Mode State: "+GameUIScene.mode_state+'\n'		
 		text += "Check: "+GameUIScene.mode_check_state+'\n'
+		
+		
+		
 		
 		if(GameScene.active_actions){
 			text += "Active Actions: "+GameScene.active_actions+'\n'			
@@ -105,6 +124,10 @@ var GameUIScene = new Phaser.Class({
 		GameUIScene.text.setText(text)		
     }
 });
+
+GameUIScene.delay =	async(ms) => {
+	return new Promise(resolve => setTimeout(resolve, ms));
+}	
 
 GameUIScene.loadSingleButton = (scene) => {
 	let callbackParams;
@@ -235,6 +258,7 @@ GameUIScene.advanceMode = () => {
 	
 	let options = {}
 	let btn;
+	let activated = false;
 	switch(GameUIScene.mode_state){
 		case 0:
 			//setup movement
@@ -246,7 +270,7 @@ GameUIScene.advanceMode = () => {
 		case 1:
 			//activate movement
 			GameScene.sfxHandler("button");
-			let activated = GameUIScene.activateMovement();
+			activated = GameUIScene.activateMovement();
 
 			if(activated === true){
 				gameFunctions.btn_sprite[0].hideButton()
@@ -267,10 +291,9 @@ GameUIScene.advanceMode = () => {
 			//activate shoot
 			GameScene.sfxHandler("button");			
 			GameUIScene.activateShooting();
-			// btn = gameFunctions.btn_sprite[0]
-			// btn.text.setText("next");
+
 			gameFunctions.btn_sprite[0].hideButton()
-			GameUIScene.mode_check_state = 1;			
+			GameUIScene.mode_check_state = 1;
 			break;
 			
 		case 4:
@@ -289,9 +312,8 @@ GameUIScene.advanceMode = () => {
 			if(activated === true){
 				gameFunctions.btn_sprite[0].hideButton()
 				GameUIScene.mode_check_state = 1;
-				// mode_triggered = true;
-			}					
-			break;			
+			}
+			break;
 			
 		case 6:
 			//setup fight
@@ -305,8 +327,6 @@ GameUIScene.advanceMode = () => {
 			//activate fight
 			GameScene.sfxHandler("button");	
 			GameUIScene.activateFighting();
-			// btn = gameFunctions.btn_sprite[0]
-			// btn.text.setText("next");
 			gameFunctions.btn_sprite[0].hideButton()
 			GameUIScene.mode_check_state = 1;
 			break
@@ -364,7 +384,7 @@ GameUIScene.activateMovement = () => {
 		}
 	})		
 	
-	let activated = true;
+	let activated = false;
 	if(cohesion_check === true){
 		gameFunctions.units.forEach((unit) => {
 			if(unit.side === gameFunctions.current_side){
@@ -395,6 +415,7 @@ GameUIScene.activateMovement = () => {
 					
 			}
 		})
+		activated = true;
 	}else{
 		let options = {
 			scene: GameScene.scene,

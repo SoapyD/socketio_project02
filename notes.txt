@@ -14,15 +14,16 @@
 -DONE -Hide action buttons when it's not a players turn
 -DONE -Need to make sure dead units are checked for cohesion checks
 -DONE -Need to get the player, side and squad values properly saved and passed back when the game reloads
+-DONE -Add a connection function to update side selection and army selection to all dropdowns
+-DONE -Only allow the start button to show when sides and armies are selected for all players
+
+
+-make the "advance mode" a connection method so it can update the button for all sides 
+-Load up armies associated with users in army selection dropdowns
 
 
 -test out a 3 side game
 -test out a 2 side, 4 player game
-
--Add a connection function to update side selection and army selection to all dropdowns
--Only allow the start button to show when sides and armies are selected for all players
-
-
 
 -error socket messages need to be returned to the originating player only
 
