@@ -129,9 +129,11 @@ connFunctions.updateRoomInfo = (data) => {
 	//UNHIDE THE START BUTTON IF THIS IS THE CREATING PLAYER
 	if(gameFunctions.params.users.length === gameFunctions.params.max_players && gameFunctions.params.player_number === 0){
 		let check = ArmySelectUIScene.checkComplete();
+		var x = document.getElementById("start");
 		if(check === true){
-			var x = document.getElementById("start");
 			x.style.display = "block";			
+		}else{
+			x.style.display = "none";
 		}
 
 	}
@@ -149,7 +151,7 @@ connFunctions.saveGame = () => {
 		current_side: gameFunctions.current_side,
 		current_player: gameFunctions.current_player,
 		mode: gameFunctions.mode,
-		units: gameFunctions.units
+		// units: gameFunctions.units
 	}
 	
 	connFunctions.messageServer(data)	
@@ -223,7 +225,8 @@ connFunctions.runUnitFunction = function(data) {
 
 availableFunctions = {
     connFunctions: connFunctions,
-	GameScene: GameScene
+	GameScene: GameScene,
+	GameUIScene: GameUIScene
 }
 
 connFunctions.checkMessages(socket)

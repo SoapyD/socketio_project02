@@ -16,9 +16,8 @@
 -DONE -Need to get the player, side and squad values properly saved and passed back when the game reloads
 -DONE -Add a connection function to update side selection and army selection to all dropdowns
 -DONE -Only allow the start button to show when sides and armies are selected for all players
+-DONE -make the "advance mode" a connection method so it can update the button for all sides 
 
-
--make the "advance mode" a connection method so it can update the button for all sides 
 -Load up armies associated with users in army selection dropdowns
 
 
@@ -28,7 +27,7 @@
 -error socket messages need to be returned to the originating player only
 
 -BUG - once a movement has been made, the unit elements don't move with their parent
-
+-BUG - There's far too much data being sent with the save function when it comes to unit data. Need to strip it down so memory isn't exhausted.
 
 
 

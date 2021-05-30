@@ -80,14 +80,26 @@ var GameUIScene = new Phaser.Class({
 				break;
 			case 3:
 				if(GameScene.active_actions === 0){
-					GameUIScene.mode_state++;
-					GameUIScene.advanceMode()
+					
+					if(GameScene.online === false){
+						GameUIScene.runAdvanceMode()
+					}else{
+						let data = {
+							functionGroup: "socketFunctions",  
+							function: "messageAll",
+							returnFunctionGroup: "GameUIScene",
+							returnFunction: "runAdvanceMode",
+							message: "advancing mode"
+						}
+
+						connFunctions.messageServer(data)
+					}
 					GameUIScene.mode_check_state = 0;
 				}
 				break;				
 			case 1:
 				GameUIScene.mode_check_state = 2;
-				GameUIScene.mode_check_timer = 300;
+				GameUIScene.mode_check_timer = 200;
 				// if(GameScene.active_actions === 0){
 				// 	GameUIScene.mode_state++;
 				// 	GameUIScene.advanceMode()
@@ -243,6 +255,11 @@ GameUIScene.loadFullButtons = (scene) => {
 }
 
 
+GameUIScene.runAdvanceMode = () => {
+	GameUIScene.mode_state++;
+	GameUIScene.advanceMode()	
+}
+
 GameUIScene.advanceMode = () => {
 
 	
@@ -341,10 +358,10 @@ GameUIScene.advanceMode = () => {
 		case 9:
 			//activate end turn
 			GameScene.sfxHandler("end_turn")
-			GameUIScene.nextSide();
 			GameUIScene.mode_state = 0;
-			GameUIScene.advanceMode()
-			break;			
+			GameUIScene.nextSide();
+			GameUIScene.advanceMode();
+			break;
 	}
 	
 	// if(mode_triggered === true){
@@ -387,7 +404,7 @@ GameUIScene.activateMovement = () => {
 	let activated = false;
 	if(cohesion_check === true){
 		gameFunctions.units.forEach((unit) => {
-			if(unit.side === gameFunctions.current_side){
+			if(unit.path.length > 0 && unit.side === gameFunctions.current_side){
 				//unit.path.length > 0 &&
 				
 				if(GameScene.online === false){
@@ -498,7 +515,7 @@ GameUIScene.activateCharging = () => {
 	if(cohesion_check === true){ // && in_combat === true){
 		gameFunctions.units.forEach((unit) => {
 			
-			if(unit.side === gameFunctions.current_side){
+			if(unit.path.length > 0 && unit.side === gameFunctions.current_side){
 
 				if(GameScene.online === false){
 					
@@ -559,7 +576,7 @@ GameUIScene.activateFighting = () => {
 	
 	gameFunctions.units.forEach((unit) => {
 
-		if(unit.side === gameFunctions.current_side){
+		if(unit.fight_targets.length > 0 && unit.side === gameFunctions.current_side){
 
 			if(GameScene.online === false){
 
@@ -621,7 +638,7 @@ GameUIScene.nextSide = () => {
 		GameScene.advanceSide()
 	}else{
 		
-		connFunctions.saveGame();		
+		connFunctions.saveGame();
 		
 		let data = {
 			functionGroup: "socketFunctions",  
@@ -636,97 +653,3 @@ GameUIScene.nextSide = () => {
 	}
 }
 
-
-
-
-/*
-GameUIScene.activateFighting = () => {
-	
-	
-	//CHECK COHESION FOR UNITS THAT'RE CHARGING
-	let cohesion_check = true
-	//ALSO CHECK ALL CHARGING UNITS ARE NEXT TO AN ENEMY UNITS
-	let in_combat = false;
-	
-	gameFunctions.units.forEach((unit) => {
-		if(unit.cohesion_check === false && unit.cohesion > 0){
-			cohesion_check = false;
-		}
-	})
-	
-	if(cohesion_check === true){
-		gameFunctions.units.forEach((unit) => {
-			if(unit.side === gameFunctions.current_side &&
-			   unit.cohesion_check === true){
-				let in_combat_range = unit.checkCombat()
-				
-				if(in_combat_range === true){
-					in_combat = true;
-				}
-			}
-		})		
-	}
-
-	
-	if(cohesion_check === true && in_combat === true){
-		gameFunctions.units.forEach((unit) => {
-			
-			if(unit.side === gameFunctions.current_side){
-
-				if(GameScene.online === false){
-					
-					if(unit.path.length > 0){
-						unit.move("checkCombat");
-					}else{
-						unit.checkCombat("fight")
-					}
-					
-				}else{				
-				
-					if(unit.path.length > 0){
-
-						let data = {
-							functionGroup: "socketFunctions",  
-							function: "messageAll",
-							returnFunctionGroup: "connFunctions",
-							returnFunction: "runUnitFunction",
-							returnParameters: {
-								id: unit.id, 
-								path: unit.path,
-								function: "move",
-								function_parameter: "checkCombat" 
-							},
-							message: "charge units"
-						}
-
-						connFunctions.messageServer(data)
-
-					}
-					else{
-
-						let data = {
-							functionGroup: "socketFunctions",  
-							function: "messageAll",
-							returnFunctionGroup: "connFunctions",
-							returnFunction: "runUnitFunction",
-							returnParameters: {
-								id: unit.id, 
-								path: unit.path,
-								function: "checkCombat",
-								function_parameter: "fight" 
-							},
-							message: "fight units"
-						}
-
-						connFunctions.messageServer(data)
-
-					}
-				}
-			}
-
-		})
-	}
-	
-	//TRIGGER COMBAT WHEN UNITS HAVE MOVED
-}
-*/
