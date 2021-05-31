@@ -89,7 +89,7 @@ connFunctions.setRoomInfo = (data) => {
 	// gameFunctions.params.user_name = data.user_name
 	gameFunctions.params.player_number = data.player_number
 	gameFunctions.params.max_players = data.max_players
-	gameFunctions.params.player_side = data.player_side
+	// gameFunctions.params.player_side = data.player_side
 	gameFunctions.params.max_sides = data.max_sides	
 	
 	if(data.has_saved_data === true){
@@ -116,6 +116,16 @@ connFunctions.updateRoomInfo = (data) => {
 		// if(data.parameters.value){
 		try{
 			gameFunctions.params.forces[data.parameters.player_number][data.parameters.subtype] = data.parameters.value
+			
+			if(data.parameters.player_number === gameFunctions.params.player_number){
+				switch(data.parameters.subtype){
+					case 'side':
+						gameFunctions.params.player_side = gameFunctions.params.forces[data.parameters.player_number][data.parameters.subtype]
+						break;
+				}				
+			}
+
+			
 			ArmySelectUIScene.updateSelections(data.parameters)
 		}catch(err){
 			console.log("couldn't update selection")

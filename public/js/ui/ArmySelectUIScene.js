@@ -47,6 +47,18 @@ var ArmySelectUIScene = new Phaser.Class({
         character_form.setAlpha(0)
         character_form.addListener('click');
 		// console.log(character_form)
+		
+		//CHANGE THE IMAGE TO REFLECT THE CURRENT MAX PLAYER SETUP
+		let id = '#map img';
+		if(gameFunctions.params.max_players <= 2){
+			$(id).attr('src','/img/maps/map2 (1v1).png');
+		}
+		if(gameFunctions.params.max_players === 4){
+			$(id).attr('src','/img/maps/map2 (2v2).png');
+		}		
+
+		
+		
         
         //ADD CLICK FUNCTIONALITY TO THE CHARACTER SELECTOR
         character_form.on('click', function (event) {
@@ -156,6 +168,8 @@ var ArmySelectUIScene = new Phaser.Class({
 				connFunctions.messageServer(data)
 				
 			}			
+			
+			
 			
             if (event.target.name === 'start')
             {        
@@ -287,7 +301,8 @@ ArmySelectUIScene.addPlayer = (options) => {
 
 	let dropdown_starts = "";
 	for(let i=0;i<options.starts;i++){
-		dropdown_starts += '<option value="'+i+'">'+i+'</option>'
+		let print_value = i+1
+		dropdown_starts += '<option value="'+i+'">'+print_value+'</option>'
 	}		
 	
 	//ONLY ALLOW SIDE SELECTION FOR PLAYER WHO CREATED THE GAME

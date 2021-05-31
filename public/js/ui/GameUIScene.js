@@ -18,6 +18,7 @@ var GameUIScene = new Phaser.Class({
 		GameUIScene.text = this.add.text(0, 0, "", { fill: '#00ff00' }).setDepth(20);
 		
 		GameUIScene.mode_state = 0;
+		GameUIScene.mode_state_max = 9;
 		
 		GameUIScene.mode_check_state = 0;
 		GameUIScene.mode_check_timer = 0;
@@ -257,6 +258,10 @@ GameUIScene.loadFullButtons = (scene) => {
 
 GameUIScene.runAdvanceMode = () => {
 	GameUIScene.mode_state++;
+	if(GameUIScene.mode_state > GameUIScene.mode_state_max){
+		GameUIScene.mode_state = 0;
+	}
+	
 	GameUIScene.advanceMode()	
 }
 
@@ -301,7 +306,9 @@ GameUIScene.advanceMode = () => {
 			options.mode = "shoot"
 			GameUIScene.selectMode(options);
 			gameFunctions.btn_sprite[0].updateText("trigger shoot")
-			gameFunctions.btn_sprite[0].showButton();
+			if(gameFunctions.params.player_side === gameFunctions.current_side){
+				gameFunctions.btn_sprite[0].showButton();				
+			}
 			GameUIScene.mode_state++;
 			break;
 		case 3:
@@ -318,7 +325,9 @@ GameUIScene.advanceMode = () => {
 			options.mode = "charge"
 			GameUIScene.selectMode(options);
 			gameFunctions.btn_sprite[0].updateText("trigger charge")
-			gameFunctions.btn_sprite[0].showButton();
+			if(gameFunctions.params.player_side === gameFunctions.current_side){
+				gameFunctions.btn_sprite[0].showButton();				
+			}
 			GameUIScene.mode_state++;
 			break;
 		case 5:
@@ -337,7 +346,9 @@ GameUIScene.advanceMode = () => {
 			options.mode = "fight"
 			GameUIScene.selectMode(options);
 			gameFunctions.btn_sprite[0].updateText("trigger fight")
-			gameFunctions.btn_sprite[0].showButton();
+			if(gameFunctions.params.player_side === gameFunctions.current_side){
+				gameFunctions.btn_sprite[0].showButton();				
+			}
 			GameUIScene.mode_state++;
 			break;
 		case 7:
@@ -352,15 +363,18 @@ GameUIScene.advanceMode = () => {
 			options.mode = "end turn"
 			GameUIScene.selectMode(options);
 			gameFunctions.btn_sprite[0].updateText("end turn")
-			gameFunctions.btn_sprite[0].showButton();
+			if(gameFunctions.params.player_side === gameFunctions.current_side){
+				gameFunctions.btn_sprite[0].showButton();				
+			}
 			GameUIScene.mode_state++;
 			break;
 		case 9:
 			//activate end turn
 			GameScene.sfxHandler("end_turn")
-			GameUIScene.mode_state = 0;
-			GameUIScene.nextSide();
-			GameUIScene.advanceMode();
+			GameUIScene.mode_check_state = 1;
+			// GameUIScene.mode_state = 0;
+			// GameUIScene.advanceMode();
+			GameUIScene.nextSide();			
 			break;
 	}
 	

@@ -17,6 +17,11 @@
 -DONE -Add a connection function to update side selection and army selection to all dropdowns
 -DONE -Only allow the start button to show when sides and armies are selected for all players
 -DONE -make the "advance mode" a connection method so it can update the button for all sides 
+-DONE -Need to pass the assigned "side" of the player to the right player when the game starts. Currently it's being saved but not set on the client side.
+
+
+
+-Need to make sure the wounding calculation result is passed to all players rather then have them all perform their own calculation and come up with different results.
 
 -Load up armies associated with users in army selection dropdowns
 

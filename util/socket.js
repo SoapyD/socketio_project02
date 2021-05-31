@@ -122,13 +122,13 @@ exports.createRoom = async(network, data)  => {
 			//SEARCH FOR ROOM TO GET LINKED USER DATA
 			room = await queriesUtil.findRoom(room._id)
 			
-			let side = -1;
-			if(player_number === 0 || player_number === 1){
-				side = 0;
-			}
-			if(player_number === 2 || player_number === 3){
-				side = 1;
-			}			
+			// let side = -1;
+			// if(player_number === 0 || player_number === 1){
+			// 	side = 0;
+			// }
+			// if(player_number === 2 || player_number === 3){
+			// 	side = 1;
+			// }			
 			
 			let return_data;
 			
@@ -156,7 +156,7 @@ exports.createRoom = async(network, data)  => {
 				,max_players: room.config.max_players
 				,player_number: player_number
 				,max_sides: room.config.max_sides
-				,player_side: side
+				// ,player_side: side
 				,scene: "ArmySelectMenuScene"
 			}
 			network.socket.join(data.roomName)
@@ -258,13 +258,13 @@ exports.joinRoom = async(network, data)  => {
 			//SEARCH FOR ROOM TO GET LINKED USER DATA
 			saved_room = await queriesUtil.findRoom(saved_room._id)			
 
-			let side = -1;
-			if(player_number === 0 || player_number === 1){
-				side = 0;
-			}
-			if(player_number === 2 || player_number === 3){
-				side = 1;
-			}				
+			// let side = -1;
+			// if(player_number === 0 || player_number === 1){
+			// 	side = 0;
+			// }
+			// if(player_number === 2 || player_number === 3){
+			// 	side = 1;
+			// }				
 			
 			
 			//TRANSITION TO THE NEXT GAME SCREEN
@@ -291,7 +291,7 @@ exports.joinRoom = async(network, data)  => {
 				,max_players: saved_room.config.max_players
 				,player_number: player_number
 				,max_sides: saved_room.config.max_sides
-				,player_side: side
+				// ,player_side: side
 				,has_saved_data: has_saved_data
 				// ,room: saved_room
 				,scene: next_scene
