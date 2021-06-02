@@ -230,6 +230,11 @@ connFunctions.runUnitFunction = function(data) {
 
 }
 
+connFunctions.woundUnit = (data) => {
+	// console.log(data)
+	let unit = gameFunctions.units[data.parameters.defender_id]
+	unit.wound(data.parameters)
+}
 
 
 

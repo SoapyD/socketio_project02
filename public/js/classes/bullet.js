@@ -73,12 +73,30 @@ const bullet = class {
 				let options = {
 					damage: bullet.parent.damage,
 					ap: bullet.parent.unit.shoot_ap,
-					bonus: bullet.parent.unit.shooting_bonus,					
-					attacker: bullet.parent.unit
-				}			
-
-				unit.parent.wound(options);
-			}					
+					bonus: bullet.parent.unit.shooting_bonus,
+					// attacker: bullet.parent.unit,
+					random_roll: gameFunctions.getRandomInt(20),
+					defender_id: bullet.parent.unit.id
+				}				
+				
+				
+				if(GameScene.online === false){
+					unit.parent.wound(options);
+				}else{
+					//ONLY SEND THE WOUND MESSAGE IF THIS IS THE ATTACKING PLAYER
+					if(gameFunctions.params.player_number === bullet.parent.unit.player){
+						let data = {
+							functionGroup: "socketFunctions",  
+							function: "messageAll",
+							returnFunctionGroup: "connFunctions",
+							returnFunction: "woundUnit",
+							returnParameters: options,
+							message: "Wound Unit"
+						}				
+						connFunctions.messageServer(data)
+					}
+				}
+			}
 		}
 
 	}
@@ -92,13 +110,42 @@ const bullet = class {
 				let dist = Math.sqrt(val)
 				if(dist <= (this.blast_radius / 2) * GameScene.tile_size){
 										
+					// let options = {
+					// 	damage: this.damage,
+					// 	ap: this.unit.shoot_ap,
+					// 	bonus: this.unit.shooting_bonus,	
+					// 	attacker: this.unit
+					// }			
+					// unit.wound(options);
+					
+					
 					let options = {
 						damage: this.damage,
 						ap: this.unit.shoot_ap,
 						bonus: this.unit.shooting_bonus,	
-						attacker: this.unit
-					}			
-					unit.wound(options);
+						// attacker: this.unit,
+						random_roll: gameFunctions.getRandomInt(20),
+						defender_id: unit.id
+					}
+
+
+					if(GameScene.online === false){
+						unit.wound(options);
+					}else{
+						//ONLY SEND THE WOUND MESSAGE IF THIS IS THE ATTACKING PLAYER
+						if(gameFunctions.params.player_number === this.unit.player){
+							let data = {
+								functionGroup: "socketFunctions",  
+								function: "messageAll",
+								returnFunctionGroup: "connFunctions",
+								returnFunction: "woundUnit",
+								returnParameters: options,
+								message: "Wound Unit"
+							}				
+							connFunctions.messageServer(data)
+						}
+					}					
+					
 				}
 			})	
 		}

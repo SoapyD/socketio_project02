@@ -281,21 +281,23 @@ const unit = class {
 	wound(options){
 	
 		let hit_chance = this.armour - options.ap + options.bonus;
-		let random_roll = this.getRandomInt(20);
+		// let random_roll = this.getRandomInt(20);
 		
 		let result = ""
-		if(random_roll >= hit_chance){
+		if(options.random_roll >= hit_chance){
 			result = "pass"
 		}
-		if(random_roll < hit_chance){
+		if(options.random_roll < hit_chance){
 			result = "fail"
 		}		
-		if(random_roll === 20){
+		if(options.random_roll === 20){
 			result = "critical success"
 		}
-		if(random_roll === 1){
+		if(options.random_roll === 1){
 			result = "critical fail"
 		}
+		
+		console.log(options)
 		
 		let print_text = "";
 		let target;
@@ -1430,13 +1432,32 @@ const unit = class {
 			new particle(options)		
 
 
+			let roll = gameFunctions.getRandomInt(20);
 			options = {
 				damage: this.fight_damage,
 				ap: this.fight_ap,
 				bonus: this.fighting_bonus,
-				attacker: this
+				// attacker: this,
+				random_roll: roll,
+				defender_id: target.parent.id
+			}			
+			
+			if(GameScene.online === false){			
+				target.parent.wound(options);
+			}else{
+				//ONLY SEND THE WOUND MESSAGE IF THIS IS THE ATTACKING PLAYER
+				if(gameFunctions.params.player_number === this.player){
+					let data = {
+							functionGroup: "socketFunctions",  
+							function: "messageAll",
+							returnFunctionGroup: "connFunctions",
+							returnFunction: "woundUnit",
+							returnParameters: options,
+							message: "Wound Unit"
+						}				
+					connFunctions.messageServer(data)
+				}
 			}
-			target.parent.wound(options);
 			GameScene.active_actions--;
 		})
 		
