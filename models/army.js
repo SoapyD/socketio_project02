@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 
 const armySchema = new mongoose.Schema({
 	name: String
-
 	,author: {
 		id: {
 			type: mongoose.Schema.Types.ObjectId,
@@ -12,6 +11,7 @@ const armySchema = new mongoose.Schema({
 		user_name: String
     }
 
+	,cost: Number
 	
 	,units: [{
 		
