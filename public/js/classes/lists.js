@@ -18,6 +18,7 @@ const unit_type = class {
 	}
 }
 
+
 const projectile_weapon_type = class {
 	constructor(options) {
 		this.shoot_name = options.shoot_name;
