@@ -179,12 +179,23 @@ var GameScene = new Phaser.Class({
 					GameScene.seed3();
 					break;
 				case "DEV-ONLINE":
-					if(gameFunctions.params.max_players > 2){
-						GameScene.seed2();
-					}else{
-						GameScene.seed();
+					// if(gameFunctions.params.max_players > 2){
+					// 	GameScene.seed2();
+					// }else{
+					// 	GameScene.seed();
+					// }
+					switch(gameFunctions.params.max_players){
+						case 1:
+							GameScene.seed3();
+							break;
+						case 2:
+							GameScene.seed2();
+							break;
+						default:
+							GameScene.seed2();
+							break;
 					}
-					// GameScene.seed2();
+					
 					break;
 				default:
 					if(gameFunctions.params.max_players > 2){

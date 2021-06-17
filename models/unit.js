@@ -5,7 +5,7 @@ const unitSchema = new mongoose.Schema({
 	name: String
 	,spritesheet: String
 	
-	,sprite_offset: Float
+	,sprite_offset: Number
 	,size: Number
 	,cohesion: Number
 

@@ -533,8 +533,10 @@ const unit = class {
 			this.path_graphic.beginPath();
 
 
-			targets.forEach((pos, i) => {
+			targets.forEach((id, i) => {
 
+				let pos = gameFunctions.units[id].sprite;
+				
 				// this.path_graphic.beginPath();
 				this.path_graphic.moveTo(this.sprite.x, this.sprite.y);
 				
@@ -1353,7 +1355,7 @@ const unit = class {
 		//ONLY ADD SHOT IF THE TARGETS ARRAY IS UNDER MAX SHOTS
 		if(found_unit && skip === false && this.fight_targets.length < this.fight_max_targets){
 
-			this.fight_targets.push(found_unit.sprite);
+			this.fight_targets.push(found_unit.id);
 			this.drawTarget(this.fight_targets, 0);
 			GameScene.sfx['action'].play();
 			
@@ -1416,9 +1418,10 @@ const unit = class {
 			
 			await this.delay(2000 * i)
 			
+			
 			let options = {
 				scene: GameScene.scene,
-				key: "sword"+this.id+"_"+target.parent.id,
+				key: "sword"+this.id+"_"+target.id,
 				spritesheet: "punch",
 				framerate: 30,
 				sfx: "sword",
@@ -1439,7 +1442,7 @@ const unit = class {
 				bonus: this.fighting_bonus,
 				// attacker: this,
 				random_roll: roll,
-				defender_id: target.parent.id
+				defender_id: target
 			}			
 			
 			if(GameScene.online === false){			

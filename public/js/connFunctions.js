@@ -63,9 +63,15 @@ connFunctions.checkMessages = (socket) => {
     socket.on('message_client', (data) => {
 
 		if(data.message){
-			console.log(data.message)			
+			switch(instance_type){
+				case "DEV":
+				case "DEV-ONLINE":			
+					console.log(data.message)
+					break;
+			}
 			// console.log(data)
-		}		
+		}
+					
 		
 		if(data.functionGroup && data.function){
         	availableFunctions[data.functionGroup][data.function](data);  			
