@@ -399,7 +399,7 @@ var GameScene = new Phaser.Class({
 				}		
 			}
 			
-			if(GameScene.right_click === true){
+			if(GameScene.right_click === true && GameUIScene.mode_check_state === 0){
 				
 				GameScene.sfx['clear'].play();
 				switch(gameFunctions.mode) {
@@ -619,6 +619,11 @@ GameScene.selectMode = (options) => {
 
 GameScene.advanceSide = () => {
 
+	let start_check = false;
+	if(gameFunctions.current_side === -1){
+		start_check = true;
+	}
+	
 	gameFunctions.current_side += 1
 	if(gameFunctions.current_side >= gameFunctions.params.max_sides){
 		gameFunctions.current_side = 0
@@ -626,7 +631,9 @@ GameScene.advanceSide = () => {
 	
 	if(GameScene.online === true){
 		if(gameFunctions.params.player_side === gameFunctions.current_side){
-			GameUIScene.showButtons()			
+			if(start_check === true){
+				GameUIScene.showButtons()			
+			}
 		}else{
 			GameUIScene.hideButtons()
 		}

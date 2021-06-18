@@ -287,6 +287,9 @@ GameUIScene.advanceMode = () => {
 			options.mode = "move"
 			GameUIScene.selectMode(options);	
 			gameFunctions.btn_sprite[0].updateText("trigger move")
+			if(gameFunctions.params.player_side === gameFunctions.current_side){
+				gameFunctions.btn_sprite[0].showButton();				
+			}			
 			GameUIScene.mode_state++;
 			break;
 		case 1:
