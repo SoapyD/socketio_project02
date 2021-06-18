@@ -189,7 +189,7 @@ var GameScene = new Phaser.Class({
 							GameScene.seed3();
 							break;
 						case 2:
-							GameScene.seed2();
+							GameScene.seed();
 							break;
 						default:
 							GameScene.seed2();
@@ -307,7 +307,7 @@ var GameScene = new Phaser.Class({
 		
 		if(GameScene.selected_unit){
 		
-			if(GameScene.left_click === true){
+			if(GameScene.left_click === true && GameUIScene.mode_check_state === 0){
 
 				switch(gameFunctions.mode) {
 					case "move":

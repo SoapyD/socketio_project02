@@ -76,7 +76,7 @@ const bullet = class {
 					bonus: bullet.parent.unit.shooting_bonus,
 					// attacker: bullet.parent.unit,
 					random_roll: gameFunctions.getRandomInt(20),
-					defender_id: bullet.parent.unit.id
+					defender_id: unit.parent.player
 				}				
 				
 				

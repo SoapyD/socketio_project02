@@ -297,7 +297,6 @@ const unit = class {
 			result = "critical fail"
 		}
 		
-		console.log(options)
 		
 		let print_text = "";
 		let target;
@@ -533,10 +532,14 @@ const unit = class {
 			this.path_graphic.beginPath();
 
 
-			targets.forEach((id, i) => {
+			targets.forEach((target, i) => {
 
-				let pos = gameFunctions.units[id].sprite;
-				
+				let pos;
+				if(target.x && target.y){
+					pos = target;
+				}else{
+					pos = gameFunctions.units[target].sprite;
+				}
 				// this.path_graphic.beginPath();
 				this.path_graphic.moveTo(this.sprite.x, this.sprite.y);
 				
