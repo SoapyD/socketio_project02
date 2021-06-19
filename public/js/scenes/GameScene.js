@@ -594,6 +594,17 @@ GameScene.selectMode = (options) => {
 	}	
 }
 
+GameScene.resetTempSprites = () => {
+	// console.log(live_tiles)
+	if (!GameScene.scene.temp_sprites){
+		GameScene.scene.temp_sprites = [];
+	}
+	else{
+		GameScene.scene.temp_sprites.forEach((sprite) => {
+			sprite.destroy();
+		})
+	}		
+}
 
 // GameScene.advancePlayer = () => {
 

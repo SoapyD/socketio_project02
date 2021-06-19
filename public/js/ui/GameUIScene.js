@@ -298,6 +298,7 @@ GameUIScene.advanceMode = () => {
 			activated = GameUIScene.activateMovement();
 
 			if(activated === true){
+				GameScene.resetTempSprites();
 				gameFunctions.btn_sprite[0].hideButton()
 				GameUIScene.mode_check_state = 1;
 				// mode_triggered = true;
@@ -329,7 +330,8 @@ GameUIScene.advanceMode = () => {
 			GameUIScene.selectMode(options);
 			gameFunctions.btn_sprite[0].updateText("trigger charge")
 			if(gameFunctions.params.player_side === gameFunctions.current_side){
-				gameFunctions.btn_sprite[0].showButton();				
+				GameScene.resetTempSprites();				
+				gameFunctions.btn_sprite[0].showButton();
 			}
 			GameUIScene.mode_state++;
 			break;

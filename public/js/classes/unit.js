@@ -575,7 +575,55 @@ const unit = class {
 		radius_graphic.strokePath();		
 	}	
 	
-	
+	drawLiveTiles = () => {
+		let live_tiles = [];
+		let gridX = Math.floor(this.sprite.x/GameScene.tile_size);
+		let gridY = Math.floor(this.sprite.y/GameScene.tile_size);	
+
+		// console.log(gridX, gridY)
+		let startX = gridX - this.movement
+		let startY = gridY - this.movement
+		let endX = gridX + this.movement
+		let endY = gridY + this.movement
+		if(startX < 0) startX = 0
+		if(startY < 0) startY = 0
+		if(endX > GameScene.map.width) endX = GameScene.map.width
+		if(endY > GameScene.map.height) endY = GameScene.map.height
+
+		// console.log(startX,startY, endX, endY)
+
+		for(let y=startY;y<=endY;y++){
+			for(let x=startX;x<=endX;x++){
+				let options = {
+					pointer: {
+						x: x * GameScene.map.tileWidth,
+						y: y * GameScene.map.tileHeight
+					}
+				}
+
+				let path = this.generatePath(options);
+				// console.log(options.pointer, path)
+				if(path.length){
+					let last_pos = path[path.length - 1];
+					// console.log(last_pos, options.pointer)
+					// if(last_pos.x === options.pointer.x + this.sprite_offset &&
+					//   last_pos.y === options.pointer.y + this.sprite_offset){
+						live_tiles.push(last_pos);
+					// }
+				}
+
+			}
+		}
+
+		GameScene.resetTempSprites();
+		live_tiles.forEach((tile)=> {
+			this.scene.temp_sprites.push(
+				this.scene.physics.add.image(
+					tile.x * GameScene.map.tileWidth,
+					tile.y * GameScene.map.tileHeight,"marker").setDepth(0)
+			)
+		})		
+	}
 
 	
 	
@@ -612,6 +660,11 @@ const unit = class {
 					GameScene.selected_unit.unselectHandler();
 				}
 				GameScene.selected_unit = this.parent;
+				
+				if(gameFunctions.mode === 'move' || gameFunctions.mode === 'charge'){
+					this.parent.drawLiveTiles();
+				}
+				
 				
 				//RESET GHOST & COHESION IF THE GHOST SPRITE ISN'T SELECTED
 				if(!this.is_ghost){
@@ -709,17 +762,16 @@ const unit = class {
 // #     # #     #   # #   #       
 // #     # #######    #    ####### 	
 	
-	// findPath(scene, pointer) {
-	findPath(options) {
-
+	generatePath(options) {
 		let scene = this.scene;
 		let pointer = options.pointer;
 
 		var x = pointer.x;
 		var y = pointer.y;		
 		var toX = Math.floor(x/GameScene.tile_size);
-		var toY = Math.floor(y/GameScene.tile_size);	
+		var toY = Math.floor(y/GameScene.tile_size);
 		
+		// console.log(toX,toY)
 		
 		if(toX < GameScene.map.width && toY < GameScene.map.height
 		  && toX >= 0 && toY >= 0){
@@ -729,6 +781,7 @@ const unit = class {
 
 			let path = GameScene.pathfinder.findPath(this, fromX, fromY, toX, toY, this.size)
 			
+			/*
 			this.path = []
 			path.forEach((pos) => {
 				let p = {
@@ -747,7 +800,29 @@ const unit = class {
 				pos.x += this.sprite_offset;
 				pos.y += this.sprite_offset;
 			})
+			*/
 			
+			//STRIP PATH BACK TO MAX MOVEMENT LENGTH
+			path = path.slice(0,this.movement + 1)
+
+			
+			//OFFSET PATH SO THEY'RE IN THE MIDDLE OF EACH TILE
+			path.forEach((pos) => {
+				pos.x += this.sprite_offset;
+				pos.y += this.sprite_offset;
+			})
+			
+			return path;
+		}
+	}
+	
+	findPath(options) {
+
+		let pointer = options.pointer;
+        this.path = this.generatePath(options);
+		
+		
+		if(this.path.length > 0){
 			
 			//SKIP PATH IF THE UNIT PLACEMENT OVERLAPS ANOTHER UNIT
 			let skip = false
@@ -854,36 +929,165 @@ const unit = class {
 
 					this.drawPath(colours)
 					
-					// if(GameScene.online === false){
-
-					// 	this.drawPath(colours)
-
-					// }else{
-
-					// 	let data = {
-					// 		functionGroup: "socketFunctions",  
-					// 		function: "messageAll",
-					// 		returnFunctionGroup: "connFunctions",
-					// 		returnFunction: "runUnitFunction", //test
-					// 		returnParameters: {
-					// 			id: this.id, 
-					// 			path: this.path,
-					// 			function: "drawPath",
-					// 			function_parameter: colours
-					// 		},
-					// 		message: "draw path"
-					// 	}
-
-					// 	connFunctions.messageServer(data)
-					// }
-					
-					
 					GameScene.sfx['action'].play();
 				}
 				
 			}	
 		}
 	}
+	
+	
+	// // findPath(scene, pointer) {
+	// findPath(options) {
+
+	// 	let scene = this.scene;
+	// 	let pointer = options.pointer;
+
+	// 	var x = pointer.x;
+	// 	var y = pointer.y;		
+	// 	var toX = Math.floor(x/GameScene.tile_size);
+	// 	var toY = Math.floor(y/GameScene.tile_size);	
+		
+		
+	// 	if(toX < GameScene.map.width && toY < GameScene.map.height
+	// 	  && toX >= 0 && toY >= 0){
+
+	// 		var fromX = Math.floor(this.sprite.x/GameScene.tile_size);
+	// 		var fromY = Math.floor(this.sprite.y/GameScene.tile_size);		
+
+	// 		let path = GameScene.pathfinder.findPath(this, fromX, fromY, toX, toY, this.size)
+			
+	// 		this.path = []
+	// 		path.forEach((pos) => {
+	// 			let p = {
+	// 				x: pos.x,
+	// 				y: pos.y
+	// 			}
+	// 			this.path.push(p)
+	// 		})			
+			
+	// 		//STRIP PATH BACK TO MAX MOVEMENT LENGTH
+	// 		this.path = this.path.slice(0,this.movement + 1)
+
+			
+	// 		//OFFSET PATH SO THEY'RE IN THE MIDDLE OF EACH TILE
+	// 		this.path.forEach((pos) => {
+	// 			pos.x += this.sprite_offset;
+	// 			pos.y += this.sprite_offset;
+	// 		})
+			
+			
+	// 		//SKIP PATH IF THE UNIT PLACEMENT OVERLAPS ANOTHER UNIT
+	// 		let skip = false
+	// 		let last_path_pos = 0
+			
+	// 		//CHECK THROUGH THE PATH AND KEEP TRACK OF THE LAST SPACE THAT DOESN'T INTERSECT ANOTHER PLAYER
+	// 		this.path.forEach((pos, i) => {
+	// 			let check = false;				
+	// 			gameFunctions.units.forEach((unit) => {
+					
+	// 				if(unit.id !== this.id){
+						
+	// 					this.sprite_ghost.x = pos.x * GameScene.tile_size;
+	// 					this.sprite_ghost.y = pos.y * GameScene.tile_size;
+
+	// 					let temp_check = false
+	// 					// temp_check = this.checkSpriteOverlap(unit.sprite, this.sprite_ghost)
+	// 					// if(temp_check === true){
+	// 					// 	check = temp_check
+	// 					// }
+						
+	// 					temp_check = this.checkSpriteOverlap(unit.sprite_ghost, this.sprite_ghost)
+	// 					if(temp_check === true){
+	// 						check = temp_check
+	// 					}
+						
+	// 				}
+
+	// 			})
+				
+	// 			// 
+	// 			if(check === false){
+	// 				last_path_pos = i;
+	// 			}
+	// 		})
+			
+	// 		// console.log(this.path.length, last_path_pos + 1)
+			
+	// 		//UPDATE THE PATH IF IT'S LENGTH INTERSECTS ANOTHER UNIT
+	// 		if(this.path.length >= last_path_pos + 1){
+	// 			this.path = this.path.slice(0,last_path_pos + 1)
+	// 		}
+
+						
+	// 		//DON'T ALLOW PATH TO GENERATE IF MODE IS CHARGE AND UNIT HAS NO FIGHTING DAMAGE
+	// 		// if(this.fight_damage === 0 && gameFunctions.mode === "fight"){
+	// 		// 	skip = true;
+	// 		// }
+			
+	// 		//SKIP IF IN CHARGE MODE AND UNIT HAD ALREADY SHOT
+	// 		if(this.shot === true && gameFunctions.mode === "charge"){
+	// 			skip = true;
+	// 			let options = {
+	// 				scene: GameScene.scene,
+	// 				pos: {
+	// 					x: GameScene.rectangle.x,
+	// 					y: GameScene.rectangle.y
+	// 				},
+	// 				text: "cannot charge, unit has shot"
+	// 			}
+	// 			new popup(options)
+	// 		}
+			
+	// 		if(this.path.length === 0){
+	// 			skip = true;
+	// 		}
+		
+			
+	// 		let on_unit = false;
+	// 		//SKIP IF THE POINTER IS OVER THE SHOOTING UNITS, put here so it doesn't play the clear sound
+	// 		if (this.sprite.getBounds().contains(pointer.x, pointer.y)) {
+	// 			skip = true;
+	// 			on_unit = true;
+	// 		}
+		
+	// 		if(skip === true && on_unit === false){
+	// 			GameScene.sfx['clear'].play();				
+	// 		}			
+			
+	// 		// console.log("skip: ",skip,"path: ",this.path)
+			
+	// 		//IF THE GHOST CLASHES WITH ANOTHER SPRITE OR GHOST, CANCEL THE MOVE
+	// 		if(skip === true){
+	// 			this.resetMove();
+				
+	// 		}
+	// 		else{
+				
+	// 			//if there's any cohesion needed, check it, otherwise just draw path
+	// 			if(this.cohesion > 0){
+	// 				this.cohesionCheck()
+	// 				GameScene.sfx['action'].play();
+	// 			}
+	// 			else{
+
+	// 				let colours = {
+	// 					line_colour: 0x00cccc,
+	// 					fill_colour: 0x2ECC40,
+	// 					line_alpha: 0.75,
+	// 					circle_alpha: 0.15,
+	// 					fill_alpha: 0.15,
+	// 					width: 5
+	// 				}
+
+	// 				this.drawPath(colours)
+					
+	// 				GameScene.sfx['action'].play();
+	// 			}
+				
+	// 		}	
+	// 	}
+	// }
 
 	cohesionCheck2() {
 		
@@ -978,30 +1182,6 @@ const unit = class {
 				}
 
 				unit.drawPath(colours)
-				
-				// if(GameScene.online === false){
-
-				// 	unit.drawPath(colours)
-
-				// }else{
-
-				// 	let data = {
-				// 		functionGroup: "socketFunctions",  
-				// 		function: "messageAll",
-				// 		returnFunctionGroup: "connFunctions",
-				// 		returnFunction: "runUnitFunction", //test
-				// 		returnParameters: {
-				// 			id: unit.id, 
-				// 			path: unit.path,
-				// 			function: "drawPath",
-				// 			function_parameter: colours
-				// 		},
-				// 		message: "draw path"
-				// 	}
-
-				// 	connFunctions.messageServer(data)
-				// }				
-				
 				
 			}
 		})
