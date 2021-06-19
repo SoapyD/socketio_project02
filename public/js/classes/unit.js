@@ -574,8 +574,11 @@ const unit = class {
 
 		radius_graphic.strokePath();		
 	}	
+
 	
-	drawLiveTiles = () => {
+	drawLiveTiles() {
+		
+		// return new Promise(resolve => {
 		let live_tiles = [];
 		let gridX = Math.floor(this.sprite.x/GameScene.tile_size);
 		let gridY = Math.floor(this.sprite.y/GameScene.tile_size);	
@@ -600,16 +603,25 @@ const unit = class {
 						y: y * GameScene.map.tileHeight
 					}
 				}
+				
+				//ONLY CHECK THE POSITION IF IT'S NOT ALREADY BEEN CHECKED
+				let found = live_tiles.some(i => i.x === x + this.sprite_offset && i.y === y + this.sprite_offset);
 
-				let path = this.generatePath(options);
-				// console.log(options.pointer, path)
-				if(path.length){
-					let last_pos = path[path.length - 1];
-					// console.log(last_pos, options.pointer)
-					// if(last_pos.x === options.pointer.x + this.sprite_offset &&
-					//   last_pos.y === options.pointer.y + this.sprite_offset){
-						live_tiles.push(last_pos);
-					// }
+				if(found === false){
+					let path = this.generatePath(options);
+
+					if(path.length){
+
+						path.forEach((pos) => {
+							// live_tiles.push(pos);
+							found = live_tiles.some(i => i.x === pos.x && i.y === pos.y);
+							if(found === false){
+								live_tiles.push(pos);
+							}
+						})
+
+						
+					}
 				}
 
 			}
@@ -622,9 +634,13 @@ const unit = class {
 					tile.x * GameScene.map.tileWidth,
 					tile.y * GameScene.map.tileHeight,"marker").setDepth(0)
 			)
-		})		
+		})
+		
+		// console.log("END DRAW")
+		// resolve('resolved');
+		// })
 	}
-
+	
 	
 	
 // ####### #     # #     #  #####  ####### ### ####### #     #  #####  
@@ -635,7 +651,7 @@ const unit = class {
 // #       #     # #    ## #     #    #     #  #     # #    ## #     # 
 // #        #####  #     #  #####     #    ### ####### #     #  #####  	
 	
-	selectHander(pointer) {
+	selectHander (pointer) {
 
 		if (pointer.leftButtonReleased())
 		{
@@ -662,7 +678,17 @@ const unit = class {
 				GameScene.selected_unit = this.parent;
 				
 				if(gameFunctions.mode === 'move' || gameFunctions.mode === 'charge'){
+					// console.log("start")
 					this.parent.drawLiveTiles();
+					// console.log("end")
+					
+					// let options = {
+					// 	x: this.x,
+					// 	y: this.y,
+					// 	movement: this.parent.movement
+					// }
+					// GameScene.setupLiveTiles(options);
+
 				}
 				
 				
@@ -781,32 +807,10 @@ const unit = class {
 
 			let path = GameScene.pathfinder.findPath(this, fromX, fromY, toX, toY, this.size)
 			
-			/*
-			this.path = []
-			path.forEach((pos) => {
-				let p = {
-					x: pos.x,
-					y: pos.y
-				}
-				this.path.push(p)
-			})			
-			
-			//STRIP PATH BACK TO MAX MOVEMENT LENGTH
-			this.path = this.path.slice(0,this.movement + 1)
-
-			
-			//OFFSET PATH SO THEY'RE IN THE MIDDLE OF EACH TILE
-			this.path.forEach((pos) => {
-				pos.x += this.sprite_offset;
-				pos.y += this.sprite_offset;
-			})
-			*/
-			
 			//STRIP PATH BACK TO MAX MOVEMENT LENGTH
 			path = path.slice(0,this.movement + 1)
 
-			
-			//OFFSET PATH SO THEY'RE IN THE MIDDLE OF EACH TILE
+			// //OFFSET PATH SO THEY'RE IN THE MIDDLE OF EACH TILE
 			path.forEach((pos) => {
 				pos.x += this.sprite_offset;
 				pos.y += this.sprite_offset;

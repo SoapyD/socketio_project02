@@ -234,8 +234,8 @@ GameScene.seed3 = () => {
 	}
 	GameScene.unit_setup = new unit_setup(options)
 
-	options = {x: 10, y:4}
-	GameScene.unit_setup.placeSquad(options)		
+	options = {x: 5, y:4}
+	GameScene.unit_setup.placeTank(options)		
 
 	options = {
 		unit_list: gameFunctions.units,

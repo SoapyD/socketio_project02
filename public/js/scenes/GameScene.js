@@ -53,6 +53,10 @@ var GameScene = new Phaser.Class({
 		GameScene.rectangle.depth = 100;
 		GameScene.rectangle.alpha = 0;
 		
+		GameScene.startX = 0
+		GameScene.startY = 0
+		GameScene.endX = 0
+		GameScene.endY = 0
 		
 		// gameFunctions.units = []
 
@@ -605,6 +609,62 @@ GameScene.resetTempSprites = () => {
 		})
 	}		
 }
+
+/*
+GameScene.setupLiveTiles = (options) => {
+
+	// return new Promise(resolve => {
+	let live_tiles = [];
+	let gridX = Math.floor(options.x/GameScene.tile_size);
+	let gridY = Math.floor(options.y/GameScene.tile_size);	
+
+
+	GameScene.startX = gridX - options.movement
+	GameScene.startY = gridY - options.movement
+	GameScene.endX = gridX + options.movement
+	GameScene.endY = gridY + options.movement
+	if(GameScene.startX < 0) this.startX = 0
+	if(GameScene.startY < 0) this.startY = 0
+	if(GameScene.endX > GameScene.map.width) GameScene.endX = GameScene.map.width
+	if(GameScene.endY > GameScene.map.height) GameScene.endY = GameScene.map.height
+
+	GameScene.drawLiveTiles()
+}
+
+GameScene.drawLiveTiles = () => {
+
+	let live_tiles = [];
+	
+	for(let y=GameScene.startY;y<=GameScene.endY;y++){
+		for(let x=GameScene.startX;x<=GameScene.endX;x++){
+			let path_options = {
+				pointer: {
+					x: x * GameScene.map.tileWidth,
+					y: y * GameScene.map.tileHeight
+				}
+			}
+
+			let path = GameScene.selected_unit.generatePath(path_options);
+			if(path){
+				if(path.length > 0){
+					let last_pos = path[path.length - 1];
+					live_tiles.push(last_pos);
+				}
+
+			}
+		}
+	}	
+	
+	GameScene.resetTempSprites();
+	live_tiles.forEach((tile)=> {
+		GameScene.scene.temp_sprites.push(
+			GameScene.scene.physics.add.image(
+				tile.x * GameScene.map.tileWidth,
+				tile.y * GameScene.map.tileHeight,"marker").setDepth(0)
+		)
+	})	
+}
+*/
 
 // GameScene.advancePlayer = () => {
 
