@@ -712,7 +712,14 @@ const unit = class {
 	
 	
 	unselectHandler() {
+		
+		let old_selected = GameScene.selected_unit;
 		GameScene.selected_unit = undefined;
+		
+		// console.log(old_selected)
+		if(this.cohesion > 0){
+			this.cohesionCheck();	
+		}
 	}
 	
 	
@@ -823,7 +830,16 @@ const unit = class {
 	findPath(options) {
 
 		let pointer = options.pointer;
-        this.path = this.generatePath(options);
+        let path = this.generatePath(options);
+		
+		this.path = []
+		path.forEach((pos) => {
+			let p = {
+				x: pos.x,
+				y: pos.y
+			}
+			this.path.push(p)
+		})		
 		
 		
 		if(this.path.length > 0){
@@ -1178,11 +1194,16 @@ const unit = class {
 					colours.fill_alpha = 0.5;
 				}
 
-				if(unit.id !== this.id){
+				if(unit.id !== this.id || !GameScene.selected_unit){
 					colours.circle_alpha = 0.4,
-					colours.fill_alpha = 0.25,
+					colours.fill_alpha = 0.35,
 					colours.line_colour = 0x808080; //grey
 					colours.line_alpha = 0.35;
+				}
+				
+				if(!GameScene.selected_unit){
+					colours.fill_alpha = 0.15;
+					colours.line_alpha = 0.15;
 				}
 
 				unit.drawPath(colours)

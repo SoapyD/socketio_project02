@@ -9,15 +9,16 @@ SBT GAME NOTES
 /////////////////////////////////////////////////////////////////////////////////////
 
 -DONE -Make the draw live tiles method as efficient as possible using the current method
+-DONE -Gray path is being set from future selected units instead of being from the original units origin point
+-DONE -Make selecting a new conherancy based unit reset how coherancy is drawn for the previous squad i.e. don't have one unit selected in particular
+
 
 
 -See if I can make the pathfinding process async
--Gray path is being set from future selected units instead of being from the original units origin point
 -if a sides/start points aren't set properly, don't allow the game to advance
 -Put up a loading screen while the players actually load into the game rather than setting things to black
 -if a player rejoins the game and are passed completed setup options, bypass the "select armies" screen and put them back into the game
 -see if different icons can be shown in the mini map rather than just reshow the map as-is
--Make selecting a new conherancy based unit reset how coherancy is drawn for the previous squad i.e. don't have one unit selected in particular
 
 
 -Load up armies associated with users in army selection dropdowns
