@@ -237,8 +237,8 @@ GameScene.seed3 = () => {
 	options = {x: 5, y:2}
 	GameScene.unit_setup.placeSquad(options)
 	
-	options = {x: 15, y:2}
-	GameScene.unit_setup.placeSquad(options)	
+	// options = {x: 15, y:2}
+	// GameScene.unit_setup.placeSquad(options)	
 
 	options = {
 		unit_list: gameFunctions.units,
@@ -254,8 +254,8 @@ GameScene.seed3 = () => {
 	}
 	GameScene.unit_setup = new unit_setup(options)
 
-	// options = {x: 14, y:4}
-	// GameScene.unit_setup.placeSquad(options)
+	options = {x: 16, y:2}
+	GameScene.unit_setup.placeSquad(options)
 	
 	// options = {x: 16, y:2}
 	// GameScene.unit_setup.placeGeneral(options)	

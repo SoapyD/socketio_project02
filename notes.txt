@@ -11,25 +11,24 @@ SBT GAME NOTES
 -DONE -Make the draw live tiles method as efficient as possible using the current method
 -DONE -Gray path is being set from future selected units instead of being from the original units origin point
 -DONE -Make selecting a new conherancy based unit reset how coherancy is drawn for the previous squad i.e. don't have one unit selected in particular
+-DONE -BUG - once a movement has been made, the unit elements don't move with their parent
+-DONE -Put up a loading screen while the players actually load into the game rather than setting things to black
 
 
 
 -See if I can make the pathfinding process async
 -if a sides/start points aren't set properly, don't allow the game to advance
--Put up a loading screen while the players actually load into the game rather than setting things to black
+
 -if a player rejoins the game and are passed completed setup options, bypass the "select armies" screen and put them back into the game
 -see if different icons can be shown in the mini map rather than just reshow the map as-is
 
-
 -Load up armies associated with users in army selection dropdowns
-
 
 -test out a 3 side game
 -test out a 2 side, 4 player game
 
 -error socket messages need to be returned to the originating player only
 
--BUG - once a movement has been made, the unit elements don't move with their parent
 -BUG - There's far too much data being sent with the save function when it comes to unit data. Need to strip it down so memory isn't exhausted.
 
 
