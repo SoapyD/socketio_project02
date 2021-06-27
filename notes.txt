@@ -15,6 +15,7 @@ SBT GAME NOTES
 -DONE -Put up a loading screen while the players actually load into the game rather than setting things to black
 
 
+-BUG -Action button seems to be bugged again. Appearing for both sides on the live site and the button doesn't seem to become live again once the move action if complete for player 1.
 
 -See if I can make the pathfinding process async
 -if a sides/start points aren't set properly, don't allow the game to advance
