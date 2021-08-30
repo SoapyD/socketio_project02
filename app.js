@@ -80,7 +80,8 @@ let expressServer;
 switch(process.env.INSTANCE_TYPE){
 	case "DEV":
 	case "DEV-ONLINE":
-		expressServer = app.listen(3000, () => {
+		// expressServer = app.listen(3000, () => {
+			expressServer = app.listen(process.env.PORT||80, process.env.IP, function(){				
 			console.log("dev server running")
 		})	
 		break;
