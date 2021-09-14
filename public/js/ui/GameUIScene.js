@@ -146,6 +146,8 @@ GameUIScene.delay =	async(ms) => {
 GameUIScene.loadSingleButton = (scene) => {
 	let callbackParams;
 	let options;
+
+	console.log("create button")
 	
 	options = {
 		scene: scene, 
@@ -162,6 +164,8 @@ GameUIScene.loadSingleButton = (scene) => {
 	// gameFunctions.createButton(scene, gameFunctions.config.width - 50, 25, "+", GameUIScene.advanceMode, callbackParams, gameFunctions.btn_sprite);		
 	// gameFunctions.createButton(options);	
 	gameFunctions.btn_sprite.push(new button(options))
+
+	GameScene.advanceSide()
 	GameUIScene.advanceMode();	
 }
 
@@ -633,12 +637,14 @@ GameUIScene.activateFighting = () => {
 GameUIScene.hideButtons = () => {
 	gameFunctions.btn_sprite.forEach((btn) => {
 		btn.hideButton();
+		btn.text.visible = false;
 	})
 }
 
 GameUIScene.showButtons = () => {
 	gameFunctions.btn_sprite.forEach((btn) => {
-		btn.showButton();	
+		btn.showButton();
+		btn.text.visible = true;	
 	})
 }
 

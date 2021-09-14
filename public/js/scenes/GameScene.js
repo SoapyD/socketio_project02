@@ -330,7 +330,7 @@ var GameScene = new Phaser.Class({
 		}
 		
 
-		GameScene.advanceSide()
+		// GameScene.advanceSide() //MOVED TO GameUIScene
 
 		
 		// GameScene.text_array = []
@@ -766,12 +766,16 @@ GameScene.advanceSide = () => {
 	if(GameScene.online === true){
 		if(gameFunctions.params.player_side === gameFunctions.current_side){
 			if(start_check === true){
-				GameUIScene.showButtons()			
+				GameUIScene.showButtons()	
+				// console.log("on")		
 			}
 		}else{
 			GameUIScene.hideButtons()
+			// console.log("off")
 		}
 	}
+	// console.log("current side:",gameFunctions.current_side)
+	// console.log("player side:",gameFunctions.params.player_side)	
 	
 	gameFunctions.units.forEach((unit) => {
 		unit.moves = 0;
