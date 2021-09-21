@@ -72,7 +72,7 @@ app.use("/army",ArmyRoutes);
 
 
 
-seedsUtil.seedDB();
+// seedsUtil.seedDB();
 
 
 let expressServer;

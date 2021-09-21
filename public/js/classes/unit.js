@@ -610,18 +610,19 @@ const unit = class {
 				if(found === false){
 					let path = this.generatePath(options);
 
-					if(path.length){
+					if(path){
+						if(path.length){
 
-						path.forEach((pos) => {
-							// live_tiles.push(pos);
-							found = live_tiles.some(i => i.x === pos.x && i.y === pos.y);
-							if(found === false){
-								live_tiles.push(pos);
-							}
-						})
-
-						
+							path.forEach((pos) => {
+								// live_tiles.push(pos);
+								found = live_tiles.some(i => i.x === pos.x && i.y === pos.y);
+								if(found === false){
+									live_tiles.push(pos);
+								}
+							})
+						}
 					}
+
 				}
 
 			}

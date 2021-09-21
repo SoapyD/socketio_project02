@@ -312,6 +312,9 @@ GameUIScene.advanceMode = () => {
 			
 		case 2:
 			//setup shoot
+			console.log("SAVE RUNNING")
+			connFunctions.saveGame();
+
 			options.mode = "shoot"
 			GameUIScene.selectMode(options);
 			gameFunctions.btn_sprite[0].updateText("trigger shoot")

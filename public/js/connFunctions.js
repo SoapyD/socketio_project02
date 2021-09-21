@@ -29,8 +29,11 @@ connFunctions.checkMessages = (socket) => {
 			players: document.querySelector('#players').value,
 
         }
-        // socket.emit('message_server', data)
-		connFunctions.messageServer(data)
+        // STOP PLAYERS FROM CREATING A ROOM WITH LESS THAN MINIMUM PLAYER NUMBER IS IT
+		if(data.players > 0){
+			connFunctions.messageServer(data)
+		}
+
     })
 
     $(document).on('click', '#join', (event) => {         
@@ -52,6 +55,39 @@ connFunctions.checkMessages = (socket) => {
     })
 
 
+	connFunctions.sendPrintMessage = () => {
+        const data = {
+            functionGroup: "socketFunctions",  
+            function: "messageAll",
+			
+			returnFunctionGroup: "connFunctions",
+			returnFunction: "printMessage",
+			returnParameters: {
+				message: document.querySelector('#fname').value,
+				user_name: document.querySelector('#userName').value,
+			},
+		}
+
+        //CLEAR TEXT
+        document.querySelector('#fname').value = "";		
+
+        connFunctions.messageServer(data)  
+	}
+
+	// CLICK ON THE "MESSAGE" BUTTON TO SEND A MESSAGE
+    $(document).on('click', '#submit-message', (event) => {
+		connFunctions.sendPrintMessage();
+    })   
+
+	//PRESS ENTER TO SEND A MESSAGE
+    $(document).on('keypress', (event) => {
+        if(event.which == 13) {
+			connFunctions.sendPrintMessage();  
+        }
+    });
+
+
+	//THIS IS A GENERIC RESPONSE HANDER THAT RUNS WHATEVER FUNCTION, IN WHATEVER GROUP, IS PASSED TO IT
     socket.on('message_client', (data) => {
 
 		if(data.message){
@@ -77,9 +113,16 @@ connFunctions.test = (data) => {
   console.log(data)
 }
 
+connFunctions.printMessage = (data) => {
+	const messages = document.querySelector('#messages'); 
+	messages.insertAdjacentHTML("beforeend", "<li>"+data.parameters.user_name+" - '"+data.parameters.message+"'</li>");	
+}
+
 
 connFunctions.setRoomInfo = (data) => {
 	
+	console.log(data)
+
 	gameFunctions.params.room_name = data.room_name
 	gameFunctions.params.room_id = data.room_id
 	gameFunctions.params.users = data.users	
@@ -92,12 +135,17 @@ connFunctions.setRoomInfo = (data) => {
 	
 	if(data.has_saved_data === true){
 		
-		gameFunctions.current_player = data.room.config.current_player
-		gameFunctions.mode = data.room.config.mode	
+		gameFunctions.current_side = data.config.current_side
+		// gameFunctions.current_player = data.room.config.current_player
+		gameFunctions.mode = data.config.mode	
 		
-		gameFunctions.units_preload = data.room.units;
+		gameFunctions.units_preload = data.units;
 	}
 	
+	// SLIDE THE MESSAGE BOARD UP
+	$('#message-form').slideToggle(1000);
+	$('#message-input').slideDown(1000);
+
 	if(data.scene){
 		connFunctions.sceneTransition(data);
 	}
@@ -154,13 +202,37 @@ connFunctions.saveGame = () => {
 		functionGroup: "socketFunctions",  
 		function: "updateRoom", //saveGame
 		message: "save game",
-		type: "save game",
+		type: "save room",
 		room_name: gameFunctions.params.room_name,
 		current_side: gameFunctions.current_side,
-		current_player: gameFunctions.current_player,
+		// current_player: gameFunctions.current_player,
 		mode: gameFunctions.mode,
 		// units: gameFunctions.units
 	}
+
+	data.units = [];
+	gameFunctions.units.forEach((unit) => {
+		let unit_data = {
+			id: unit.id
+			,side: unit.side
+			,player: unit.player
+			,squad: unit.squad		
+			
+			,unit_name: unit.unit_name
+			,shoot_name: unit.shoot_name
+			,fight_name: unit.fight_name
+			,armour_name: unit.armour_name
+			
+			,health: unit.health
+			,alive: unit.alive
+			,in_combat: unit.in_combat
+			
+			,x: unit.sprite.x
+			,y: unit.sprite.y
+			,rotation: unit.sprite.angle		
+		}
+		data.units.push(unit_data)
+	})
 	
 	connFunctions.messageServer(data)	
 }

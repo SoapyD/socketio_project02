@@ -324,7 +324,9 @@ var GameScene = new Phaser.Class({
 				}
 
 				// created_unit.drawHealth()
-				created_unit.updateUnitElements()
+
+				//THIS FUNCTIONS NEEDS TURNING BACK ON BUT CURRENTLY IS CAUSING ERRORS WHEN RUN
+				// created_unit.updateUnitElements()
 				
 			})			
 		}

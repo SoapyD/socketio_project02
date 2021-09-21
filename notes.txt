@@ -9,14 +9,8 @@ SBT GAME NOTES
 /////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////
 
--DONE -Make the draw live tiles method as efficient as possible using the current method
--DONE -Gray path is being set from future selected units instead of being from the original units origin point
--DONE -Make selecting a new conherancy based unit reset how coherancy is drawn for the previous squad i.e. don't have one unit selected in particular
--DONE -BUG - once a movement has been made, the unit elements don't move with their parent
--DONE -Put up a loading screen while the players actually load into the game rather than setting things to black
+-Have "players" as a dropdown menu with a minimum of 2 players to be selectable. Auto-select 2 players to start with
 
-
--BUG -Action button seems to be bugged again. Appearing for both sides on the live site and the button doesn't seem to become live again once the move action if complete for player 1.
 
 -See if I can make the pathfinding process async
 -if a sides/start points aren't set properly, don't allow the game to advance
@@ -44,6 +38,22 @@ DONE
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+-DONE -Fix issue where buttons aren't selectable on the top html bar once the game starts 
+    -The issue is that the gameContainer element is covering the buttons
+
+
+-DONE -Hide "create/join" bar once a player has created or joined a room
+
+-DONE -For some reason the far right squad when 2 players are setup has 2 units that don't trigger paths being drawn
+-DONE -Action button seems to be bugged again. Appearing for both sides on the live site and the button doesn't seem to become live again once the move action if complete for player 1.
+
+
+-DONE -Make the draw live tiles method as efficient as possible using the current method
+-DONE -Gray path is being set from future selected units instead of being from the original units origin point
+-DONE -Make selecting a new conherancy based unit reset how coherancy is drawn for the previous squad i.e. don't have one unit selected in particular
+-DONE -BUG - once a movement has been made, the unit elements don't move with their parent
+-DONE -Put up a loading screen while the players actually load into the game rather than setting things to black
 
 -DONE -run check at the end of movement to see if a unit is in combat range. If not, mark the unit as not being in combat range
 -DONE -if a unit is in combat, skip and shot setting actions

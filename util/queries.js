@@ -114,9 +114,9 @@ exports.updateRoom = (room, data) => {
 			,alive: unit.alive
 			,in_combat: unit.in_combat
 
-			,x: unit.sprite.x
-			,y: unit.sprite.y
-			,rotation: unit.sprite.rotation
+			,x: unit.x
+			,y: unit.y
+			,rotation: unit.rotation
 		}
 		
 		room.units.push(info)

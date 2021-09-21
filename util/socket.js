@@ -285,6 +285,8 @@ exports.joinRoom = async(network, data)  => {
                 ,message: "Room Info"
 				,users: saved_room.users
 				,forces: saved_room.forces
+				,config: saved_room.config
+				,units: saved_room.units
 				// ,user_name: data.user_name
 				,room_name: data.room_name
 				,room_id: saved_room._id
