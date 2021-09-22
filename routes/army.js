@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const controller = require('../controllers/army');
+const controllers = require('../controllers');
 const middleware = require("../middleware");
 
 // const User = require("../models/user");
 
 
 //INDEX - display all
-router.get("/", middleware.isLoggedIn, controller.getAll)
+router.get("/", middleware.user_access, controllers.army.getAll)
 
 //CREATE - create new
 // router.post("/", middleware.isLoggedIn, controller.create)

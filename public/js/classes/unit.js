@@ -679,7 +679,7 @@ const unit = class {
 				GameScene.selected_unit = this.parent;
 				
 				if(gameFunctions.mode === 'move' || gameFunctions.mode === 'charge'){
-					// console.log("start")
+					console.log("start")
 					this.parent.drawLiveTiles();
 					// console.log("end")
 					

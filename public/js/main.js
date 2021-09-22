@@ -6,7 +6,8 @@ gameFunctions.units_preload = [];
 gameFunctions.mode = '';
 // gameFunctions.current_player = -1;
 gameFunctions.current_side = -1;
-
+gameFunctions.mode_state = 0;
+gameFunctions.mode_state_max = 9;
 
 gameFunctions.params = {
 	room_name: "",

@@ -94,7 +94,8 @@ exports.updateRoom = (room, data) => {
 	
 	room.config.current_side = data.current_side
 	room.config.current_player = data.current_player
-	room.config.mode = data.mode
+    room.config.mode = data.mode
+    room.config.mode_state = data.mode_state
 	room.units = [];
 	
 	data.units.forEach((unit) => {

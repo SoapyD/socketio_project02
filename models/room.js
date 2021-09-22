@@ -33,6 +33,7 @@ const roomSchema = new mongoose.Schema({
 		,current_player: {type: Number, default: 0}
 		,current_side: {type: Number, default: 0}
 		,mode: String
+		,mode_state: {type: Number, default: 0}
 	}
 	
 	// ,selected_unit: {type: Number, default: -1}	

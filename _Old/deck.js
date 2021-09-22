@@ -1,6 +1,6 @@
 
 // const gameController = require('./game');
-const queriesUtil = require('../util/queries');
+const queriesUtil = require('../utils/queries');
 
 // exports.room_decks = [];
 

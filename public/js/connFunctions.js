@@ -137,7 +137,8 @@ connFunctions.setRoomInfo = (data) => {
 		
 		gameFunctions.current_side = data.config.current_side
 		// gameFunctions.current_player = data.room.config.current_player
-		gameFunctions.mode = data.config.mode	
+		gameFunctions.mode = data.config.mode
+		gameFunctions.mode_state = data.config.mode_state
 		
 		gameFunctions.units_preload = data.units;
 	}
@@ -196,7 +197,7 @@ connFunctions.updateRoomInfo = (data) => {
 	
 }
 
-connFunctions.saveGame = () => {
+connFunctions.saveGame = (mode) => {
 	
 	let data = {
 		functionGroup: "socketFunctions",  
@@ -206,7 +207,8 @@ connFunctions.saveGame = () => {
 		room_name: gameFunctions.params.room_name,
 		current_side: gameFunctions.current_side,
 		// current_player: gameFunctions.current_player,
-		mode: gameFunctions.mode,
+		mode: mode,
+		mode_state: gameFunctions.mode_state
 		// units: gameFunctions.units
 	}
 

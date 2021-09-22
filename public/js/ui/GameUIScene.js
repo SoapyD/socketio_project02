@@ -17,8 +17,8 @@ var GameUIScene = new Phaser.Class({
 		GameUIScene.scene = this.scene.get('GameUIScene')
 		GameUIScene.text = this.add.text(0, 0, "", { fill: '#00ff00' }).setDepth(20);
 		
-		GameUIScene.mode_state = 0;
-		GameUIScene.mode_state_max = 9;
+		// gameFunctions.mode_state = 0;
+		// gameFunctions.mode_state_max = 9;
 		
 		GameUIScene.mode_check_state = 0;
 		GameUIScene.mode_check_timer = 0;	
@@ -103,7 +103,7 @@ var GameUIScene = new Phaser.Class({
 				GameUIScene.mode_check_state = 2;
 				GameUIScene.mode_check_timer = 200;
 				// if(GameScene.active_actions === 0){
-				// 	GameUIScene.mode_state++;
+				// 	gameFunctions.mode_state++;
 				// 	GameUIScene.advanceMode()
 				// 	GameUIScene.mode_check_state = 0;
 				// }				
@@ -125,7 +125,7 @@ var GameUIScene = new Phaser.Class({
 
 		text += "Phase: "+gameFunctions.mode+'\n'
 
-		text += "Mode State: "+GameUIScene.mode_state+'\n'		
+		text += "Mode State: "+gameFunctions.mode_state+'\n'		
 		text += "Check: "+GameUIScene.mode_check_state+'\n'
 		
 		
@@ -165,7 +165,10 @@ GameUIScene.loadSingleButton = (scene) => {
 	// gameFunctions.createButton(options);	
 	gameFunctions.btn_sprite.push(new button(options))
 
-	GameScene.advanceSide()
+	if(gameFunctions.units_preload.length === 0){
+		GameScene.advanceSide()
+		
+	}
 	GameUIScene.advanceMode();	
 }
 
@@ -262,9 +265,9 @@ GameUIScene.loadFullButtons = (scene) => {
 
 
 GameUIScene.runAdvanceMode = () => {
-	GameUIScene.mode_state++;
-	if(GameUIScene.mode_state > GameUIScene.mode_state_max){
-		GameUIScene.mode_state = 0;
+	gameFunctions.mode_state++;
+	if(gameFunctions.mode_state > gameFunctions.mode_state_max){
+		gameFunctions.mode_state = 0;
 	}
 	
 	GameUIScene.advanceMode()	
@@ -273,7 +276,7 @@ GameUIScene.runAdvanceMode = () => {
 GameUIScene.advanceMode = () => {
 
 	
-	// if(GameUIScene.mode_state !== -1){
+	// if(gameFunctions.mode_state !== -1){
 	// 	if(GameScene.sfx){
 	// 		GameScene.sfxHandler("button")	
 	// 	}
@@ -286,7 +289,7 @@ GameUIScene.advanceMode = () => {
 	let options = {}
 	let btn;
 	let activated = false;
-	switch(GameUIScene.mode_state){
+	switch(gameFunctions.mode_state){
 		case 0:
 			//setup movement
 			options.mode = "move"
@@ -295,7 +298,7 @@ GameUIScene.advanceMode = () => {
 			if(gameFunctions.params.player_side === gameFunctions.current_side){
 				gameFunctions.btn_sprite[0].showButton();				
 			}			
-			GameUIScene.mode_state++;
+			gameFunctions.mode_state++;
 			break;
 		case 1:
 			//activate movement
@@ -312,16 +315,15 @@ GameUIScene.advanceMode = () => {
 			
 		case 2:
 			//setup shoot
-			console.log("SAVE RUNNING")
-			connFunctions.saveGame();
-
 			options.mode = "shoot"
 			GameUIScene.selectMode(options);
 			gameFunctions.btn_sprite[0].updateText("trigger shoot")
 			if(gameFunctions.params.player_side === gameFunctions.current_side){
 				gameFunctions.btn_sprite[0].showButton();				
-			}
-			GameUIScene.mode_state++;
+			}		
+
+			connFunctions.saveGame("shoot");
+			gameFunctions.mode_state++;
 			break;
 		case 3:
 			//activate shoot
@@ -340,8 +342,9 @@ GameUIScene.advanceMode = () => {
 			if(gameFunctions.params.player_side === gameFunctions.current_side){
 				GameScene.resetTempSprites();				
 				gameFunctions.btn_sprite[0].showButton();
-			}
-			GameUIScene.mode_state++;
+			}	
+			connFunctions.saveGame("charge");			
+			gameFunctions.mode_state++;
 			break;
 		case 5:
 			//activate shoot
@@ -361,8 +364,9 @@ GameUIScene.advanceMode = () => {
 			gameFunctions.btn_sprite[0].updateText("trigger fight")
 			if(gameFunctions.params.player_side === gameFunctions.current_side){
 				gameFunctions.btn_sprite[0].showButton();				
-			}
-			GameUIScene.mode_state++;
+			}		
+			connFunctions.saveGame("fight");
+			gameFunctions.mode_state++;
 			break;
 		case 7:
 			//activate fight
@@ -378,21 +382,23 @@ GameUIScene.advanceMode = () => {
 			gameFunctions.btn_sprite[0].updateText("end turn")
 			if(gameFunctions.params.player_side === gameFunctions.current_side){
 				gameFunctions.btn_sprite[0].showButton();				
-			}
-			GameUIScene.mode_state++;
+			}		
+
+			connFunctions.saveGame("end turn");
+			gameFunctions.mode_state++;
 			break;
 		case 9:
 			//activate end turn
 			GameScene.sfxHandler("end_turn")
 			GameUIScene.mode_check_state = 1;
-			// GameUIScene.mode_state = 0;
+			// gameFunctions.mode_state = 0;
 			// GameUIScene.advanceMode();
 			GameUIScene.nextSide();			
 			break;
 	}
 	
 	// if(mode_triggered === true){
-	// 	GameUIScene.mode_state++;	
+	// 	gameFunctions.mode_state++;	
 	// }
 }
 
@@ -666,8 +672,6 @@ GameUIScene.nextSide = () => {
 	if(GameScene.online === false){
 		GameScene.advanceSide()
 	}else{
-		
-		connFunctions.saveGame();
 		
 		let data = {
 			functionGroup: "socketFunctions",  

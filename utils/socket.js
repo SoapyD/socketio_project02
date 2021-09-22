@@ -1,7 +1,7 @@
 // const deckController = require('../controllers/deck');
 
-const functionsUtil = require('../util/functions');
-const queriesUtil = require('../util/queries');
+const functionsUtil = require('./functions');
+const queriesUtil = require('./queries');
 
 let availableFunctions = {};
 

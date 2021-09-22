@@ -11,6 +11,14 @@ SBT GAME NOTES
 
 -Have "players" as a dropdown menu with a minimum of 2 players to be selectable. Auto-select 2 players to start with
 
+-Load Issues
+    -DONE -Current side was incorrect. Which is probably linked to the "advance side" button
+    -DONE -Buttons aren't showing
+    -DONE -Mode is incorrect
+    -Shot tallies aren't appearing properly once the game is reloaded
+
+
+-Write in a check to clear live tiles drawn when the mode goes to a non moving action
 
 -See if I can make the pathfinding process async
 -if a sides/start points aren't set properly, don't allow the game to advance

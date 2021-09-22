@@ -326,7 +326,7 @@ var GameScene = new Phaser.Class({
 				// created_unit.drawHealth()
 
 				//THIS FUNCTIONS NEEDS TURNING BACK ON BUT CURRENTLY IS CAUSING ERRORS WHEN RUN
-				// created_unit.updateUnitElements()
+				created_unit.updateUnitElements(created_unit.sprite)
 				
 			})			
 		}
@@ -650,6 +650,8 @@ GameScene.selectMode = (options) => {
 	
 	if(options.mode){
 		gameFunctions.mode = options.mode
+	
+
 		GameScene.selected_unit = undefined;
 		
 		//RESET ALL PLAYER ACTIONS
