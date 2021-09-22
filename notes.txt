@@ -15,7 +15,7 @@ SBT GAME NOTES
     -DONE -Current side was incorrect. Which is probably linked to the "advance side" button
     -DONE -Buttons aren't showing
     -DONE -Mode is incorrect
-    -Shot tallies aren't appearing properly once the game is reloaded
+    -DONE -Shot tallies aren't appearing properly once the game is reloaded
 
 
 -Write in a check to clear live tiles drawn when the mode goes to a non moving action

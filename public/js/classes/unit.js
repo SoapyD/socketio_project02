@@ -70,6 +70,7 @@ const unit = class {
 		this.depth_cohesion = 1;
 		this.depth_fight_radius = 1;
 		this.depth_text = 20;
+		this.depth_text_box = 10;
 		
 		
 		//SPRITES
@@ -125,7 +126,7 @@ const unit = class {
 			strokeThickness: 1
 		},		
 		this.text = options.scene.add.text(this.sprite.x, this.sprite.y - (this.sprite.displayHeight / 2), "", this.text_style).setDepth(this.depth_text);
-		this.text_graphic = options.scene.add.graphics();
+		this.text_graphic = options.scene.add.graphics().setDepth(this.depth_text_box);
 		
 		
 		// this.group = options.scene.add.group();		
@@ -408,7 +409,7 @@ const unit = class {
 				string = this.fight_targets.length + "/" + this.fight_max_targets
 				break;				
 		}
-		
+
 		if(string !== ""){
 
 			this.text.setText(string);
@@ -416,7 +417,7 @@ const unit = class {
 			this.text.y = sprite.y - (this.sprite.displayHeight / 2) + 10
 
 			this.text_graphic.clear();
-			this.text_graphic.fillStyle(0xFFFFFF).setDepth(this.depth_text);
+			this.text_graphic.fillStyle(0xFFFFFF).setDepth(this.depth_text_box);
 			this.text_graphic.fillRect(this.text.x, this.text.y, this.text.width, this.text.height);
 		}
 
