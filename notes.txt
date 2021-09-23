@@ -11,10 +11,6 @@ SBT GAME NOTES
 
 -Have "players" as a dropdown menu with a minimum of 2 players to be selectable. Auto-select 2 players to start with
 
--players still being pulled into the same room when you don't want it
-    -start a 2 playerm game, perform an action then both leaves
-    -if a player then tries to start a new room with 1 player, the other player is pulled into that game
-
 -Saving and reloading
     -When a game is reloaded and the next action is played, the button doesn't come back properly, only the text does
     -I think more than one player causes the game to be saved multiple times. Need to check and correct
@@ -49,6 +45,11 @@ DONE
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+-DONE -players still being pulled into the same room when you don't want it
+    -start a 2 playerm game, perform an action then both leaves
+    -if a player then tries to start a new room with 1 player, the other player is pulled into that game
+
 
 -DONE - There's far too much data being sent with the save function when it comes to unit data. Need to strip it down so memory isn't exhausted.
 
