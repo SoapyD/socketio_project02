@@ -11,19 +11,13 @@ SBT GAME NOTES
 
 -Have "players" as a dropdown menu with a minimum of 2 players to be selectable. Auto-select 2 players to start with
 
--Load Issues
-    -DONE -Current side was incorrect. Which is probably linked to the "advance side" button
-    -DONE -Buttons aren't showing
-    -DONE -Mode is incorrect
-    -DONE -Shot tallies aren't appearing properly once the game is reloaded
-
 
 -Write in a check to clear live tiles drawn when the mode goes to a non moving action
 
 -See if I can make the pathfinding process async
 -if a sides/start points aren't set properly, don't allow the game to advance
 
--if a player rejoins the game and are passed completed setup options, bypass the "select armies" screen and put them back into the game
+
 -see if different icons can be shown in the mini map rather than just reshow the map as-is
 
 -Load up armies associated with users in army selection dropdowns
@@ -33,10 +27,10 @@ SBT GAME NOTES
 
 -error socket messages need to be returned to the originating player only
 
--BUG - There's far too much data being sent with the save function when it comes to unit data. Need to strip it down so memory isn't exhausted.
 
-
-
+-messages
+    -Stop server messages that're specific to a user being sent out to everyone
+    -Scroll the messages when the message box goes beyond it's max height
 
 
 //////////////////////////////////////////////////////////////////////
@@ -46,6 +40,17 @@ DONE
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+-DONE - There's far too much data being sent with the save function when it comes to unit data. Need to strip it down so memory isn't exhausted.
+
+-DONE -Load Issues
+    -DONE -Current side was incorrect. Which is probably linked to the "advance side" button
+    -DONE -Buttons aren't showing
+    -DONE -Mode is incorrect
+    -DONE -Shot tallies aren't appearing properly once the game is reloaded
+
+-DONE -if a player rejoins the game and are passed completed setup options, bypass the "select armies" screen and put them back into the game
+
 
 -DONE -Fix issue where buttons aren't selectable on the top html bar once the game starts 
     -The issue is that the gameContainer element is covering the buttons
