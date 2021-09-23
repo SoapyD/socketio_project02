@@ -41,6 +41,7 @@ exports.checkMessages = (io,namespace) => {
                 sockets = functionsUtil.removeFromArray(sockets, socket.id)
                 room.sockets = sockets;
                 room.save();
+				socket.leave(room.room_name)
                 console.log("user disconnected: "+socket.id);
             }
 
@@ -57,7 +58,7 @@ exports.test = async(network, data)  => {
         function: "test",
         message: data.message
     }
-    network.io.of(network.namespace).emit("message_client", return_data)
+    network.io.of(network.socket.id).emit("message_client", return_data)
 }
 
 
@@ -157,7 +158,7 @@ exports.createRoom = async(network, data)  => {
 				// ,player_side: side
 				,scene: "ArmySelectMenuScene"
 			}
-			network.socket.join(data.roomName)
+			network.socket.join(data.room_name)
 			//send room info back to socket
 			network.io.to(network.socket.id).emit('message_client', return_data);
          
@@ -256,7 +257,7 @@ exports.joinRoom = async(network, data)  => {
         }
 
 		//MESSAGE PLAYER WITH JOIN RESULTS
-        network.io.of(network.namespace).emit("message_client", return_data)     
+        network.io.of(network.socket.id).emit("message_client", return_data)     
 
 		if(saved_room){
 			
@@ -292,7 +293,7 @@ exports.joinRoom = async(network, data)  => {
 				// ,room: saved_room
 				,scene: next_scene
 			}
-			network.socket.join(data.roomName)
+			network.socket.join(data.room_name)
 			//send room info back to socket
 			network.io.to(network.socket.id).emit('message_client', return_data);
 			
@@ -339,7 +340,7 @@ exports.messageAll = (network, data) => {
 		message: data.message,
 	}	
 	
-	network.io.of(network.namespace).emit("message_client", return_data)     	
+	network.io.in(data.room_name).emit("message_client", return_data)     	
 }
 
 
@@ -351,7 +352,7 @@ exports.selectArmy = (network, data) => {
 		message: "Army Selected"
 	}	
 	
-	network.io.of(network.namespace).emit("message_client", return_data)     	
+	network.io.in(data.room_name).emit("message_client", return_data)     	
 }
 
 exports.sceneTransition = (network, data) => {
@@ -363,7 +364,7 @@ exports.sceneTransition = (network, data) => {
 		message: data.message
 	}	
 	
-	network.io.of(network.namespace).emit("message_client", return_data)     	
+	network.io.in(data.room_name).emit("message_client", return_data)     	
 }
 
 
@@ -411,7 +412,7 @@ exports.updateRoom = async(network, data) => {
 							message: "room updated"
 						}	
 
-						network.io.of(network.namespace).emit("message_client", return_data)
+						network.io.in(data.room_name).emit("message_client", return_data)
 						
 						break;
 					case 'save config':
@@ -428,7 +429,7 @@ exports.updateRoom = async(network, data) => {
 							}
 						}	
 
-						network.io.of(network.namespace).emit("message_client", return_data)						
+						network.io.in(data.room_name).emit("message_client", return_data)						
 						break;	
 				}
 				

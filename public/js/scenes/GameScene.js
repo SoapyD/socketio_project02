@@ -388,6 +388,7 @@ var GameScene = new Phaser.Class({
 							let data = {
 								functionGroup: "socketFunctions",  
 								function: "messageAll",
+								room_name: gameFunctions.params.room_name,
 								returnFunctionGroup: "connFunctions",
 								returnFunction: "runUnitFunction", //test
 								returnParameters: {
@@ -409,6 +410,7 @@ var GameScene = new Phaser.Class({
 							let data = {
 								functionGroup: "socketFunctions",  
 								function: "messageAll",
+								room_name: gameFunctions.params.room_name,
 								returnFunctionGroup: "connFunctions",
 								returnFunction: "runUnitFunction", //test
 								returnParameters: {
@@ -430,6 +432,7 @@ var GameScene = new Phaser.Class({
 							let data = {
 								functionGroup: "socketFunctions",  
 								function: "messageAll",
+								room_name: gameFunctions.params.room_name,
 								returnFunctionGroup: "connFunctions",
 								returnFunction: "runUnitFunction", //test
 								returnParameters: {
@@ -451,6 +454,7 @@ var GameScene = new Phaser.Class({
 							let data = {
 								functionGroup: "socketFunctions",  
 								function: "messageAll",
+								room_name: gameFunctions.params.room_name,
 								returnFunctionGroup: "connFunctions",
 								returnFunction: "runUnitFunction", //test
 								returnParameters: {
@@ -481,6 +485,7 @@ var GameScene = new Phaser.Class({
 							let data = {
 								functionGroup: "socketFunctions",  
 								function: "messageAll",
+								room_name: gameFunctions.params.room_name,
 								returnFunctionGroup: "connFunctions",
 								returnFunction: "runUnitFunction", //test
 								returnParameters: {
@@ -502,6 +507,7 @@ var GameScene = new Phaser.Class({
 							let data = {
 								functionGroup: "socketFunctions",  
 								function: "messageAll",
+								room_name: gameFunctions.params.room_name,
 								returnFunctionGroup: "connFunctions",
 								returnFunction: "runUnitFunction", //test
 								returnParameters: {
@@ -522,6 +528,7 @@ var GameScene = new Phaser.Class({
 							let data = {
 								functionGroup: "socketFunctions",  
 								function: "messageAll",
+								room_name: gameFunctions.params.room_name,
 								returnFunctionGroup: "connFunctions",
 								returnFunction: "runUnitFunction", //test
 								returnParameters: {
@@ -542,6 +549,7 @@ var GameScene = new Phaser.Class({
 							let data = {
 								functionGroup: "socketFunctions",  
 								function: "messageAll",
+								room_name: gameFunctions.params.room_name,
 								returnFunctionGroup: "connFunctions",
 								returnFunction: "runUnitFunction", //test
 								returnParameters: {

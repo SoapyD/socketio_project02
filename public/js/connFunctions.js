@@ -107,6 +107,7 @@ connFunctions.checkMessages = (socket) => {
         const data = {
             functionGroup: "socketFunctions",  
             function: "messageAll",
+			room_name: gameFunctions.params.room_name,
 			
 			returnFunctionGroup: "connFunctions",
 			returnFunction: "printMessage",

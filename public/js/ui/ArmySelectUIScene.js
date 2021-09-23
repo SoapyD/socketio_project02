@@ -62,37 +62,12 @@ var ArmySelectUIScene = new Phaser.Class({
         
         //ADD CLICK FUNCTIONALITY TO THE CHARACTER SELECTOR
         character_form.on('click', function (event) {
-			// if (event.target.name === 'select')
-			// {
-			// var character = this.getChildByName('characters');
-
-			// let data = {
-			// functionGroup: "socketFunctions",  
-			// function: "selectArmy",			
-			// }
-
-			// connFunctions.messageServer(data)
-
-			// }
 
             if (event.target.name === 'sides')
             {
 				let num = event.target.id.indexOf('_')
 				let player_number = parseInt(event.target.id.substring(0,num))
-				// console.log(player_id);
-				
-				// let data = {
-				// 	functionGroup: "socketFunctions",  
-				// 	function: "messageAll",
-				// 	returnFunctionGroup: "connFunctions",
-				// 	returnFunction: "updateRoomInfo", //test
-				// 	returnParameters: {
-				// 		player_number: player_number,
-				// 		type: "side",
-				// 		value: event.target.value
-				// 	},
-				// 	message: "set side for player "+player_number
-				// }
+
 				let data = {
 					functionGroup: "socketFunctions",  
 					function: "updateRoom",
@@ -110,21 +85,7 @@ var ArmySelectUIScene = new Phaser.Class({
             {
 				let num = event.target.id.indexOf('_')
 				let player_number = parseInt(event.target.id.substring(0,num))
-				// console.log(player_id);
-				
-				// let data = {
-				// 	functionGroup: "socketFunctions",  
-				// 	function: "messageAll",
-				// 	returnFunctionGroup: "connFunctions",
-				// 	returnFunction: "updateRoomInfo", //test
-				// 	returnParameters: {
-				// 		player_number: player_number,
-				// 		type: "start",
-				// 		value: event.target.value
-				// 	},
-				// 	message: "set start for player "+player_number
-				// }
-				// connFunctions.messageServer(data)
+
 				let data = {
 					functionGroup: "socketFunctions",  
 					function: "updateRoom",
@@ -140,21 +101,7 @@ var ArmySelectUIScene = new Phaser.Class({
 			}			
             if (event.target.name === 'armies')
             {
-				// console.log(event.target.value);
-				
-				// let data = {
-				// 	functionGroup: "socketFunctions",  
-				// 	function: "messageAll",
-				// 	returnFunctionGroup: "connFunctions",
-				// 	returnFunction: "updateRoomInfo", //test
-				// 	returnParameters: {
-				// 		player_number: gameFunctions.params.player_number,
-				// 		type: "army",
-				// 		value: event.target.value
-				// 	},
-				// 	message: "set army for player "+gameFunctions.params.player_number
-				// }
-				// connFunctions.messageServer(data)
+
 				let data = {
 					functionGroup: "socketFunctions",  
 					function: "updateRoom",
@@ -177,6 +124,7 @@ var ArmySelectUIScene = new Phaser.Class({
 					functionGroup: "socketFunctions",  
 					function: "sceneTransition",
 					scene: "GameScene",
+					room_name: gameFunctions.params.room_name,
 					message: "Starting Game Scene"
                 }
                     

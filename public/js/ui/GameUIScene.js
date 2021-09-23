@@ -89,6 +89,7 @@ var GameUIScene = new Phaser.Class({
 						let data = {
 							functionGroup: "socketFunctions",  
 							function: "messageAll",
+							room_name: gameFunctions.params.room_name,
 							returnFunctionGroup: "GameUIScene",
 							returnFunction: "runAdvanceMode",
 							message: "advancing mode"
@@ -413,6 +414,7 @@ GameUIScene.selectMode = (options) => {
 		let data = {
 			functionGroup: "socketFunctions",  
 			function: "messageAll",
+			room_name: gameFunctions.params.room_name,
 			returnFunctionGroup: "GameScene",
 			returnFunction: "selectMode", //selectMode
 			message: "select mode",
@@ -446,6 +448,7 @@ GameUIScene.activateMovement = () => {
 					let data = {
 						functionGroup: "socketFunctions",  
 						function: "messageAll",
+						room_name: gameFunctions.params.room_name,
 						returnFunctionGroup: "connFunctions",
 						returnFunction: "runUnitFunction",
 						returnParameters: {
@@ -494,6 +497,7 @@ GameUIScene.activateShooting = () => {
 				let data = {
 					functionGroup: "socketFunctions",  
 					function: "messageAll",
+					room_name: gameFunctions.params.room_name,
 					returnFunctionGroup: "connFunctions",
 					returnFunction: "runUnitFunction",
 					returnParameters: {
@@ -563,6 +567,7 @@ GameUIScene.activateCharging = () => {
 						let data = {
 							functionGroup: "socketFunctions",  
 							function: "messageAll",
+							room_name: gameFunctions.params.room_name,
 							returnFunctionGroup: "connFunctions",
 							returnFunction: "runUnitFunction",
 							returnParameters: {
@@ -620,6 +625,7 @@ GameUIScene.activateFighting = () => {
 				let data = {
 					functionGroup: "socketFunctions",  
 					function: "messageAll",
+					room_name: gameFunctions.params.room_name,
 					returnFunctionGroup: "connFunctions",
 					returnFunction: "runUnitFunction",
 					returnParameters: {
@@ -676,6 +682,7 @@ GameUIScene.nextSide = () => {
 		let data = {
 			functionGroup: "socketFunctions",  
 			function: "messageAll",
+			room_name: gameFunctions.params.room_name,
 			returnFunctionGroup: "GameScene",
 			returnFunction: "advanceSide",
 			returnParameters: {},
