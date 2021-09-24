@@ -19,7 +19,7 @@ SBT GAME NOTES
 
 -Write in a check to clear live tiles drawn when the mode goes to a non moving action
 
--See if I can make the pathfinding process async
+
 -if a sides/start points aren't set properly, don't allow the game to advance
 
 
@@ -45,6 +45,8 @@ DONE
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+-DONE -See if I can make the pathfinding process async
 
 -DONE -players still being pulled into the same room when you don't want it
     -start a 2 playerm game, perform an action then both leaves
