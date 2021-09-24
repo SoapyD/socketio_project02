@@ -576,7 +576,102 @@ const unit = class {
 		radius_graphic.strokePath();		
 	}	
 
+
+	setupDrawLiveTiles() {
+
+		this.live_tiles = [];
+		this.check_tiles = [];
+		this.check_tiles_position = 0;
+		let gridX = Math.floor(this.sprite.x/GameScene.tile_size);
+		let gridY = Math.floor(this.sprite.y/GameScene.tile_size);	
+
+		let startX = gridX - this.movement
+		let startY = gridY - this.movement
+		let endX = gridX + this.movement
+		let endY = gridY + this.movement
+		if(startX < 0) startX = 0
+		if(startY < 0) startY = 0
+		if(endX > GameScene.map.width) endX = GameScene.map.width
+		if(endY > GameScene.map.height) endY = GameScene.map.height
+
+		for(let y=startY;y<=endY;y++){
+			for(let x=startX;x<=endX;x++){
+				let options = {
+					pointer: {
+					x: x * GameScene.map.tileWidth,
+					y: y * GameScene.map.tileHeight
+					}
+				}
+				this.check_tiles.push(options)
+			}
+		}
+
+		this.runDrawLiveTiles()
+	}
+
+	runDrawLiveTiles() {
+		this.generatePath(this.check_tiles[this.check_tiles_position], "saveDrawLiveTiles", "saveDrawLiveTiles")
+	}
 	
+	saveDrawLiveTiles(process) {
+		if(process.path_found === true){
+			// console.log("path found")
+
+			//ADD THE PATH ELEMENTS TO THE LIVE TILES LIST
+			if(process.path){
+				if(process.path.length){
+
+					let found = false;
+					process.path.forEach((pos) => {
+						found = this.live_tiles.some(i => i.x === pos.x && i.y === pos.y);
+						if(found === false){
+							this.live_tiles.push(pos);
+						}
+					})
+				}
+			}
+
+		}else{
+			// console.log("no path")
+			//no path found
+		}
+		this.check_tiles_position++;
+
+		// if(this.check_tiles_position < this.check_tiles.length){
+		// 	this.runDrawLiveTiles()
+		// }
+
+		
+		//loop through the remaining check tiles until one not found on the lives tiles list is found
+		let checking_tile = false
+		for(this.check_tiles_position; this.check_tiles_position<this.check_tiles.length;this.check_tiles_position++){
+
+			let check_tile = this.check_tiles[this.check_tiles_position]
+			
+			let found = this.live_tiles.some(i => i.x === check_tile.x + this.sprite_offset && i.y === check_tile.y + this.sprite_offset);
+			if(found === false){
+				checking_tile = true;
+
+				this.runDrawLiveTiles();
+				break;
+			}
+		}
+
+		if(checking_tile === false){
+			GameScene.resetTempSprites();
+			this.live_tiles.forEach((tile)=> {
+				this.scene.temp_sprites.push(
+					this.scene.physics.add.image(
+						tile.x * GameScene.map.tileWidth,
+						tile.y * GameScene.map.tileHeight,"marker").setDepth(0)
+				)
+			})			
+		}
+		/**/
+	}
+
+
+	/*
 	drawLiveTiles() {
 		
 		// return new Promise(resolve => {
@@ -611,11 +706,11 @@ const unit = class {
 				if(found === false){
 					let path = this.generatePath(options);
 
+					//LOOP THROUGH THE FOUND PATH AND ADD ANY TILES THAT AREN'T ALREADY IN THE LIVE TILES COLLECTION
 					if(path){
 						if(path.length){
 
 							path.forEach((pos) => {
-								// live_tiles.push(pos);
 								found = live_tiles.some(i => i.x === pos.x && i.y === pos.y);
 								if(found === false){
 									live_tiles.push(pos);
@@ -637,12 +732,8 @@ const unit = class {
 					tile.y * GameScene.map.tileHeight,"marker").setDepth(0)
 			)
 		})
-		
-		// console.log("END DRAW")
-		// resolve('resolved');
-		// })
 	}
-	
+	*/
 	
 	
 // ####### #     # #     #  #####  ####### ### ####### #     #  #####  
@@ -680,8 +771,8 @@ const unit = class {
 				GameScene.selected_unit = this.parent;
 				
 				if(gameFunctions.mode === 'move' || gameFunctions.mode === 'charge'){
-					console.log("start")
-					// this.parent.drawLiveTiles();
+					// console.log("start")
+					this.parent.setupDrawLiveTiles();
 
 				}
 				
@@ -789,7 +880,7 @@ const unit = class {
 // #     # #     #   # #   #       
 // #     # #######    #    ####### 	
 	
-	generatePath(options, callback) {
+	generatePath(options, callback, fail_callback) {
 		let scene = this.scene;
 		let pointer = options.pointer;
 
@@ -807,6 +898,7 @@ const unit = class {
 			var fromY = Math.floor(this.sprite.y/GameScene.tile_size);		
 
 			// let path = GameScene.pathfinder.findPath(this, fromX, fromY, toX, toY, this.size)
+
 			GameScene.pathfinder.setup({
 				parent:this, 
 				pointer: options.pointer,
@@ -815,7 +907,8 @@ const unit = class {
 				x_end: toX, 
 				y_end: toY, 
 				obj_size: this.size,
-				callback: callback
+				callback: callback,
+				fail_callback: fail_callback
 			})
 
 			/*
@@ -838,8 +931,6 @@ const unit = class {
 	
 	findPath(options) {
 
-		// let pointer = options.pointer;
-		// let path = this.generatePath(options);
 		this.generatePath(options,  "usePath");
 	}
 

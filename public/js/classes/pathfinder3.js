@@ -24,6 +24,7 @@ const pathProcess = class {
         this.path_found = false;
 		this.path = [];
 		this.callback = options.callback;
+		this.fail_callback = options.fail_callback;
 		
 		this.current_checks = 0;
 		this.max_checks = 100;
@@ -40,9 +41,10 @@ const pathfinder = class {
 		
 		
 		this.current_checks = 0;
-		this.max_checks = 100       
+		this.max_checks = 1000;       
 		
 		this.process_list = [];
+		// this.new_processes = [];
 	}
 	
 	
@@ -64,6 +66,7 @@ const pathfinder = class {
 
 	update() {
 
+		/*
 		let active_process_list = [];
 		this.process_list.forEach((process) => {
 			if(process.running === true){
@@ -75,11 +78,27 @@ const pathfinder = class {
 				active_process_list.push(process)
 			}
 			else{
-				//no nothing
+				console.log("NOT RUNNING")
 			}
 		})
+		*/
+		let i = this.process_list.length;
 
-		this.process_list = active_process_list;
+		while(i--){
+			let process = this.process_list[i]
+			if(process.running === true){
+				// console.log("running")
+				//only run the pathfinding process if the check number hasn't been reached yet
+				if(this.current_checks <= this.max_checks){
+					this.run(process)
+				}
+			}
+			else{
+				// console.log("NOT RUNNING")
+				this.process_list.splice(i,1);
+			}
+		}
+
 		this.current_checks = 0;
 	}
 
@@ -186,7 +205,7 @@ const pathfinder = class {
 
 			}
 			
-			// process.path = process.path.slice(0,process.parent.movement + 1)
+			process.path = process.path.slice(0,process.parent.movement + 1)
 
 			// //OFFSET PATH SO THEY'RE IN THE MIDDLE OF EACH TILE
 			process.path.forEach((pos) => {
@@ -202,6 +221,11 @@ const pathfinder = class {
         }
         else{         
 			if(process.current_checks >= process.max_checks){
+
+				if(process.fail_callback){
+					process.parent[process.fail_callback](process)
+				}
+
 				process.running = false;
 			}
         }
