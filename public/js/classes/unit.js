@@ -681,15 +681,7 @@ const unit = class {
 				
 				if(gameFunctions.mode === 'move' || gameFunctions.mode === 'charge'){
 					console.log("start")
-					this.parent.drawLiveTiles();
-					// console.log("end")
-					
-					// let options = {
-					// 	x: this.x,
-					// 	y: this.y,
-					// 	movement: this.parent.movement
-					// }
-					// GameScene.setupLiveTiles(options);
+					// this.parent.drawLiveTiles();
 
 				}
 				
@@ -797,7 +789,7 @@ const unit = class {
 // #     # #     #   # #   #       
 // #     # #######    #    ####### 	
 	
-	generatePath(options) {
+	generatePath(options, callback) {
 		let scene = this.scene;
 		let pointer = options.pointer;
 
@@ -814,8 +806,22 @@ const unit = class {
 			var fromX = Math.floor(this.sprite.x/GameScene.tile_size);
 			var fromY = Math.floor(this.sprite.y/GameScene.tile_size);		
 
-			let path = GameScene.pathfinder.findPath(this, fromX, fromY, toX, toY, this.size)
-			
+			// let path = GameScene.pathfinder.findPath(this, fromX, fromY, toX, toY, this.size)
+			GameScene.pathfinder.setup({
+				parent:this, 
+				pointer: options.pointer,
+				x_start: fromX, 
+				y_start: fromY, 
+				x_end: toX, 
+				y_end: toY, 
+				obj_size: this.size,
+				callback: callback
+			})
+
+			/*
+			GameScene.pathfinder.run(process, callback);
+			let path  = GameScene.pathfinder.run(process);
+
 			//STRIP PATH BACK TO MAX MOVEMENT LENGTH
 			path = path.slice(0,this.movement + 1)
 
@@ -826,13 +832,21 @@ const unit = class {
 			})
 			
 			return path;
+			*/
 		}
 	}
 	
 	findPath(options) {
 
-		let pointer = options.pointer;
-        let path = this.generatePath(options);
+		// let pointer = options.pointer;
+		// let path = this.generatePath(options);
+		this.generatePath(options,  "usePath");
+	}
+
+	usePath(process){
+
+		let path = process.path
+		let pointer = process.pointer
 		
 		this.path = []
 		path.forEach((pos) => {
@@ -959,158 +973,6 @@ const unit = class {
 	}
 	
 	
-	// // findPath(scene, pointer) {
-	// findPath(options) {
-
-	// 	let scene = this.scene;
-	// 	let pointer = options.pointer;
-
-	// 	var x = pointer.x;
-	// 	var y = pointer.y;		
-	// 	var toX = Math.floor(x/GameScene.tile_size);
-	// 	var toY = Math.floor(y/GameScene.tile_size);	
-		
-		
-	// 	if(toX < GameScene.map.width && toY < GameScene.map.height
-	// 	  && toX >= 0 && toY >= 0){
-
-	// 		var fromX = Math.floor(this.sprite.x/GameScene.tile_size);
-	// 		var fromY = Math.floor(this.sprite.y/GameScene.tile_size);		
-
-	// 		let path = GameScene.pathfinder.findPath(this, fromX, fromY, toX, toY, this.size)
-			
-	// 		this.path = []
-	// 		path.forEach((pos) => {
-	// 			let p = {
-	// 				x: pos.x,
-	// 				y: pos.y
-	// 			}
-	// 			this.path.push(p)
-	// 		})			
-			
-	// 		//STRIP PATH BACK TO MAX MOVEMENT LENGTH
-	// 		this.path = this.path.slice(0,this.movement + 1)
-
-			
-	// 		//OFFSET PATH SO THEY'RE IN THE MIDDLE OF EACH TILE
-	// 		this.path.forEach((pos) => {
-	// 			pos.x += this.sprite_offset;
-	// 			pos.y += this.sprite_offset;
-	// 		})
-			
-			
-	// 		//SKIP PATH IF THE UNIT PLACEMENT OVERLAPS ANOTHER UNIT
-	// 		let skip = false
-	// 		let last_path_pos = 0
-			
-	// 		//CHECK THROUGH THE PATH AND KEEP TRACK OF THE LAST SPACE THAT DOESN'T INTERSECT ANOTHER PLAYER
-	// 		this.path.forEach((pos, i) => {
-	// 			let check = false;				
-	// 			gameFunctions.units.forEach((unit) => {
-					
-	// 				if(unit.id !== this.id){
-						
-	// 					this.sprite_ghost.x = pos.x * GameScene.tile_size;
-	// 					this.sprite_ghost.y = pos.y * GameScene.tile_size;
-
-	// 					let temp_check = false
-	// 					// temp_check = this.checkSpriteOverlap(unit.sprite, this.sprite_ghost)
-	// 					// if(temp_check === true){
-	// 					// 	check = temp_check
-	// 					// }
-						
-	// 					temp_check = this.checkSpriteOverlap(unit.sprite_ghost, this.sprite_ghost)
-	// 					if(temp_check === true){
-	// 						check = temp_check
-	// 					}
-						
-	// 				}
-
-	// 			})
-				
-	// 			// 
-	// 			if(check === false){
-	// 				last_path_pos = i;
-	// 			}
-	// 		})
-			
-	// 		// console.log(this.path.length, last_path_pos + 1)
-			
-	// 		//UPDATE THE PATH IF IT'S LENGTH INTERSECTS ANOTHER UNIT
-	// 		if(this.path.length >= last_path_pos + 1){
-	// 			this.path = this.path.slice(0,last_path_pos + 1)
-	// 		}
-
-						
-	// 		//DON'T ALLOW PATH TO GENERATE IF MODE IS CHARGE AND UNIT HAS NO FIGHTING DAMAGE
-	// 		// if(this.fight_damage === 0 && gameFunctions.mode === "fight"){
-	// 		// 	skip = true;
-	// 		// }
-			
-	// 		//SKIP IF IN CHARGE MODE AND UNIT HAD ALREADY SHOT
-	// 		if(this.shot === true && gameFunctions.mode === "charge"){
-	// 			skip = true;
-	// 			let options = {
-	// 				scene: GameScene.scene,
-	// 				pos: {
-	// 					x: GameScene.rectangle.x,
-	// 					y: GameScene.rectangle.y
-	// 				},
-	// 				text: "cannot charge, unit has shot"
-	// 			}
-	// 			new popup(options)
-	// 		}
-			
-	// 		if(this.path.length === 0){
-	// 			skip = true;
-	// 		}
-		
-			
-	// 		let on_unit = false;
-	// 		//SKIP IF THE POINTER IS OVER THE SHOOTING UNITS, put here so it doesn't play the clear sound
-	// 		if (this.sprite.getBounds().contains(pointer.x, pointer.y)) {
-	// 			skip = true;
-	// 			on_unit = true;
-	// 		}
-		
-	// 		if(skip === true && on_unit === false){
-	// 			GameScene.sfx['clear'].play();				
-	// 		}			
-			
-	// 		// console.log("skip: ",skip,"path: ",this.path)
-			
-	// 		//IF THE GHOST CLASHES WITH ANOTHER SPRITE OR GHOST, CANCEL THE MOVE
-	// 		if(skip === true){
-	// 			this.resetMove();
-				
-	// 		}
-	// 		else{
-				
-	// 			//if there's any cohesion needed, check it, otherwise just draw path
-	// 			if(this.cohesion > 0){
-	// 				this.cohesionCheck()
-	// 				GameScene.sfx['action'].play();
-	// 			}
-	// 			else{
-
-	// 				let colours = {
-	// 					line_colour: 0x00cccc,
-	// 					fill_colour: 0x2ECC40,
-	// 					line_alpha: 0.75,
-	// 					circle_alpha: 0.15,
-	// 					fill_alpha: 0.15,
-	// 					width: 5
-	// 				}
-
-	// 				this.drawPath(colours)
-					
-	// 				GameScene.sfx['action'].play();
-	// 			}
-				
-	// 		}	
-	// 	}
-	// }
-
 	cohesionCheck2() {
 		
 		//GET THE UNITS IN THE SQUAD

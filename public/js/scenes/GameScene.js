@@ -596,7 +596,9 @@ var GameScene = new Phaser.Class({
 				}
 			})
 		}
-    }
+
+		GameScene.pathfinder.update();
+	}
 });
 
 GameScene.sfxHandler = (sfx) => {
