@@ -147,8 +147,6 @@ GameUIScene.delay =	async(ms) => {
 GameUIScene.loadSingleButton = (scene) => {
 	let callbackParams;
 	let options;
-
-	console.log("create button")
 	
 	options = {
 		scene: scene, 
@@ -167,6 +165,7 @@ GameUIScene.loadSingleButton = (scene) => {
 	gameFunctions.btn_sprite.push(new button(options))
 
 	if(gameFunctions.units_preload.length === 0){
+		console.log("advance")
 		GameScene.advanceSide()
 		
 	}
@@ -341,7 +340,6 @@ GameUIScene.advanceMode = () => {
 			GameUIScene.selectMode(options);
 			gameFunctions.btn_sprite[0].updateText("trigger charge")
 			if(gameFunctions.params.player_side === gameFunctions.current_side){
-				GameScene.resetTempSprites();				
 				gameFunctions.btn_sprite[0].showButton();
 			}	
 			connFunctions.saveGame("charge");			
@@ -353,6 +351,7 @@ GameUIScene.advanceMode = () => {
 			activated = GameUIScene.activateCharging();
 
 			if(activated === true){
+				GameScene.resetTempSprites();
 				gameFunctions.btn_sprite[0].hideButton()
 				GameUIScene.mode_check_state = 1;
 			}

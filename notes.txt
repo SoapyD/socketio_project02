@@ -9,6 +9,11 @@ SBT GAME NOTES
 /////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////
 
+-player_side isn't being saved. Because of this when a game is rejoined, a player side isn't set for the player to buttons aren't revealed properly again.
+    -Set in the army selection step
+
+
+
 -Have "players" as a dropdown menu with a minimum of 2 players to be selectable. Auto-select 2 players to start with
 
 -Saving and reloading

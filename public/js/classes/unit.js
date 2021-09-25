@@ -610,6 +610,7 @@ const unit = class {
 	}
 
 	runDrawLiveTiles() {
+		// console.log('during: ',this.check_tiles_position)
 		this.generatePath(this.check_tiles[this.check_tiles_position], "saveDrawLiveTiles", "saveDrawLiveTiles")
 	}
 	
@@ -620,7 +621,6 @@ const unit = class {
 			//ADD THE PATH ELEMENTS TO THE LIVE TILES LIST
 			if(process.path){
 				if(process.path.length){
-
 					let found = false;
 					process.path.forEach((pos) => {
 						found = this.live_tiles.some(i => i.x === pos.x && i.y === pos.y);
@@ -628,6 +628,7 @@ const unit = class {
 							this.live_tiles.push(pos);
 						}
 					})
+
 				}
 			}
 
@@ -637,23 +638,23 @@ const unit = class {
 		}
 		this.check_tiles_position++;
 
-		// if(this.check_tiles_position < this.check_tiles.length){
-		// 	this.runDrawLiveTiles()
-		// }
-
 		
 		//loop through the remaining check tiles until one not found on the lives tiles list is found
 		let checking_tile = false
 		for(this.check_tiles_position; this.check_tiles_position<this.check_tiles.length;this.check_tiles_position++){
 
 			let check_tile = this.check_tiles[this.check_tiles_position]
-			
-			let found = this.live_tiles.some(i => i.x === check_tile.x + this.sprite_offset && i.y === check_tile.y + this.sprite_offset);
+			let check_x = (check_tile.pointer.x / GameScene.map.tileWidth) + this.sprite_offset
+			let check_y = (check_tile.pointer.y / GameScene.map.tileHeight) + this.sprite_offset
+				
+			let found = this.live_tiles.some(i => i.x === check_x && i.y === check_y);
 			if(found === false){
 				checking_tile = true;
-
+				// console.log('before: ',this.check_tiles_position)
 				this.runDrawLiveTiles();
 				break;
+			}else{
+				// console.log("found")
 			}
 		}
 
@@ -671,69 +672,6 @@ const unit = class {
 	}
 
 
-	/*
-	drawLiveTiles() {
-		
-		// return new Promise(resolve => {
-		let live_tiles = [];
-		let gridX = Math.floor(this.sprite.x/GameScene.tile_size);
-		let gridY = Math.floor(this.sprite.y/GameScene.tile_size);	
-
-		// console.log(gridX, gridY)
-		let startX = gridX - this.movement
-		let startY = gridY - this.movement
-		let endX = gridX + this.movement
-		let endY = gridY + this.movement
-		if(startX < 0) startX = 0
-		if(startY < 0) startY = 0
-		if(endX > GameScene.map.width) endX = GameScene.map.width
-		if(endY > GameScene.map.height) endY = GameScene.map.height
-
-		// console.log(startX,startY, endX, endY)
-
-		for(let y=startY;y<=endY;y++){
-			for(let x=startX;x<=endX;x++){
-				let options = {
-					pointer: {
-						x: x * GameScene.map.tileWidth,
-						y: y * GameScene.map.tileHeight
-					}
-				}
-				
-				//ONLY CHECK THE POSITION IF IT'S NOT ALREADY BEEN CHECKED
-				let found = live_tiles.some(i => i.x === x + this.sprite_offset && i.y === y + this.sprite_offset);
-
-				if(found === false){
-					let path = this.generatePath(options);
-
-					//LOOP THROUGH THE FOUND PATH AND ADD ANY TILES THAT AREN'T ALREADY IN THE LIVE TILES COLLECTION
-					if(path){
-						if(path.length){
-
-							path.forEach((pos) => {
-								found = live_tiles.some(i => i.x === pos.x && i.y === pos.y);
-								if(found === false){
-									live_tiles.push(pos);
-								}
-							})
-						}
-					}
-
-				}
-
-			}
-		}
-
-		GameScene.resetTempSprites();
-		live_tiles.forEach((tile)=> {
-			this.scene.temp_sprites.push(
-				this.scene.physics.add.image(
-					tile.x * GameScene.map.tileWidth,
-					tile.y * GameScene.map.tileHeight,"marker").setDepth(0)
-			)
-		})
-	}
-	*/
 	
 	
 // ####### #     # #     #  #####  ####### ### ####### #     #  #####  

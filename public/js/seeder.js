@@ -244,11 +244,11 @@ GameScene.seed3 = () => {
 	// options = {x: 3, y:2}
 	// GameScene.unit_setup.placeSquad(options)
 
-	options = {x: 14, y:2}
-	GameScene.unit_setup.placeTank(options)
+	// options = {x: 14, y:2}
+	// GameScene.unit_setup.placeTank(options)
 
-	// options = {x: 14, y:5}
-	// GameScene.unit_setup.placeGeneral(options)		
+	options = {x: 14, y:5}
+	GameScene.unit_setup.placeGeneral(options)		
 
 	// options = {x: 17, y:2}
 	// GameScene.unit_setup.placeSquad(options)
