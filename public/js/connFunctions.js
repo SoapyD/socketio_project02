@@ -248,7 +248,16 @@ connFunctions.setRoomInfo = (data) => {
 		
 		gameFunctions.units_preload = data.units;
 	}
-	
+	console.log(data)
+	console.log("test1")
+	if(data.forces){
+			console.log("test3")
+			if(data.forces[data.player_number]){
+				console.log("applied",data.forces[data.player_number].side)
+				gameFunctions.params.player_side = data.forces[data.player_number].side
+			}
+	}
+
 	// SLIDE THE MESSAGE BOARD UP
 	$('#message-form').slideToggle(1000);
 	$('#message-input').slideDown(1000);

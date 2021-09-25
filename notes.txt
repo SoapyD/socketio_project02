@@ -9,9 +9,9 @@ SBT GAME NOTES
 /////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////
 
--player_side isn't being saved. Because of this when a game is rejoined, a player side isn't set for the player to buttons aren't revealed properly again.
-    -Set in the army selection step
+-BUG -When the second player reenters the game they're seeing the action button when it should be hidden from them if it's not there turn
 
+-BUG -When a game is left and restarted, the joining of the second player causes a line in the updateRoomInfo function in connFunction to error on line 306
 
 
 -Have "players" as a dropdown menu with a minimum of 2 players to be selectable. Auto-select 2 players to start with
@@ -50,6 +50,10 @@ DONE
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+-DONE -player_side isn't being saved. Because of this when a game is rejoined, a player side isn't set for the player to buttons aren't revealed properly again.
+    -Set in the army selection step
+
 
 -DONE -See if I can make the pathfinding process async
 
