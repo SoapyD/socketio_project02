@@ -17,6 +17,14 @@ var GameScene = new Phaser.Class({
 		//CREATE A LOAD SCREEN FOR THE GAME
 		var width = this.cameras.main.width;
 		var height = this.cameras.main.height;
+
+
+		// ██       ██████   █████  ██████  ██ ███    ██  ██████        ███████  ██████ ██████  ███████ ███████ ███    ██ 
+		// ██      ██    ██ ██   ██ ██   ██ ██ ████   ██ ██             ██      ██      ██   ██ ██      ██      ████   ██ 
+		// ██      ██    ██ ███████ ██   ██ ██ ██ ██  ██ ██   ███ █████ ███████ ██      ██████  █████   █████   ██ ██  ██ 
+		// ██      ██    ██ ██   ██ ██   ██ ██ ██  ██ ██ ██    ██            ██ ██      ██   ██ ██      ██      ██  ██ ██ 
+		// ███████  ██████  ██   ██ ██████  ██ ██   ████  ██████        ███████  ██████ ██   ██ ███████ ███████ ██   ████		
+
 		var loadingText = this.make.text({
 			x: width / 2,
 			y: height / 2 - 50,
@@ -78,7 +86,12 @@ var GameScene = new Phaser.Class({
 			GameScene.scene.scene.launch("GameUIScene");			
 		});				
 		
-
+		// ██████   █████  ██████   █████  ███    ███ ███████ 
+		// ██   ██ ██   ██ ██   ██ ██   ██ ████  ████ ██      
+		// ██████  ███████ ██████  ███████ ██ ████ ██ ███████ 
+		// ██      ██   ██ ██   ██ ██   ██ ██  ██  ██      ██ 
+		// ██      ██   ██ ██   ██ ██   ██ ██      ██ ███████ 
+														   
 		
 		switch(instance_type){
 			case "DEV":
@@ -129,6 +142,13 @@ var GameScene = new Phaser.Class({
 		for(let i=0; i<max_sides; i++){
 			GameScene.unit_collisions.push(GameScene.scene.add.group());
 		}
+
+		// ██       ██████   █████  ██████         █████  ███████ ███████ ███████ ████████ ███████ 
+		// ██      ██    ██ ██   ██ ██   ██       ██   ██ ██      ██      ██         ██    ██      
+		// ██      ██    ██ ███████ ██   ██ █████ ███████ ███████ ███████ █████      ██    ███████ 
+		// ██      ██    ██ ██   ██ ██   ██       ██   ██      ██      ██ ██         ██         ██ 
+		// ███████  ██████  ██   ██ ██████        ██   ██ ███████ ███████ ███████    ██    ███████ 
+																								
 
 	
 		this.load.image('tileset', './img/maps/gridtiles.png');
@@ -186,6 +206,14 @@ var GameScene = new Phaser.Class({
 
     create: function()
     {
+
+		// ███    ███ ██    ██ ███████ ██  ██████          ██          ███████ ███████ ██   ██ 
+		// ████  ████ ██    ██ ██      ██ ██               ██          ██      ██       ██ ██  
+		// ██ ████ ██ ██    ██ ███████ ██ ██      █████ ████████ █████ ███████ █████     ███   
+		// ██  ██  ██ ██    ██      ██ ██ ██            ██  ██              ██ ██       ██ ██  
+		// ██      ██  ██████  ███████ ██  ██████       ██████         ███████ ██      ██   ██ 
+																							
+		
 		//SFX can only be set in the creation method once theyve been pre-loaded
 		GameScene.sfx = {}		
 		GameScene.sfx.select = this.sound.add('select', {volume: 0.1 * GameScene.master_sfx_volume});
@@ -203,8 +231,6 @@ var GameScene = new Phaser.Class({
 		
 		GameScene.sfx.death_man = this.sound.add('death_man', {volume: 0.3 * GameScene.master_sfx_volume});
 		GameScene.sfx.death_machine = this.sound.add('death_machine', {volume: 0.3 * GameScene.master_sfx_volume});
-		
-		
 		
 		
 		GameScene.music = []
@@ -225,7 +251,12 @@ var GameScene = new Phaser.Class({
 		})
 		
 		
-
+		// ███████ ███████ ████████ ██    ██ ██████        ████████  █████  ██████  ██      ███████ 
+		// ██      ██         ██    ██    ██ ██   ██          ██    ██   ██ ██   ██ ██      ██      
+		// ███████ █████      ██    ██    ██ ██████  █████    ██    ███████ ██████  ██      █████   
+		// 	    ██ ██         ██    ██    ██ ██               ██    ██   ██ ██   ██ ██      ██      
+		// ███████ ███████    ██     ██████  ██               ██    ██   ██ ██████  ███████ ███████ 
+																								 
 		
 		this.input.mouse.disableContextMenu();
 		
@@ -275,6 +306,13 @@ var GameScene = new Phaser.Class({
 			}			
 			
 		}
+
+		// ██       ██████   █████  ██████        ███████  █████  ██    ██ ███████ ██████  
+		// ██      ██    ██ ██   ██ ██   ██       ██      ██   ██ ██    ██ ██      ██   ██ 
+		// ██      ██    ██ ███████ ██   ██ █████ ███████ ███████ ██    ██ █████   ██   ██ 
+		// ██      ██    ██ ██   ██ ██   ██            ██ ██   ██  ██  ██  ██      ██   ██ 
+		// ███████  ██████  ██   ██ ██████        ███████ ██   ██   ████   ███████ ██████  
+
 		if(gameFunctions.units_preload.length > 0){
 			
 			let options = {
@@ -332,31 +370,21 @@ var GameScene = new Phaser.Class({
 			})			
 		}
 		
-
-		// GameScene.advanceSide() //MOVED TO GameUIScene
-
-		
-		// GameScene.text_array = []
-		// GameScene.grid.forEach((row, y) => {
-		// 	GameScene.text_array.push([]);
-		// 	row.forEach((column, x) => {
-		// 		let text = this.add.text(32 * x, 32 * y, GameScene.grid[y][x], { fill: '#00ff00' }).setDepth(20);
-		// 		GameScene.text_array[y].push(text)
-		// 	})
-		// })
-    	// text = this.add.text(10, 10, '', { fill: '#00ff00' }).setDepth(1);
-		
-
-		
     },
 
     update: function (time, delta)
     {
-		
-		
+				
 		// setTimeout(() => { 
 			GameScene.musicHandler(); 
 		// }, 1000);
+
+
+		// ███    ███  █████  ██████  ██   ██ ███████ ██████  
+		// ████  ████ ██   ██ ██   ██ ██  ██  ██      ██   ██ 
+		// ██ ████ ██ ███████ ██████  █████   █████   ██████  
+		// ██  ██  ██ ██   ██ ██   ██ ██  ██  ██      ██   ██ 
+		// ██      ██ ██   ██ ██   ██ ██   ██ ███████ ██   ██ 
 
 		GameScene.rectangle.x = GameScene.camera.midPoint.x
 		GameScene.rectangle.y = GameScene.camera.midPoint.y		
@@ -377,6 +405,12 @@ var GameScene = new Phaser.Class({
 		
 		if(GameScene.selected_unit){
 		
+			// ██      ███████ ███████ ████████        ██████ ██      ██  ██████ ██   ██ 
+			// ██      ██      ██         ██          ██      ██      ██ ██      ██  ██  
+			// ██      █████   █████      ██    █████ ██      ██      ██ ██      █████   
+			// ██      ██      ██         ██          ██      ██      ██ ██      ██  ██  
+			// ███████ ███████ ██         ██           ██████ ███████ ██  ██████ ██   ██ 
+
 			if(GameScene.left_click === true && GameUIScene.mode_check_state === 0){
 
 				switch(gameFunctions.mode) {
@@ -472,6 +506,12 @@ var GameScene = new Phaser.Class({
 					// code block
 				}		
 			}
+
+			// ██████  ██  ██████  ██   ██ ████████        ██████ ██      ██  ██████ ██   ██ 
+			// ██   ██ ██ ██       ██   ██    ██          ██      ██      ██ ██      ██  ██  
+			// ██████  ██ ██   ███ ███████    ██    █████ ██      ██      ██ ██      █████   
+			// ██   ██ ██ ██    ██ ██   ██    ██          ██      ██      ██ ██      ██  ██  
+			// ██   ██ ██  ██████  ██   ██    ██           ██████ ███████ ██  ██████ ██   ██ 			
 			
 			if(GameScene.right_click === true && GameUIScene.mode_check_state === 0){
 				
@@ -569,10 +609,15 @@ var GameScene = new Phaser.Class({
 			
 		}
 
-		
 		GameScene.left_click = false;
 		GameScene.right_click = false;		
-		
+
+		// ██    ██ ██████  ██████   █████  ████████ ███████       ███████ ██      ███████ ███    ███ ███████ ███    ██ ████████ ███████ 
+		// ██    ██ ██   ██ ██   ██ ██   ██    ██    ██            ██      ██      ██      ████  ████ ██      ████   ██    ██    ██      
+		// ██    ██ ██████  ██   ██ ███████    ██    █████   █████ █████   ██      █████   ██ ████ ██ █████   ██ ██  ██    ██    ███████ 
+		// ██    ██ ██      ██   ██ ██   ██    ██    ██            ██      ██      ██      ██  ██  ██ ██      ██  ██ ██    ██         ██ 
+		//  ██████  ██      ██████  ██   ██    ██    ███████       ███████ ███████ ███████ ██      ██ ███████ ██   ████    ██    ███████ 
+																																	  
 		//CHECK BULLET DEATH
 		let bullets = [];
 		if(GameScene.bullets){
@@ -601,6 +646,12 @@ var GameScene = new Phaser.Class({
 		GameScene.pathfinder.update();
 	}
 });
+
+// ███████  ██████  ██    ██ ███    ██ ██████        ██   ██  █████  ███    ██ ██████  ██      ███████ ██████  ███████ 
+// ██      ██    ██ ██    ██ ████   ██ ██   ██       ██   ██ ██   ██ ████   ██ ██   ██ ██      ██      ██   ██ ██      
+// ███████ ██    ██ ██    ██ ██ ██  ██ ██   ██ █████ ███████ ███████ ██ ██  ██ ██   ██ ██      █████   ██████  ███████ 
+//      ██ ██    ██ ██    ██ ██  ██ ██ ██   ██       ██   ██ ██   ██ ██  ██ ██ ██   ██ ██      ██      ██   ██      ██ 
+// ███████  ██████   ██████  ██   ████ ██████        ██   ██ ██   ██ ██   ████ ██████  ███████ ███████ ██   ██ ███████ 
 
 GameScene.sfxHandler = (sfx) => {
 	
@@ -652,30 +703,6 @@ GameScene.clickHandler = function(pointer){
 	}			
 };
 
-GameScene.selectMode = (options) => {
-	
-	if(options.parameters){
-		options = options.parameters.options
-	}
-	// console.log("returned",options)	
-	
-	if(options.mode){
-		gameFunctions.mode = options.mode
-	
-
-		GameScene.selected_unit = undefined;
-		
-		//RESET ALL PLAYER ACTIONS
-		if(gameFunctions.units){
-			gameFunctions.units.forEach((unit) => {
-				if(unit.side === gameFunctions.current_side){
-					unit.resetActions();
-				}
-			})
-		}
-	}	
-}
-
 GameScene.resetTempSprites = () => {
 	// console.log(live_tiles)
 	if (!GameScene.scene.temp_sprites){
@@ -689,38 +716,7 @@ GameScene.resetTempSprites = () => {
 }
 
 
-GameScene.advanceSide = () => {
 
-	let start_check = false;
-	if(gameFunctions.current_side === -1){
-		start_check = true;
-	}
-	
-	gameFunctions.current_side += 1
-	if(gameFunctions.current_side >= gameFunctions.params.max_sides){
-		gameFunctions.current_side = 0
-	}
-	
-	if(GameScene.online === true){
-		if(gameFunctions.params.player_side === gameFunctions.current_side){
-			if(start_check === true){
-				GameUIScene.showButtons()	
-				// console.log("on")		
-			}
-		}else{
-			GameUIScene.hideButtons()
-			// console.log("off")
-		}
-	}
-	// console.log("current side:",gameFunctions.current_side)
-	// console.log("player side:",gameFunctions.params.player_side)	
-	
-	gameFunctions.units.forEach((unit) => {
-		unit.moves = 0;
-		unit.fights = 0;
-		unit.shots = 0;
-	})
-}
 
 
 

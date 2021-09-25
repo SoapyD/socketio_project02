@@ -248,14 +248,11 @@ connFunctions.setRoomInfo = (data) => {
 		
 		gameFunctions.units_preload = data.units;
 	}
-	console.log(data)
-	console.log("test1")
+
 	if(data.forces){
-			console.log("test3")
-			if(data.forces[data.player_number]){
-				console.log("applied",data.forces[data.player_number].side)
-				gameFunctions.params.player_side = data.forces[data.player_number].side
-			}
+		if(data.forces[data.player_number]){
+			gameFunctions.params.player_side = data.forces[data.player_number].side
+		}
 	}
 
 	// SLIDE THE MESSAGE BOARD UP
@@ -300,10 +297,12 @@ connFunctions.updateRoomInfo = (data) => {
 	if(gameFunctions.params.users.length === gameFunctions.params.max_players && gameFunctions.params.player_number === 0){
 		let check = ArmySelectUIScene.checkComplete();
 		var x = document.getElementById("start");
-		if(check === true){
-			x.style.display = "block";			
-		}else{
-			x.style.display = "none";
+		if(x){
+			if(check === true){
+				x.style.display = "block";			
+			}else{
+				x.style.display = "none";
+			}
 		}
 
 	}
@@ -348,8 +347,10 @@ connFunctions.saveGame = (mode) => {
 		}
 		data.units.push(unit_data)
 	})
-	
-	connFunctions.messageServer(data)	
+
+	if(gameFunctions.params.player_side === gameFunctions.current_side){
+		connFunctions.messageServer(data)	
+	}
 }
 
 

@@ -17,9 +17,6 @@ var GameUIScene = new Phaser.Class({
 		GameUIScene.scene = this.scene.get('GameUIScene')
 		GameUIScene.text = this.add.text(0, 0, "", { fill: '#00ff00' }).setDepth(20);
 		
-		// gameFunctions.mode_state = 0;
-		// gameFunctions.mode_state_max = 9;
-		
 		GameUIScene.mode_check_state = 0;
 		GameUIScene.mode_check_timer = 0;	
 		
@@ -46,39 +43,24 @@ var GameUIScene = new Phaser.Class({
 				GameUIScene.loadSingleButton(this)
 				break;
 		}		
-		
-		
-		
-		// gameFunctions.btn_sprite.forEach(btn => {
-		// 	gameFunctions.buttonPress(btn, btn.clickAction, btn.callbackParams);                    
-		// })		
-		
+				
 		gameFunctions.current_uiscene = this.scene.get('GameUIScene');
-		
-		
     },
 
     update: async function (time, delta)
     {
-        // switch( gameFunctions.config.game_state) {
-        //     case 0:
 
-        //     break;
+ 		//  █████   ██████ ████████ ██  ██████  ███    ██       ████████ ██ ███    ███ ███████ ██████  
+		// ██   ██ ██         ██    ██ ██    ██ ████   ██          ██    ██ ████  ████ ██      ██   ██ 
+		// ███████ ██         ██    ██ ██    ██ ██ ██  ██ █████    ██    ██ ██ ████ ██ █████   ██████  
+		// ██   ██ ██         ██    ██ ██    ██ ██  ██ ██          ██    ██ ██  ██  ██ ██      ██   ██ 
+		// ██   ██  ██████    ██    ██  ██████  ██   ████          ██    ██ ██      ██ ███████ ██   ██ 
 
-        //     default:
-        //     // code block
-        // }
-		
-		// console.log(GameUIScene.mode_check_state)
-		
 		switch(GameUIScene.mode_check_state){
 			case 2:
 				if(GameUIScene.mode_check_timer === 0){
 					GameUIScene.mode_check_state = 3;
 				}
-				
-				// await GameUIScene.delay(2000)
-				// GameUIScene.mode_check_state = 3;
 				break;
 			case 3:
 				if(GameScene.active_actions === 0){
@@ -103,14 +85,9 @@ var GameUIScene = new Phaser.Class({
 			case 1:
 				GameUIScene.mode_check_state = 2;
 				GameUIScene.mode_check_timer = 200;
-				// if(GameScene.active_actions === 0){
-				// 	gameFunctions.mode_state++;
-				// 	GameUIScene.advanceMode()
-				// 	GameUIScene.mode_check_state = 0;
-				// }				
 				break;
 			default:
-				// console.log("zero")
+
 				break;
 		}
 		if(GameUIScene.mode_check_timer > 0){
@@ -130,8 +107,6 @@ var GameUIScene = new Phaser.Class({
 		text += "Check: "+GameUIScene.mode_check_state+'\n'
 		
 		
-		
-		
 		if(GameScene.active_actions){
 			text += "Active Actions: "+GameScene.active_actions+'\n'			
 		}
@@ -143,6 +118,12 @@ var GameUIScene = new Phaser.Class({
 GameUIScene.delay =	async(ms) => {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }	
+
+// ██       ██████   █████  ██████        ██████  ██    ██ ████████ ████████  ██████  ███    ██ ███████ 
+// ██      ██    ██ ██   ██ ██   ██       ██   ██ ██    ██    ██       ██    ██    ██ ████   ██ ██      
+// ██      ██    ██ ███████ ██   ██ █████ ██████  ██    ██    ██       ██    ██    ██ ██ ██  ██ ███████ 
+// ██      ██    ██ ██   ██ ██   ██       ██   ██ ██    ██    ██       ██    ██    ██ ██  ██ ██      ██ 
+// ███████  ██████  ██   ██ ██████        ██████   ██████     ██       ██     ██████  ██   ████ ███████ 
 
 GameUIScene.loadSingleButton = (scene) => {
 	let callbackParams;
@@ -160,14 +141,13 @@ GameUIScene.loadSingleButton = (scene) => {
 		array: gameFunctions.btn_sprite
 	}
 	
-	// gameFunctions.createButton(scene, gameFunctions.config.width - 50, 25, "+", GameUIScene.advanceMode, callbackParams, gameFunctions.btn_sprite);		
-	// gameFunctions.createButton(options);	
 	gameFunctions.btn_sprite.push(new button(options))
 
 	if(gameFunctions.units_preload.length === 0){
-		console.log("advance")
-		GameScene.advanceSide()
-		
+		GameUIScene.advanceSide()
+	}
+	else{
+		GameUIScene.checkButtonVisability();
 	}
 	GameUIScene.advanceMode();	
 }
@@ -260,10 +240,68 @@ GameUIScene.loadFullButtons = (scene) => {
 	// gameFunctions.createButton(options);	
 	gameFunctions.btn_sprite.push(new button(options))
 		
-	
 }
 
 
+// ███████ ███████ ██      ███████  ██████ ████████       ███    ███  ██████  ██████  ███████ 
+// ██      ██      ██      ██      ██         ██          ████  ████ ██    ██ ██   ██ ██      
+// ███████ █████   ██      █████   ██         ██    █████ ██ ████ ██ ██    ██ ██   ██ █████   
+//      ██ ██      ██      ██      ██         ██          ██  ██  ██ ██    ██ ██   ██ ██      
+// ███████ ███████ ███████ ███████  ██████    ██          ██      ██  ██████  ██████  ███████                                                                                                                            
+
+GameUIScene.selectMode = (options) => {
+	
+	// GameScene.sfx['button'].play();
+	if(GameScene.online === false){
+		GameScene.selectMode(options);
+	}else{
+
+		let data = {
+			functionGroup: "socketFunctions",  
+			function: "messageAll",
+			room_name: gameFunctions.params.room_name,
+			returnFunctionGroup: "GameUIScene",
+			returnFunction: "runSelectMode", //selectMode
+			message: "select mode",
+			returnParameters: {
+				options: options
+			}
+		}
+		connFunctions.messageServer(data)
+	}	
+
+}
+
+// GameScene.selectMode = (options) => {
+GameUIScene.runSelectMode = (options) => {	
+	if(options.parameters){
+		options = options.parameters.options
+	}
+	// console.log("returned",options)	
+	
+	if(options.mode){
+		gameFunctions.mode = options.mode	
+
+		GameScene.selected_unit = undefined;
+		
+		//RESET ALL PLAYER ACTIONS
+		if(gameFunctions.units){
+			gameFunctions.units.forEach((unit) => {
+				if(unit.side === gameFunctions.current_side){
+					unit.resetActions();
+				}
+			})
+		}
+	}	
+}
+
+
+// ███    ███  ██████  ██████  ███████       ██   ██  █████  ███    ██ ██████  ██      ███████ ██████  
+// ████  ████ ██    ██ ██   ██ ██            ██   ██ ██   ██ ████   ██ ██   ██ ██      ██      ██   ██ 
+// ██ ████ ██ ██    ██ ██   ██ █████   █████ ███████ ███████ ██ ██  ██ ██   ██ ██      █████   ██████  
+// ██  ██  ██ ██    ██ ██   ██ ██            ██   ██ ██   ██ ██  ██ ██ ██   ██ ██      ██      ██   ██ 
+// ██      ██  ██████  ██████  ███████       ██   ██ ██   ██ ██   ████ ██████  ███████ ███████ ██   ██ 
+                                                                                                    
 GameUIScene.runAdvanceMode = () => {
 	gameFunctions.mode_state++;
 	if(gameFunctions.mode_state > gameFunctions.mode_state_max){
@@ -274,17 +312,6 @@ GameUIScene.runAdvanceMode = () => {
 }
 
 GameUIScene.advanceMode = () => {
-
-	
-	// if(gameFunctions.mode_state !== -1){
-	// 	if(GameScene.sfx){
-	// 		GameScene.sfxHandler("button")	
-	// 	}
-		
-	// }
-
-	// let mode_triggered = false;
-		
 	
 	let options = {}
 	let btn;
@@ -403,28 +430,13 @@ GameUIScene.advanceMode = () => {
 }
 
 
-GameUIScene.selectMode = (options) => {
-	
-	// GameScene.sfx['button'].play();
-	if(GameScene.online === false){
-		GameScene.selectMode(options);
-	}else{
 
-		let data = {
-			functionGroup: "socketFunctions",  
-			function: "messageAll",
-			room_name: gameFunctions.params.room_name,
-			returnFunctionGroup: "GameScene",
-			returnFunction: "selectMode", //selectMode
-			message: "select mode",
-			returnParameters: {
-				options: options
-			}
-		}
-		connFunctions.messageServer(data)
-	}	
 
-}
+//  █████   ██████ ████████ ██ ██    ██  █████  ████████ ███████        █████   ██████ ████████ ██  ██████  ███    ██ ███████ 
+// ██   ██ ██         ██    ██ ██    ██ ██   ██    ██    ██            ██   ██ ██         ██    ██ ██    ██ ████   ██ ██      
+// ███████ ██         ██    ██ ██    ██ ███████    ██    █████   █████ ███████ ██         ██    ██ ██    ██ ██ ██  ██ ███████ 
+// ██   ██ ██         ██    ██  ██  ██  ██   ██    ██    ██            ██   ██ ██         ██    ██ ██    ██ ██  ██ ██      ██ 
+// ██   ██  ██████    ██    ██   ████   ██   ██    ██    ███████       ██   ██  ██████    ██    ██  ██████  ██   ████ ███████ 
 
 GameUIScene.activateMovement = () => {
 	
@@ -511,9 +523,6 @@ GameUIScene.activateShooting = () => {
 				connFunctions.messageServer(data)			
 			}
 			
-			// if(unit.targets.length > 1){
-			// 	GameScene.active_actions+=unit.targets.length;	
-			// }			
 		}
 
 	})	
@@ -648,6 +657,44 @@ GameUIScene.activateFighting = () => {
 	//TRIGGER COMBAT WHEN UNITS HAVE MOVED
 }
 
+GameUIScene.nextSide = () => {
+	
+	gameFunctions.mode = ""
+	gameFunctions.units.forEach((unit) => {
+		if(unit.side === gameFunctions.current_side){
+			unit.resetActions();
+			unit.resetLocks();
+		}
+	})
+	// GameScene.sfx["end_turn"].play();
+	GameScene.sfxHandler("end_turn")
+	
+	if(GameScene.online === false){
+		GameUIScene.advanceSide()
+	}else{
+		
+		let data = {
+			functionGroup: "socketFunctions",  
+			function: "messageAll",
+			room_name: gameFunctions.params.room_name,
+			returnFunctionGroup: "GameUIScene",
+			returnFunction: "advanceSide",
+			returnParameters: {},
+			message: "next player"
+		}
+
+		connFunctions.messageServer(data)		
+	}
+}
+
+// ███████ ██    ██ ███    ██  ██████ ████████ ██  ██████  ███    ██ ███████ 
+// ██      ██    ██ ████   ██ ██         ██    ██ ██    ██ ████   ██ ██      
+// █████   ██    ██ ██ ██  ██ ██         ██    ██ ██    ██ ██ ██  ██ ███████ 
+// ██      ██    ██ ██  ██ ██ ██         ██    ██ ██    ██ ██  ██ ██      ██ 
+// ██       ██████  ██   ████  ██████    ██    ██  ██████  ██   ████ ███████ 
+                                                                          
+
+
 GameUIScene.hideButtons = () => {
 	gameFunctions.btn_sprite.forEach((btn) => {
 		btn.hideButton();
@@ -662,33 +709,37 @@ GameUIScene.showButtons = () => {
 	})
 }
 
-GameUIScene.nextSide = () => {
-	
-	gameFunctions.mode = ""
-	gameFunctions.units.forEach((unit) => {
-		if(unit.side === gameFunctions.current_side){
-			unit.resetActions();
-			unit.resetLocks();
+GameUIScene.checkButtonVisability = () => {
+	if(GameScene.online === true){
+		if(gameFunctions.params.player_side === gameFunctions.current_side){
+			// if(start_check === true){
+				GameUIScene.showButtons()	
+			// }
+		}else{
+			GameUIScene.hideButtons()
 		}
-	})
-	// GameScene.sfx["end_turn"].play();
-	GameScene.sfxHandler("end_turn")
-	
-	if(GameScene.online === false){
-		GameScene.advanceSide()
-	}else{
-		
-		let data = {
-			functionGroup: "socketFunctions",  
-			function: "messageAll",
-			room_name: gameFunctions.params.room_name,
-			returnFunctionGroup: "GameScene",
-			returnFunction: "advanceSide",
-			returnParameters: {},
-			message: "next player"
-		}
+	}	
+}
 
-		connFunctions.messageServer(data)		
+
+GameUIScene.advanceSide = () => {
+
+	// let start_check = false;
+	// if(gameFunctions.current_side === -1){
+	// 	start_check = true;
+	// }
+	
+	gameFunctions.current_side += 1
+	if(gameFunctions.current_side >= gameFunctions.params.max_sides){
+		gameFunctions.current_side = 0
 	}
+	
+	gameFunctions.units.forEach((unit) => {
+		unit.moves = 0;
+		unit.fights = 0;
+		unit.shots = 0;
+	})
+
+	GameUIScene.checkButtonVisability();
 }
 
