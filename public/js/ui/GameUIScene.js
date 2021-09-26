@@ -253,7 +253,7 @@ GameUIScene.selectMode = (options) => {
 	
 	// GameScene.sfx['button'].play();
 	if(GameScene.online === false){
-		GameScene.selectMode(options);
+		GameUIScene.runSelectMode(options);
 	}else{
 
 		let data = {

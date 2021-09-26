@@ -103,11 +103,15 @@ const bullet = class {
 	
 	kill(){
 		
+		console.log("WOUNDING")
+		console.log(this)
+
 		if(this.blast_radius > 1){
 			gameFunctions.units.forEach((unit) => {
 				
 				let val = Math.pow(this.sprite.x - unit.sprite.x, 2) + Math.pow(this.sprite.y - unit.sprite.y, 2)
 				let dist = Math.sqrt(val)
+				console.log("WOUNDING2",dist)
 				if(dist <= (this.blast_radius / 2) * GameScene.tile_size){
 										
 					// let options = {
@@ -117,7 +121,7 @@ const bullet = class {
 					// 	attacker: this.unit
 					// }			
 					// unit.wound(options);
-					
+					console.log("WOUNDING3",GameScene.online)
 					
 					let options = {
 						damage: this.damage,
@@ -133,6 +137,7 @@ const bullet = class {
 						unit.wound(options);
 					}else{
 						//ONLY SEND THE WOUND MESSAGE IF THIS IS THE ATTACKING PLAYER
+						
 						if(gameFunctions.params.player_number === this.unit.player){
 							let data = {
 								functionGroup: "socketFunctions",  

@@ -658,7 +658,7 @@ const unit = class {
 			}
 		}
 
-		if(checking_tile === false){
+		// if(checking_tile === false){
 			GameScene.resetTempSprites();
 			this.live_tiles.forEach((tile)=> {
 				this.scene.temp_sprites.push(
@@ -667,7 +667,7 @@ const unit = class {
 						tile.y * GameScene.map.tileHeight,"marker").setDepth(0)
 				)
 			})			
-		}
+		// }
 		/**/
 	}
 

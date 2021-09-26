@@ -9,7 +9,11 @@ SBT GAME NOTES
 /////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////
 
--Need to check the live tile drawing online when it's player 2's turn.
+
+
+-BUG -Shooting doesn't apply any damage at all now for some reason.
+
+-BUG -Error at line 1065 (cohension check) during player 2 charging action. It's a maximum call stack size exceeded so probably too many socket calls
 
 -Have "players" as a dropdown menu with a minimum of 2 players to be selectable. Auto-select 2 players to start with
 
@@ -43,6 +47,8 @@ DONE
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+-DONE -Need to check the live tile drawing online when it's player 2's turn.
 
 -DONE -Saving and reloading
     -DONE -When a game is reloaded and the next action is played, the button doesn't come back properly, only the text does
