@@ -148,11 +148,15 @@ connFunctions.checkMessages = (socket) => {
 				case "DEV":
 				case "DEV-ONLINE":			
 					console.log(data.message)
+					console.log(data)
 					break;
 			}
 			// console.log(data)
 		}
-					
+		// if(data.function === 'woundUnit'){
+		// 	console.log("WOUNDING")
+		// 	console.log(data)
+		// }
 		
 		if(data.functionGroup && data.function){
         	availableFunctions[data.functionGroup][data.function](data);  			
@@ -370,6 +374,7 @@ connFunctions.saveGame = (mode) => {
 
 
 connFunctions.runUnitFunction = function(data) {
+
 	if(data.parameters.path){
 		gameFunctions.units[data.parameters.id].path = data.parameters.path;
 	}
@@ -389,6 +394,12 @@ connFunctions.runUnitFunction = function(data) {
 	}
 
 }
+
+	// ██     ██  ██████  ██    ██ ███    ██ ██████  ██ ███    ██  ██████  
+	// ██     ██ ██    ██ ██    ██ ████   ██ ██   ██ ██ ████   ██ ██       
+	// ██  █  ██ ██    ██ ██    ██ ██ ██  ██ ██   ██ ██ ██ ██  ██ ██   ███ 
+	// ██ ███ ██ ██    ██ ██    ██ ██  ██ ██ ██   ██ ██ ██  ██ ██ ██    ██ 
+	//  ███ ███   ██████   ██████  ██   ████ ██████  ██ ██   ████  ██████ 
 
 connFunctions.woundUnit = (data) => {
 	// console.log(data)

@@ -214,6 +214,7 @@ const pathfinder = class {
 			})
 
             if(process.callback){
+				// console.log("pass callback")
                 process.parent[process.callback](process)
 			}
 			
@@ -223,6 +224,7 @@ const pathfinder = class {
 			if(process.current_checks >= process.max_checks){
 
 				if(process.fail_callback){
+					// console.log("fail callback")					
 					process.parent[process.fail_callback](process)
 				}
 

@@ -76,7 +76,7 @@ const bullet = class {
 					bonus: bullet.parent.unit.shooting_bonus,
 					// attacker: bullet.parent.unit,
 					random_roll: gameFunctions.getRandomInt(20),
-					defender_id: unit.parent.player
+					defender_id: unit.parent.id
 				}				
 				
 				
@@ -88,6 +88,7 @@ const bullet = class {
 						let data = {
 							functionGroup: "socketFunctions",  
 							function: "messageAll",
+							room_name: gameFunctions.params.room_name,
 							returnFunctionGroup: "connFunctions",
 							returnFunction: "woundUnit",
 							returnParameters: options,
@@ -103,15 +104,15 @@ const bullet = class {
 	
 	kill(){
 		
-		console.log("WOUNDING")
-		console.log(this)
+		// console.log("WOUNDING")
+		// console.log(this)
 
 		if(this.blast_radius > 1){
 			gameFunctions.units.forEach((unit) => {
 				
 				let val = Math.pow(this.sprite.x - unit.sprite.x, 2) + Math.pow(this.sprite.y - unit.sprite.y, 2)
 				let dist = Math.sqrt(val)
-				console.log("WOUNDING2",dist)
+				// console.log("WOUNDING2",dist)
 				if(dist <= (this.blast_radius / 2) * GameScene.tile_size){
 										
 					// let options = {
@@ -121,7 +122,7 @@ const bullet = class {
 					// 	attacker: this.unit
 					// }			
 					// unit.wound(options);
-					console.log("WOUNDING3",GameScene.online)
+					// console.log("WOUNDING3",GameScene.online)
 					
 					let options = {
 						damage: this.damage,
@@ -142,6 +143,7 @@ const bullet = class {
 							let data = {
 								functionGroup: "socketFunctions",  
 								function: "messageAll",
+								room_name: gameFunctions.params.room_name,
 								returnFunctionGroup: "connFunctions",
 								returnFunction: "woundUnit",
 								returnParameters: options,

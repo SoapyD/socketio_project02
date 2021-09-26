@@ -9,9 +9,19 @@ SBT GAME NOTES
 /////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////
 
+-BUG -connFunctions error on line 405 (Wound unit), which tried to apply a wound to a unit that walked into the now dead 
+blast marker left by the other side. So the marker isn't being properly destroyed i think
+    -findPath seems to be the route of it.
 
+-BUG -Stuttering being caused if a unit is selected, live tiles are started to be drawn, then another unit is selected, so they flitter
+until the draw action resolves
 
--BUG -Shooting doesn't apply any damage at all now for some reason.
+-BUG -far right 2 units in player 2 squad don't have live tiles generating for some reason
+
+-BUG -Think the issue below is actually the "leaving/entering" combat check that occurs to punish players trying to leave 
+initiated combat dont think this is working as intended
+    -Shooting, when shots have been set up by a squad then another unit is selected in the same squad, 
+    the visuals of draw lines are reset and the cohension check appears for some reason
 
 -BUG -Error at line 1065 (cohension check) during player 2 charging action. It's a maximum call stack size exceeded so probably too many socket calls
 
@@ -47,6 +57,11 @@ DONE
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+-DONE -Shooting damage being applied to wrong unit
+
+-DONE -Shooting doesn't apply any damage at all now for some reason.
+    -it's because the "message all" function wasn't being sent with a room name to return it back to
 
 -DONE -Need to check the live tile drawing online when it's player 2's turn.
 

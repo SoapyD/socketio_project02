@@ -339,7 +339,10 @@ exports.messageAll = (network, data) => {
 		parameters: data.returnParameters,
 		message: data.message,
 	}	
-	
+	// if(data.returnFunction === 'woundUnit'){
+	// 	console.log(data.room_name)	
+	// 	console.log(return_data)
+	// }
 	network.io.in(data.room_name).emit("message_client", return_data)     	
 }
 

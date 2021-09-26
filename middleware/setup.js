@@ -71,6 +71,6 @@ exports.setupApp = async(app) => {
 
     //CONNECT TO DATABASE
     utils.database.connect();
-    utils.seeds.seedDB();
+    // utils.seeds.seedDB();
 
 }

@@ -288,7 +288,8 @@ var GameScene = new Phaser.Class({
 							GameScene.seed3();
 							break;
 						case 2:
-							GameScene.seed();
+							// GameScene.seed();
+							GameScene.seed3();
 							break;
 						default:
 							GameScene.seed2();

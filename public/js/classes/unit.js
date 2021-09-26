@@ -278,7 +278,13 @@ const unit = class {
 		this.bar_graphic.destroy();
 		this.sprite_symbol.destroy();
 	}	
-	
+
+	// ██     ██  ██████  ██    ██ ███    ██ ██████  ██ ███    ██  ██████  
+	// ██     ██ ██    ██ ██    ██ ████   ██ ██   ██ ██ ████   ██ ██       
+	// ██  █  ██ ██    ██ ██    ██ ██ ██  ██ ██   ██ ██ ██ ██  ██ ██   ███ 
+	// ██ ███ ██ ██    ██ ██    ██ ██  ██ ██ ██   ██ ██ ██  ██ ██ ██    ██ 
+	//  ███ ███   ██████   ██████  ██   ████ ██████  ██ ██   ████  ██████ 
+
 	wound(options){
 	
 		let hit_chance = this.armour - options.ap + options.bonus;
@@ -577,6 +583,12 @@ const unit = class {
 	}	
 
 
+	// ██████  ██████   █████  ██     ██       ██      ██ ██    ██ ███████       ████████ ██ ██      ███████ ███████ 
+	// ██   ██ ██   ██ ██   ██ ██     ██       ██      ██ ██    ██ ██               ██    ██ ██      ██      ██      
+	// ██   ██ ██████  ███████ ██  █  ██ █████ ██      ██ ██    ██ █████   █████    ██    ██ ██      █████   ███████ 
+	// ██   ██ ██   ██ ██   ██ ██ ███ ██       ██      ██  ██  ██  ██               ██    ██ ██      ██           ██ 
+	// ██████  ██   ██ ██   ██  ███ ███        ███████ ██   ████   ███████          ██    ██ ███████ ███████ ███████ 
+																												 
 	setupDrawLiveTiles() {
 
 		this.live_tiles = [];
@@ -717,6 +729,7 @@ const unit = class {
 				
 				//RESET GHOST & COHESION IF THE GHOST SPRITE ISN'T SELECTED
 				if(!this.is_ghost){
+					
 					this.parent.resetGhost();
 				}
 				
@@ -849,21 +862,6 @@ const unit = class {
 				fail_callback: fail_callback
 			})
 
-			/*
-			GameScene.pathfinder.run(process, callback);
-			let path  = GameScene.pathfinder.run(process);
-
-			//STRIP PATH BACK TO MAX MOVEMENT LENGTH
-			path = path.slice(0,this.movement + 1)
-
-			// //OFFSET PATH SO THEY'RE IN THE MIDDLE OF EACH TILE
-			path.forEach((pos) => {
-				pos.x += this.sprite_offset;
-				pos.y += this.sprite_offset;
-			})
-			
-			return path;
-			*/
 		}
 	}
 	
@@ -1554,6 +1552,7 @@ const unit = class {
 					let data = {
 							functionGroup: "socketFunctions",  
 							function: "messageAll",
+							room_name: gameFunctions.params.room_name,
 							returnFunctionGroup: "connFunctions",
 							returnFunction: "woundUnit",
 							returnParameters: options,
