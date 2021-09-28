@@ -111,7 +111,7 @@ const bullet = class {
 			gameFunctions.units.forEach((unit) => {
 				
 				let val = Math.pow(this.sprite.x - unit.sprite.x, 2) + Math.pow(this.sprite.y - unit.sprite.y, 2)
-				let dist = Math.sqrt(val)
+				let dist = Math.round(Math.sqrt(val),0)
 				// console.log("WOUNDING2",dist)
 				if(dist <= (this.blast_radius / 2) * GameScene.tile_size){
 										

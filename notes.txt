@@ -9,13 +9,29 @@ SBT GAME NOTES
 /////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////
 
--BUG -Unit path can't be set if it's near an enemy unit or goes past one
-    -SEPERATE BUG -Think this may because the game reloaded with more units than was expected. Might be down to reloading units before any actions have been played
-    -Not sure this bug can be replicated. Disappeared once debug was turned on 
-    -Think I have have come up with a fix by increasing the overlap distance. Need to check the adjacent check isn't affected
 
 
--BUG -Friendly units was clearly in fire range for blast marker but wasn't hit
+-Need to generate a sprite to show unit is in combat
+    -Also generating one when there's a shot that's been take
+    -Or movement taken
+    -Need to create a hide/show function for this sprite
+
+-Write in a check to clear live tiles drawn when the mode goes to a non moving action
+    -Also clear the live tiles when a new unit is selected
+
+/////////////////////////////////////////
+FIGHTING
+/////////////////////////////////////////
+
+-Fighting tests and breakdown
+    -Only models directly next to others are being tagged as "in fighting"
+    -Should probably be anyone within fighting range once charges have been completed
+    -Need to see the fighting range at the end of a charge so the above can be properly factored in
+    -Also need to clear the in-fighting state properly as I don't think anything is
+
+/////////////////////////////////////////
+BUGS
+/////////////////////////////////////////
 
 -BUG -Think the issue below is actually the "leaving/entering" combat check that occurs to punish players trying to leave 
 initiated combat dont think this is working as intended
@@ -27,41 +43,23 @@ initiated combat dont think this is working as intended
 until the draw action resolves
 
 
--Need to generate a sprite to show unit is in combat
-    -Also generating one when there's a shot that's been take
-    -Or movement taken
-    -Need to create a hide/show function for this sprite
-
--Fighting tests and breakdown
-    -Only models directly next to others are being tagged as "in fighting"
-    -Should probably be anyone within fighting range once charges have been completed
-    -Need to see the fighting range at the end of a charge so the above can be properly factored in
-    -Also need to clear the in-fighting state properly as I don't think anything is
-    
-
--Have "players" as a dropdown menu with a minimum of 2 players to be selectable. Auto-select 2 players to start with
-
--Write in a check to clear live tiles drawn when the mode goes to a non moving action
-    -Also clear the live tiles when a new unit is selected
-
--Maybe see what the live tile draw looks like if they're drawn while generating
+/////////////////////////////////////////
+SETUP
+/////////////////////////////////////////
 
 -if a sides/start points aren't set properly, don't allow the game to advance
 
-
--see if different icons can be shown in the mini map rather than just reshow the map as-is
-
 -Load up armies associated with users in army selection dropdowns
+
+
+/////////////////////////////////////////
+TESTING
+/////////////////////////////////////////
 
 -test out a 3 side game
 -test out a 2 side, 4 player game
 
--error socket messages need to be returned to the originating player only
 
-
--messages
-    -Stop server messages that're specific to a user being sent out to everyone
-    -Scroll the messages when the message box goes beyond it's max height
 
 
 //////////////////////////////////////////////////////////////////////
@@ -71,6 +69,26 @@ DONE
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+-DONE -Have "players" as a dropdown menu with a minimum of 2 players to be selectable. Auto-select 2 players to start with
+
+-DONE -see if different icons can be shown in the mini map rather than just reshow the map as-is
+
+-DONE -error socket messages need to be returned to the originating player only
+
+-DONE -messages
+    -DONE -Stop server messages that're specific to a user being sent out to everyone
+    -DONE -Scroll the messages when the message box goes beyond it's max height
+
+-DONE -Unit path can't be set if it's near an enemy unit or goes past one
+    -SEPERATE BUG -Think this may because the game reloaded with more units than was expected. Might be down to reloading units before any actions have been played
+    -Not sure this bug can be replicated. Disappeared once debug was turned on 
+    -Think I have have come up with a fix by increasing the overlap distance. Need to check the adjacent check isn't affected
+
+-DONE -Maybe see what the live tile draw looks like if they're drawn while generating
+
+-DONE -Friendly units was clearly in fire range for blast marker but wasn't hit
+    -Rounded the distance checker to 0 digets
 
 -DONE -Error at line 1065 (cohension check) during player 2 charging action. It's a maximum call stack size exceeded so probably too many socket calls
 

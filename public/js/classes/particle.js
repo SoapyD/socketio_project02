@@ -52,13 +52,22 @@ const particle = class {
 			
 			options.scene.tweens.add({
 				targets: target,
-				y: options.pos.y - 50,
+				y: options.pos.y - 30,
 				duration: 3000,
-				alpha: 0,
+				// alpha: 0,
 				ease: 'Power3',
                 onComplete: function ()
                 {
-                    target.destroy();
+					// target.destroy();
+					options.scene.tweens.add({
+						targets: target,
+						duration: 1000,
+						alpha: 0,
+						onComplete: function ()
+						{						
+							target.destroy();
+						}
+					})
                 }
 			}); 
 		}

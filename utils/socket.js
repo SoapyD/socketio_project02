@@ -128,7 +128,7 @@ exports.createRoom = async(network, data)  => {
             }
 
             // network.io.to(network.socket.id).emit("message_client", return_data)        
-			network.io.to(network.socket.id).emit("printMessage", return_data)
+			network.io.to(network.socket.id).emit("message_client", return_data)
 
         }
         else{
@@ -257,7 +257,7 @@ exports.joinRoom = async(network, data)  => {
         }
 
 		//MESSAGE PLAYER WITH JOIN RESULTS
-        network.io.of(network.socket.id).emit("message_client", return_data)     
+		network.io.to(network.socket.id).emit("message_client", return_data) 
 
 		if(saved_room){
 			
