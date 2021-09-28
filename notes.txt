@@ -1,5 +1,5 @@
 -test note
-
++
 
 /////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////
@@ -9,21 +9,35 @@ SBT GAME NOTES
 /////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////
 
--BUG -connFunctions error on line 405 (Wound unit), which tried to apply a wound to a unit that walked into the now dead 
-blast marker left by the other side. So the marker isn't being properly destroyed i think
-    -findPath seems to be the route of it.
+-BUG -Unit path can't be set if it's near an enemy unit or goes past one
+    -SEPERATE BUG -Think this may because the game reloaded with more units than was expected. Might be down to reloading units before any actions have been played
+    -Not sure this bug can be replicated. Disappeared once debug was turned on 
+    -Think I have have come up with a fix by increasing the overlap distance. Need to check the adjacent check isn't affected
 
--BUG -Stuttering being caused if a unit is selected, live tiles are started to be drawn, then another unit is selected, so they flitter
-until the draw action resolves
 
--BUG -far right 2 units in player 2 squad don't have live tiles generating for some reason
+-BUG -Friendly units was clearly in fire range for blast marker but wasn't hit
 
 -BUG -Think the issue below is actually the "leaving/entering" combat check that occurs to punish players trying to leave 
 initiated combat dont think this is working as intended
     -Shooting, when shots have been set up by a squad then another unit is selected in the same squad, 
     the visuals of draw lines are reset and the cohension check appears for some reason
+    -Think "in_combat" isn't activated until the units are at least adjcent to one another. Needs a full combat check
 
--BUG -Error at line 1065 (cohension check) during player 2 charging action. It's a maximum call stack size exceeded so probably too many socket calls
+-BUG -Stuttering being caused if a unit is selected, live tiles are started to be drawn, then another unit is selected, so they flitter
+until the draw action resolves
+
+
+-Need to generate a sprite to show unit is in combat
+    -Also generating one when there's a shot that's been take
+    -Or movement taken
+    -Need to create a hide/show function for this sprite
+
+-Fighting tests and breakdown
+    -Only models directly next to others are being tagged as "in fighting"
+    -Should probably be anyone within fighting range once charges have been completed
+    -Need to see the fighting range at the end of a charge so the above can be properly factored in
+    -Also need to clear the in-fighting state properly as I don't think anything is
+    
 
 -Have "players" as a dropdown menu with a minimum of 2 players to be selectable. Auto-select 2 players to start with
 
@@ -57,6 +71,17 @@ DONE
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+-DONE -Error at line 1065 (cohension check) during player 2 charging action. It's a maximum call stack size exceeded so probably too many socket calls
+
+-DONE -far right 2 units in player 2 squad don't have live tiles generating for some reason
+    -This is because those units are hitting the toX < map.width limit. This means the process doesn't kick off a path find which in turn doesn't create another instance of the draw check.
+
+-DONE -connFunctions error on line 405 (Wound unit), which tried to apply a wound to a unit that walked into the now dead 
+blast marker left by the other side. So the marker isn't being properly destroyed i think
+    -findPath seems to be the route of it.
+    -It's the nested "resetMove" within resetMove. It keeps being triggered by two overlapping sprites that don't un-overlap once the reset has occured. This causes a loop that then breaks things
+    -Fixed by makign the reset check only reset the colliding sprite if that sprite has a path larget than zero. No path means the sprite doesn't need resetting 
 
 -DONE -Shooting damage being applied to wrong unit
 

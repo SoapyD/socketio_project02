@@ -213,22 +213,23 @@ const pathfinder = class {
 				pos.y += process.parent.sprite_offset;
 			})
 
+			process.running = false;
             if(process.callback){
 				// console.log("pass callback")
                 process.parent[process.callback](process)
 			}
 			
-			process.running = false;
+			
         }
         else{         
 			if(process.current_checks >= process.max_checks){
-
+				process.running = false;
 				if(process.fail_callback){
 					// console.log("fail callback")					
 					process.parent[process.fail_callback](process)
 				}
 
-				process.running = false;
+				
 			}
         }
 

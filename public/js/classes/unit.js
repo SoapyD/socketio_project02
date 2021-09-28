@@ -99,6 +99,13 @@ const unit = class {
 		this.sprite_symbol.y -= (this.sprite.displayHeight / 2) //- (this.sprite_symbol.displayHeight / 2)
 		this.sprite_symbol.setFrame(options.symbol_id).setDepth(this.depth_sprite_symbol);
 		
+
+		//action sprite
+		this.sprite_action = options.scene.add.image(x,y,"symbols").setScale(0.08)
+		this.sprite_action.x += (this.sprite.displayWidth / 2) //- (this.sprite_symbol.displayWidth / 2)
+		this.sprite_action.y += (this.sprite.displayHeight / 2) //- (this.sprite_symbol.displayHeight / 2)		
+		this.sprite_action.setFrame(0).setDepth(this.depth_sprite_symbol);
+		this.sprite_action.visible = false
 		
 		//THIS EXPLOSION
 		options.scene.anims.create({
@@ -202,6 +209,7 @@ const unit = class {
 	}
 	
 	resetMove() {
+		
 		this.path = [];
 		this.path_graphic.clear();		
 		this.resetGhost();
@@ -210,15 +218,17 @@ const unit = class {
 		//CHECK TO SEE IF THE RESET AFFECTS ANY OTHER UNITS THAT'VE MOVED
 		//IF SO, RESET THOSE UNIT MOVES AS WELL
 		gameFunctions.units.forEach((unit) => {
-			if(unit.id !== this.id){
+			if(unit.id !== this.id && unit.path.length > 0){
 				let check = this.checkSpriteOverlap(this.sprite_ghost, unit.sprite_ghost)
+				// console.log(check,unit.id,this.id)
+				
 				if(check === true){
 					unit.resetMove();
-					// unit.updateElements(unit.sprite_ghost);
 				}
+				/**/
 			}
-
 		})
+		
 	}
 	
 	resetFightRadius() {
@@ -401,6 +411,10 @@ const unit = class {
 		this.drawHealth(sprite);
 		this.sprite_symbol.x = sprite.x + (this.sprite.displayWidth / 2) //- (this.sprite_symbol.displayWidth / 2)
 		this.sprite_symbol.y = sprite.y - (this.sprite.displayHeight / 2) //- (this.sprite_symbol.displayHeight / 2)
+
+		this.sprite_action.x = sprite.x + (this.sprite.displayWidth / 2) //- (this.sprite_symbol.displayWidth / 2)
+		this.sprite_action.y = sprite.y + (this.sprite.displayHeight / 2) //- (this.sprite_symbol.displayHeight / 2)
+
 	}	
 	
 	
@@ -627,27 +641,32 @@ const unit = class {
 	}
 	
 	saveDrawLiveTiles(process) {
-		if(process.path_found === true){
-			// console.log("path found")
-
-			//ADD THE PATH ELEMENTS TO THE LIVE TILES LIST
-			if(process.path){
-				if(process.path.length){
-					let found = false;
-					process.path.forEach((pos) => {
-						found = this.live_tiles.some(i => i.x === pos.x && i.y === pos.y);
-						if(found === false){
-							this.live_tiles.push(pos);
-						}
-					})
-
+		
+		//only use process data if it exists
+		if(process){
+			if(process.path_found === true){
+				// console.log("path found")
+	
+				//ADD THE PATH ELEMENTS TO THE LIVE TILES LIST
+				if(process.path){
+					if(process.path.length){
+						let found = false;
+						process.path.forEach((pos) => {
+							found = this.live_tiles.some(i => i.x === pos.x && i.y === pos.y);
+							if(found === false){
+								this.live_tiles.push(pos);
+							}
+						})
+	
+					}
 				}
+	
+			}else{
+				// console.log("no path")
+				//no path found
 			}
-
-		}else{
-			// console.log("no path")
-			//no path found
 		}
+
 		this.check_tiles_position++;
 
 		
@@ -772,12 +791,15 @@ const unit = class {
 		var boundsB = spriteB.getBounds();
 
 		let intersection =  Phaser.Geom.Rectangle.Intersection(boundsA, boundsB);	
-		
+		let min_length = 16
+
 		let check = false;
-		if(intersection.width > 0 && intersection.height > 0 && adjacent===false){
+		if(intersection.width > min_length && intersection.height > min_length && adjacent===false){
+			// console.log("intersection")
 			check = true;
 		}
 		if(adjacent===true){
+			// if(intersection.width > min_length || intersection.height > min_length){
 			if(intersection.width > 0 || intersection.height > 0){
 				check = true;
 			}					
@@ -863,6 +885,11 @@ const unit = class {
 			})
 
 		}
+		else{
+			if(callback){
+				this[callback]()
+			}
+		}
 	}
 	
 	findPath(options) {
@@ -871,6 +898,8 @@ const unit = class {
 	}
 
 	usePath(process){
+
+		// console.log(process)
 
 		let path = process.path
 		let pointer = process.pointer
@@ -1387,6 +1416,8 @@ const unit = class {
 			})
 			if(this.targets.length > 0){
 				this.shot = true;
+				this.sprite_action.setFrame(2)
+				this.sprite_action.visible = true
 			}
 			
 			this.targets = [];
@@ -1498,6 +1529,9 @@ const unit = class {
 					if(unit.fight_damage > 0){
 						this.in_combat = true;
 						unit.in_combat = true;
+
+						this.sprite_action.visible = true
+						unit.sprite_action.visible = true
 					}
 				}
 			}
