@@ -226,12 +226,14 @@ options = {
 
 combat_weapon_types.push(new combat_weapon_type(options))
 
+let fight_range = (gameFunctions.tile_size * 2)-(gameFunctions.tile_size / 2)
+
 options = {
 	fight_name: "sword",
 	fight_damage: 20,
 	fight_ap: 2,
 	fight_max_targets: 2,
-	fight_range: 200
+	fight_range: fight_range
 }
 
 combat_weapon_types.push(new combat_weapon_type(options))

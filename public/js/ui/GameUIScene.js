@@ -348,7 +348,7 @@ GameUIScene.advanceMode = () => {
 			if(gameFunctions.params.player_side === gameFunctions.current_side){
 				gameFunctions.btn_sprite[0].showButton();				
 			}		
-
+			GameUIScene.checkAllCombat();
 			connFunctions.saveGame("shoot");
 			gameFunctions.mode_state++;
 			break;
@@ -362,7 +362,7 @@ GameUIScene.advanceMode = () => {
 			break;
 			
 		case 4:
-			//setup shoot
+			//setup charge
 			options.mode = "charge"
 			GameUIScene.selectMode(options);
 			gameFunctions.btn_sprite[0].updateText("trigger charge")
@@ -373,7 +373,7 @@ GameUIScene.advanceMode = () => {
 			gameFunctions.mode_state++;
 			break;
 		case 5:
-			//activate shoot
+			//activate charge
 			GameScene.sfxHandler("button");			
 			activated = GameUIScene.activateCharging();
 
@@ -392,6 +392,7 @@ GameUIScene.advanceMode = () => {
 			if(gameFunctions.params.player_side === gameFunctions.current_side){
 				gameFunctions.btn_sprite[0].showButton();				
 			}		
+			GameUIScene.checkAllCombat();
 			connFunctions.saveGame("fight");
 			gameFunctions.mode_state++;
 			break;
@@ -410,7 +411,7 @@ GameUIScene.advanceMode = () => {
 			if(gameFunctions.params.player_side === gameFunctions.current_side){
 				gameFunctions.btn_sprite[0].showButton();				
 			}		
-
+			GameUIScene.checkAllCombat();
 			connFunctions.saveGame("end turn");
 			gameFunctions.mode_state++;
 			break;
@@ -693,6 +694,18 @@ GameUIScene.nextSide = () => {
 // ██      ██    ██ ██  ██ ██ ██         ██    ██ ██    ██ ██  ██ ██      ██ 
 // ██       ██████  ██   ████  ██████    ██    ██  ██████  ██   ████ ███████ 
                                                                           
+GameUIScene.checkAllCombat = () => {
+	// RESET ALL COMBAT STATUS'
+	gameFunctions.units.forEach((unit) => {
+		unit.in_combat = false;
+		unit.sprite_action.visible = false;
+	})
+
+	//RERUN COMBAT CHECKS
+	gameFunctions.units.forEach((unit) => {
+		unit.checkCombat()
+	})	
+}
 
 
 GameUIScene.hideButtons = () => {

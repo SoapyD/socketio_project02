@@ -124,7 +124,7 @@ var GameScene = new Phaser.Class({
 		GameScene.scene = this.scene.get('GameScene')
 		gameFunctions.current_scene = this.scene.get('GameScene');
 		
-		GameScene.tile_size = 32;
+		
 		
 		GameScene.rectangle = this.add.rectangle(0, 0, 10, 10, 0x6666ff);
 		GameScene.rectangle.depth = 100;
@@ -322,7 +322,7 @@ var GameScene = new Phaser.Class({
 				player: 0,
 				side: 0,
 				angle : 90,
-				tile_size: GameScene.tile_size,
+				tile_size: gameFunctions.tile_size,
 				unit_types: GameScene.unit_types,
 				projectile_weapon_types: GameScene.projectile_weapon_types,
 				combat_weapon_types: GameScene.combat_weapon_types,
@@ -354,13 +354,13 @@ var GameScene = new Phaser.Class({
 				created_unit.in_combat = unit.in_combat;
 
 				created_unit.sprite.angle = Phaser.Math.RadToDeg(unit.rotation);
-				created_unit.sprite.x -= GameScene.tile_size * created_unit.sprite_offset;
-				created_unit.sprite.y -= GameScene.tile_size * created_unit.sprite_offset;
+				created_unit.sprite.x -= gameFunctions.tile_size * created_unit.sprite_offset;
+				created_unit.sprite.y -= gameFunctions.tile_size * created_unit.sprite_offset;
 				
 				if(created_unit.sprite_ghost){
 					created_unit.sprite_ghost.angle = Phaser.Math.RadToDeg(unit.rotation);
-					created_unit.sprite_ghost.x -= GameScene.tile_size * created_unit.sprite_offset;
-					created_unit.sprite_ghost.y -= GameScene.tile_size * created_unit.sprite_offset;
+					created_unit.sprite_ghost.x -= gameFunctions.tile_size * created_unit.sprite_offset;
+					created_unit.sprite_ghost.y -= gameFunctions.tile_size * created_unit.sprite_offset;
 				}
 
 				// created_unit.drawHealth()
@@ -828,8 +828,8 @@ GameScene.setupCamera = () => {
 	GameScene.scene.cameras.main.setBounds(
 		-offset, 
 		-offset, 
-		GameScene.map.width * GameScene.tile_size + (offset * 2), 
-		GameScene.map.height * GameScene.tile_size + (offset * 2));	
+		GameScene.map.width * gameFunctions.tile_size + (offset * 2), 
+		GameScene.map.height * gameFunctions.tile_size + (offset * 2));	
 	
 	
 	GameScene.scene.cameras.main.zoom = 1.75;

@@ -57,8 +57,8 @@ const unit = class {
 
 		this.sprite_offset = options.sprite_offset;
 		
-		let x = options.x + GameScene.tile_size * this.sprite_offset;
-		let y = options.y + GameScene.tile_size * this.sprite_offset;
+		let x = options.x + gameFunctions.tile_size * this.sprite_offset;
+		let y = options.y + gameFunctions.tile_size * this.sprite_offset;
 		
 		this.depth_sprite = 4;
 		this.depth_sprite_ghost = 5;
@@ -68,7 +68,7 @@ const unit = class {
 		this.depth_health = 2;
 		this.depth_path = 1;
 		this.depth_cohesion = 1;
-		this.depth_fight_radius = 1;
+		this.depth_fight_radius = 1.5;
 		this.depth_text = 20;
 		this.depth_text_box = 10;
 		
@@ -119,6 +119,7 @@ const unit = class {
 		this.bar_graphic = options.scene.add.graphics().setDepth(this.depth_health);
 		this.path_graphic = options.scene.add.graphics().setDepth(this.depth_path);
 		this.cohesion_graphic = options.scene.add.graphics().setDepth(this.depth_cohesion);
+		this.fight_graphic = options.scene.add.graphics().setDepth(this.depth_fight_radius);
 		this.blast_graphics = [];
 		for(let i=0; i<10; i++){
 			this.blast_graphics.push(options.scene.add.graphics().setDepth(this.depth_explosion));
@@ -201,6 +202,7 @@ const unit = class {
 				
 		this.path_graphic.clear();
 		this.cohesion_graphic.clear();
+		this.fight_graphic.clear();
 		this.resetDrawInfo();
 		
 		this.blast_graphics.forEach((graphic) => {
@@ -212,6 +214,7 @@ const unit = class {
 		
 		this.path = [];
 		this.path_graphic.clear();		
+		this.fight_graphic.clear();
 		this.resetGhost();
 		this.updateElements(this.sprite_ghost);
 		
@@ -232,7 +235,7 @@ const unit = class {
 	}
 	
 	resetFightRadius() {
-		this.cohesion_graphic.clear();	
+		this.fight_graphic.clear();	
 	}
 	
 	resetGhost() {
@@ -490,18 +493,22 @@ const unit = class {
 			let angle = this.checkAngle(this.path[this.path.length - 2], this.path[this.path.length - 1])
 
 			if(this.sprite_ghost){
-				this.sprite_ghost.x = pos.x * GameScene.tile_size;
-				this.sprite_ghost.y = pos.y * GameScene.tile_size;
+				this.sprite_ghost.x = pos.x * gameFunctions.tile_size;
+				this.sprite_ghost.y = pos.y * gameFunctions.tile_size;
 				this.sprite_ghost.angle = angle;
 
 				this.updateElements(this.sprite_ghost)
+
+				if(gameFunctions.mode === "charge"){
+					this.drawFightRadius();
+				}
 			}
 		}
 		
 		
 		let last_pos = {
-			x: this.sprite.x / GameScene.tile_size,
-			y: this.sprite.y / GameScene.tile_size
+			x: this.sprite.x / gameFunctions.tile_size,
+			y: this.sprite.y / gameFunctions.tile_size
 		}
 		
 		//RESET THE DRAW GRAPHICS
@@ -516,10 +523,10 @@ const unit = class {
 			this.path.forEach((pos, i) => {
 	
 				if (i !== 0){
-					this.path_graphic.lineTo(pos.x * GameScene.tile_size, pos.y * GameScene.tile_size);
+					this.path_graphic.lineTo(pos.x * gameFunctions.tile_size, pos.y * gameFunctions.tile_size);
 				}
 				else{
-					this.path_graphic.moveTo(pos.x * GameScene.tile_size, pos.y * GameScene.tile_size);
+					this.path_graphic.moveTo(pos.x * gameFunctions.tile_size, pos.y * gameFunctions.tile_size);
 				}
 				
 				last_pos = pos;
@@ -534,7 +541,7 @@ const unit = class {
 		
 		this.cohesion_graphic.lineStyle(colours.line_width, colours.line_colour, colours.circle_alpha);
 		this.cohesion_graphic.fillStyle(colours.fill_colour, colours.fill_alpha);
-		let circle = new Phaser.Geom.Circle(last_pos.x * GameScene.tile_size, last_pos.y * GameScene.tile_size, this.cohesion / 2);
+		let circle = new Phaser.Geom.Circle(last_pos.x * gameFunctions.tile_size, last_pos.y * gameFunctions.tile_size, this.cohesion / 2);
 		this.cohesion_graphic.fillCircleShape(circle);
 
 		this.cohesion_graphic.strokePath();		
@@ -572,9 +579,9 @@ const unit = class {
 				
 				if(blast_radius > 1){
 					let blast_graphic = this.blast_graphics[i];
-					// blast_graphic.lineStyle(3 * GameScene.tile_size, colours.line_colour, 0.5);
+					// blast_graphic.lineStyle(3 * gameFunctions.tile_size, colours.line_colour, 0.5);
 					blast_graphic.fillStyle(0x0000FF, 0.5);
-					let circle = new Phaser.Geom.Circle(pos.x, pos.y, (blast_radius / 2) * GameScene.tile_size);
+					let circle = new Phaser.Geom.Circle(pos.x, pos.y, (blast_radius / 2) * gameFunctions.tile_size);
 					blast_graphic.fillCircleShape(circle).setDepth(this.depth_explosion);
 
 					blast_graphic.strokePath();
@@ -587,10 +594,12 @@ const unit = class {
 	
 	
 	drawFightRadius(){
-		let radius_graphic = this.cohesion_graphic;
+
+		this.fight_graphic.clear();
+		let radius_graphic = this.fight_graphic;
 		radius_graphic.lineStyle(1, 0x0000FF, 0.5);
-		radius_graphic.fillStyle(0x0000FF, 0.2);
-		let circle = new Phaser.Geom.Circle(this.sprite.x, this.sprite.y, (this.fight_range / 2));
+		radius_graphic.fillStyle(0x0000FF, 0.35);
+		let circle = new Phaser.Geom.Circle(this.sprite_ghost.x, this.sprite_ghost.y, (this.fight_range));
 		radius_graphic.fillCircleShape(circle).setDepth(this.depth_fight_radius);
 
 		radius_graphic.strokePath();		
@@ -608,8 +617,8 @@ const unit = class {
 		this.live_tiles = [];
 		this.check_tiles = [];
 		this.check_tiles_position = 0;
-		let gridX = Math.floor(this.sprite.x/GameScene.tile_size);
-		let gridY = Math.floor(this.sprite.y/GameScene.tile_size);	
+		let gridX = Math.floor(this.sprite.x/gameFunctions.tile_size);
+		let gridY = Math.floor(this.sprite.y/gameFunctions.tile_size);	
 
 		let startX = gridX - this.movement
 		let startY = gridY - this.movement
@@ -859,16 +868,16 @@ const unit = class {
 
 		var x = pointer.x;
 		var y = pointer.y;		
-		var toX = Math.floor(x/GameScene.tile_size);
-		var toY = Math.floor(y/GameScene.tile_size);
+		var toX = Math.floor(x/gameFunctions.tile_size);
+		var toY = Math.floor(y/gameFunctions.tile_size);
 		
 		// console.log(toX,toY)
 		
 		if(toX < GameScene.map.width && toY < GameScene.map.height
 		  && toX >= 0 && toY >= 0){
 
-			var fromX = Math.floor(this.sprite.x/GameScene.tile_size);
-			var fromY = Math.floor(this.sprite.y/GameScene.tile_size);		
+			var fromX = Math.floor(this.sprite.x/gameFunctions.tile_size);
+			var fromY = Math.floor(this.sprite.y/gameFunctions.tile_size);		
 
 			// let path = GameScene.pathfinder.findPath(this, fromX, fromY, toX, toY, this.size)
 
@@ -927,8 +936,8 @@ const unit = class {
 					
 					if(unit.id !== this.id){
 						
-						this.sprite_ghost.x = pos.x * GameScene.tile_size;
-						this.sprite_ghost.y = pos.y * GameScene.tile_size;
+						this.sprite_ghost.x = pos.x * gameFunctions.tile_size;
+						this.sprite_ghost.y = pos.y * gameFunctions.tile_size;
 
 						let temp_check = false
 						// temp_check = this.checkSpriteOverlap(unit.sprite, this.sprite_ghost)
@@ -1202,7 +1211,7 @@ const unit = class {
 						
 						
 						//WHEN THE END OF THE PATH IS REACHED
-						if(this.sprite.x / GameScene.tile_size === end_path.x && this.sprite.y / GameScene.tile_size === end_path.y){
+						if(this.sprite.x / gameFunctions.tile_size === end_path.x && this.sprite.y / gameFunctions.tile_size === end_path.y){
 							this.path_graphic.clear()
 							this.path = [];
 							this.is_moving = false;
@@ -1257,8 +1266,8 @@ const unit = class {
 		let pos = {
 			start_x: this.sprite.x,
 			start_y: this.sprite.y,			
-			end_x: Math.floor(pointer.x / GameScene.tile_size) * GameScene.tile_size + (GameScene.tile_size / 2),
-			end_y: Math.floor(pointer.y / GameScene.tile_size) * GameScene.tile_size + (GameScene.tile_size / 2),
+			end_x: Math.floor(pointer.x / gameFunctions.tile_size) * gameFunctions.tile_size + (gameFunctions.tile_size / 2),
+			end_y: Math.floor(pointer.y / gameFunctions.tile_size) * gameFunctions.tile_size + (gameFunctions.tile_size / 2),
 		}
 		//GET DIFFERENCE INFO
 		pos.x_diff = pos.end_x - pos.start_x;
@@ -1315,11 +1324,11 @@ const unit = class {
 		let add_dest = true;
 		pos.cells.forEach((cell) => {			
 
-			let grid_x = Math.floor(cell.x / GameScene.tile_size);
-			let grid_y = Math.floor(cell.y / GameScene.tile_size);					
+			let grid_x = Math.floor(cell.x / gameFunctions.tile_size);
+			let grid_y = Math.floor(cell.y / gameFunctions.tile_size);					
 			let grid_cell = GameScene.grid[grid_y][grid_x]
 			// this.temp_sprites.push(scene.physics.add.image(cell.x,cell.y,"marker").setDepth(0))	
-			// this.temp_sprites.push(scene.physics.add.image(grid_x * GameScene.tile_size,grid_y * GameScene.tile_size,"marker").setTint(0xff0000).setDepth(0.5));
+			// this.temp_sprites.push(scene.physics.add.image(grid_x * gameFunctions.tile_size,grid_y * gameFunctions.tile_size,"marker").setTint(0xff0000).setDepth(0.5));
 
 			if (!GameScene.pathfinder.acceptable_tiles.includes(grid_cell)){
 				// skip = true;
@@ -1443,8 +1452,8 @@ const unit = class {
 		let pos = {
 			start_x: this.sprite.x,
 			start_y: this.sprite.y,			
-			end_x: Math.floor(pointer.x / GameScene.tile_size) * GameScene.tile_size + (GameScene.tile_size / 2),
-			end_y: Math.floor(pointer.y / GameScene.tile_size) * GameScene.tile_size + (GameScene.tile_size / 2),
+			end_x: Math.floor(pointer.x / gameFunctions.tile_size) * gameFunctions.tile_size + (gameFunctions.tile_size / 2),
+			end_y: Math.floor(pointer.y / gameFunctions.tile_size) * gameFunctions.tile_size + (gameFunctions.tile_size / 2),
 		}
 
 		let current_range = Math.sqrt(Math.pow(this.sprite.x - pos.end_x, 2) + Math.pow(this.sprite.y - pos.end_y, 2))
@@ -1453,7 +1462,7 @@ const unit = class {
 		let skip = false
 		let on_unit = false;
 		
-		if(current_range > (this.fight_range / 2)){
+		if(current_range > (this.fight_range)){
 			skip = true;	
 		}
 		
@@ -1502,6 +1511,7 @@ const unit = class {
 		let in_combat_range = false
 
 		gameFunctions.units.forEach((unit) => {
+
 			let clash = false;
 			if(unit.alive === true && unit.id !== this.id && unit.player !== this.player && unit.side !== this.side){
 				

@@ -113,7 +113,7 @@ const bullet = class {
 				let val = Math.pow(this.sprite.x - unit.sprite.x, 2) + Math.pow(this.sprite.y - unit.sprite.y, 2)
 				let dist = Math.round(Math.sqrt(val),0)
 				// console.log("WOUNDING2",dist)
-				if(dist <= (this.blast_radius / 2) * GameScene.tile_size){
+				if(dist <= (this.blast_radius / 2) * gameFunctions.tile_size){
 										
 					// let options = {
 					// 	damage: this.damage,
@@ -190,8 +190,8 @@ const bullet = class {
 			this.kill();
 		}
 		
-		let gridX = Math.floor(this.sprite.x/GameScene.tile_size);
-		let gridY = Math.floor(this.sprite.y/GameScene.tile_size);	
+		let gridX = Math.floor(this.sprite.x/gameFunctions.tile_size);
+		let gridY = Math.floor(this.sprite.y/gameFunctions.tile_size);	
 		
 		let cell = GameScene.grid[gridY][gridX]
 		

@@ -23,11 +23,13 @@ SBT GAME NOTES
 FIGHTING
 /////////////////////////////////////////
 
--Fighting tests and breakdown
-    -Only models directly next to others are being tagged as "in fighting"
+-DONE -Need to see the fighting range at the end of a charge so the above can be properly factored in
+-DONE -Also need to clear the in-fighting state properly as I don't think anything is
+    
+
+-Only models directly next to others are being tagged as "in fighting"
     -Should probably be anyone within fighting range once charges have been completed
-    -Need to see the fighting range at the end of a charge so the above can be properly factored in
-    -Also need to clear the in-fighting state properly as I don't think anything is
+
 
 /////////////////////////////////////////
 BUGS

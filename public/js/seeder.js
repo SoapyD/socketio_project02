@@ -19,7 +19,7 @@ GameScene.seed = () => {
 			player: player,
 			side: side,
 			angle : 90,
-			tile_size: GameScene.tile_size,
+			tile_size: gameFunctions.tile_size,
 			unit_types: GameScene.unit_types,
 			projectile_weapon_types: GameScene.projectile_weapon_types,
 			combat_weapon_types: GameScene.combat_weapon_types,
@@ -57,7 +57,7 @@ GameScene.seed = () => {
 			player: player,
 			side: side,
 			angle : -90,
-			tile_size: GameScene.tile_size,
+			tile_size: gameFunctions.tile_size,
 			unit_types: GameScene.unit_types,
 			projectile_weapon_types: GameScene.projectile_weapon_types,
 			combat_weapon_types: GameScene.combat_weapon_types,
@@ -104,7 +104,7 @@ GameScene.seed2 = () => {
 			player: player,
 			side: side,
 			angle : 90,
-			tile_size: GameScene.tile_size,
+			tile_size: gameFunctions.tile_size,
 			unit_types: GameScene.unit_types,
 			projectile_weapon_types: GameScene.projectile_weapon_types,
 			combat_weapon_types: GameScene.combat_weapon_types,
@@ -135,7 +135,7 @@ GameScene.seed2 = () => {
 			player: player,
 			side: side,
 			angle : 90,
-			tile_size: GameScene.tile_size,
+			tile_size: gameFunctions.tile_size,
 			unit_types: GameScene.unit_types,
 			projectile_weapon_types: GameScene.projectile_weapon_types,
 			combat_weapon_types: GameScene.combat_weapon_types,
@@ -166,7 +166,7 @@ GameScene.seed2 = () => {
 			player: player,
 			side: side,
 			angle : -90,
-			tile_size: GameScene.tile_size,
+			tile_size: gameFunctions.tile_size,
 			unit_types: GameScene.unit_types,
 			projectile_weapon_types: GameScene.projectile_weapon_types,
 			combat_weapon_types: GameScene.combat_weapon_types,
@@ -197,7 +197,7 @@ GameScene.seed2 = () => {
 			player: player,
 			side: side,
 			angle : -90,
-			tile_size: GameScene.tile_size,
+			tile_size: gameFunctions.tile_size,
 			unit_types: GameScene.unit_types,
 			projectile_weapon_types: GameScene.projectile_weapon_types,
 			combat_weapon_types: GameScene.combat_weapon_types,
@@ -226,7 +226,7 @@ GameScene.seed3 = () => {
 		player: 0,
 		side: 0,
 		angle : 90,
-		tile_size: GameScene.tile_size,
+		tile_size: gameFunctions.tile_size,
 		unit_types: GameScene.unit_types,
 		projectile_weapon_types: GameScene.projectile_weapon_types,
 		combat_weapon_types: GameScene.combat_weapon_types,
@@ -260,7 +260,7 @@ GameScene.seed3 = () => {
 		player: 1,
 		side: 1,
 		angle : 90,
-		tile_size: GameScene.tile_size,
+		tile_size: gameFunctions.tile_size,
 		unit_types: GameScene.unit_types,
 		projectile_weapon_types: GameScene.projectile_weapon_types,
 		combat_weapon_types: GameScene.combat_weapon_types,
@@ -268,7 +268,7 @@ GameScene.seed3 = () => {
 	}
 	GameScene.unit_setup = new unit_setup(options)
 
-	options = {x: 16, y:2}
+	options = {x: 14, y:2}
 	GameScene.unit_setup.placeSquad(options)
 	
 	// options = {x: 16, y:2}

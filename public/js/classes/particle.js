@@ -13,8 +13,8 @@ const particle = class {
 			
 			
 			if(options.width){
-				this.sprite.displayWidth = options.width * (GameScene.tile_size * 2.5);
-				this.sprite.displayHeight = options.width * (GameScene.tile_size * 2.5);
+				this.sprite.displayWidth = options.width * (gameFunctions.tile_size * 2.5);
+				this.sprite.displayHeight = options.width * (gameFunctions.tile_size * 2.5);
 			}
 		}
 		
