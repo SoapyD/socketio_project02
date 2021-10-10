@@ -731,7 +731,10 @@ GameUIScene.checkButtonVisability = () => {
 		}else{
 			GameUIScene.hideButtons()
 		}
-	}	
+	}
+	// else{
+	// 	GameUIScene.showButtons()
+	// }
 }
 
 
@@ -741,12 +744,21 @@ GameUIScene.advanceSide = () => {
 	// if(gameFunctions.current_side === -1){
 	// 	start_check = true;
 	// }
-	
+
+	// CHANGE THE PARAMS SIDE IF THIS IS A LOCAL GAME
+	if(GameScene.online === false && gameFunctions.current_side !== -1){
+		gameFunctions.params.player_side += 1
+		if(gameFunctions.params.player_side >= gameFunctions.params.max_sides){
+			gameFunctions.params.player_side = 0
+		}		
+	}	
+
 	gameFunctions.current_side += 1
 	if(gameFunctions.current_side >= gameFunctions.params.max_sides){
 		gameFunctions.current_side = 0
 	}
 	
+
 	gameFunctions.units.forEach((unit) => {
 		unit.moves = 0;
 		unit.fights = 0;

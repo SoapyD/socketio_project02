@@ -10,11 +10,6 @@ SBT GAME NOTES
 /////////////////////////////////////////////////////////////////////////////////////
 
 
--Need to generate a sprite to show unit is in combat
-    -DONE -Also generating one when there's a shot that's been take
-    -DONE -Need to create a hide/show function for this sprite
-    -Or movement taken
-
 -Write in a check to clear live tiles drawn when the mode goes to a non moving action
     -Also clear the live tiles when a new unit is selected
 
@@ -29,6 +24,8 @@ BUGS
 
 -BUG -Stuttering being caused if a unit is selected, live tiles are started to be drawn, then another unit is selected, so they flitter
 until the draw action resolves
+
+-BUG -Sprite overlap function still isn't working as intended
 
 /////////////////////////////////////////
 SETUP
@@ -56,6 +53,11 @@ DONE
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+-DONE -Need to generate a sprite to show unit is in combat
+    -DONE -Also generating one when there's a shot that's been take
+    -DONE -Need to create a hide/show function for this sprite
+    -Or movement taken
 
 -DONE -Need to see the fighting range at the end of a charge so the above can be properly factored in
 -DONE -Also need to clear the in-fighting state properly as I don't think anything is

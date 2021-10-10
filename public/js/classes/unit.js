@@ -1193,7 +1193,7 @@ const unit = class {
 
 							if(this.in_combat_with){
 								this.in_combat_with.forEach((unit) => {
-									unit.fight_targets.push(this.sprite)
+									unit.fight_targets.push(this.sprite.parent.id)
 									
 									unit.fight();
 								})
