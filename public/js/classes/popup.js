@@ -14,16 +14,10 @@ const popup = class {
 		this.text.x -= this.text.width / 2;
 
 		this.rectangle = options.scene.add.rectangle(options.pos.x, options.pos.y + (this.text.height / 2), this.text.width, this.text.height, 0xffffff).setDepth(99);
-		
-		// console.log(this.text)
-		
-		// let target;
-		// if(this.text){
-		// 	target = this.text
-		// }			
 
 		options.scene.tweens.add({
 			targets: [this.rectangle, this.text],
+			delay: 2000,
 			duration: 3000,
 			alpha: 0,
 			ease: 'Power3',
@@ -38,7 +32,7 @@ const popup = class {
 				}
 
 			}
-		}); 
+		}); 				
 		
 	}
 	

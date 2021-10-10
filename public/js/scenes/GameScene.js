@@ -723,7 +723,17 @@ GameScene.resetTempSprites = () => {
 	}		
 }
 
-
+GameScene.showMessage = (text) => {
+	let options = {
+		scene: GameScene.scene,
+		pos: {
+			x: GameScene.rectangle.x,
+			y: GameScene.rectangle.y
+		},
+		text: text
+	}
+	new popup(options)	
+}
 
 
 

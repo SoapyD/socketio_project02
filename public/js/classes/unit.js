@@ -179,6 +179,12 @@ const unit = class {
 		this.moved = false;
 		this.shot = false;
 		this.fought = false;		
+
+
+		this.checkCombat()
+		if(this.in_combat === false){
+			this.sprite_action.visible = false;
+		}		
 	}
 	
 	resetCohesionGraphic() {
@@ -499,9 +505,9 @@ const unit = class {
 
 				this.updateElements(this.sprite_ghost)
 
-				if(gameFunctions.mode === "charge"){
+				// if(gameFunctions.mode === "charge"){
 					this.drawFightRadius();
-				}
+				// }
 			}
 		}
 		
@@ -734,7 +740,6 @@ const unit = class {
 				}
 			}
 
-			
 			if (this.parent.side === gameFunctions.current_side && skip === false){
 				//TURN OLD SELECTED PLAYER MARKER, WHITE
 
@@ -781,8 +786,10 @@ const unit = class {
 		GameScene.selected_unit = undefined;
 		
 		// console.log(old_selected)
-		if(this.cohesion > 0){
-			this.cohesionCheck();	
+		if(gameFunctions.mode === "move" || gameFunctions.mode === "charge"){
+			if(this.cohesion > 0){
+				this.cohesionCheck();	
+			}
 		}
 	}
 	
@@ -940,11 +947,7 @@ const unit = class {
 						this.sprite_ghost.y = pos.y * gameFunctions.tile_size;
 
 						let temp_check = false
-						// temp_check = this.checkSpriteOverlap(unit.sprite, this.sprite_ghost)
-						// if(temp_check === true){
-						// 	check = temp_check
-						// }
-						
+
 						temp_check = this.checkSpriteOverlap(unit.sprite_ghost, this.sprite_ghost)
 						if(temp_check === true){
 							check = temp_check
@@ -976,15 +979,7 @@ const unit = class {
 			//SKIP IF IN CHARGE MODE AND UNIT HAD ALREADY SHOT
 			if(this.shot === true && gameFunctions.mode === "charge"){
 				skip = true;
-				let options = {
-					scene: GameScene.scene,
-					pos: {
-						x: GameScene.rectangle.x,
-						y: GameScene.rectangle.y
-					},
-					text: "cannot charge, unit has shot"
-				}
-				new popup(options)
+				GameScene.showMessage("cannot charge, unit has shot")
 			}
 			
 			if(this.path.length === 0){
@@ -1163,8 +1158,7 @@ const unit = class {
 			this.is_moving = true;
 			
 			//check if unit is in combat before movement
-			this.in_combat = this.checkCombat();
-			// this.in_combat_with = [];
+			// this.in_combat = this.checkCombat();
 			
 			GameScene.sfx['movement'].play();
 			let tweens = []
@@ -1225,9 +1219,6 @@ const unit = class {
 										GameScene.sfx["end_path"].play();
 										 
 										break;
-									// case "checkCombat":
-										// this.checkCombat("fight");
-										// break;
 									default:
 								}
 							}
@@ -1364,6 +1355,7 @@ const unit = class {
 
 			if(this.in_combat === true){
 				skip = true;
+				GameScene.showMessage("Cannot shoot while in combat.")
 			}
 		}
 		
@@ -1504,7 +1496,16 @@ const unit = class {
 		
 	}	
 
-	
+	checkCombatDistance(sprite, unit) {
+		let clash = false
+		let dist = gameFunctions.twoPointDistance(sprite, unit.sprite);
+		dist -= unit.size * gameFunctions.tile_size; 
+		if(dist <= this.fight_range){
+			clash = true
+		}
+
+		return clash
+	}
 	
 	checkCombat() {
 		
@@ -1518,10 +1519,12 @@ const unit = class {
 				if(this.path.length > 0 && this.is_moving === false){
 					//check to see if movement ends in an attack
 					if(this.sprite_ghost){
-						clash = this.checkSpriteOverlap(this.sprite_ghost, unit.sprite, true)
+						// clash = this.checkSpriteOverlap(this.sprite_ghost, unit.sprite, true)
+						clash = this.checkCombatDistance(this.sprite_ghost, unit)
 					}
 				}else{
-					clash = this.checkSpriteOverlap(this.sprite, unit.sprite, true)
+					// clash = this.checkSpriteOverlap(this.sprite, unit.sprite, true)
+					clash = this.checkCombatDistance(this.sprite, unit)
 				}
 
 				if(clash === true){

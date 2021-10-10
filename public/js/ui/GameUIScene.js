@@ -312,7 +312,7 @@ GameUIScene.runAdvanceMode = () => {
 }
 
 GameUIScene.advanceMode = () => {
-	
+	2
 	let options = {}
 	let btn;
 	let activated = false;

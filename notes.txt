@@ -10,11 +10,10 @@ SBT GAME NOTES
 /////////////////////////////////////////////////////////////////////////////////////
 
 
-
 -Need to generate a sprite to show unit is in combat
-    -Also generating one when there's a shot that's been take
+    -DONE -Also generating one when there's a shot that's been take
+    -DONE -Need to create a hide/show function for this sprite
     -Or movement taken
-    -Need to create a hide/show function for this sprite
 
 -Write in a check to clear live tiles drawn when the mode goes to a non moving action
     -Also clear the live tiles when a new unit is selected
@@ -23,27 +22,13 @@ SBT GAME NOTES
 FIGHTING
 /////////////////////////////////////////
 
--DONE -Need to see the fighting range at the end of a charge so the above can be properly factored in
--DONE -Also need to clear the in-fighting state properly as I don't think anything is
-    
-
--Only models directly next to others are being tagged as "in fighting"
-    -Should probably be anyone within fighting range once charges have been completed
-
 
 /////////////////////////////////////////
 BUGS
 /////////////////////////////////////////
 
--BUG -Think the issue below is actually the "leaving/entering" combat check that occurs to punish players trying to leave 
-initiated combat dont think this is working as intended
-    -Shooting, when shots have been set up by a squad then another unit is selected in the same squad, 
-    the visuals of draw lines are reset and the cohension check appears for some reason
-    -Think "in_combat" isn't activated until the units are at least adjcent to one another. Needs a full combat check
-
 -BUG -Stuttering being caused if a unit is selected, live tiles are started to be drawn, then another unit is selected, so they flitter
 until the draw action resolves
-
 
 /////////////////////////////////////////
 SETUP
@@ -71,6 +56,20 @@ DONE
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+-DONE -Need to see the fighting range at the end of a charge so the above can be properly factored in
+-DONE -Also need to clear the in-fighting state properly as I don't think anything is
+    
+-DONE -Only models directly next to others are being tagged as "in fighting"
+    -DONE -Should probably be anyone within fighting range once charges have been completed
+
+-DONE -Think the issue below is actually the "leaving/entering" combat check that occurs to punish players trying to leave 
+initiated combat dont think this is working as intended
+    -Shooting, when shots have been set up by a squad then another unit is selected in the same squad, 
+    the visuals of draw lines are reset and the cohension check appears for some reason
+    -Think "in_combat" isn't activated until the units are at least adjcent to one another. Needs a full combat check
+
+-DONE -If in shooting mode but the shot isn't allowed the cohesion graphics generate for some reason
 
 -DONE -Have "players" as a dropdown menu with a minimum of 2 players to be selectable. Auto-select 2 players to start with
 

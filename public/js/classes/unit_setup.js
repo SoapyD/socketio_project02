@@ -196,5 +196,21 @@ const unit_setup = class {
 		this.squad++;
 	}	
 	
+
+	placeDread(options){
+		
+		let unit_options = {
+			unit_name: "dread",
+			shoot_name: "heavy",
+			fight_name: "sword",
+			armour_name: "heavy",
+		}		
+
+		unit_options.x = options.x
+		unit_options.y = options.y
+		this.placeFunction(unit_options)
+		
+		this.squad++;
+	}		
 	
 }

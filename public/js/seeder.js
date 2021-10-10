@@ -274,5 +274,7 @@ GameScene.seed3 = () => {
 	// options = {x: 16, y:2}
 	// GameScene.unit_setup.placeGeneral(options)	
 	
+	// options = {x: 16, y:2}
+	// GameScene.unit_setup.placeDread(options)		
 
 }
