@@ -1591,8 +1591,9 @@ const unit = class {
 				defender_id: target
 			}			
 			
-			if(GameScene.online === false){			
-				target.parent.wound(options);
+			if(GameScene.online === false){
+				let unit = gameFunctions.units[options.defender_id]			
+				unit.wound(options);
 			}else{
 				//ONLY SEND THE WOUND MESSAGE IF THIS IS THE ATTACKING PLAYER
 				if(gameFunctions.params.player_number === this.player){
