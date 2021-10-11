@@ -287,7 +287,7 @@ GameUIScene.runSelectMode = (options) => {
 		//RESET ALL PLAYER ACTIONS
 		if(gameFunctions.units){
 			gameFunctions.units.forEach((unit) => {
-				if(unit.side === gameFunctions.current_side){
+				if(unit.alive === true && unit.side === gameFunctions.current_side){
 					unit.resetActions();
 				}
 			})
@@ -662,7 +662,7 @@ GameUIScene.nextSide = () => {
 	
 	gameFunctions.mode = ""
 	gameFunctions.units.forEach((unit) => {
-		if(unit.side === gameFunctions.current_side){
+		if(unit.alive === true && unit.side === gameFunctions.current_side){
 			unit.resetActions();
 			unit.resetLocks();
 		}

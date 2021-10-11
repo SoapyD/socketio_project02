@@ -286,17 +286,7 @@ const unit = class {
 	
 	
 	
-	kill(){	
-		this.alive = false;
 
-		GameScene.sfx[this.death_sfx].play();
-		this.sprite.destroy();
-		if(this.sprite_ghost){
-			this.sprite_ghost.destroy();
-		}
-		this.bar_graphic.destroy();
-		this.sprite_symbol.destroy();
-	}	
 
 	// ██     ██  ██████  ██    ██ ███    ██ ██████  ██ ███    ██  ██████  
 	// ██     ██ ██    ██ ██    ██ ████   ██ ██   ██ ██ ████   ██ ██       
@@ -374,7 +364,26 @@ const unit = class {
 		}
 	}	
 	
-	
+	kill(){	
+		this.alive = false;
+
+		GameScene.sfx[this.death_sfx].play();
+		this.sprite.destroy();
+		if(this.sprite_ghost){
+			this.sprite_ghost.destroy();
+		}
+		this.sprite_action.destroy();
+		this.sprite_symbol.destroy();
+
+		this.bar_graphic.destroy();
+		this.path_graphic.destroy();
+		this.cohesion_graphic.destroy();
+		this.fight_graphic.destroy();
+		this.blast_graphics.forEach((graphic) => {
+			graphic.destroy();
+		})
+		this.delete = true;
+	}		
 	
 // ######  ######     #    #     # 
 // #     # #     #   # #   #  #  # 
@@ -949,7 +958,7 @@ const unit = class {
 				let check = false;				
 				gameFunctions.units.forEach((unit) => {
 					
-					if(unit.id !== this.id){
+					if(unit.id !== this.id && unit.alive === true){
 						
 						this.sprite_ghost.x = pos.x * gameFunctions.tile_size;
 						this.sprite_ghost.y = pos.y * gameFunctions.tile_size;
@@ -1324,29 +1333,32 @@ const unit = class {
 		pos.cells.forEach((cell) => {			
 
 			let grid_x = Math.floor(cell.x / gameFunctions.tile_size);
-			let grid_y = Math.floor(cell.y / gameFunctions.tile_size);					
-			let grid_cell = GameScene.grid[grid_y][grid_x]
-			// this.temp_sprites.push(scene.physics.add.image(cell.x,cell.y,"marker").setDepth(0))	
-			// this.temp_sprites.push(scene.physics.add.image(grid_x * gameFunctions.tile_size,grid_y * gameFunctions.tile_size,"marker").setTint(0xff0000).setDepth(0.5));
-
-			if (!GameScene.pathfinder.acceptable_tiles.includes(grid_cell)){
-				// skip = true;
-				add_dest = false;
-			}
+			let grid_y = Math.floor(cell.y / gameFunctions.tile_size);	
 			
-			//STOP THE BULLET PATH IF IT HITS A UNIT NOT ON THE SAME SIDE
-			if(add_dest === true){
-				gameFunctions.units.forEach((unit) => {
-
-					if(unit.id !== this.id && unit.side !== this.side){
-						let check = unit.checkSpriteandPos(cell)
-						if(check === true){
-							add_dest = false;
-						}	
-					}
-
-				})	
-			}
+			if(grid_x >= 0 && grid_y >= 0 && grid_x < GameScene.map.width && grid_y < GameScene.map.height){
+				let grid_cell = GameScene.grid[grid_y][grid_x]
+				// this.temp_sprites.push(scene.physics.add.image(cell.x,cell.y,"marker").setDepth(0))	
+				// this.temp_sprites.push(scene.physics.add.image(grid_x * gameFunctions.tile_size,grid_y * gameFunctions.tile_size,"marker").setTint(0xff0000).setDepth(0.5));
+	
+				if (!GameScene.pathfinder.acceptable_tiles.includes(grid_cell)){
+					// skip = true;
+					add_dest = false;
+				}
+				
+				//STOP THE BULLET PATH IF IT HITS A UNIT NOT ON THE SAME SIDE
+				if(add_dest === true){
+					gameFunctions.units.forEach((unit) => {
+	
+						if(unit.alive === true && unit.id !== this.id && unit.side !== this.side){
+							let check = unit.checkSpriteandPos(cell)
+							if(check === true){
+								add_dest = false;
+							}	
+						}
+					})	
+				}
+	
+			}		
 
 
 			if(add_dest === true){
@@ -1487,7 +1499,7 @@ const unit = class {
 		let found_unit;
 		gameFunctions.units.forEach((unit) => {
 			check = unit.checkSpriteandPos(pointer);
-			if(check === true && unit.id !== this.id){
+			if(unit.alive === true && check === true && unit.id !== this.id){
 				found_unit = unit
 				return
 			}
@@ -1523,7 +1535,7 @@ const unit = class {
 		gameFunctions.units.forEach((unit) => {
 
 			let clash = false;
-			if(unit.alive === true && unit.id !== this.id && unit.player !== this.player && unit.side !== this.side){
+			if(unit.alive === true && this.alive === true && unit.id !== this.id && unit.player !== this.player && unit.side !== this.side){
 				
 				if(this.path.length > 0 && this.is_moving === false){
 					//check to see if movement ends in an attack

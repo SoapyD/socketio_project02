@@ -25,10 +25,9 @@ BUGS
 -BUG -Stuttering being caused if a unit is selected, live tiles are started to be drawn, then another unit is selected, so they flitter
 until the draw action resolves
 
--BUG -Believe these two issues are related:
-    -BUG -Sprite overlap function still isn't working as intended. There are instances when a unit is tagged as moving within the bounds of another unit that 
-    just doesn't make sense. Need a concrete example
-    -BUG -Check for combat when fighting ends doesn't seem to work. Think it may be because units are being treated as alive even though they're dead
+-BUG -When unit can't move over a space they're not allowed to go, the ghost still generate there and the "allowed" sound plays.
+
+-BUG -Need to double check unit loops so anywhere where unit.alive is true is also checked against this.alive = true
 
 /////////////////////////////////////////
 SETUP
@@ -56,6 +55,11 @@ DONE
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+-DONE -Believe these two issues are related:
+    -BUG -Sprite overlap function still isn't working as intended. There are instances when a unit is tagged as moving within the bounds of another unit that 
+    just doesn't make sense. Need a concrete example
+    -BUG -Check for combat when fighting ends doesn't seem to work. Think it may be because units are being treated as alive even though they're dead
 
 -DONE -When a unit is surrounded by multiple units, when those units setup fight hits for some reason it's producing multiple sprites in the defender 
 layered on top of one another

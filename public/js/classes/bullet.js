@@ -1,10 +1,7 @@
 
 const bullet = class {
-	// constructor(scene, spritesheet, x, y, angle, range, side, player) {
 	constructor(options) {	
 	
-		// this.x = x;
-		// this.y = y;
 		this.id = GameScene.bullets.length;
 		this.delete = false;
 		this.unit = options.unit;
@@ -63,8 +60,6 @@ const bullet = class {
 		
 		//run kill function on bullet
 		bullet.parent.kill();
-		// unit.parent.wound(bullet.parent.damage);
-
 
 		//DEAL DAMAGE IF IT'S NOT A BLAST WEAPON
 		if(bullet.parent.blast_radius === 1){
@@ -74,7 +69,6 @@ const bullet = class {
 					damage: bullet.parent.damage,
 					ap: bullet.parent.unit.shoot_ap,
 					bonus: bullet.parent.unit.shooting_bonus,
-					// attacker: bullet.parent.unit,
 					random_roll: gameFunctions.getRandomInt(20),
 					defender_id: unit.parent.id
 				}				
@@ -103,9 +97,6 @@ const bullet = class {
 	}
 	
 	kill(){
-		
-		// console.log("WOUNDING")
-		// console.log(this)
 
 		if(this.blast_radius > 1){
 			gameFunctions.units.forEach((unit) => {
@@ -114,15 +105,6 @@ const bullet = class {
 				let dist = Math.round(Math.sqrt(val),0)
 				// console.log("WOUNDING2",dist)
 				if(dist <= (this.blast_radius / 2) * gameFunctions.tile_size){
-										
-					// let options = {
-					// 	damage: this.damage,
-					// 	ap: this.unit.shoot_ap,
-					// 	bonus: this.unit.shooting_bonus,	
-					// 	attacker: this.unit
-					// }			
-					// unit.wound(options);
-					// console.log("WOUNDING3",GameScene.online)
 					
 					let options = {
 						damage: this.damage,
@@ -178,8 +160,6 @@ const bullet = class {
 		this.sprite.destroy();
 		GameScene.active_actions--;
 		this.delete = true;
-
-		// this.sprite.disableBody(true, true);
 	}
 	
 	checkRange(bullet){
@@ -196,10 +176,7 @@ const bullet = class {
 		let cell = GameScene.grid[gridY][gridX]
 		
 
-		if(!GameScene.pathfinder.acceptable_tiles.includes(cell) && this.delete === false){
-			// this.sprite.disableBody(true, true);
-			// GameScene.bullets = [];
-			
+		if(!GameScene.pathfinder.acceptable_tiles.includes(cell) && this.delete === false){		
 			this.kill();
 		}
 	}
