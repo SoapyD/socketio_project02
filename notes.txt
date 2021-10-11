@@ -25,7 +25,9 @@ BUGS
 -BUG -Stuttering being caused if a unit is selected, live tiles are started to be drawn, then another unit is selected, so they flitter
 until the draw action resolves
 
--BUG -Sprite overlap function still isn't working as intended
+-BUG -Sprite overlap function still isn't working as intended. There are instances when a unit is tagged as moving within the bounds of another unit that 
+just doesn't make sense. Need a concrete example
+
 
 /////////////////////////////////////////
 SETUP
@@ -53,6 +55,10 @@ DONE
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+-DONE -When a unit is surrounded by multiple units, when those units setup fight hits for some reason it's producing multiple sprites in the defender 
+layered on top of one another
+    -DONE -this.drawTarget(this.fight_targets, 0); --think this in 1490 is causing issues
 
 -DONE -Need to generate a sprite to show unit is in combat
     -DONE -Also generating one when there's a shot that's been take

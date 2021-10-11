@@ -559,23 +559,25 @@ const unit = class {
 	drawTarget(targets, blast_radius) {	
 		
 		if (targets){
-
+			
 			//RESET THE DRAW GRAPHICS
 			this.path_graphic.clear()
 			this.path_graphic.lineStyle(8, 0x00cccc, 0.5);	
 			this.path_graphic.beginPath();
-
-
+			
+			
 			targets.forEach((target, i) => {
-
-				let pos;
+				
+				let pos = {x:0,y:0};
 				if(target.x && target.y){
-					pos = target;
+					pos.x = target.x;
+					pos.y = target.y;
 				}else{
-					pos = gameFunctions.units[target].sprite;
+					pos.x = gameFunctions.units[target].sprite.x;
+					pos.y = gameFunctions.units[target].sprite.y;
 				}
-				// this.path_graphic.beginPath();
 				this.path_graphic.moveTo(this.sprite.x, this.sprite.y);
+				
 				
 				//OFFSET PATH POSITION TO MIDDLE OF TILE
 				pos.x += this.sprite_offset;
@@ -585,13 +587,13 @@ const unit = class {
 				
 				if(blast_radius > 1){
 					let blast_graphic = this.blast_graphics[i];
-					// blast_graphic.lineStyle(3 * gameFunctions.tile_size, colours.line_colour, 0.5);
 					blast_graphic.fillStyle(0x0000FF, 0.5);
 					let circle = new Phaser.Geom.Circle(pos.x, pos.y, (blast_radius / 2) * gameFunctions.tile_size);
 					blast_graphic.fillCircleShape(circle).setDepth(this.depth_explosion);
 
 					blast_graphic.strokePath();
 				}
+				
 			})
 
 			this.path_graphic.strokePath();		
@@ -718,15 +720,13 @@ const unit = class {
 	}
 
 
-	
-	
-// ####### #     # #     #  #####  ####### ### ####### #     #  #####  
-// #       #     # ##    # #     #    #     #  #     # ##    # #     # 
-// #       #     # # #   # #          #     #  #     # # #   # #       
-// #####   #     # #  #  # #          #     #  #     # #  #  #  #####  
-// #       #     # #   # # #          #     #  #     # #   # #       # 
-// #       #     # #    ## #     #    #     #  #     # #    ## #     # 
-// #        #####  #     #  #####     #    ### ####### #     #  #####  	
+//  #####  ####### #       #######  #####  ####### ####### ######   #####  
+// #     # #       #       #       #     #    #    #     # #     # #     # 
+// #       #       #       #       #          #    #     # #     # #       
+//  #####  #####   #       #####   #          #    #     # ######   #####  
+// 	     # #       #       #       #          #    #     # #   #         # 
+// #     # #       #       #       #     #    #    #     # #    #  #     # 
+//  #####  ####### ####### #######  #####     #    ####### #     #  #####  	
 	
 	selectHander (pointer) {
 
@@ -785,7 +785,6 @@ const unit = class {
 		let old_selected = GameScene.selected_unit;
 		GameScene.selected_unit = undefined;
 		
-		// console.log(old_selected)
 		if(gameFunctions.mode === "move" || gameFunctions.mode === "charge"){
 			if(this.cohesion > 0){
 				this.cohesionCheck();	
@@ -793,6 +792,15 @@ const unit = class {
 		}
 	}
 	
+
+// ####### #     # #     #  #####  ####### ### ####### #     #  #####  
+// #       #     # ##    # #     #    #     #  #     # ##    # #     # 
+// #       #     # # #   # #          #     #  #     # # #   # #       
+// #####   #     # #  #  # #          #     #  #     # #  #  #  #####  
+// #       #     # #   # # #          #     #  #     # #   # #       # 
+// #       #     # #    ## #     #    #     #  #     # #    ## #     # 
+// #        #####  #     #  #####     #    ### ####### #     #  #####  	
+
 	
 	getRandomInt(max) {
   		return Math.floor(Math.random() * max) + 1;
@@ -1437,6 +1445,8 @@ const unit = class {
 	
 	
 	findFightTarget (options) {
+
+		
 		let scene = this.scene;
 		let pointer = options.pointer;		
 		
@@ -1450,7 +1460,7 @@ const unit = class {
 
 		let current_range = Math.sqrt(Math.pow(this.sprite.x - pos.end_x, 2) + Math.pow(this.sprite.y - pos.end_y, 2))
 		
-
+		
 		let skip = false
 		let on_unit = false;
 		
@@ -1490,7 +1500,6 @@ const unit = class {
 			this.drawTarget(this.fight_targets, 0);
 			GameScene.sfx['action'].play();
 			
-			// this.drawInfo(this.sprite)
 			this.updateElements(this.sprite)
 		}
 		

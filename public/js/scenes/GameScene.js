@@ -502,6 +502,7 @@ var GameScene = new Phaser.Class({
 							}
 							connFunctions.messageServer(data)
 						}
+						
 					break;					
 					default:
 					// code block
