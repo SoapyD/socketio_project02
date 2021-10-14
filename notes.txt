@@ -10,9 +10,6 @@ SBT GAME NOTES
 /////////////////////////////////////////////////////////////////////////////////////
 
 
--Write in a check to clear live tiles drawn when the mode goes to a non moving action
-    -Also clear the live tiles when a new unit is selected
-
 /////////////////////////////////////////
 FIGHTING
 /////////////////////////////////////////
@@ -24,6 +21,10 @@ BUGS
 
 -BUG -Stuttering being caused if a unit is selected, live tiles are started to be drawn, then another unit is selected, so they flitter
 until the draw action resolves
+    -Write in a check to clear live tiles drawn when the mode goes to a non moving action
+        -Also clear the live tiles when a new unit is selected
+        -Tiles end up showing up in other actions because the draw loop happens over the end of the action
+
 
 -BUG -When unit can't move over a space they're not allowed to go, the ghost still generate there and the "allowed" sound plays.
 

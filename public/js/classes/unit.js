@@ -59,7 +59,8 @@ const unit = class {
 		
 		let x = options.x + gameFunctions.tile_size * this.sprite_offset;
 		let y = options.y + gameFunctions.tile_size * this.sprite_offset;
-		
+
+		this.depth_sprite_flash = 6;		
 		this.depth_sprite = 4;
 		this.depth_sprite_ghost = 5;
 		this.depth_sprite_symbol = 10;
@@ -125,6 +126,41 @@ const unit = class {
 			this.blast_graphics.push(options.scene.add.graphics().setDepth(this.depth_explosion));
 		}
 
+		
+		let tempRect = options.scene.add.rectangle(0, 0, this.sprite.width, this.sprite.height) 
+		tempRect.setOrigin(0.5) // Set origin to middle point
+		console.log(tempRect)
+
+		this.flash_graphic = options.scene.add.graphics()
+		.setDepth(this.depth_sprite_flash)
+		.fillStyle(0xFFFFFF, 1)
+		.setTexture(options.spritesheet) //causing errors in the trigger button for some reason
+		// .fillRect(0, 0, this.sprite.width, this.sprite.height);
+		.fillRectShape(tempRect);
+		
+		
+		this.flash_graphic.x = (this.sprite.x - (this.sprite.width * this.sprite.scaleX) / 2);
+		this.flash_graphic.y = (this.sprite.y - (this.sprite.height * this.sprite.scaleY) / 2);	
+		// this.flash_graphic.x = this.sprite.x;
+		// this.flash_graphic.y = this.sprite.y;			
+		this.flash_graphic.scaleX = this.sprite.scaleX;
+		this.flash_graphic.scaleY = this.sprite.scaleY;
+		this.flash_graphic.visible = true;
+		// this.flash_graphic.alpha = 0;		
+
+		this.flash_graphic.angle = options.angle;
+		/*
+		
+		options.scene.tweens.add({
+			targets: this.flash_graphic,
+			alpha: 1,
+			angle: 360,
+			ease: 'Cubic.easeIn',  
+			duration: 1500,
+			repeat: -1,
+			yoyo: true
+			})	
+		*/
 		
 		this.text_style = { 
 			font: "8px Arial",
@@ -1422,6 +1458,9 @@ const unit = class {
 					if(this.sprite_ghost){
 						this.sprite_ghost.angle = this.sprite.angle;
 					}
+					if(this.flash_graphic){
+						this.flash_graphic.angle = this.sprite.angle;
+					}					
 					
 					let options = {
 						scene: GameScene.scene,
