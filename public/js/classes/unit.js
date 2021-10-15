@@ -74,6 +74,7 @@ const unit = class {
 		this.depth_text_box = 10;
 		
 		
+		
 		//SPRITES
 		this.spritesheet = options.spritesheet;
 		this.sprite = options.scene.physics.add.image(x,y,options.spritesheet) //.setInteractive();
@@ -127,34 +128,25 @@ const unit = class {
 		}
 
 		
-		let tempRect = options.scene.add.rectangle(0, 0, this.sprite.width, this.sprite.height) 
-		tempRect.setOrigin(0.5) // Set origin to middle point
-		console.log(tempRect)
-
+		/*
+		--THIS WORKS BUT SETTEXTURE CAUSES OTHER GRAPHICS TO DISAPPEAR, PROBABLY BECAUSE ONCE USED, TEXTURES MUST BE SET ON ALL GRAPHICS
 		this.flash_graphic = options.scene.add.graphics()
 		.setDepth(this.depth_sprite_flash)
 		.fillStyle(0xFFFFFF, 1)
 		.setTexture(options.spritesheet) //causing errors in the trigger button for some reason
-		// .fillRect(0, 0, this.sprite.width, this.sprite.height);
-		.fillRectShape(tempRect);
+		.fillRect(-this.sprite.width / 2, -this.sprite.height / 2, this.sprite.width, this.sprite.height);
 		
-		
-		this.flash_graphic.x = (this.sprite.x - (this.sprite.width * this.sprite.scaleX) / 2);
-		this.flash_graphic.y = (this.sprite.y - (this.sprite.height * this.sprite.scaleY) / 2);	
-		// this.flash_graphic.x = this.sprite.x;
-		// this.flash_graphic.y = this.sprite.y;			
+		this.flash_graphic.x = this.sprite.x;
+		this.flash_graphic.y = this.sprite.y;			
 		this.flash_graphic.scaleX = this.sprite.scaleX;
 		this.flash_graphic.scaleY = this.sprite.scaleY;
 		this.flash_graphic.visible = true;
-		// this.flash_graphic.alpha = 0;		
-
+		this.flash_graphic.alpha = 0;		
 		this.flash_graphic.angle = options.angle;
-		/*
 		
 		options.scene.tweens.add({
 			targets: this.flash_graphic,
 			alpha: 1,
-			angle: 360,
 			ease: 'Cubic.easeIn',  
 			duration: 1500,
 			repeat: -1,

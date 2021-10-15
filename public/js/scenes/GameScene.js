@@ -201,11 +201,14 @@ var GameScene = new Phaser.Class({
 		this.load.audio('song1', [ 'song1.mp3' ])
 		this.load.audio('song2', [ 'song2.mp3' ])
 		this.load.audio('song3', [ 'song3.mp3' ])
+
+
     },
 
 
     create: function()
     {
+
 
 		// ███    ███ ██    ██ ███████ ██  ██████          ██          ███████ ███████ ██   ██ 
 		// ████  ████ ██    ██ ██      ██ ██               ██          ██      ██       ██ ██  
