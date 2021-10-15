@@ -15,6 +15,8 @@ gameFunctions.twoPointDistance = (pos_start, pos_end) => {
 	return Math.sqrt(Math.pow(pos_start.x - pos_end.x, 2) + Math.pow(pos_start.y - pos_end.y, 2))
 }
 
+
+/*
 gameFunctions.createButton = (options) => {
 	//game, x, y, label, clickAction, callbackParams, array
 	
@@ -101,3 +103,4 @@ gameFunctions.buttonPress = (sprite, callback, callbackParams) => {
 		}
 	})			
 }
+*/

@@ -168,7 +168,6 @@ GameUIScene.loadFullButtons = (scene) => {
 		array: gameFunctions.btn_sprite,
 		// sprite: "buttons"
 	}
-	// gameFunctions.createButton(options);
 	gameFunctions.btn_sprite.push(new button(options))
 	
 	options.x = gameFunctions.config.width;
@@ -176,7 +175,6 @@ GameUIScene.loadFullButtons = (scene) => {
 	options.label = "move";
 	options.clickAction = GameUIScene.activateMovement;
 	options.callbackParams = {};
-	// gameFunctions.createButton(options);
 	gameFunctions.btn_sprite.push(new button(options))
 	
 	
@@ -186,7 +184,6 @@ GameUIScene.loadFullButtons = (scene) => {
 	options.label = "+";
 	options.clickAction = GameUIScene.selectMode;
 	options.callbackParams = {mode:"shoot"};
-	// gameFunctions.createButton(options);	
 	gameFunctions.btn_sprite.push(new button(options))
 	
 	options.x = gameFunctions.config.width;
@@ -194,7 +191,6 @@ GameUIScene.loadFullButtons = (scene) => {
 	options.label = "shoot";
 	options.clickAction = GameUIScene.activateShooting;
 	options.callbackParams = {};
-	// gameFunctions.createButton(options);	
 	gameFunctions.btn_sprite.push(new button(options))
 	
 	options.x = gameFunctions.config.width - 150;
@@ -203,7 +199,6 @@ GameUIScene.loadFullButtons = (scene) => {
 	options.label = "+";
 	options.clickAction = GameUIScene.selectMode;
 	options.callbackParams = {mode:"charge"};
-	// gameFunctions.createButton(options);	
 	gameFunctions.btn_sprite.push(new button(options))
 	
 	options.x = gameFunctions.config.width;
@@ -211,7 +206,6 @@ GameUIScene.loadFullButtons = (scene) => {
 	options.label = "charge";
 	options.clickAction = GameUIScene.activateCharging;
 	options.callbackParams = {};
-	// gameFunctions.createButton(options);		
 	gameFunctions.btn_sprite.push(new button(options))
 	
 	options.x = gameFunctions.config.width - 150;
@@ -220,7 +214,6 @@ GameUIScene.loadFullButtons = (scene) => {
 	options.label = "+";
 	options.clickAction = GameUIScene.selectMode;
 	options.callbackParams = {mode:"fight"};
-	// gameFunctions.createButton(options);	
 	gameFunctions.btn_sprite.push(new button(options))
 	
 	options.x = gameFunctions.config.width;
@@ -228,7 +221,6 @@ GameUIScene.loadFullButtons = (scene) => {
 	options.label = "fight";
 	options.clickAction = GameUIScene.activateFighting;
 	options.callbackParams = {};
-	// gameFunctions.createButton(options);	
 	gameFunctions.btn_sprite.push(new button(options))
 	
 	options.x = gameFunctions.config.width;
@@ -237,7 +229,6 @@ GameUIScene.loadFullButtons = (scene) => {
 	options.label = "End Turn";
 	options.clickAction = GameUIScene.nextPlayer;
 	options.callbackParams = {};
-	// gameFunctions.createButton(options);	
 	gameFunctions.btn_sprite.push(new button(options))
 		
 }

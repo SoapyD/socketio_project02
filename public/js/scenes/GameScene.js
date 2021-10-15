@@ -163,6 +163,9 @@ var GameScene = new Phaser.Class({
 		this.load.image('unit', '../../img/units/unit.png');
 		this.load.image('tank', '../../img/units/tank.png');
 		this.load.image('dread', '../../img/units/dread.png');		
+
+
+		this.load.image('white', '../../img/white_texture.jpg');
 		
 		
 		//PARTICLE SPRITES

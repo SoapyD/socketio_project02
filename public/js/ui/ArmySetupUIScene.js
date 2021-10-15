@@ -24,23 +24,41 @@ var ArmySetupUIScene = new Phaser.Class({
             align: 'center',
         }).setFixedSize(600, 50);
 		
-		let callbackParams = {
-            functionGroup: "socketFunctions",  
-            function: "messageAll",
-			message: "end setup",
-            returnFunctionGroup: "connFunctions",  
-            returnFunction: "uiSceneTransition",		
-		};
+		// let callbackParams = {
+        //     functionGroup: "socketFunctions",  
+        //     function: "messageAll",
+		// 	message: "end setup",
+        //     returnFunctionGroup: "connFunctions",  
+        //     returnFunction: "uiSceneTransition",		
+		// };
 		
-		gameFunctions.btn_sprite = [];
+		// gameFunctions.btn_sprite = [];
 		
-		gameFunctions.createButton(this, gameFunctions.config.width - 50, 25, "end setup", connFunctions.messageServer, callbackParams, gameFunctions.btn_sprite);					
+		// gameFunctions.createButton(this, gameFunctions.config.width - 50, 25, "end setup", connFunctions.messageServer, callbackParams, gameFunctions.btn_sprite);					
 		
-		gameFunctions.btn_sprite.forEach(btn => {
-			gameFunctions.buttonPress(btn, btn.clickAction, btn.callbackParams);                    
-		})		
+		// gameFunctions.btn_sprite.forEach(btn => {
+		// 	gameFunctions.buttonPress(btn, btn.clickAction, btn.callbackParams);                    
+		// })		
 		
-
+        let options = {
+            scene: scene, 
+            x: gameFunctions.config.width - 50,
+            y: 25,
+            height: 50,
+            width: 100,
+            label:  "end setup",
+            clickAction: connFunctions.messageServer,
+            callbackParams: {
+                    functionGroup: "socketFunctions",  
+                    function: "messageAll",
+                	message: "end setup",
+                    returnFunctionGroup: "connFunctions",  
+                    returnFunction: "uiSceneTransition",		
+            },
+            array: gameFunctions.btn_sprite,
+            // sprite: "buttons"
+        }
+        gameFunctions.btn_sprite.push(new button(options))
 		
 		
 		

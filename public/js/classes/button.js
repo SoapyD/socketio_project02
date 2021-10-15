@@ -9,8 +9,18 @@ const button = class {
 			this.btn.setScrollFactor(0); //make buttons non-scrollable
 		}else{
 			let border_width = 10;
-			this.btn = options.scene.add.rectangle((options.x - (options.width / 2)), options.y, options.width - border_width, options.height - border_width, 0xffffff).setDepth(100).setInteractive();
+			
+			this.btn = options.scene.add.rectangle((options.x - (options.width / 2)), options.y, options.width - border_width, options.height - border_width, 0xffffff)
+			.setDepth(100)
+			.setInteractive()
 			this.border = options.scene.add.rectangle(options.x - (options.width / 2), options.y, options.width, options.height, 0x404040).setDepth(99)
+			
+
+			// this.btn = options.scene.add.graphics()
+			// .fillStyle(0xFFFFFF, 1)
+			// .setTexture()
+			// .fillRect((options.x - (options.width / 2)), options.y, options.width - border_width, options.height - border_width);
+
 		}
 
 

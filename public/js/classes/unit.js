@@ -127,13 +127,12 @@ const unit = class {
 			this.blast_graphics.push(options.scene.add.graphics().setDepth(this.depth_explosion));
 		}
 
-		
 		/*
-		--THIS WORKS BUT SETTEXTURE CAUSES OTHER GRAPHICS TO DISAPPEAR, PROBABLY BECAUSE ONCE USED, TEXTURES MUST BE SET ON ALL GRAPHICS
+		//THIS WORKS BUT SETTEXTURE CAUSES OTHER GRAPHICS TO DISAPPEAR, PROBABLY BECAUSE ONCE USED, TEXTURES MUST BE SET ON ALL GRAPHICS
 		this.flash_graphic = options.scene.add.graphics()
 		.setDepth(this.depth_sprite_flash)
 		.fillStyle(0xFFFFFF, 1)
-		.setTexture(options.spritesheet) //causing errors in the trigger button for some reason
+		// .setTexture(options.spritesheet) //causing errors in the trigger button for some reason
 		.fillRect(-this.sprite.width / 2, -this.sprite.height / 2, this.sprite.width, this.sprite.height);
 		
 		this.flash_graphic.x = this.sprite.x;
@@ -141,6 +140,7 @@ const unit = class {
 		this.flash_graphic.scaleX = this.sprite.scaleX;
 		this.flash_graphic.scaleY = this.sprite.scaleY;
 		this.flash_graphic.visible = true;
+		
 		this.flash_graphic.alpha = 0;		
 		this.flash_graphic.angle = options.angle;
 		
@@ -151,9 +151,10 @@ const unit = class {
 			duration: 1500,
 			repeat: -1,
 			yoyo: true
-			})	
+		})	
 		*/
 		
+
 		this.text_style = { 
 			font: "8px Arial",
 			fill: "#000000",
@@ -164,14 +165,10 @@ const unit = class {
 		this.text = options.scene.add.text(this.sprite.x, this.sprite.y - (this.sprite.displayHeight / 2), "", this.text_style).setDepth(this.depth_text);
 		this.text_graphic = options.scene.add.graphics().setDepth(this.depth_text_box);
 		
-		
-		// this.group = options.scene.add.group();		
-		// this.group.add(this.sprite)
-		// this.group.add(this.bar_graphic)
-		
+				
 		this.drawTint()
-		// this.drawHealth(this.sprite);
-		// this.drawInfo(this.sprite)
+		this.drawFlash()
+
 		this.updateElements(this.sprite);
 		
 		this.selectHander = this.selectHander.bind(this);
@@ -439,11 +436,50 @@ const unit = class {
 		}
 		
 		this.colour = colour
+		this.colour_info = Phaser.Display.Color.ValueToColor(this.colour)
+		this.colour_info.dest = {r: 255, g: 255, b: 255};
+		this.colour_info.r_itt = (this.colour_info.dest.r - this.sprite_ghost.parent.colour_info.r) / this.colour_info.dest.r
+		this.colour_info.g_itt = (this.colour_info.dest.g - this.sprite_ghost.parent.colour_info.g) / this.colour_info.dest.g										
+		this.colour_info.b_itt = (this.colour_info.dest.b - this.sprite_ghost.parent.colour_info.b) / this.colour_info.dest.b
+
+
 		this.sprite.setTint(this.colour)
 		if(this.sprite_ghost){
 			this.sprite_ghost.setTint(this.colour)					
 		}
 
+	}
+
+	drawFlash(active=true){
+		if(active === true){
+			this.flash_tween = this.scene.tweens.addCounter({
+				targets: this, 
+				from: 0,
+				to: 255,
+				yoyo: 1,
+				repeat: -1,
+				onUpdate: function (tween) {
+					if(this.sprite_ghost){
+						const value = Math.floor(tween.getValue());
+	
+						let colour_info = this.sprite_ghost.parent.colour_info
+	
+						this.sprite_ghost.setTint(Phaser.Display.Color.GetColor(
+							colour_info.r + (value * colour_info.r_itt), 
+							colour_info.g + (value * colour_info.g_itt), 
+							colour_info.b + (value * colour_info.b_itt)
+							));	
+					}
+				}
+			})
+			// tween.sprite = this.sprite
+			this.flash_tween.sprite_ghost = this.sprite_ghost				
+		}else{
+			if (this.flash_tween){
+				this.flash_tween.stop();
+				this.sprite_ghost.setTint(this.colour)
+			}
+		}
 	}
 	
 	
@@ -789,6 +825,7 @@ const unit = class {
 					GameScene.selected_unit.unselectHandler();
 				}
 				GameScene.selected_unit = this.parent;
+				GameScene.selected_unit.drawFlash(false)
 				
 				if(gameFunctions.mode === 'move' || gameFunctions.mode === 'charge'){
 					// console.log("start")
@@ -1228,7 +1265,6 @@ const unit = class {
 						
 						let end_path = this.path[this.path.length - 1];
 
-						
 						//CHECK IF THE UNIT PASSES AN ENEMY UNIT
 						let old_status = this.in_combat
 						this.in_combat = this.checkCombat();
