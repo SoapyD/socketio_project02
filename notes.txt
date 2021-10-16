@@ -11,8 +11,18 @@ SBT GAME NOTES
 
 
 /////////////////////////////////////////
-FIGHTING
+SELECTION
 /////////////////////////////////////////
+
+-DONE -Create a means of "flashing" the ghost sprite to show units can be selected
+
+-Reset unit flashing if they're selected and no actions are carried out on them then another units is selected
+
+-grey unit out if no actions can be applied to the unit this turn (say, if they're shot they can't charge)
+    -shot so can't charge
+    -in combat so can't shoot
+    -can't do combat as there's no attack power
+    
 
 
 /////////////////////////////////////////

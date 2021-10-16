@@ -174,6 +174,82 @@ const unit = class {
 		this.selectHander = this.selectHander.bind(this);
 	}
 
+
+//  #####  ####### #       #######  #####  ####### ####### ######   #####  
+// #     # #       #       #       #     #    #    #     # #     # #     # 
+// #       #       #       #       #          #    #     # #     # #       
+//  #####  #####   #       #####   #          #    #     # ######   #####  
+// 	     # #       #       #       #          #    #     # #   #         # 
+// #     # #       #       #       #     #    #    #     # #    #  #     # 
+//  #####  ####### ####### #######  #####     #    ####### #     #  #####  	
+	
+selectHander (pointer) {
+
+	if (pointer.leftButtonReleased())
+	{
+		
+		let skip = false
+		if(GameScene.online === true){
+			if(this.parent.player !== gameFunctions.params.player_number){
+				skip = true;
+			}
+		}
+
+		if (this.parent.side === gameFunctions.current_side && skip === false){
+			//TURN OLD SELECTED PLAYER MARKER, WHITE
+
+			if(GameScene.selected_unit){
+				GameScene.selected_unit.resetColours();
+				if(gameFunctions.mode === "fight"){
+					GameScene.selected_unit.resetFightRadius();
+				}
+				
+				GameScene.selected_unit.unselectHandler();
+			}
+			GameScene.selected_unit = this.parent;
+			GameScene.selected_unit.drawFlash(false)
+			
+			if(gameFunctions.mode === 'move' || gameFunctions.mode === 'charge'){
+				// console.log("start")
+				this.parent.setupDrawLiveTiles();
+
+			}
+			
+			
+			//RESET GHOST & COHESION IF THE GHOST SPRITE ISN'T SELECTED
+			if(!this.is_ghost){
+				
+				this.parent.resetGhost();
+			}
+			
+			if(gameFunctions.mode === "fight"){
+				this.parent.drawFightRadius()
+			}
+			
+			GameScene.sfx['select'].play();
+			
+			GameScene.left_click = false;
+		}
+
+	}
+}
+
+
+unselectHandler() {
+	
+	let old_selected = GameScene.selected_unit;
+	GameScene.selected_unit = undefined;
+	
+	if(gameFunctions.mode === "move" || gameFunctions.mode === "charge"){
+		if(this.cohesion > 0){
+			this.cohesionCheck();	
+		}
+	}
+}
+
+
+
+
 // ######  #######  #####  ####### #######  #####  
 // #     # #       #     # #          #    #     # 
 // #     # #       #       #          #    #       
@@ -436,11 +512,13 @@ const unit = class {
 		}
 		
 		this.colour = colour
+		this.colour_gray = 0x808080;
+
 		this.colour_info = Phaser.Display.Color.ValueToColor(this.colour)
 		this.colour_info.dest = {r: 255, g: 255, b: 255};
-		this.colour_info.r_itt = (this.colour_info.dest.r - this.sprite_ghost.parent.colour_info.r) / this.colour_info.dest.r
-		this.colour_info.g_itt = (this.colour_info.dest.g - this.sprite_ghost.parent.colour_info.g) / this.colour_info.dest.g										
-		this.colour_info.b_itt = (this.colour_info.dest.b - this.sprite_ghost.parent.colour_info.b) / this.colour_info.dest.b
+		this.colour_info.r_itt = (this.colour_info.dest.r - this.sprite_ghost.parent.colour_info.r) / 255
+		this.colour_info.g_itt = (this.colour_info.dest.g - this.sprite_ghost.parent.colour_info.g) / 255									
+		this.colour_info.b_itt = (this.colour_info.dest.b - this.sprite_ghost.parent.colour_info.b) / 255
 
 
 		this.sprite.setTint(this.colour)
@@ -450,7 +528,7 @@ const unit = class {
 
 	}
 
-	drawFlash(active=true){
+	drawFlash(active=true, gray_out=false){
 		if(active === true){
 			this.flash_tween = this.scene.tweens.addCounter({
 				targets: this, 
@@ -477,7 +555,11 @@ const unit = class {
 		}else{
 			if (this.flash_tween){
 				this.flash_tween.stop();
-				this.sprite_ghost.setTint(this.colour)
+				if(gray_out === false){
+					this.sprite_ghost.setTint(this.colour)
+				}else{
+					this.sprite_ghost.setTint(this.colour_gray)
+				}
 			}
 		}
 	}
@@ -793,78 +875,6 @@ const unit = class {
 	}
 
 
-//  #####  ####### #       #######  #####  ####### ####### ######   #####  
-// #     # #       #       #       #     #    #    #     # #     # #     # 
-// #       #       #       #       #          #    #     # #     # #       
-//  #####  #####   #       #####   #          #    #     # ######   #####  
-// 	     # #       #       #       #          #    #     # #   #         # 
-// #     # #       #       #       #     #    #    #     # #    #  #     # 
-//  #####  ####### ####### #######  #####     #    ####### #     #  #####  	
-	
-	selectHander (pointer) {
-
-		if (pointer.leftButtonReleased())
-		{
-			
-			let skip = false
-			if(GameScene.online === true){
-				if(this.parent.player !== gameFunctions.params.player_number){
-					skip = true;
-				}
-			}
-
-			if (this.parent.side === gameFunctions.current_side && skip === false){
-				//TURN OLD SELECTED PLAYER MARKER, WHITE
-
-				if(GameScene.selected_unit){
-					GameScene.selected_unit.resetColours();
-					if(gameFunctions.mode === "fight"){
-						GameScene.selected_unit.resetFightRadius();
-					}
-					
-					GameScene.selected_unit.unselectHandler();
-				}
-				GameScene.selected_unit = this.parent;
-				GameScene.selected_unit.drawFlash(false)
-				
-				if(gameFunctions.mode === 'move' || gameFunctions.mode === 'charge'){
-					// console.log("start")
-					this.parent.setupDrawLiveTiles();
-
-				}
-				
-				
-				//RESET GHOST & COHESION IF THE GHOST SPRITE ISN'T SELECTED
-				if(!this.is_ghost){
-					
-					this.parent.resetGhost();
-				}
-				
-				if(gameFunctions.mode === "fight"){
-					this.parent.drawFightRadius()
-				}
-				
-				GameScene.sfx['select'].play();
-				
-				GameScene.left_click = false;
-			}
-
-		}
-	}
-
-	
-	
-	unselectHandler() {
-		
-		let old_selected = GameScene.selected_unit;
-		GameScene.selected_unit = undefined;
-		
-		if(gameFunctions.mode === "move" || gameFunctions.mode === "charge"){
-			if(this.cohesion > 0){
-				this.cohesionCheck();	
-			}
-		}
-	}
 	
 
 // ####### #     # #     #  #####  ####### ### ####### #     #  #####  
