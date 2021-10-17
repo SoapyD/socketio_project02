@@ -64,10 +64,9 @@ const unit = class {
 		this.depth_sprite = 4;
 		this.depth_sprite_ghost = 5;
 		this.depth_sprite_symbol = 10;
-		this.depth_path = 1;
+		this.depth_path = 9;
 		this.depth_explosion = 1;
 		this.depth_health = 2;
-		this.depth_path = 1;
 		this.depth_cohesion = 1;
 		this.depth_fight_radius = 1.5;
 		this.depth_text = 20;
@@ -237,7 +236,8 @@ selectHander (pointer) {
 
 unselectHandler() {
 	
-	let old_selected = GameScene.selected_unit;
+	// let old_selected = GameScene.selected_unit;
+	GameScene.selected_unit.drawFlash(true)
 	GameScene.selected_unit = undefined;
 	
 	if(gameFunctions.mode === "move" || gameFunctions.mode === "charge"){
@@ -1062,11 +1062,6 @@ unselectHandler() {
 				this.path = this.path.slice(0,last_path_pos + 1)
 			}
 
-						
-			//DON'T ALLOW PATH TO GENERATE IF MODE IS CHARGE AND UNIT HAS NO FIGHTING DAMAGE
-			// if(this.fight_damage === 0 && gameFunctions.mode === "fight"){
-			// 	skip = true;
-			// }
 			
 			//SKIP IF IN CHARGE MODE AND UNIT HAD ALREADY SHOT
 			if(this.shot === true && gameFunctions.mode === "charge"){
@@ -1415,7 +1410,6 @@ unselectHandler() {
 				// this.temp_sprites.push(scene.physics.add.image(grid_x * gameFunctions.tile_size,grid_y * gameFunctions.tile_size,"marker").setTint(0xff0000).setDepth(0.5));
 	
 				if (!GameScene.pathfinder.acceptable_tiles.includes(grid_cell)){
-					// skip = true;
 					add_dest = false;
 				}
 				
@@ -1490,7 +1484,7 @@ unselectHandler() {
 				await this.delay(2000 * i)
 				
 				let angle = Phaser.Math.Angle.BetweenPoints(this.sprite, target);
-				if(angle){
+				if(angle >= -1){
 					this.sprite.angle = Phaser.Math.RadToDeg(angle);
 					
 					if(this.sprite_ghost){
@@ -1553,8 +1547,15 @@ unselectHandler() {
 		let skip = false
 		let on_unit = false;
 		
-		if(current_range > (this.fight_range)){
-			skip = true;	
+
+		if(unit.fight_damage === 0){
+			skip = true
+			GameScene.showMessage("cannot fight, unit has no fight damage")
+		}
+
+		if(current_range > (this.fight_range) && skip === false){
+			skip = true;
+			GameScene.showMessage("target out of range")	
 		}
 		
 		//SKIP IF THE POINTER IS OVER THE SHOOTING UNITS, put here so it doesn't play the clear sound
@@ -1661,19 +1662,20 @@ unselectHandler() {
 			GameScene.active_actions++;
 			
 			await this.delay(2000 * i)
+			let target_unit = gameFunctions.units[target];
 			
 			
 			let options = {
 				scene: GameScene.scene,
-				key: "sword"+this.id+"_"+target.id,
+				key: "sword"+this.id+"_"+target_unit.id,
 				spritesheet: "punch",
 				framerate: 30,
 				sfx: "sword",
 				alpha: 0.75,
 				scale: 0.5,
 				pos: {
-					x: target.x,
-					y: target.y
+					x: target_unit.sprite.x,
+					y: target_unit.sprite.y
 				}
 			}
 			new particle(options)		
@@ -1717,41 +1719,4 @@ unselectHandler() {
 	}
 	
 }
-
-
-
-
-
-		
-		///////////////////////////////////////////////////////////////DRAW A BAR
-		// let edge = 2;
-		// let pos = {
-		// 	x: this.sprite.x - (width / 2) - edge,
-		// 	y: this.sprite.y + (height / 2)
-		// }
-		
-		/*
-        //  BG
-        this.bar_graphic.fillStyle(0x000000);
-        this.bar_graphic.fillRect(pos.x, pos.y, width + (edge * 2), 16);
-
-        //  Health
-
-        this.bar_graphic.fillStyle(0xffffff);
-        this.bar_graphic.fillRect(pos.x + edge, pos.y + edge, width, 12);
-
-        if (this.health < 30)
-        {
-            this.bar_graphic.fillStyle(0xff0000);
-        }
-        else
-        {
-            this.bar_graphic.fillStyle(0x00ff00);
-        }
-
-		
-        var d = Math.floor((this.health / 100) * width);
-        this.bar_graphic.fillRect(pos.x + edge, pos.y + edge, d, 12);
-		*/
-		///////////////////////////////////////////////////////////////		
 

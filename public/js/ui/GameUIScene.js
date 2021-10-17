@@ -272,6 +272,7 @@ GameUIScene.runSelectMode = (options) => {
 	
 	if(options.mode){
 		gameFunctions.mode = options.mode	
+		GameScene.resetTempSprites();
 
 		GameScene.selected_unit = undefined;
 		
@@ -280,7 +281,32 @@ GameUIScene.runSelectMode = (options) => {
 			gameFunctions.units.forEach((unit) => {
 				if(unit.alive === true && unit.side === gameFunctions.current_side){
 					unit.resetActions();
+					
+					unit.drawFlash(false)
+					unit.drawFlash(true)
+
+					switch(options.mode){
+						case "shoot":
+							if (unit.in_combat === true){
+								unit.drawFlash(false, true)
+							}
+							break;
+							case "charge":
+								if (unit.shot === true){
+									unit.drawFlash(false, true)
+								}
+							break;	
+							case "fight":
+								if (unit.fight_damage === 0){
+									unit.drawFlash(false, true)
+								}
+							break;														
+					}
+
+				}else{
+					unit.drawFlash(false)//, true)
 				}
+
 			})
 		}
 	}	

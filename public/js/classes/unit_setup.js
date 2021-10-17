@@ -90,7 +90,7 @@ const unit_setup = class {
 		let heavy_options = {
 			unit_name: "heavy",
 			shoot_name: "heavy",
-			fight_name: "sword",
+			fight_name: "none", //sword
 			armour_name: "basic",
 		}		
 

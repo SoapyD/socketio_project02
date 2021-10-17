@@ -43,10 +43,9 @@ gameFunctions.config = {
         createContainer: true
     },	
 	
-    scale: {
-          
-        mode: Phaser.Scale.FIT,
-      },
+    // scale: {
+    //     mode: Phaser.Scale.FIT,
+    //   },
     // scene: [ GameScene, GameUIScene ]
 	// scene: [ MainMenuScene, ArmySelectMenuScene, ArmySelectUIScene, ArmySetupUIScene, GameScene, GameUIScene ]  
     // scene: [ MainMenuScene, ArmySelectMenuScene, GameScene, ArmySetupUIScene ]     

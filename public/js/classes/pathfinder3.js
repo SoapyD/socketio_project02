@@ -44,12 +44,14 @@ const pathfinder = class {
 		this.max_checks = 1000;       
 		
 		this.process_list = [];
+		this.bound_unit = -1;
 		// this.new_processes = [];
 	}
 	
 	
 	setup(options) {
-        
+		
+		this.bound_unit = options.parent.id;
         let process = new pathProcess(options)
 
 		//add start pos to open list, first needs converting into a node
@@ -66,27 +68,12 @@ const pathfinder = class {
 
 	update() {
 
-		/*
-		let active_process_list = [];
-		this.process_list.forEach((process) => {
-			if(process.running === true){
-				console.log("running")
-				//only run the pathfinding process if the check number hasn't been reached yet
-				if(this.current_checks <= this.max_checks){
-					this.run(process)
-				}
-				active_process_list.push(process)
-			}
-			else{
-				console.log("NOT RUNNING")
-			}
-		})
-		*/
 		let i = this.process_list.length;
 
 		while(i--){
 			let process = this.process_list[i]
-			if(process.running === true){
+			if(process.running === true && process.parent.id === this.bound_unit
+				&& (gameFunctions.mode === 'move' || gameFunctions.mode === "charge")){
 				// console.log("running")
 				//only run the pathfinding process if the check number hasn't been reached yet
 				if(this.current_checks <= this.max_checks){
