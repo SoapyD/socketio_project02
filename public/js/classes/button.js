@@ -25,7 +25,7 @@ const button = class {
 
 
 		// const btn = game.add.sprite(x, y, "buttons").setInteractive()
-		let style = { font: "18px Arial", fill: "#000000", wordWrap: true, wordWrapWidth: this.btn.width, align: "center" }; //, backgroundColor: "#ffff00"
+		let style = { font: "28px Arial", fill: "#000000", wordWrap: true, wordWrapWidth: this.btn.width, align: "center" }; //, backgroundColor: "#ffff00"
 
 
 		this.click = false

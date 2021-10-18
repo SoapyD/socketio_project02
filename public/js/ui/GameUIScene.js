@@ -29,14 +29,14 @@ var GameUIScene = new Phaser.Class({
 		// in_game_ui = this.add.dom((gameFunctions.config.width / 2), 0).createFromCache('in_game_ui');
 		// in_game_ui.setScrollFactor(0);
 
-		let hud_item = new hud({
+		GameUIScene.hud_item = new hud({
 			scene: GameUIScene.scene,
 			// grid: true,
 
 			x: 2, y: 2,
-			x_itts: 6, y_itts: 8,
+			x_itts: 6, y_itts: 4,
 			x_indent: 10, y_indent: 8,			
-			width: gameFunctions.config.width / 8, height: 100,
+			width: gameFunctions.config.width / 8, height: 50,
 
 			fill_colour: 0xe6ffff,
 			fill_alpha: 0.9,
@@ -47,15 +47,12 @@ var GameUIScene = new Phaser.Class({
 				alpha: 1
 			},
 			text: [
-				{id: 'Turn',label: 'Turn:', x: 0, y: 0, height: 3},
-				{id: 'c_Turn',label: '-1', x: 3, y: 0, box: {fill_colour: 0xffffff, fill_alpha: 1, radius: 5, width: 2, height: 3}},
-
-				{id: 'Side',label: 'Side:', x: 0, y: 4, height: 3},
-				{id: 'c_Side',label: '-1', x: 3, y: 4, box: {fill_colour: 0xffffff, fill_alpha: 1, radius: 5, width: 2, height: 3}},				
+				{id: 'Turn',label: 'Turn:', x: 1, y: 0, height: 3},
+				{id: 'c_Turn',label: '-1', x: 3, y: 0, box: {fill_colour: 0xffffff, fill_alpha: 1, radius: 5, width: 2, height: 3}},				
 			]
 		});
 
-		let action_hud = new hud({
+		GameUIScene.action_hud = new hud({
 			scene: GameUIScene.scene,
 			// grid: true,
 
@@ -73,11 +70,93 @@ var GameUIScene = new Phaser.Class({
 				alpha: 1
 			},
 			text: [
-				{id: 'Action',label: 'Action', x: 1, y: 0, height: 3},
+				{id: 'Side',label: 'Your Turn', x: 1, y: 0, height: 3, width: 2, align: "center"},
 			]
 		});
 
-		
+
+		switch(instance_type){
+			case "DEV":
+			gameFunctions.params.forces = []
+			let force;
+			force = {
+				side: 0,
+				user_id: {
+					username: "Test"
+				}
+			}
+			gameFunctions.params.forces.push(force)
+
+			force = {
+				side: 1,
+				user_id: {
+					username: "Test2"
+				}
+			}
+			gameFunctions.params.forces.push(force)			
+			break;
+		}
+
+		if(gameFunctions.params.forces){
+			GameUIScene.forces_hud = {};
+			gameFunctions.params.forces.forEach((force, i) => {
+			// for (let i=0;i<4;i++){
+			// let i = 0
+
+				let colour = GameScene.getSideColour(force.side)
+				let width = 75;
+
+				GameUIScene.forces_hud[i] = {}
+				GameUIScene.forces_hud[i]["header"] =
+					new hud({
+						scene: GameUIScene.scene,
+						// grid: true,
+			
+						x: (i*width)+((gameFunctions.config.width / 8)*2) + 2, y: 2,
+						x_itts: 4, y_itts: 4,
+						x_indent: 0, y_indent: 0,			
+						width: width, height: 50,
+			
+						fill_colour: colour.colour,
+						fill_alpha: 0.9,
+						radius: 0,
+						border: {
+							width: 4,
+							colour: 000000,
+							alpha: 1
+						},
+						text: [
+							{id: i,label: force.user_id.username, x: 1, y: 1, height: 2, width: 2, align: "center", font: {height: 18}},
+						]
+					})
+
+					GameUIScene.forces_hud[i]["footer"] =
+					new hud({
+						scene: GameUIScene.scene,
+						// grid: true,
+			
+						x: (i*width)+((gameFunctions.config.width / 8)*2) + 2, y: 50+2,
+						x_itts: 4, y_itts: 4,
+						x_indent: 0, y_indent: 0,			
+						width: width, height: 25,
+			
+						colour: colour,
+						fill_colour: colour.colour,
+						fill_alpha: 0.9,
+						radius: 0,
+						border: {
+							width: 4,
+							colour: 000000,
+							alpha: 1
+						},
+						text: [
+							{id: i,label: 'waiting', x: 1, y: 1, height: 2, width: 2, align: "center", font: {height: 12}},
+						]
+					})					
+			
+			// }
+			})
+		}
 
 
 		let callbackParams = {};
@@ -202,7 +281,7 @@ GameUIScene.loadSingleButton = (scene) => {
 		x: gameFunctions.config.width,
 		y: 25,
 		height: 50,
-		width: 150,
+		width: 250,
 		label:  "+",
 		clickAction: GameUIScene.advanceMode,
 		callbackParams: callbackParams,

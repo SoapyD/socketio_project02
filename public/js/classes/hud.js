@@ -2,6 +2,7 @@
 const hud = class {
 	constructor(options) {	
 
+		this.scene = options.scene;
 		this.x = options.x;
 		this.y = options.y;		
 		this.width = options.width;
@@ -11,36 +12,49 @@ const hud = class {
 		this.x_indent = options.x_indent
 		this.y_indent = options.y_indent
 
-        this.graphics = options.scene.add.graphics();
-
-		this.graphics.fillStyle(options.fill_colour, options.fill_alpha);
-        this.graphics.fillRoundedRect(options.x, options.y, options.width, options.height, options.radius);
-
-		if(options.border){
-			this.graphics.lineStyle(options.border.width, options.border.colour, options.border.alpha);
-			this.graphics.strokeRoundedRect(this.x, this.y, this.width, this.height, options.radius);
+		if(options.colour){
+			this.colour = options.colour;
+			this.drawFlash()
 		}
 
+		this.fill_colour = options.fill_colour ;
+		this.fill_alpha = options.fill_alpha;
+		this.radius = options.radius;
 
-		
-		let style = { font: "28px Arial", fill: "#000000", wordWrap: true, wordWrapWidth: options.width, align: "left" };
-		let style_center = { font: "28px Arial", fill: "#000000", wordWrap: true, wordWrapWidth: options.width, align: "center" };
+		if(options.border){
+			this.border = options.border;
+		}		
 
-		this.text = [];
+		this.graphics = this.scene.add.graphics();
+		this.drawBox()
+
+		this.text = {};
 
 		options.text.forEach((item) => {
 
+			let default_type = 'Arial'
+			let font_style = "28px "+default_type;
+			if(item.font){
+				if(item.font.height){
+					font_style = item.font.height + 'px '+default_type
+				}
+			}
+			
+			let style = { font: font_style, fill: "#000000", wordWrap: true, wordWrapWidth: options.width, align: "left" };
+			let style_center = { font: font_style, fill: "#000000", wordWrap: true, wordWrapWidth: options.width, align: "center" };
+
+
 			let text_item = {};
 			
-			text_item.id = item.id;
+			// text_item.id = item.id;
 			text_item.label = item.label;
 
 			if (item.box){
-				text_item.text = options.scene.add.text(0, 0, item.label, style_center).setDepth(200);
+				text_item.text = this.scene.add.text(0, 0, item.label, style_center).setDepth(200);
 				text_item.text.x = this.x+(item.x*this.x_itts + ((item.box.width / 2) * this.x_itts) - (text_item.text.width / 2)) + this.x_indent
 				text_item.text.y = this.y+(item.y*this.y_itts + ((item.box.height / 2) * this.y_itts) - (text_item.text.height / 2)) + this.y_indent	
 
-				text_item.graphics = options.scene.add.graphics();
+				text_item.graphics = this.scene.add.graphics();
 				text_item.graphics.fillStyle(item.box.fill_colour, item.box.fill_alpha);
 				text_item.graphics.fillRoundedRect(
 					(item.x*this.x_itts)+this.x_indent, 
@@ -50,30 +64,37 @@ const hud = class {
 					item.box.radius);			
 				
 			}else{
-				text_item.text = options.scene.add.text(0, 0, item.label, style).setDepth(200);
-				text_item.text.x = this.x+(item.x*this.x_itts) + this.x_indent
-				text_item.text.y = this.y+(item.y*this.y_itts + ((item.height / 2) * this.y_itts) - (text_item.text.height / 2)) + this.y_indent	
+				text_item.text = this.scene.add.text(0, 0, item.label, style).setDepth(200);
+
+				//IF THERE'S NO ALIGNMENT INFO, DEFAULT ALIGN TO THE LEFT
+				if(!item.align){
+					text_item.text.x = this.x+(item.x*this.x_itts) + this.x_indent
+					text_item.text.y = this.y+(item.y*this.y_itts + ((item.height / 2) * this.y_itts) - (text_item.text.height / 2)) + this.y_indent	
+				}else{
+					switch(item.align){
+						case "left":
+							text_item.text.x = this.x+(item.x*this.x_itts) + this.x_indent
+							text_item.text.y = this.y+(item.y*this.y_itts + ((item.height / 2) * this.y_itts) - (text_item.text.height / 2)) + this.y_indent								
+						break
+						case "center":
+							text_item.text.x = this.x+(item.x*this.x_itts + ((item.width / 2) * this.x_itts) - (text_item.text.width / 2)) + this.x_indent
+							text_item.text.y = this.y+(item.y*this.y_itts + ((item.height / 2) * this.y_itts) - (text_item.text.height / 2)) + this.y_indent								
+						break							
+						default:
+							text_item.text.x = this.x+(item.x*this.x_itts) + this.x_indent
+							text_item.text.y = this.y+(item.y*this.y_itts + ((item.height / 2) * this.y_itts) - (text_item.text.height / 2)) + this.y_indent							
+					}
+				}
 				
 			}
 
-			this.text.push(text_item)
+			this.text[item.id] = text_item
 
 			if(options.grid === true){
-				this.graphics.lineStyle(2, 0x00aa00);
+				this.graphics.lineStyle(2, 0x000000,0.5);
 		
 				this.graphics.beginPath();			
 				
-				/*
-				for(let x=0; x<this.width; x+=this.x_itts){
-					this.graphics.moveTo(x+this.x_indent, 0+this.x_indent);
-					this.graphics.lineTo(x+this.y_indent, this.height);
-				}				
-			
-				for(let y=0; y<this.height; y+=this.y_itts){
-					this.graphics.moveTo(0+this.x_indent, y+this.x_indent);
-					this.graphics.lineTo(this.width, y+this.y_indent);
-				}				
-				*/
 				for(let x=this.x; x<this.x+this.width; x+=this.x_itts){
 					this.graphics.moveTo(x+this.x_indent, this.y+this.y_indent);
 					this.graphics.lineTo(x+this.x_indent, this.y+this.height);
@@ -89,7 +110,56 @@ const hud = class {
 			}
 
 		})
-
-
 	}
+
+	drawBox(){
+
+		this.graphics.fillStyle(this.fill_colour, this.fill_alpha);
+        this.graphics.fillRoundedRect(this.x, this.y, this.width, this.height, this.radius);
+
+		if(this.border){
+			this.graphics.lineStyle(this.border.width, this.border.colour, this.border.alpha);
+			this.graphics.strokeRoundedRect(this.x, this.y, this.width, this.height, this.radius);
+		}		
+	}
+
+	drawFlash(active=true, gray_out=false){
+		if(active === true){
+			this.flash_tween = this.scene.tweens.addCounter({
+				targets: this, 
+				from: 0,
+				to: 255,
+				yoyo: 1,
+				repeat: -1,
+				onUpdate: function (tween) {
+					if(this.parent){
+						const value = Math.floor(tween.getValue());
+	
+						let colour_info = this.parent.colour.colour_info
+	
+						let new_colour = Phaser.Display.Color.GetColor(
+							colour_info.r + (value * colour_info.r_itt), 
+							colour_info.g + (value * colour_info.g_itt), 
+							colour_info.b + (value * colour_info.b_itt)
+							);
+							
+						this.parent.fill_colour = new_colour;
+						this.parent.drawBox();
+					}
+				}
+			})
+			// tween.sprite = this.sprite
+			this.flash_tween.parent = this				
+		}else{
+			// if (this.flash_tween){
+			// 	this.flash_tween.stop();
+			// 	if(gray_out === false){
+			// 		this.sprite_ghost.setTint(this.colour)
+			// 	}else{
+			// 		this.sprite_ghost.setTint(this.colour_gray)
+			// 	}
+			// }
+		}
+	}
+
 }

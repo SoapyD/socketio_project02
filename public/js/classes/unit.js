@@ -495,30 +495,16 @@ unselectHandler() {
 // ######  #     # #     #  ## ##  	
 	
 	drawTint(){
-		let colour = 0xFFFFFF;
-		switch(this.player){
-			case 0:
-				colour = 0xff3333; //red
-				break;
-			case 1:
-				colour = 0x3399ff; //blue
-				break;
-			case 2:
-				colour = 0x00FF00; //lime
-				break;
-			case 3:
-				colour = 0xFFFF00; //yellow
-				break;				
-		}
-		
-		this.colour = colour
-		this.colour_gray = 0x808080;
 
-		this.colour_info = Phaser.Display.Color.ValueToColor(this.colour)
-		this.colour_info.dest = {r: 255, g: 255, b: 255};
-		this.colour_info.r_itt = (this.colour_info.dest.r - this.sprite_ghost.parent.colour_info.r) / 255
-		this.colour_info.g_itt = (this.colour_info.dest.g - this.sprite_ghost.parent.colour_info.g) / 255									
-		this.colour_info.b_itt = (this.colour_info.dest.b - this.sprite_ghost.parent.colour_info.b) / 255
+		let colour = GameScene.getSideColour(this.side);
+		this.colour = colour.colour
+		this.colour_gray = 0x808080;
+		this.colour_info = colour.colour_info;
+		// this.colour_info = Phaser.Display.Color.ValueToColor(this.colour)
+		// this.colour_info.dest = {r: 255, g: 255, b: 255};
+		// this.colour_info.r_itt = (this.colour_info.dest.r - this.sprite_ghost.parent.colour_info.r) / 255
+		// this.colour_info.g_itt = (this.colour_info.dest.g - this.sprite_ghost.parent.colour_info.g) / 255									
+		// this.colour_info.b_itt = (this.colour_info.dest.b - this.sprite_ghost.parent.colour_info.b) / 255
 
 
 		this.sprite.setTint(this.colour)
