@@ -9,15 +9,8 @@ SBT GAME NOTES
 
 
 /////////////////////////////////////////
-THINGS TO DO (EVENTUALLY)
+SIDES AND ACTIONS
 /////////////////////////////////////////
-    
--Move unit and weapon definitions to the server and pass them into the room as the ejs file loads
-
--Flesh out the army builder so players can build a list from a redimentary force list
-
--add in a step to new games that allows players to setup units
-    -Also add in a function to automatically place units
 
 -Display the name of the current side / players so they know who're turn it is
 
@@ -27,6 +20,21 @@ THINGS TO DO (EVENTUALLY)
 -Add in a check for a player win so we know when the game ends
 
 -keep track of what player/side killed a unit so score can be tallied at the end of the game
+
+
+
+
+
+/////////////////////////////////////////
+THINGS TO DO (EVENTUALLY)
+/////////////////////////////////////////
+
+-Move unit and weapon definitions to the server and pass them into the room as the ejs file loads
+
+-Flesh out the army builder so players can build a list from a redimentary force list
+
+-add in a step to new games that allows players to setup units
+    -Also add in a function to automatically place units
 
 -Once a game is complete or a room hasn't been used in a set period, the room is removed from the server
 
@@ -45,7 +53,10 @@ THINGS TO DO (EVENTUALLY)
 
 -Add in at least 3 maps to use
 
-
+-Action Types
+    -Shields - Passive ability, reduce the damage of bullets when the pass through them. Can't be stacked
+    -Jump packs - jump over terrain
+    -agile - leave/pass combat zones without incurring damage
 
 
 /////////////////////////////////////////

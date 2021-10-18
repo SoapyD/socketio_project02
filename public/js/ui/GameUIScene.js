@@ -18,13 +18,68 @@ var GameUIScene = new Phaser.Class({
 		GameUIScene.text = this.add.text(0, 0, "", { fill: '#00ff00' }).setDepth(20);
 		
 		GameUIScene.mode_check_state = 0;
-		GameUIScene.mode_check_timer = 0;	
-		
+		GameUIScene.mode_check_timer = 0;
+		GameUIScene.scene = this.scene.get('GameUIScene')
+	
+		// this.load.html('in_game_ui', './html/in_game_ui.html');    
     },
 
     create: function()
     {
+		// in_game_ui = this.add.dom((gameFunctions.config.width / 2), 0).createFromCache('in_game_ui');
+		// in_game_ui.setScrollFactor(0);
+
+		let hud_item = new hud({
+			scene: GameUIScene.scene,
+			// grid: true,
+
+			x: 2, y: 2,
+			x_itts: 6, y_itts: 8,
+			x_indent: 10, y_indent: 8,			
+			width: gameFunctions.config.width / 8, height: 100,
+
+			fill_colour: 0xe6ffff,
+			fill_alpha: 0.9,
+			radius: { tl: 0, tr: 12, bl: 12, br: 12 },
+			border: {
+				width: 4,
+				colour: 000000,
+				alpha: 1
+			},
+			text: [
+				{id: 'Turn',label: 'Turn:', x: 0, y: 0, height: 3},
+				{id: 'c_Turn',label: '-1', x: 3, y: 0, box: {fill_colour: 0xffffff, fill_alpha: 1, radius: 5, width: 2, height: 3}},
+
+				{id: 'Side',label: 'Side:', x: 0, y: 4, height: 3},
+				{id: 'c_Side',label: '-1', x: 3, y: 4, box: {fill_colour: 0xffffff, fill_alpha: 1, radius: 5, width: 2, height: 3}},				
+			]
+		});
+
+		let action_hud = new hud({
+			scene: GameUIScene.scene,
+			// grid: true,
+
+			x: (gameFunctions.config.width / 8) + 2, y: 2,
+			x_itts: 4, y_itts: 3,
+			x_indent: 0, y_indent: 0,			
+			width: gameFunctions.config.width / 8, height: 50,
+
+			fill_colour: 0xe6ffff,
+			fill_alpha: 0.9,
+			radius: { tl: 0, tr: 12, bl: 12, br: 12 },
+			border: {
+				width: 4,
+				colour: 000000,
+				alpha: 1
+			},
+			text: [
+				{id: 'Action',label: 'Action', x: 1, y: 0, height: 3},
+			]
+		});
+
 		
+
+
 		let callbackParams = {};
 		
 		gameFunctions.btn_sprite = [];		
@@ -83,6 +138,7 @@ var GameUIScene = new Phaser.Class({
 				}
 				break;				
 			case 1:
+				
 				GameUIScene.mode_check_state = 2;
 				GameUIScene.mode_check_timer = 200;
 				break;
@@ -94,7 +150,17 @@ var GameUIScene = new Phaser.Class({
 			GameUIScene.mode_check_timer--;
 		}
 		
+
+		// #     # ######  ######     #    ####### #######       ####### ####### #     # ####### 
+		// #     # #     # #     #   # #      #    #                #    #        #   #     #    
+		// #     # #     # #     #  #   #     #    #                #    #         # #      #    
+		// #     # ######  #     # #     #    #    #####   #####    #    #####      #       #    
+		// #     # #       #     # #######    #    #                #    #         # #      #    
+		// #     # #       #     # #     #    #    #                #    #        #   #     #    
+		//  #####  #       ######  #     #    #    #######          #    ####### #     #    #    		
 		
+
+		/*
 		let text = "Current Side: "+gameFunctions.current_side+'\n'
 		
 		if(GameScene.selected_unit){
@@ -112,6 +178,8 @@ var GameUIScene = new Phaser.Class({
 		}
 
 		GameUIScene.text.setText(text)		
+
+		*/
     }
 });
 

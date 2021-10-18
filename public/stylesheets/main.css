@@ -75,10 +75,10 @@ canvas {
 
 #gameContainer {
   position: absolute;
-  top: 5%;
+  /* top: 5%; */
   left: 0;
   width: 80%;
-  height: 95%;
+  /* height: 95%; */
   /* Not sure that last part is actually usefull */
   object-fit: contain;
   display: flex;

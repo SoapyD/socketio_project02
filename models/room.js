@@ -10,12 +10,6 @@ const roomSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'User' 
     }]
-    // ,characters: [{
-    //     id: Number
-    //     ,character_id: {type: Number, default: -1}
-    //     ,life: {type: Number, default: 0}
-    //     ,armour: {type: Number, default: 0}
-    // }]
 
 	,author: {
 		id: {
@@ -24,8 +18,6 @@ const roomSchema = new mongoose.Schema({
 		},
 		user_name: String
     }
-
-
 
 	,config: {
 		max_players: Number
@@ -40,11 +32,11 @@ const roomSchema = new mongoose.Schema({
 	
 	,forces: [{
 		player_number: Number
-		,user_id: {type: String, default: ""}
-		// {
-		// 	type: mongoose.Schema.Types.ObjectId,
-		// 	ref: "User"
-		// }		
+		,user_id: //{type: String, default: ""}
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User"
+		}		
 		,side: {type: Number, default: -1}
 		,start: {type: Number, default: -1}
 		,army: {type: Number, default: -1}

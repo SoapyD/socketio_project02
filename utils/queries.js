@@ -4,7 +4,16 @@ const Room = require("../models/room");
 
 exports.findRoom = (id) => {
     try{
-        return Room.findById(id).populate("users").exec()
+        return Room.findById(id)
+        // .populate("users")
+        .populate({path: 'users'})
+        .populate({
+            path: "forces",
+            populate: {
+                path: 'user_id'     
+            }
+        })        
+        .exec()
     }
     catch(err){
         console.log("Error trying to find room by id")
@@ -15,7 +24,15 @@ exports.findRoom = (id) => {
 exports.findRooms = (room_name, include_users=true) => {
     try{
 		if(include_users === true){
-        	return Room.find({room_name: room_name}).populate("users").exec();
+            return Room.find({room_name: room_name})
+            .populate({path: 'users'})
+            // .populate({
+            //     path: "forces",
+            //     populate: {
+            //         path: 'user_id'     
+            //     }
+            // })            
+            .exec();
 		}else{
         	return Room.find({room_name: room_name})	
 		}
@@ -56,6 +73,7 @@ exports.createRoom = (data, socket_id) => {
 	let forces = [];
 	for(let i=0;i<config.max_players;i++){
 		let force = {
+            user_id: data.user_id,
 			player_number: i
 		}
 		forces.push(force)
