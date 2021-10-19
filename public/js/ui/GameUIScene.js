@@ -773,7 +773,7 @@ GameUIScene.nextSide = () => {
 			]
 		});
 		
-
+		/*
 		GameUIScene.action_hud = new hud({
 			scene: GameUIScene.scene,
 			// grid: true,
@@ -797,7 +797,7 @@ GameUIScene.nextSide = () => {
 				{id: 'Side',label: '-1', x: 3, y: 0, box: {fill_colour: 0xffffff, fill_alpha: 1, radius: 5, width: 2, height: 3}},				
 			]
 		});
-
+		*/
 
 		switch(instance_type){
 			case "DEV":
@@ -837,7 +837,7 @@ GameUIScene.nextSide = () => {
 						scene: GameUIScene.scene,
 						// grid: true,
 			
-						x: (i*width)+(hud_width * 2) + 2, y: 2,
+						x: (i*width)+(hud_width * 1) + 2, y: 2,
 						x_itts: 4, y_itts: 4,
 						x_indent: 0, y_indent: 0,			
 						width: width, height: 50,
@@ -860,7 +860,7 @@ GameUIScene.nextSide = () => {
 						scene: GameUIScene.scene,
 						// grid: true,
 			
-						x: (i*width)+(400) + 2, y: 50+2,
+						x: (i*width)+(hud_width * 1) + 2, y: 50+2,
 						x_itts: 4, y_itts: 4,
 						x_indent: 0, y_indent: 0,			
 						width: width, height: 25,
@@ -875,7 +875,7 @@ GameUIScene.nextSide = () => {
 							alpha: 1
 						},
 						text: [
-							{id: i,label: 'waiting', x: 1, y: 1, height: 2, width: 2, align: "center", font: {height: 12}},
+							{id: i,label: '', x: 1, y: 1, height: 2, width: 2, align: "center", font: {height: 12}},
 						]
 					})					
 			
@@ -985,6 +985,6 @@ GameUIScene.advanceSide = () => {
 	})
 
 	GameUIScene.checkButtonVisability();
-	GameUIScene.action_hud.setText("Side",gameFunctions.current_side)
+	// GameUIScene.action_hud.setText("Side",gameFunctions.current_side)
 }
 
