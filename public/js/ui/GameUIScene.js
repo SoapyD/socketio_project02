@@ -29,134 +29,7 @@ var GameUIScene = new Phaser.Class({
 		// in_game_ui = this.add.dom((gameFunctions.config.width / 2), 0).createFromCache('in_game_ui');
 		// in_game_ui.setScrollFactor(0);
 
-		GameUIScene.hud_item = new hud({
-			scene: GameUIScene.scene,
-			// grid: true,
-
-			x: 2, y: 2,
-			x_itts: 6, y_itts: 4,
-			x_indent: 10, y_indent: 8,			
-			width: gameFunctions.config.width / 8, height: 50,
-
-			fill_colour: 0xe6ffff,
-			fill_alpha: 0.9,
-			radius: { tl: 0, tr: 12, bl: 12, br: 12 },
-			border: {
-				width: 4,
-				colour: 000000,
-				alpha: 1
-			},
-			text: [
-				{id: 'Turn',label: 'Turn:', x: 1, y: 0, height: 3},
-				{id: 'c_Turn',label: '-1', x: 3, y: 0, box: {fill_colour: 0xffffff, fill_alpha: 1, radius: 5, width: 2, height: 3}},				
-			]
-		});
-
-		GameUIScene.action_hud = new hud({
-			scene: GameUIScene.scene,
-			// grid: true,
-
-			x: (gameFunctions.config.width / 8) + 2, y: 2,
-			x_itts: 4, y_itts: 3,
-			x_indent: 0, y_indent: 0,			
-			width: gameFunctions.config.width / 8, height: 50,
-
-			fill_colour: 0xe6ffff,
-			fill_alpha: 0.9,
-			radius: { tl: 0, tr: 12, bl: 12, br: 12 },
-			border: {
-				width: 4,
-				colour: 000000,
-				alpha: 1
-			},
-			text: [
-				{id: 'Side',label: 'Your Turn', x: 1, y: 0, height: 3, width: 2, align: "center"},
-			]
-		});
-
-
-		switch(instance_type){
-			case "DEV":
-			gameFunctions.params.forces = []
-			let force;
-			force = {
-				side: 0,
-				user_id: {
-					username: "Test"
-				}
-			}
-			gameFunctions.params.forces.push(force)
-
-			force = {
-				side: 1,
-				user_id: {
-					username: "Test2"
-				}
-			}
-			gameFunctions.params.forces.push(force)			
-			break;
-		}
-
-		if(gameFunctions.params.forces){
-			GameUIScene.forces_hud = {};
-			gameFunctions.params.forces.forEach((force, i) => {
-			// for (let i=0;i<4;i++){
-			// let i = 0
-
-				let colour = GameScene.getSideColour(force.side)
-				let width = 75;
-
-				GameUIScene.forces_hud[i] = {}
-				GameUIScene.forces_hud[i]["header"] =
-					new hud({
-						scene: GameUIScene.scene,
-						// grid: true,
-			
-						x: (i*width)+((gameFunctions.config.width / 8)*2) + 2, y: 2,
-						x_itts: 4, y_itts: 4,
-						x_indent: 0, y_indent: 0,			
-						width: width, height: 50,
-			
-						fill_colour: colour.colour,
-						fill_alpha: 0.9,
-						radius: 0,
-						border: {
-							width: 4,
-							colour: 000000,
-							alpha: 1
-						},
-						text: [
-							{id: i,label: force.user_id.username, x: 1, y: 1, height: 2, width: 2, align: "center", font: {height: 18}},
-						]
-					})
-
-					GameUIScene.forces_hud[i]["footer"] =
-					new hud({
-						scene: GameUIScene.scene,
-						// grid: true,
-			
-						x: (i*width)+((gameFunctions.config.width / 8)*2) + 2, y: 50+2,
-						x_itts: 4, y_itts: 4,
-						x_indent: 0, y_indent: 0,			
-						width: width, height: 25,
-			
-						colour: colour,
-						fill_colour: colour.colour,
-						fill_alpha: 0.9,
-						radius: 0,
-						border: {
-							width: 4,
-							colour: 000000,
-							alpha: 1
-						},
-						text: [
-							{id: i,label: 'waiting', x: 1, y: 1, height: 2, width: 2, align: "center", font: {height: 12}},
-						]
-					})					
-			
-			// }
-			})
-		}
+		GameUIScene.setupHUD();
 
 
 		let callbackParams = {};
@@ -485,6 +358,7 @@ GameUIScene.advanceMode = () => {
 			//setup movement
 			options.mode = "move"
 			GameUIScene.selectMode(options);	
+			GameUIScene.setAllWaitingHUD();
 			gameFunctions.btn_sprite[0].updateText("trigger move")
 			if(gameFunctions.params.player_side === gameFunctions.current_side){
 				gameFunctions.btn_sprite[0].showButton();				
@@ -497,6 +371,7 @@ GameUIScene.advanceMode = () => {
 			activated = GameUIScene.activateMovement();
 
 			if(activated === true){
+				GameUIScene.setForcesHUD(gameFunctions.params.player_number, "ready", true, false)
 				GameScene.resetTempSprites();
 				gameFunctions.btn_sprite[0].hideButton()
 				GameUIScene.mode_check_state = 1;
@@ -508,6 +383,7 @@ GameUIScene.advanceMode = () => {
 			//setup shoot
 			options.mode = "shoot"
 			GameUIScene.selectMode(options);
+			GameUIScene.setAllWaitingHUD();
 			gameFunctions.btn_sprite[0].updateText("trigger shoot")
 			if(gameFunctions.params.player_side === gameFunctions.current_side){
 				gameFunctions.btn_sprite[0].showButton();				
@@ -523,12 +399,14 @@ GameUIScene.advanceMode = () => {
 
 			gameFunctions.btn_sprite[0].hideButton()
 			GameUIScene.mode_check_state = 1;
+			GameUIScene.setForcesHUD(gameFunctions.params.player_number, "ready", true, false)
 			break;
 			
 		case 4:
 			//setup charge
 			options.mode = "charge"
 			GameUIScene.selectMode(options);
+			GameUIScene.setAllWaitingHUD();
 			gameFunctions.btn_sprite[0].updateText("trigger charge")
 			if(gameFunctions.params.player_side === gameFunctions.current_side){
 				gameFunctions.btn_sprite[0].showButton();
@@ -545,6 +423,7 @@ GameUIScene.advanceMode = () => {
 				GameScene.resetTempSprites();
 				gameFunctions.btn_sprite[0].hideButton()
 				GameUIScene.mode_check_state = 1;
+				GameUIScene.setForcesHUD(gameFunctions.params.player_number, "ready", true, false)
 			}
 			break;
 			
@@ -552,6 +431,7 @@ GameUIScene.advanceMode = () => {
 			//setup fight
 			options.mode = "fight"
 			GameUIScene.selectMode(options);
+			GameUIScene.setAllWaitingHUD();
 			gameFunctions.btn_sprite[0].updateText("trigger fight")
 			if(gameFunctions.params.player_side === gameFunctions.current_side){
 				gameFunctions.btn_sprite[0].showButton();				
@@ -566,11 +446,13 @@ GameUIScene.advanceMode = () => {
 			GameUIScene.activateFighting();
 			gameFunctions.btn_sprite[0].hideButton()
 			GameUIScene.mode_check_state = 1;
+			GameUIScene.setForcesHUD(gameFunctions.params.player_number, "ready", true, false)
 			break
 		case 8:
 			//setup end turn
 			options.mode = "end turn"
 			GameUIScene.selectMode(options);
+			GameUIScene.setAllWaitingHUD();
 			gameFunctions.btn_sprite[0].updateText("end turn")
 			if(gameFunctions.params.player_side === gameFunctions.current_side){
 				gameFunctions.btn_sprite[0].showButton();				
@@ -583,6 +465,7 @@ GameUIScene.advanceMode = () => {
 			//activate end turn
 			GameScene.sfxHandler("end_turn")
 			GameUIScene.mode_check_state = 1;
+			GameUIScene.setForcesHUD(gameFunctions.params.player_number, "ready", true, false)
 			// gameFunctions.mode_state = 0;
 			// GameUIScene.advanceMode();
 			GameUIScene.nextSide();			
@@ -852,6 +735,178 @@ GameUIScene.nextSide = () => {
 	}
 }
 
+
+
+		//  #####  ####### ####### #     # ######        #     # #     # ######  
+		// #     # #          #    #     # #     #       #     # #     # #     # 
+		// #       #          #    #     # #     #       #     # #     # #     # 
+		//  #####  #####      #    #     # ######  ##### ####### #     # #     # 
+		// 	     # #          #    #     # #             #     # #     # #     # 
+		// #     # #          #    #     # #             #     # #     # #     # 
+		//  #####  #######    #     #####  #             #     #  #####  ######  
+
+	GameUIScene.setupHUD = () => {
+
+		let hud_width = 200;
+
+		
+		GameUIScene.hud_item = new hud({
+			scene: GameUIScene.scene,
+			// grid: true,
+
+			x: 2, y: 2,
+			x_itts: 6, y_itts: 4,
+			x_indent: 10, y_indent: 6,			
+			width: hud_width, height: 50,
+
+			fill_colour: 0xe6ffff,
+			fill_alpha: 0.9,
+			radius: { tl: 0, tr: 12, bl: 12, br: 12 },
+			border: {
+				width: 4,
+				colour: 000000,
+				alpha: 1
+			},
+			text: [
+				{id: 'Turn',label: 'Turn:', x: 0, y: 0, height: 3},
+				{id: 'c_Turn',label: '-1', x: 3, y: 0, box: {fill_colour: 0xffffff, fill_alpha: 1, radius: 5, width: 2, height: 3}},				
+			]
+		});
+		
+
+		GameUIScene.action_hud = new hud({
+			scene: GameUIScene.scene,
+			// grid: true,
+
+			x: (hud_width) + 2, y: 2,
+			x_itts: 6, y_itts: 4,
+			x_indent: 10, y_indent: 6,			
+			width: hud_width, height: 50,
+
+			fill_colour: 0xe6ffff,
+			fill_alpha: 0.9,
+			radius: { tl: 0, tr: 12, bl: 12, br: 12 },
+			border: {
+				width: 4,
+				colour: 000000,
+				alpha: 1
+			},
+			text: [
+				// {id: 'Side',label: gameFunctions.current_side, x: 1, y: 0, height: 3, width: 2, align: "center"},
+				{id: 'l_Side',label: 'Side:', x: 0, y: 0, height: 3},
+				{id: 'Side',label: '-1', x: 3, y: 0, box: {fill_colour: 0xffffff, fill_alpha: 1, radius: 5, width: 2, height: 3}},				
+			]
+		});
+
+
+		switch(instance_type){
+			case "DEV":
+			gameFunctions.params.player_number = 0;
+			gameFunctions.params.forces = []
+			let force;
+			force = {
+				side: 0,
+				user_id: {
+					username: "Test"
+				}
+			}
+			gameFunctions.params.forces.push(force)
+
+			force = {
+				side: 1,
+				user_id: {
+					username: "Test2"
+				}
+			}
+			gameFunctions.params.forces.push(force)			
+			break;
+		}
+
+		if(gameFunctions.params.forces){
+			GameUIScene.forces_hud = {};
+			gameFunctions.params.forces.forEach((force, i) => {
+			// for (let i=0;i<4;i++){
+			// let i = 0
+
+				let colour = GameScene.getSideColour(force.side)
+				let width = 100;
+
+				GameUIScene.forces_hud[i] = {}
+				GameUIScene.forces_hud[i]["header"] =
+					new hud({
+						scene: GameUIScene.scene,
+						// grid: true,
+			
+						x: (i*width)+(hud_width * 2) + 2, y: 2,
+						x_itts: 4, y_itts: 4,
+						x_indent: 0, y_indent: 0,			
+						width: width, height: 50,
+			
+						fill_colour: colour.colour,
+						fill_alpha: 0.9,
+						radius: 0,
+						border: {
+							width: 4,
+							colour: 000000,
+							alpha: 1
+						},
+						text: [
+							{id: i,label: force.user_id.username, x: 1, y: 1, height: 2, width: 2, align: "center", font: {height: 18}},
+						]
+					})
+
+					GameUIScene.forces_hud[i]["footer"] =
+					new hud({
+						scene: GameUIScene.scene,
+						// grid: true,
+			
+						x: (i*width)+(400) + 2, y: 50+2,
+						x_itts: 4, y_itts: 4,
+						x_indent: 0, y_indent: 0,			
+						width: width, height: 25,
+			
+						colour: colour,
+						fill_colour: colour.colour,
+						fill_alpha: 0.9,
+						radius: 0,
+						border: {
+							width: 4,
+							colour: 000000,
+							alpha: 1
+						},
+						text: [
+							{id: i,label: 'waiting', x: 1, y: 1, height: 2, width: 2, align: "center", font: {height: 12}},
+						]
+					})					
+			
+					GameUIScene.forces_hud[i]["footer"].setVisible(false);
+			// }
+			})
+
+			// let colour = GameScene.getSideColour()
+			// GameUIScene.forces_hud[0]["footer"].setText("0","complete")
+			// GameUIScene.forces_hud[0]["footer"].setColour(colour.colour_gray)
+			// GameUIScene.forces_hud[0]["footer"].setVisible(false);
+		}
+	}
+
+	GameUIScene.setForcesHUD = (i, text, is_visible, is_gray) => {
+		let element = GameUIScene.forces_hud[i]["footer"]
+		element.setText(i,text)
+		element.setVisible(is_visible);
+		element.setGray(is_gray)
+	}
+
+	GameUIScene.setAllWaitingHUD = () => {
+		gameFunctions.params.forces.forEach((force, i) => {
+			if(force.side === gameFunctions.current_side){
+				GameUIScene.setForcesHUD(i, "waiting", true, true)
+			}else{
+				GameUIScene.setForcesHUD(i, "waiting", false, true)
+			}
+		})
+	}
+
 // ███████ ██    ██ ███    ██  ██████ ████████ ██  ██████  ███    ██ ███████ 
 // ██      ██    ██ ████   ██ ██         ██    ██ ██    ██ ████   ██ ██      
 // █████   ██    ██ ██ ██  ██ ██         ██    ██ ██    ██ ██ ██  ██ ███████ 
@@ -930,5 +985,6 @@ GameUIScene.advanceSide = () => {
 	})
 
 	GameUIScene.checkButtonVisability();
+	GameUIScene.action_hud.setText("Side",gameFunctions.current_side)
 }
 

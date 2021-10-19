@@ -498,7 +498,7 @@ unselectHandler() {
 
 		let colour = GameScene.getSideColour(this.side);
 		this.colour = colour.colour
-		this.colour_gray = 0x808080;
+		this.colour_gray = colour.colour_gray;
 		this.colour_info = colour.colour_info;
 		// this.colour_info = Phaser.Display.Color.ValueToColor(this.colour)
 		// this.colour_info.dest = {r: 255, g: 255, b: 255};

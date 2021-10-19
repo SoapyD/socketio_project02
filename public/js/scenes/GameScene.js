@@ -890,11 +890,14 @@ GameScene.getSideColour = (side) => {
 			break;				
 	}
 
+	colour.colour_gray = 0x808080;
+
 	colour.colour_info = Phaser.Display.Color.ValueToColor(colour.colour)
 	colour.colour_info.dest = {r: 255, g: 255, b: 255};
 	colour.colour_info.r_itt = (colour.colour_info.dest.r - colour.colour_info.r) / 255
 	colour.colour_info.g_itt = (colour.colour_info.dest.g - colour.colour_info.g) / 255									
 	colour.colour_info.b_itt = (colour.colour_info.dest.b - colour.colour_info.b) / 255
-	console.log(colour)
+
+	
 	return colour
 }
