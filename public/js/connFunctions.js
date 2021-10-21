@@ -273,6 +273,8 @@ connFunctions.updateRoomInfo = (data) => {
 	//UPDATE PLAYER DATA IF IT'S AVAILABLE
 	if(data.users){
 		gameFunctions.params.users = data.users	
+		//ALSO UPDATE FORCES SO THE RIGHT USERNAME WILL BE ASSOCIATED WITH THE USER
+		gameFunctions.params.forces = data.forces	
 		ArmySelectUIScene.updatePlayers();		
 	}
 	if(data.parameters){

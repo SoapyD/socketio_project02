@@ -515,7 +515,7 @@ unselectHandler() {
 	}
 
 	drawFlash(active=true, gray_out=false){
-		if(active === true){
+		if(active === true && this.player === gameFunctions.params.player_number){
 			this.flash_tween = this.scene.tweens.addCounter({
 				targets: this, 
 				from: 0,

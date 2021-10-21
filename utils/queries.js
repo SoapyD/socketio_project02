@@ -73,9 +73,12 @@ exports.createRoom = (data, socket_id) => {
 	let forces = [];
 	for(let i=0;i<config.max_players;i++){
 		let force = {
-            user_id: data.user_id,
+            // user_id: data.user_id,
 			player_number: i
-		}
+        }
+        if(i === 0){
+            force.user_id = data.user_id
+        }
 		forces.push(force)
 	}
 

@@ -941,8 +941,8 @@ GameUIScene.sendReadyUp = () => {
 }
 
 GameUIScene.readyUp = (data) => {
-	gameFunctions.params.forces[data.player_id].ready = true;
-	GameUIScene.setForcesHUD(data.player_id, "ready", true, false)	
+	gameFunctions.params.forces[data.parameters.player_id].ready = true;
+	GameUIScene.setForcesHUD(data.parameters.player_id, "ready", true, false)	
 }
 
 GameUIScene.checkReadyUp = () => {

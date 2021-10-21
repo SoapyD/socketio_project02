@@ -236,7 +236,12 @@ exports.joinRoom = async(network, data)  => {
                 }
                 else{
                     //ADD USER TO ROOM THEN RETURN DATA
-                    room.users.push(data.user_id);
+					room.users.push(data.user_id);
+
+					let player_id = room.users.indexOf(data.user_id);
+
+					//ADD USER ID TO THE FORCES LIST
+					room.forces[player_id].user_id = data.user_id;
                     room.sockets.push(network.socket.id);
                     saved_room = await room.save()	
 					

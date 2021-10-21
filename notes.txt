@@ -12,6 +12,10 @@ SBT GAME NOTES
 SIDES AND ACTIONS
 /////////////////////////////////////////
 
+-DONE -Username saving in forces
+    -DONE -Only save a user ID for the player that creates the room initially
+    -DONE -Then, when the room updates, send over the updated user names
+
 -DONE -Display the name of the current side / players so they know who're turn it is
     -DONE -Implement a HUD class to make the design of this a lot easier
 
@@ -19,7 +23,9 @@ SIDES AND ACTIONS
 -Create a means for multiple players of a side to submit that they're ready, then when they are, the action players
     -DONE -Add in a "ready" HUD element to show when other players are/aren't ready
     -DONE -Also needs to display how many players we're waiting for to place their actions
-    
+    -DONE -Make only units that're avaiable to the player to unit, flash
+    -Need to ensure that only the player who's "readied action" has those actions played out.
+
 
 -Add in a check for a player win so we know when the game ends
 
@@ -27,6 +33,23 @@ SIDES AND ACTIONS
 
 
 
+
+/////////////////////////////////////////
+BUGS
+/////////////////////////////////////////
+
+-BUG -When unit can't move over a space they're not allowed to go, the ghost still generate there and the "allowed" sound plays.
+
+-NEEDS TESTING -start game menu is also broken again now
+    -The "transform" script in CSS now gets refreshed if removed, which is causing the issue
+    -removing "scale to fit" in config fixes the issue but i'll maybe need to raise it on git"
+
+-BUG -Desyncs occur if the window isn't visible.
+    -Maybe add in a mechanism for numbering saves so when the window becomes active again, check the last save with the current value to see if things need updating.
+
+/////////////////////////////////////////
+SETUP
+/////////////////////////////////////////
 
 
 /////////////////////////////////////////
@@ -63,22 +86,6 @@ THINGS TO DO (EVENTUALLY)
     -agile - leave/pass combat zones without incurring damage
 
 
-/////////////////////////////////////////
-BUGS
-/////////////////////////////////////////
-
--BUG -When unit can't move over a space they're not allowed to go, the ghost still generate there and the "allowed" sound plays.
-
--NEEDS TESTING -start game menu is also broken again now
-    -The "transform" script in CSS now gets refreshed if removed, which is causing the issue
-    -removing "scale to fit" in config fixes the issue but i'll maybe need to raise it on git"
-
-/////////////////////////////////////////
-SETUP
-/////////////////////////////////////////
-
-
-
 
 /////////////////////////////////////////
 TESTING
@@ -97,6 +104,11 @@ DONE
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+-GROUP -New HUD element
+    -DONE -TOM2 appeared on all player HUD items instead of correct names for each
+    -DONE -"Readyup" line 944 errored on one of the player instances
+    -DONE -completing all side actions didn't setup new action. Nor did the HUD item change to "ready"
 
 -DONE -Write in a check to clear live tiles drawn when the mode goes to a non moving action
     -Also clear the live tiles when a new unit is selected
