@@ -41,6 +41,7 @@ const roomSchema = new mongoose.Schema({
 		,start: {type: Number, default: -1}
 		,army: {type: Number, default: -1}
 		,army_id: {type: String, default: ""}
+		,ready: {type: Boolean, default: false}
 	}]
 	
 	,units: [{

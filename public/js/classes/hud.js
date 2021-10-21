@@ -134,7 +134,10 @@ const hud = class {
 	}
 
 	setText(id, new_text){
-		this["text"][id]["text"].setText(new_text)
+		let text_obj = this["text"][id]["text"];
+		text_obj.x += (text_obj.width / 2)
+		text_obj.setText(new_text)
+		text_obj.x -= (text_obj.width / 2)
 		//NEEDS TO INCLUDE NEW ALIGNMENT OF TEXT TOO
 	}
 

@@ -98,7 +98,8 @@ var GameUIScene = new Phaser.Class({
 
 				break;
 		}
-		if(GameUIScene.mode_check_timer > 0){
+		let all_ready = GameUIScene.checkReadyUp();
+		if(GameUIScene.mode_check_timer > 0 && all_ready === true){
 			GameUIScene.mode_check_timer--;
 		}
 		
@@ -172,6 +173,7 @@ GameUIScene.loadSingleButton = (scene) => {
 	GameUIScene.advanceMode();	
 }
 
+/*
 GameUIScene.loadFullButtons = (scene) => {
 	let callbackParams;
 	let options;
@@ -252,7 +254,7 @@ GameUIScene.loadFullButtons = (scene) => {
 	gameFunctions.btn_sprite.push(new button(options))
 		
 }
-
+*/
 
 // ███████ ███████ ██      ███████  ██████ ████████       ███    ███  ██████  ██████  ███████ 
 // ██      ██      ██      ██      ██         ██          ████  ████ ██    ██ ██   ██ ██      
@@ -371,7 +373,7 @@ GameUIScene.advanceMode = () => {
 			activated = GameUIScene.activateMovement();
 
 			if(activated === true){
-				GameUIScene.setForcesHUD(gameFunctions.params.player_number, "ready", true, false)
+				GameUIScene.sendReadyUp();
 				GameScene.resetTempSprites();
 				gameFunctions.btn_sprite[0].hideButton()
 				GameUIScene.mode_check_state = 1;
@@ -399,7 +401,7 @@ GameUIScene.advanceMode = () => {
 
 			gameFunctions.btn_sprite[0].hideButton()
 			GameUIScene.mode_check_state = 1;
-			GameUIScene.setForcesHUD(gameFunctions.params.player_number, "ready", true, false)
+			GameUIScene.sendReadyUp();
 			break;
 			
 		case 4:
@@ -420,10 +422,10 @@ GameUIScene.advanceMode = () => {
 			activated = GameUIScene.activateCharging();
 
 			if(activated === true){
+				GameUIScene.sendReadyUp();
 				GameScene.resetTempSprites();
 				gameFunctions.btn_sprite[0].hideButton()
 				GameUIScene.mode_check_state = 1;
-				GameUIScene.setForcesHUD(gameFunctions.params.player_number, "ready", true, false)
 			}
 			break;
 			
@@ -446,7 +448,7 @@ GameUIScene.advanceMode = () => {
 			GameUIScene.activateFighting();
 			gameFunctions.btn_sprite[0].hideButton()
 			GameUIScene.mode_check_state = 1;
-			GameUIScene.setForcesHUD(gameFunctions.params.player_number, "ready", true, false)
+			GameUIScene.sendReadyUp();
 			break
 		case 8:
 			//setup end turn
@@ -465,7 +467,7 @@ GameUIScene.advanceMode = () => {
 			//activate end turn
 			GameScene.sfxHandler("end_turn")
 			GameUIScene.mode_check_state = 1;
-			GameUIScene.setForcesHUD(gameFunctions.params.player_number, "ready", true, false)
+			GameUIScene.sendReadyUp();
 			// gameFunctions.mode_state = 0;
 			// GameUIScene.advanceMode();
 			GameUIScene.nextSide();			
@@ -809,6 +811,7 @@ GameUIScene.nextSide = () => {
 				user_id: {
 					username: "Test"
 				}
+				,ready: false
 			}
 			gameFunctions.params.forces.push(force)
 
@@ -817,6 +820,7 @@ GameUIScene.nextSide = () => {
 				user_id: {
 					username: "Test2"
 				}
+				,ready: false				
 			}
 			gameFunctions.params.forces.push(force)			
 			break;
@@ -900,19 +904,74 @@ GameUIScene.nextSide = () => {
 	GameUIScene.setAllWaitingHUD = () => {
 		gameFunctions.params.forces.forEach((force, i) => {
 			if(force.side === gameFunctions.current_side){
-				GameUIScene.setForcesHUD(i, "waiting", true, true)
+				GameUIScene.setForcesHUD(i, "unready", true, true)
 			}else{
-				GameUIScene.setForcesHUD(i, "waiting", false, true)
+				GameUIScene.setForcesHUD(i, "unready", false, true)
 			}
 		})
 	}
+
+
+// ######  #######    #    ######  #     #       #     # ######  
+// #     # #         # #   #     #  #   #        #     # #     # 
+// #     # #        #   #  #     #   # #         #     # #     # 
+// ######  #####   #     # #     #    #    ##### #     # ######  
+// #   #   #       ####### #     #    #          #     # #       
+// #    #  #       #     # #     #    #          #     # #       
+// #     # ####### #     # ######     #           #####  #  
+
+GameUIScene.sendReadyUp = () => {
+	if(GameScene.online === false){
+		GameUIScene.readyUp({player_id:gameFunctions.params.player_number})
+	}else{
+		let data = {
+			functionGroup: "socketFunctions",  
+			function: "messageAll",
+			room_name: gameFunctions.params.room_name,
+			returnFunctionGroup: "GameUIScene",
+			returnFunction: "readyUp",
+			returnParameters: {
+				player_id:gameFunctions.params.player_number
+			},
+			message: "ready player "+gameFunctions.params.player_number
+		}
+
+		connFunctions.messageServer(data)		
+	}
+}
+
+GameUIScene.readyUp = (data) => {
+	gameFunctions.params.forces[data.player_id].ready = true;
+	GameUIScene.setForcesHUD(data.player_id, "ready", true, false)	
+}
+
+GameUIScene.checkReadyUp = () => {
+	let all_ready = false;
+	let ready_count = 0;
+	let player_count = 0;
+	gameFunctions.params.forces.forEach((force) => {
+		if (force.ready === true){
+			ready_count++;
+		}
+		if(force.side === gameFunctions.current_side){
+			player_count++;
+		}
+	})
+	if(ready_count === player_count){
+		all_ready = true;
+	}	
+
+	return all_ready;
+}
+
+
 
 // ███████ ██    ██ ███    ██  ██████ ████████ ██  ██████  ███    ██ ███████ 
 // ██      ██    ██ ████   ██ ██         ██    ██ ██    ██ ████   ██ ██      
 // █████   ██    ██ ██ ██  ██ ██         ██    ██ ██    ██ ██ ██  ██ ███████ 
 // ██      ██    ██ ██  ██ ██ ██         ██    ██ ██    ██ ██  ██ ██      ██ 
 // ██       ██████  ██   ████  ██████    ██    ██  ██████  ██   ████ ███████ 
-                                                                          
+
 GameUIScene.checkAllCombat = () => {
 	// RESET ALL COMBAT STATUS'
 	gameFunctions.units.forEach((unit) => {
