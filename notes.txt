@@ -40,6 +40,10 @@ SIDES AND ACTIONS
 BUGS
 /////////////////////////////////////////
 
+-BUG -1v1 ready/unready isn't ticking over on the second player
+
+-BUG -When turn passes over to a new side, the action isn't ticking over as expected.
+
 -BUG -There's seems to be a bug when updating a room where the room id won't be found. Not game breaking but it'd be good to know why.
 There's possibly a lock on the record if it's being updated by multiple players which may happen with sides going at once.
 

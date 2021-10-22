@@ -772,6 +772,7 @@ GameUIScene.advanceSide = () => {
 		unit.shots = 0;
 	})
 
+	// GameUIScene.runAdvanceMode();
 	GameUIScene.checkButtonVisability();
 	// GameUIScene.action_hud.setText("Side",gameFunctions.current_side)
 }
