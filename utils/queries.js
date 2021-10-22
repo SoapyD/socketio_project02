@@ -111,6 +111,17 @@ exports.createRoom = (data, socket_id) => {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+exports.saveRoom = (room) => {
+    // let promises = [];
+    // promises.push(room.save())
+
+    // return Promise.all(promises)
+    // .catch((err) => {
+    //     console.log(err)
+    // })      
+    return room.save()
+}
+
 exports.updateRoom = (room, data) => {
 	
 	room.config.current_side = data.current_side
@@ -229,15 +240,15 @@ exports.findData = async(find_list) => {
 // #     # #    #  #       #     #    #    #             #    #  #       #     # #     # #    #  #     # 
 //  #####  #     # ####### #     #    #    #######       #     # #######  #####  ####### #     # ######  
 
-exports.createData = async(creation_list, search_type="findOrCreate") => {
+exports.createData = async(list, search_type="findOrCreate") => {
 
     let promises = [];
 
-    creation_list.forEach((list) => {
+    // creation_list.forEach((list) => {
         list.params.forEach((item) => {
             promises.push(models[list.model][search_type](item))
         })
-    })
+    // })
 
     return Promise.all(promises)
     .catch((err) => {
@@ -254,19 +265,18 @@ exports.createData = async(creation_list, search_type="findOrCreate") => {
 // #     # #       #     # #     #    #    #             #     # #     #    #    #     # 
 //  #####  #       ######  #     #    #    #######       ######  #     #    #    #     # 
 
-exports.updateData = async(item, update_list) => {
+exports.updateData = async(item, list) => {
 
     let promises = [];
 
-    update_list.forEach((list) => {
-
+    // update_list.forEach((list) => {
         list.params.forEach((param_item) => {
             for(const key in param_item){
                 item[key] = param_item[key]
             }
         })
         promises.push(item.save())
-    })  
+    // })  
     
     return Promise.all(promises)
     .catch((err) => {
@@ -283,16 +293,15 @@ exports.updateData = async(item, update_list) => {
 // #     # #       #     #    #    #    #  #     #    #          #     # #     #    #    #     # 
 // ######  #######  #####     #    #     # #######    #          ######  #     #    #    #     # 
 
-exports.destroyData = async(destroy_list) => {
+exports.destroyData = async(list) => {
 
     let promises = [];
 
-    destroy_list.forEach((list) => {
-
+    // destroy_list.forEach((list) => {
         list.params.forEach((item) => {
             promises.push(models[list.model].destroy(item))
         })
-    })  
+    // })  
 
     return Promise.all(promises)
     .catch((err) => {

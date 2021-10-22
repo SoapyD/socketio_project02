@@ -26,8 +26,8 @@ SIDES AND ACTIONS
     -DONE -Make only units that're avaiable to the player to unit, flash
     -DONE -Need to ensure that only the player who's "readied action" has those actions played out.
     -DONE -Stop the advancement of action happening to all players, just the current player
-    -Only pass over the turn when all sides have readied their end turn
-
+    -DONE -Only pass over the turn when all sides have readied their end turn
+    -Make sure that when the turn is passed over, the menu's appear as expected on the next sides screen
 
 -Add in a check for a player win so we know when the game ends
 

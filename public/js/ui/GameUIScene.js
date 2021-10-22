@@ -467,7 +467,7 @@ GameUIScene.advanceMode = () => {
 		case 9:
 			//activate end turn
 			GameScene.sfxHandler("end_turn")
-			GameUIScene.mode_check_state = 1;
+			// GameUIScene.mode_check_state = 1;
 			GameUIScene.sendReadyUp();
 			// gameFunctions.mode_state = 0;
 			// GameUIScene.advanceMode();
@@ -695,6 +695,15 @@ GameUIScene.activateFighting = () => {
 	//TRIGGER COMBAT WHEN UNITS HAVE MOVED
 }
 
+
+// #     # ####### #     # #######        #####  ### ######  ####### 
+// ##    # #        #   #     #          #     #  #  #     # #       
+// # #   # #         # #      #          #        #  #     # #       
+// #  #  # #####      #       #    #####  #####   #  #     # #####   
+// #   # # #         # #      #                #  #  #     # #       
+// #    ## #        #   #     #          #     #  #  #     # #       
+// #     # ####### #     #    #           #####  ### ######  ####### 
+
 GameUIScene.nextSide = () => {
 	
 	gameFunctions.mode = ""
@@ -711,18 +720,60 @@ GameUIScene.nextSide = () => {
 		GameUIScene.advanceSide()
 	}else{
 		
+		// let data = {
+		// 	functionGroup: "socketFunctions",  
+		// 	function: "messageAll",
+		// 	room_name: gameFunctions.params.room_name,
+		// 	returnFunctionGroup: "GameUIScene",
+		// 	returnFunction: "advanceSide",
+		// 	returnParameters: {},
+		// 	message: "next player"
+		// }
+
 		let data = {
 			functionGroup: "socketFunctions",  
-			function: "messageAll",
+			function: "updateRoom",
+			type: "ready force",
 			room_name: gameFunctions.params.room_name,
-			returnFunctionGroup: "GameUIScene",
-			returnFunction: "advanceSide",
-			returnParameters: {},
-			message: "next player"
+			player_number: gameFunctions.params.player_number,
+			player_side: gameFunctions.params.player_side
+			// params: {
+			// }
 		}
 
 		connFunctions.messageServer(data)		
 	}
+}
+
+GameUIScene.advanceSide = () => {
+
+	// let start_check = false;
+	// if(gameFunctions.current_side === -1){
+	// 	start_check = true;
+	// }
+
+	// CHANGE THE PARAMS SIDE IF THIS IS A LOCAL GAME
+	if(GameScene.online === false && gameFunctions.current_side !== -1){
+		gameFunctions.params.player_side += 1
+		if(gameFunctions.params.player_side >= gameFunctions.params.max_sides){
+			gameFunctions.params.player_side = 0
+		}		
+	}	
+
+	gameFunctions.current_side += 1
+	if(gameFunctions.current_side >= gameFunctions.params.max_sides){
+		gameFunctions.current_side = 0
+	}
+	
+
+	gameFunctions.units.forEach((unit) => {
+		unit.moves = 0;
+		unit.fights = 0;
+		unit.shots = 0;
+	})
+
+	GameUIScene.checkButtonVisability();
+	// GameUIScene.action_hud.setText("Side",gameFunctions.current_side)
 }
 
 
@@ -1004,34 +1055,4 @@ GameUIScene.checkButtonVisability = () => {
 }
 
 
-GameUIScene.advanceSide = () => {
-
-	// let start_check = false;
-	// if(gameFunctions.current_side === -1){
-	// 	start_check = true;
-	// }
-
-	// CHANGE THE PARAMS SIDE IF THIS IS A LOCAL GAME
-	if(GameScene.online === false && gameFunctions.current_side !== -1){
-		gameFunctions.params.player_side += 1
-		if(gameFunctions.params.player_side >= gameFunctions.params.max_sides){
-			gameFunctions.params.player_side = 0
-		}		
-	}	
-
-	gameFunctions.current_side += 1
-	if(gameFunctions.current_side >= gameFunctions.params.max_sides){
-		gameFunctions.current_side = 0
-	}
-	
-
-	gameFunctions.units.forEach((unit) => {
-		unit.moves = 0;
-		unit.fights = 0;
-		unit.shots = 0;
-	})
-
-	GameUIScene.checkButtonVisability();
-	// GameUIScene.action_hud.setText("Side",gameFunctions.current_side)
-}
 
