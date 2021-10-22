@@ -24,7 +24,9 @@ SIDES AND ACTIONS
     -DONE -Add in a "ready" HUD element to show when other players are/aren't ready
     -DONE -Also needs to display how many players we're waiting for to place their actions
     -DONE -Make only units that're avaiable to the player to unit, flash
-    -Need to ensure that only the player who's "readied action" has those actions played out.
+    -DONE -Need to ensure that only the player who's "readied action" has those actions played out.
+    -DONE -Stop the advancement of action happening to all players, just the current player
+    -Only pass over the turn when all sides have readied their end turn
 
 
 -Add in a check for a player win so we know when the game ends
@@ -37,6 +39,9 @@ SIDES AND ACTIONS
 /////////////////////////////////////////
 BUGS
 /////////////////////////////////////////
+
+-BUG -There's seems to be a bug when updating a room where the room id won't be found. Not game breaking but it'd be good to know why.
+There's possibly a lock on the record if it's being updated by multiple players which may happen with sides going at once.
 
 -BUG -When unit can't move over a space they're not allowed to go, the ghost still generate there and the "allowed" sound plays.
 

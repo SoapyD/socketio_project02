@@ -72,20 +72,21 @@ var GameUIScene = new Phaser.Class({
 			case 3:
 				if(GameScene.active_actions === 0){
 					
-					if(GameScene.online === false){
-						GameUIScene.runAdvanceMode()
-					}else{
-						let data = {
-							functionGroup: "socketFunctions",  
-							function: "messageAll",
-							room_name: gameFunctions.params.room_name,
-							returnFunctionGroup: "GameUIScene",
-							returnFunction: "runAdvanceMode",
-							message: "advancing mode"
-						}
+					// if(GameScene.online === false){
+					// 	GameUIScene.runAdvanceMode()
+					// }else{
+					// 	let data = {
+					// 		functionGroup: "socketFunctions",  
+					// 		function: "messageAll",
+					// 		room_name: gameFunctions.params.room_name,
+					// 		returnFunctionGroup: "GameUIScene",
+					// 		returnFunction: "runAdvanceMode",
+					// 		message: "advancing mode"
+					// 	}
 
-						connFunctions.messageServer(data)
-					}
+					// 	connFunctions.messageServer(data)
+					// }
+					GameUIScene.runAdvanceMode()
 					GameUIScene.mode_check_state = 0;
 				}
 				break;				
@@ -500,7 +501,7 @@ GameUIScene.activateMovement = () => {
 	let activated = false;
 	if(cohesion_check === true){
 		gameFunctions.units.forEach((unit) => {
-			if(unit.path.length > 0 && unit.side === gameFunctions.current_side){
+			if(unit.path.length > 0 && unit.player === gameFunctions.params.player_number){
 				//unit.path.length > 0 &&
 				
 				if(GameScene.online === false){
@@ -554,7 +555,7 @@ GameUIScene.activateShooting = () => {
 			unit.shoot();
 		}else{
 
-			if(unit.targets.length > 0 && unit.side === gameFunctions.current_side){
+			if(unit.targets.length > 0 && unit.player === gameFunctions.params.player_number){
 				let data = {
 					functionGroup: "socketFunctions",  
 					function: "messageAll",
@@ -593,24 +594,11 @@ GameUIScene.activateCharging = () => {
 		}
 	})
 	
-	//ONLY ALLOW CHARGE IF ALL CHARGING UNTIS ARE IN COMBAT DISTANCE
-	// if(cohesion_check === true){
-	// 	gameFunctions.units.forEach((unit) => {
-	// 		if(unit.side === gameFunctions.current_side &&
-	// 		   unit.cohesion_check === true){
-	// 			let in_combat_range = unit.checkCombat()
-				
-	// 			if(in_combat_range === true){
-	// 				in_combat = true;
-	// 			}
-	// 		}
-	// 	})		
-	// }
 	let activated = true;
 	if(cohesion_check === true){ // && in_combat === true){
 		gameFunctions.units.forEach((unit) => {
 			
-			if(unit.path.length > 0 && unit.side === gameFunctions.current_side){
+			if(unit.path.length > 0 && unit.player === gameFunctions.params.player_number){
 
 				if(GameScene.online === false){
 					
@@ -672,7 +660,7 @@ GameUIScene.activateFighting = () => {
 	
 	gameFunctions.units.forEach((unit) => {
 
-		if(unit.fight_targets.length > 0 && unit.side === gameFunctions.current_side){
+		if(unit.fight_targets.length > 0 && unit.player === gameFunctions.params.player_number){
 
 			if(GameScene.online === false){
 
@@ -711,7 +699,7 @@ GameUIScene.nextSide = () => {
 	
 	gameFunctions.mode = ""
 	gameFunctions.units.forEach((unit) => {
-		if(unit.alive === true && unit.side === gameFunctions.current_side){
+		if(unit.alive === true && unit.player === gameFunctions.params.player_number){ //unit.side === gameFunctions.current_side){
 			unit.resetActions();
 			unit.resetLocks();
 		}
