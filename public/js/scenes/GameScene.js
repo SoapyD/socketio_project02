@@ -13,7 +13,33 @@ var GameScene = new Phaser.Class({
 
     preload: function()
     {		
-				
+
+		switch(instance_type){
+			case "DEV":
+			gameFunctions.params.player_number = 0;
+			gameFunctions.params.forces = []
+			let force;
+			force = {
+				side: 0,
+				user_id: {
+					username: "Test"
+				}
+				,ready: false
+			}
+			gameFunctions.params.forces.push(force)
+
+			force = {
+				side: 1,
+				user_id: {
+					username: "Test2"
+				}
+				,ready: false				
+			}
+			gameFunctions.params.forces.push(force)			
+			break;
+		}		
+
+
 		//CREATE A LOAD SCREEN FOR THE GAME
 		var width = this.cameras.main.width;
 		var height = this.cameras.main.height;

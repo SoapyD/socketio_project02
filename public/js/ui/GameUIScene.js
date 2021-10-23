@@ -72,20 +72,6 @@ var GameUIScene = new Phaser.Class({
 			case 3:
 				if(GameScene.active_actions === 0){
 					
-					// if(GameScene.online === false){
-					// 	GameUIScene.runAdvanceMode()
-					// }else{
-					// 	let data = {
-					// 		functionGroup: "socketFunctions",  
-					// 		function: "messageAll",
-					// 		room_name: gameFunctions.params.room_name,
-					// 		returnFunctionGroup: "GameUIScene",
-					// 		returnFunction: "runAdvanceMode",
-					// 		message: "advancing mode"
-					// 	}
-
-					// 	connFunctions.messageServer(data)
-					// }
 					GameUIScene.runAdvanceMode()
 					GameUIScene.mode_check_state = 0;
 				}
@@ -171,7 +157,7 @@ GameUIScene.loadSingleButton = (scene) => {
 	else{
 		GameUIScene.checkButtonVisability();
 	}
-	GameUIScene.advanceMode();	
+	// GameUIScene.advanceMode();	
 }
 
 /*
@@ -295,7 +281,9 @@ GameUIScene.runSelectMode = (options) => {
 	
 	if(options.mode){
 		gameFunctions.mode = options.mode	
+
 		GameScene.resetTempSprites();
+		GameUIScene.setAllWaitingHUD();
 
 		GameScene.selected_unit = undefined;
 		
@@ -352,16 +340,14 @@ GameUIScene.runAdvanceMode = () => {
 }
 
 GameUIScene.advanceMode = () => {
-	2
 	let options = {}
-	let btn;
+	// let btn;
 	let activated = false;
 	switch(gameFunctions.mode_state){
 		case 0:
 			//setup movement
 			options.mode = "move"
-			GameUIScene.selectMode(options);	
-			GameUIScene.setAllWaitingHUD();
+			GameUIScene.selectMode(options);
 			gameFunctions.btn_sprite[0].updateText("trigger move")
 			if(gameFunctions.params.player_side === gameFunctions.current_side){
 				gameFunctions.btn_sprite[0].showButton();				
@@ -386,7 +372,6 @@ GameUIScene.advanceMode = () => {
 			//setup shoot
 			options.mode = "shoot"
 			GameUIScene.selectMode(options);
-			GameUIScene.setAllWaitingHUD();
 			gameFunctions.btn_sprite[0].updateText("trigger shoot")
 			if(gameFunctions.params.player_side === gameFunctions.current_side){
 				gameFunctions.btn_sprite[0].showButton();				
@@ -409,7 +394,6 @@ GameUIScene.advanceMode = () => {
 			//setup charge
 			options.mode = "charge"
 			GameUIScene.selectMode(options);
-			GameUIScene.setAllWaitingHUD();
 			gameFunctions.btn_sprite[0].updateText("trigger charge")
 			if(gameFunctions.params.player_side === gameFunctions.current_side){
 				gameFunctions.btn_sprite[0].showButton();
@@ -434,7 +418,6 @@ GameUIScene.advanceMode = () => {
 			//setup fight
 			options.mode = "fight"
 			GameUIScene.selectMode(options);
-			GameUIScene.setAllWaitingHUD();
 			gameFunctions.btn_sprite[0].updateText("trigger fight")
 			if(gameFunctions.params.player_side === gameFunctions.current_side){
 				gameFunctions.btn_sprite[0].showButton();				
@@ -455,7 +438,6 @@ GameUIScene.advanceMode = () => {
 			//setup end turn
 			options.mode = "end turn"
 			GameUIScene.selectMode(options);
-			GameUIScene.setAllWaitingHUD();
 			gameFunctions.btn_sprite[0].updateText("end turn")
 			if(gameFunctions.params.player_side === gameFunctions.current_side){
 				gameFunctions.btn_sprite[0].showButton();				
@@ -467,17 +449,10 @@ GameUIScene.advanceMode = () => {
 		case 9:
 			//activate end turn
 			GameScene.sfxHandler("end_turn")
-			// GameUIScene.mode_check_state = 1;
 			GameUIScene.sendReadyUp();
-			// gameFunctions.mode_state = 0;
-			// GameUIScene.advanceMode();
 			GameUIScene.nextSide();			
 			break;
 	}
-	
-	// if(mode_triggered === true){
-	// 	gameFunctions.mode_state++;	
-	// }
 }
 
 
@@ -684,10 +659,6 @@ GameUIScene.activateFighting = () => {
 
 				connFunctions.messageServer(data)
 			}
-			
-			// if(unit.fight_targets.length > 1){
-			// 	GameScene.active_actions+=unit.fight_targets.length;	
-			// }	
 		}
 
 	})
@@ -719,16 +690,6 @@ GameUIScene.nextSide = () => {
 	if(GameScene.online === false){
 		GameUIScene.advanceSide()
 	}else{
-		
-		// let data = {
-		// 	functionGroup: "socketFunctions",  
-		// 	function: "messageAll",
-		// 	room_name: gameFunctions.params.room_name,
-		// 	returnFunctionGroup: "GameUIScene",
-		// 	returnFunction: "advanceSide",
-		// 	returnParameters: {},
-		// 	message: "next player"
-		// }
 
 		let data = {
 			functionGroup: "socketFunctions",  
@@ -746,11 +707,6 @@ GameUIScene.nextSide = () => {
 }
 
 GameUIScene.advanceSide = () => {
-
-	// let start_check = false;
-	// if(gameFunctions.current_side === -1){
-	// 	start_check = true;
-	// }
 
 	// CHANGE THE PARAMS SIDE IF THIS IS A LOCAL GAME
 	if(GameScene.online === false && gameFunctions.current_side !== -1){
@@ -772,9 +728,25 @@ GameUIScene.advanceSide = () => {
 		unit.shots = 0;
 	})
 
-	// GameUIScene.runAdvanceMode();
+
+	let start_check = false;
+	if(gameFunctions.current_side === -1){
+		start_check = true;
+	}
+	if(start_check === false){
+		if(gameFunctions.params.player_side === gameFunctions.current_side){
+			gameFunctions.mode_state = -1
+			GameUIScene.runAdvanceMode();
+		}
+
+		gameFunctions.params.forces.forEach((force) => {
+			force.ready = false;
+		})
+		GameUIScene.setAllWaitingHUD();
+
+	}
+
 	GameUIScene.checkButtonVisability();
-	// GameUIScene.action_hud.setText("Side",gameFunctions.current_side)
 }
 
 
@@ -814,57 +786,6 @@ GameUIScene.advanceSide = () => {
 				{id: 'c_Turn',label: '-1', x: 3, y: 0, box: {fill_colour: 0xffffff, fill_alpha: 1, radius: 5, width: 2, height: 3}},				
 			]
 		});
-		
-		/*
-		GameUIScene.action_hud = new hud({
-			scene: GameUIScene.scene,
-			// grid: true,
-
-			x: (hud_width) + 2, y: 2,
-			x_itts: 6, y_itts: 4,
-			x_indent: 10, y_indent: 6,			
-			width: hud_width, height: 50,
-
-			fill_colour: 0xe6ffff,
-			fill_alpha: 0.9,
-			radius: { tl: 0, tr: 12, bl: 12, br: 12 },
-			border: {
-				width: 4,
-				colour: 000000,
-				alpha: 1
-			},
-			text: [
-				// {id: 'Side',label: gameFunctions.current_side, x: 1, y: 0, height: 3, width: 2, align: "center"},
-				{id: 'l_Side',label: 'Side:', x: 0, y: 0, height: 3},
-				{id: 'Side',label: '-1', x: 3, y: 0, box: {fill_colour: 0xffffff, fill_alpha: 1, radius: 5, width: 2, height: 3}},				
-			]
-		});
-		*/
-
-		switch(instance_type){
-			case "DEV":
-			gameFunctions.params.player_number = 0;
-			gameFunctions.params.forces = []
-			let force;
-			force = {
-				side: 0,
-				user_id: {
-					username: "Test"
-				}
-				,ready: false
-			}
-			gameFunctions.params.forces.push(force)
-
-			force = {
-				side: 1,
-				user_id: {
-					username: "Test2"
-				}
-				,ready: false				
-			}
-			gameFunctions.params.forces.push(force)			
-			break;
-		}
 
 		if(gameFunctions.params.forces){
 			GameUIScene.forces_hud = {};
@@ -927,18 +848,17 @@ GameUIScene.advanceSide = () => {
 			// }
 			})
 
-			// let colour = GameScene.getSideColour()
-			// GameUIScene.forces_hud[0]["footer"].setText("0","complete")
-			// GameUIScene.forces_hud[0]["footer"].setColour(colour.colour_gray)
-			// GameUIScene.forces_hud[0]["footer"].setVisible(false);
+			GameUIScene.setAllWaitingHUD();
 		}
 	}
 
 	GameUIScene.setForcesHUD = (i, text, is_visible, is_gray) => {
-		let element = GameUIScene.forces_hud[i]["footer"]
-		element.setText(i,text)
-		element.setVisible(is_visible);
-		element.setGray(is_gray)
+		if(GameUIScene.forces_hud){
+			let element = GameUIScene.forces_hud[i]["footer"]
+			element.setText(i,text)
+			element.setVisible(is_visible);
+			element.setGray(is_gray)
+		}
 	}
 
 	GameUIScene.setAllWaitingHUD = () => {
@@ -999,6 +919,11 @@ GameUIScene.checkReadyUp = () => {
 	})
 	if(ready_count === player_count){
 		all_ready = true;
+
+		//IF ALL READY, RESET READY STATUS FOR EVERYONE
+		// gameFunctions.params.forces.forEach((force) => {
+		// 	force.ready = false;
+		// })
 	}	
 
 	return all_ready;

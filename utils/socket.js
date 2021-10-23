@@ -430,6 +430,13 @@ exports.updateRoom = async(network, data) => {
 						if(readied === total_side){
 							//END THE TURN
 
+							//RESET ALL ROOMS BACK TO "UNREADY"
+							updated_room.forces.forEach((force) => {
+								force.ready = false;
+							})
+							updated_room.markModified('forces');	
+							updated_room = await queriesUtil.saveRoom(updated_room)							
+
 							return_data = {
 								functionGroup: "GameUIScene",
 								function: "advanceSide",

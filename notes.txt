@@ -12,22 +12,7 @@ SBT GAME NOTES
 SIDES AND ACTIONS
 /////////////////////////////////////////
 
--DONE -Username saving in forces
-    -DONE -Only save a user ID for the player that creates the room initially
-    -DONE -Then, when the room updates, send over the updated user names
-
--DONE -Display the name of the current side / players so they know who're turn it is
-    -DONE -Implement a HUD class to make the design of this a lot easier
-
-
--Create a means for multiple players of a side to submit that they're ready, then when they are, the action players
-    -DONE -Add in a "ready" HUD element to show when other players are/aren't ready
-    -DONE -Also needs to display how many players we're waiting for to place their actions
-    -DONE -Make only units that're avaiable to the player to unit, flash
-    -DONE -Need to ensure that only the player who's "readied action" has those actions played out.
-    -DONE -Stop the advancement of action happening to all players, just the current player
-    -DONE -Only pass over the turn when all sides have readied their end turn
-    -Make sure that when the turn is passed over, the menu's appear as expected on the next sides screen
+-Add a turn counter
 
 -Add in a check for a player win so we know when the game ends
 
@@ -40,9 +25,12 @@ SIDES AND ACTIONS
 BUGS
 /////////////////////////////////////////
 
--BUG -1v1 ready/unready isn't ticking over on the second player
+-BUG -in a 3 people game, the 3rd player couldn't get any coherancy for some reason, the checks failed
 
--BUG -When turn passes over to a new side, the action isn't ticking over as expected.
+-BUG -A second shot didn't fire for some reason, which has stopped the game from progressing
+    -Possibly because they were in base to base contact with a unit that couldn't fight, then that unit was the target of the shot
+
+-BUG -On player 2 there was an error on like 998, which used the process.path generated to move 
 
 -BUG -There's seems to be a bug when updating a room where the room id won't be found. Not game breaking but it'd be good to know why.
 There's possibly a lock on the record if it's being updated by multiple players which may happen with sides going at once.
@@ -113,6 +101,35 @@ DONE
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+-DONE -Username saving in forces
+    -DONE -Only save a user ID for the player that creates the room initially
+    -DONE -Then, when the room updates, send over the updated user names
+
+-DONE -Display the name of the current side / players so they know who're turn it is
+    -DONE -Implement a HUD class to make the design of this a lot easier
+
+
+-DONE -Create a means for multiple players of a side to submit that they're ready, then when they are, the action players
+    -DONE -Add in a "ready" HUD element to show when other players are/aren't ready
+    -DONE -Also needs to display how many players we're waiting for to place their actions
+    -DONE -Make only units that're avaiable to the player to unit, flash
+    -DONE -Need to ensure that only the player who's "readied action" has those actions played out.
+    -DONE -Stop the advancement of action happening to all players, just the current player
+    -DONE -Only pass over the turn when all sides have readied their end turn
+    -DONE -Make sure that when the turn is passed over, the menu's appear as expected on the next sides screen
+
+-DONE -When turn passes over to a new side, the action isn't ticking over as expected.
+    -ready up button isn't passing to the new side (GameUIScene.setAllWaitingHUD needs to be run at the end of advance side)
+    -Need to find a place to run this:
+    		gameFunctions.params.forces.forEach((force) => {
+			    force.ready = false;
+		    })
+
+-DONE -GameUIScene.setForcesHUD is erroring on side 1 for some reason
+    -This is being caused by player 1 loading into the game after player 0 has started the game
+
+-DONE -1v1 ready/unready isn't ticking over on the second player
 
 -GROUP -New HUD element
     -DONE -TOM2 appeared on all player HUD items instead of correct names for each
