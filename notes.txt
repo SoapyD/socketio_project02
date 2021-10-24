@@ -25,21 +25,16 @@ SIDES AND ACTIONS
 BUGS
 /////////////////////////////////////////
 
--BUG -in a 3 people game, the 3rd player couldn't get any coherancy for some reason, the checks failed
-
--BUG -A second shot didn't fire for some reason, which has stopped the game from progressing
+-NEEDS MONITORING -A second shot didn't fire for some reason, which has stopped the game from progressing
     -Possibly because they were in base to base contact with a unit that couldn't fight, then that unit was the target of the shot
-
--BUG -On player 2 there was an error on like 998, which used the process.path generated to move 
+    -Wonder if this is related to the angle >= -1 check as active_actions are being passed to all players, 
+    so the ticket message is being passed to everyone
+    -Added a check that'll print off the values used if the angle is -1
 
 -BUG -There's seems to be a bug when updating a room where the room id won't be found. Not game breaking but it'd be good to know why.
 There's possibly a lock on the record if it's being updated by multiple players which may happen with sides going at once.
 
 -BUG -When unit can't move over a space they're not allowed to go, the ghost still generate there and the "allowed" sound plays.
-
--NEEDS TESTING -start game menu is also broken again now
-    -The "transform" script in CSS now gets refreshed if removed, which is causing the issue
-    -removing "scale to fit" in config fixes the issue but i'll maybe need to raise it on git"
 
 -BUG -Desyncs occur if the window isn't visible.
     -Maybe add in a mechanism for numbering saves so when the window becomes active again, check the last save with the current value to see if things need updating.
@@ -88,9 +83,6 @@ THINGS TO DO (EVENTUALLY)
 TESTING
 /////////////////////////////////////////
 
--test out a 3 side game
--test out a 2 side, 4 player game
-
 
 
 
@@ -101,6 +93,24 @@ DONE
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+-DONE -I think I ended a turn too early which caused the turn not to pass over correctly
+    -related to the number of max sides passed from the server.
+    -Added in a check for the number of sides when advaceSide() is run
+
+-DONE -On player 2 there was an error on like 998, which used the process.path generated to move 
+    -Put a check in for a path before it's used
+
+-DONE -start game menu is also broken again now
+    -The "transform" script in CSS now gets refreshed if removed, which is causing the issue
+    -removing "scale to fit" in config fixes the issue but i'll maybe need to raise it on git"
+
+-DONE -test out a 3 side game
+-DONE -test out a 2 side, 4 player game
+
+-DONE -in a 3 people game, the 3rd player couldn't get any coherancy for some reason, the checks failed
+    -The Tank is being included in the cohesion of the unit for some reason ID 33
+    -It was the spawner. There was another tank unit being created that shared the squad number as the 10 man squad.
 
 -DONE -Username saving in forces
     -DONE -Only save a user ID for the player that creates the room initially

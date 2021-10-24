@@ -120,6 +120,9 @@ GameScene.seed2 = () => {
 		GameScene.unit_setup.placeTank(options)
 	}
 	
+
+	player = -1;
+	side = -1;	
 	
 	gameFunctions.params.forces.forEach((force) => {
 		if(force.start === 1){
@@ -151,6 +154,8 @@ GameScene.seed2 = () => {
 		GameScene.unit_setup.placeSquad(options)
 	}
 
+	player = -1;
+	side = -1;	
 
 	gameFunctions.params.forces.forEach((force) => {
 		if(force.start === 2){
@@ -181,7 +186,10 @@ GameScene.seed2 = () => {
 		options = {x: 13, y:37}
 		GameScene.unit_setup.placeTank(options)	
 	}
+
 	
+	player = -1;
+	side = -1;	
 	
 	gameFunctions.params.forces.forEach((force) => {
 		if(force.start === 3){

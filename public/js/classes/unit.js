@@ -995,113 +995,116 @@ unselectHandler() {
 
 		// console.log(process)
 
-		let path = process.path
-		let pointer = process.pointer
-		
-		this.path = []
-		path.forEach((pos) => {
-			let p = {
-				x: pos.x,
-				y: pos.y
-			}
-			this.path.push(p)
-		})		
-		
-		
-		if(this.path.length > 0){
+		if(process.path && process.pointer){
+
+			let path = process.path
+			let pointer = process.pointer
 			
-			//SKIP PATH IF THE UNIT PLACEMENT OVERLAPS ANOTHER UNIT
-			let skip = false
-			let last_path_pos = 0
+			this.path = []
+			path.forEach((pos) => {
+				let p = {
+					x: pos.x,
+					y: pos.y
+				}
+				this.path.push(p)
+			})		
 			
-			//CHECK THROUGH THE PATH AND KEEP TRACK OF THE LAST SPACE THAT DOESN'T INTERSECT ANOTHER PLAYER
-			this.path.forEach((pos, i) => {
-				let check = false;				
-				gameFunctions.units.forEach((unit) => {
-					
-					if(unit.id !== this.id && unit.alive === true){
+			
+			if(this.path.length > 0){
+				
+				//SKIP PATH IF THE UNIT PLACEMENT OVERLAPS ANOTHER UNIT
+				let skip = false
+				let last_path_pos = 0
+				
+				//CHECK THROUGH THE PATH AND KEEP TRACK OF THE LAST SPACE THAT DOESN'T INTERSECT ANOTHER PLAYER
+				this.path.forEach((pos, i) => {
+					let check = false;				
+					gameFunctions.units.forEach((unit) => {
 						
-						this.sprite_ghost.x = pos.x * gameFunctions.tile_size;
-						this.sprite_ghost.y = pos.y * gameFunctions.tile_size;
+						if(unit.id !== this.id && unit.alive === true){
+							
+							this.sprite_ghost.x = pos.x * gameFunctions.tile_size;
+							this.sprite_ghost.y = pos.y * gameFunctions.tile_size;
 
-						let temp_check = false
+							let temp_check = false
 
-						temp_check = this.checkSpriteOverlap(unit.sprite_ghost, this.sprite_ghost)
-						if(temp_check === true){
-							check = temp_check
+							temp_check = this.checkSpriteOverlap(unit.sprite_ghost, this.sprite_ghost)
+							if(temp_check === true){
+								check = temp_check
+							}
+							
 						}
-						
-					}
 
+					})
+					
+					// 
+					if(check === false){
+						last_path_pos = i;
+					}
 				})
 				
-				// 
-				if(check === false){
-					last_path_pos = i;
+				// console.log(this.path.length, last_path_pos + 1)
+				
+				//UPDATE THE PATH IF IT'S LENGTH INTERSECTS ANOTHER UNIT
+				if(this.path.length >= last_path_pos + 1){
+					this.path = this.path.slice(0,last_path_pos + 1)
 				}
-			})
-			
-			// console.log(this.path.length, last_path_pos + 1)
-			
-			//UPDATE THE PATH IF IT'S LENGTH INTERSECTS ANOTHER UNIT
-			if(this.path.length >= last_path_pos + 1){
-				this.path = this.path.slice(0,last_path_pos + 1)
-			}
 
-			
-			//SKIP IF IN CHARGE MODE AND UNIT HAD ALREADY SHOT
-			if(this.shot === true && gameFunctions.mode === "charge"){
-				skip = true;
-				GameScene.showMessage("cannot charge, unit has shot")
-			}
-			
-			if(this.path.length === 0){
-				skip = true;
-			}
-		
-			
-			let on_unit = false;
-			//SKIP IF THE POINTER IS OVER THE SHOOTING UNITS, put here so it doesn't play the clear sound
-			if (this.sprite.getBounds().contains(pointer.x, pointer.y)) {
-				skip = true;
-				on_unit = true;
-			}
-		
-			if(skip === true && on_unit === false){
-				GameScene.sfx['clear'].play();				
-			}			
-			
-			// console.log("skip: ",skip,"path: ",this.path)
-			
-			//IF THE GHOST CLASHES WITH ANOTHER SPRITE OR GHOST, CANCEL THE MOVE
-			if(skip === true){
-				this.resetMove();
 				
-			}
-			else{
+				//SKIP IF IN CHARGE MODE AND UNIT HAD ALREADY SHOT
+				if(this.shot === true && gameFunctions.mode === "charge"){
+					skip = true;
+					GameScene.showMessage("cannot charge, unit has shot")
+				}
 				
-				//if there's any cohesion needed, check it, otherwise just draw path
-				if(this.cohesion > 0){
-					this.cohesionCheck()
-					GameScene.sfx['action'].play();
+				if(this.path.length === 0){
+					skip = true;
+				}
+			
+				
+				let on_unit = false;
+				//SKIP IF THE POINTER IS OVER THE SHOOTING UNITS, put here so it doesn't play the clear sound
+				if (this.sprite.getBounds().contains(pointer.x, pointer.y)) {
+					skip = true;
+					on_unit = true;
+				}
+			
+				if(skip === true && on_unit === false){
+					GameScene.sfx['clear'].play();				
+				}			
+				
+				// console.log("skip: ",skip,"path: ",this.path)
+				
+				//IF THE GHOST CLASHES WITH ANOTHER SPRITE OR GHOST, CANCEL THE MOVE
+				if(skip === true){
+					this.resetMove();
+					
 				}
 				else{
-
-					let colours = {
-						line_colour: 0x00cccc,
-						fill_colour: 0x2ECC40,
-						line_alpha: 0.75,
-						circle_alpha: 0.15,
-						fill_alpha: 0.15,
-						width: 5
-					}
-
-					this.drawPath(colours)
 					
-					GameScene.sfx['action'].play();
-				}
-				
-			}	
+					//if there's any cohesion needed, check it, otherwise just draw path
+					if(this.cohesion > 0){
+						this.cohesionCheck()
+						GameScene.sfx['action'].play();
+					}
+					else{
+
+						let colours = {
+							line_colour: 0x00cccc,
+							fill_colour: 0x2ECC40,
+							line_alpha: 0.75,
+							circle_alpha: 0.15,
+							fill_alpha: 0.15,
+							width: 5
+						}
+
+						this.drawPath(colours)
+						
+						GameScene.sfx['action'].play();
+					}
+					
+				}	
+			}
 		}
 	}
 	
@@ -1464,13 +1467,14 @@ unselectHandler() {
 		if(this.targets){
 
 			this.targets.forEach( async(target, i) => {
-				
-				GameScene.active_actions++;
 
-				await this.delay(2000 * i)
-				
 				let angle = Phaser.Math.Angle.BetweenPoints(this.sprite, target);
-				if(angle >= -1){
+				if(angle > -1){				
+
+					GameScene.active_actions++;
+
+					await this.delay(2000 * i)
+				
 					this.sprite.angle = Phaser.Math.RadToDeg(angle);
 					
 					if(this.sprite_ghost){
@@ -1490,6 +1494,14 @@ unselectHandler() {
 
 					GameScene.bullets.push(new bullet(options))
 					//BULLET DEATH KILLS THE GRAPHIC
+				}
+				else
+				{
+					console.log("--------------------------")					
+					console.log("Shooting angle is Zero")
+					console.log(this.sprite)
+					console.log(target)
+					console.log("--------------------------")
 				}
 			})
 			if(this.targets.length > 0){

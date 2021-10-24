@@ -708,16 +708,26 @@ GameUIScene.nextSide = () => {
 
 GameUIScene.advanceSide = () => {
 
+	let sides_array = []
+	gameFunctions.params.forces.forEach((force) => {
+		if(!sides_array.includes(force.side)){
+			sides_array.push(force.side)
+		}
+	})
+	//gameFunctions.params.max_sides
+	let sides = sides_array.length;
+
+
 	// CHANGE THE PARAMS SIDE IF THIS IS A LOCAL GAME
 	if(GameScene.online === false && gameFunctions.current_side !== -1){
 		gameFunctions.params.player_side += 1
-		if(gameFunctions.params.player_side >= gameFunctions.params.max_sides){
+		if(gameFunctions.params.player_side >= sides){
 			gameFunctions.params.player_side = 0
 		}		
 	}	
 
 	gameFunctions.current_side += 1
-	if(gameFunctions.current_side >= gameFunctions.params.max_sides){
+	if(gameFunctions.current_side >= sides){
 		gameFunctions.current_side = 0
 	}
 	
