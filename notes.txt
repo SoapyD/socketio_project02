@@ -31,6 +31,14 @@ SETUP
     -Also add in a function to automatically place units
 
 
+/////////////////////////////////////////
+SELECTION
+/////////////////////////////////////////
+
+-Create a means of selecting multiple units at the same times
+    -DONE -Add in a "mouse selection class" to handle the mouse selection process
+    -DONE -Change the selected_unit code so it can handle an array of selected units instead of just one
+    -Handle the differences if multiple units are selected at once
 
 
 /////////////////////////////////////////
@@ -79,11 +87,6 @@ THINGS TO DO (EVENTUALLY)
     -Jump packs - jump over terrain
     -agile - leave/pass combat zones without incurring damage
 
-
-
-/////////////////////////////////////////
-TESTING
-/////////////////////////////////////////
 
 
 

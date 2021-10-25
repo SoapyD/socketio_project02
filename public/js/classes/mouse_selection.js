@@ -1,6 +1,7 @@
 const mouse_selection = class {
 	constructor(options) {
         this.scene = options.scene
+        this.selected = [];
 
         this.selection = this.scene.add.rectangle(0, 0, 0, 0, 0x1d7196, 0.5)
 
@@ -68,13 +69,13 @@ const mouse_selection = class {
         }
 
         // use the new Rectangle to check for overlap
-        const selected = this.scene.physics.overlapRect(
+        this.selected = this.scene.physics.overlapRect(
             selectionRect.x,
             selectionRect.y,
             selectionRect.width,
             selectionRect.height
         )
-
+        
         // do something with selected
     }
 
@@ -86,6 +87,14 @@ const mouse_selection = class {
     {
         this.selection.width = 0
         this.selection.height = 0
+        // console.log(this.selected)
+
+        if(this.selected.length > 0){
+            this.selected.forEach((selection) => {
+                selection.gameObject.parent.selectUnit();
+                // console.log(selection.gameObject.parent)
+            })
+        }
     }
 
 }

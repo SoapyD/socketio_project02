@@ -256,7 +256,7 @@ GameUIScene.runSelectMode = (options) => {
 		GameScene.resetTempSprites();
 		GameUIScene.setAllWaitingHUD();
 
-		GameScene.selected_unit = undefined;
+		GameScene.selected_unit = [];
 		
 		//RESET ALL PLAYER ACTIONS
 		if(gameFunctions.units){
@@ -863,7 +863,7 @@ GameUIScene.advanceSide = () => {
 
 GameUIScene.sendReadyUp = () => {
 	if(GameScene.online === false){
-		GameUIScene.readyUp({player_id:gameFunctions.params.player_number})
+		GameUIScene.readyUp({parameters: {player_id:gameFunctions.params.player_number}})
 	}else{
 		let data = {
 			functionGroup: "socketFunctions",  

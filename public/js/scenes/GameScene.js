@@ -141,7 +141,7 @@ var GameScene = new Phaser.Class({
 
 		GameScene.active_actions = 0;
 		GameScene.bullets = [];
-		GameScene.selected_unit;
+		GameScene.selected_unit = [];
 		GameScene.left_click = false;
 		GameScene.left_click_state = 0;
 		GameScene.right_click = false;
@@ -438,210 +438,214 @@ var GameScene = new Phaser.Class({
 		GameScene.marker.setVisible(!GameScene.checkCollision(pointerTileX,pointerTileY));  
 		
 		
-		if(GameScene.selected_unit){
-		
-			// ██      ███████ ███████ ████████        ██████ ██      ██  ██████ ██   ██ 
-			// ██      ██      ██         ██          ██      ██      ██ ██      ██  ██  
-			// ██      █████   █████      ██    █████ ██      ██      ██ ██      █████   
-			// ██      ██      ██         ██          ██      ██      ██ ██      ██  ██  
-			// ███████ ███████ ██         ██           ██████ ███████ ██  ██████ ██   ██ 
+		if(GameScene.selected_unit.length > 0){
+			// let selected_unit = GameScene.selected_unit[0];
+			GameScene.selected_unit.forEach((selected_unit) => {
 
-			if(GameScene.left_click === true && GameUIScene.mode_check_state === 0){
+				// ██      ███████ ███████ ████████        ██████ ██      ██  ██████ ██   ██ 
+				// ██      ██      ██         ██          ██      ██      ██ ██      ██  ██  
+				// ██      █████   █████      ██    █████ ██      ██      ██ ██      █████   
+				// ██      ██      ██         ██          ██      ██      ██ ██      ██  ██  
+				// ███████ ███████ ██         ██           ██████ ███████ ██  ██████ ██   ██ 
 
-				switch(gameFunctions.mode) {
-					case "move":
-						
-						if(GameScene.online === false){
-							GameScene.selected_unit.findPath({pointer: worldPoint});
-						}else{
+				if(GameScene.left_click === true && GameUIScene.mode_check_state === 0){
 
-							let data = {
-								functionGroup: "socketFunctions",  
-								function: "messageAll",
-								room_name: gameFunctions.params.room_name,
-								returnFunctionGroup: "connFunctions",
-								returnFunction: "runUnitFunction", //test
-								returnParameters: {
-									id: GameScene.selected_unit.id, 
-									function: "findPath",
-									function_parameter: {pointer: worldPoint}
-								},
-								message: "set move"
+					switch(gameFunctions.mode) {
+						case "move":
+							
+							if(GameScene.online === false){
+								selected_unit.findPath({pointer: worldPoint});
+							}else{
+
+								let data = {
+									functionGroup: "socketFunctions",  
+									function: "messageAll",
+									room_name: gameFunctions.params.room_name,
+									returnFunctionGroup: "connFunctions",
+									returnFunction: "runUnitFunction", //test
+									returnParameters: {
+										id: selected_unit.id, 
+										function: "findPath",
+										function_parameter: {pointer: worldPoint}
+									},
+									message: "set move"
+								}
+								connFunctions.messageServer(data)
 							}
-							connFunctions.messageServer(data)
-						}
-					break;
-					case "shoot":
+						break;
+						case "shoot":
 
-						if(GameScene.online === false){
-							GameScene.selected_unit.findTarget({pointer: worldPoint});
-						}else{
+							if(GameScene.online === false){
+								selected_unit.findTarget({pointer: worldPoint});
+							}else{
 
-							let data = {
-								functionGroup: "socketFunctions",  
-								function: "messageAll",
-								room_name: gameFunctions.params.room_name,
-								returnFunctionGroup: "connFunctions",
-								returnFunction: "runUnitFunction", //test
-								returnParameters: {
-									id: GameScene.selected_unit.id, 
-									function: "findTarget",
-									function_parameter: {pointer: worldPoint}
-								},
-								message: "set shot target"
+								let data = {
+									functionGroup: "socketFunctions",  
+									function: "messageAll",
+									room_name: gameFunctions.params.room_name,
+									returnFunctionGroup: "connFunctions",
+									returnFunction: "runUnitFunction", //test
+									returnParameters: {
+										id: selected_unit.id, 
+										function: "findTarget",
+										function_parameter: {pointer: worldPoint}
+									},
+									message: "set shot target"
+								}
+								connFunctions.messageServer(data)
 							}
-							connFunctions.messageServer(data)
-						}
-					break;
-					case "charge":
+						break;
+						case "charge":
 
-						if(GameScene.online === false){
-							GameScene.selected_unit.findPath({pointer: worldPoint});
-						}else{
+							if(GameScene.online === false){
+								selected_unit.findPath({pointer: worldPoint});
+							}else{
 
-							let data = {
-								functionGroup: "socketFunctions",  
-								function: "messageAll",
-								room_name: gameFunctions.params.room_name,
-								returnFunctionGroup: "connFunctions",
-								returnFunction: "runUnitFunction", //test
-								returnParameters: {
-									id: GameScene.selected_unit.id, 
-									function: "findPath",
-									function_parameter: {pointer: worldPoint}
-								},
-								message: "set charge"
+								let data = {
+									functionGroup: "socketFunctions",  
+									function: "messageAll",
+									room_name: gameFunctions.params.room_name,
+									returnFunctionGroup: "connFunctions",
+									returnFunction: "runUnitFunction", //test
+									returnParameters: {
+										id: selected_unit.id, 
+										function: "findPath",
+										function_parameter: {pointer: worldPoint}
+									},
+									message: "set charge"
+								}
+								connFunctions.messageServer(data)
+							}						
+						break;		
+						case "fight":
+
+							if(GameScene.online === false){
+								selected_unit.findFightTarget({pointer: worldPoint});
+							}else{
+
+								let data = {
+									functionGroup: "socketFunctions",  
+									function: "messageAll",
+									room_name: gameFunctions.params.room_name,
+									returnFunctionGroup: "connFunctions",
+									returnFunction: "runUnitFunction", //test
+									returnParameters: {
+										id: selected_unit.id, 
+										function: "findFightTarget",
+										function_parameter: {pointer: worldPoint}
+									},
+									message: "set fight target"
+								}
+								connFunctions.messageServer(data)
 							}
-							connFunctions.messageServer(data)
-						}						
-					break;		
-					case "fight":
-
-						if(GameScene.online === false){
-							GameScene.selected_unit.findFightTarget({pointer: worldPoint});
-						}else{
-
-							let data = {
-								functionGroup: "socketFunctions",  
-								function: "messageAll",
-								room_name: gameFunctions.params.room_name,
-								returnFunctionGroup: "connFunctions",
-								returnFunction: "runUnitFunction", //test
-								returnParameters: {
-									id: GameScene.selected_unit.id, 
-									function: "findFightTarget",
-									function_parameter: {pointer: worldPoint}
-								},
-								message: "set fight target"
-							}
-							connFunctions.messageServer(data)
-						}
-						
-					break;					
-					default:
-					// code block
-				}		
-			}
-
-			// ██████  ██  ██████  ██   ██ ████████        ██████ ██      ██  ██████ ██   ██ 
-			// ██   ██ ██ ██       ██   ██    ██          ██      ██      ██ ██      ██  ██  
-			// ██████  ██ ██   ███ ███████    ██    █████ ██      ██      ██ ██      █████   
-			// ██   ██ ██ ██    ██ ██   ██    ██          ██      ██      ██ ██      ██  ██  
-			// ██   ██ ██  ██████  ██   ██    ██           ██████ ███████ ██  ██████ ██   ██ 			
-			
-			if(GameScene.right_click === true && GameUIScene.mode_check_state === 0){
-				
-				GameScene.sfx['clear'].play();
-				switch(gameFunctions.mode) {
-					case "move":
-
-						if(GameScene.online === false){
-							GameScene.selected_unit.resetMove();
-						}else{
-
-							let data = {
-								functionGroup: "socketFunctions",  
-								function: "messageAll",
-								room_name: gameFunctions.params.room_name,
-								returnFunctionGroup: "connFunctions",
-								returnFunction: "runUnitFunction", //test
-								returnParameters: {
-									id: GameScene.selected_unit.id, 
-									function: "resetMove",
-								},
-								message: "reset path"
-							}
-							connFunctions.messageServer(data)
-						}
-						
-					break;
-					case "shoot":
-
-						if(GameScene.online === false){
-							GameScene.selected_unit.removeTarget();
-						}else{
-
-							let data = {
-								functionGroup: "socketFunctions",  
-								function: "messageAll",
-								room_name: gameFunctions.params.room_name,
-								returnFunctionGroup: "connFunctions",
-								returnFunction: "runUnitFunction", //test
-								returnParameters: {
-									id: GameScene.selected_unit.id, 
-									function: "removeTarget",
-								},
-								message: "remove target"
-							}
-							connFunctions.messageServer(data)
-						}						
-					break;
-					case "charge":
-
-						if(GameScene.online === false){
-							GameScene.selected_unit.resetMove();
-						}else{
-
-							let data = {
-								functionGroup: "socketFunctions",  
-								function: "messageAll",
-								room_name: gameFunctions.params.room_name,
-								returnFunctionGroup: "connFunctions",
-								returnFunction: "runUnitFunction", //test
-								returnParameters: {
-									id: GameScene.selected_unit.id, 
-									function: "resetMove",
-								},
-								message: "reset path"
-							}
-							connFunctions.messageServer(data)
-						}						
-					break;
-					case "fight":
-
-						if(GameScene.online === false){
-							GameScene.selected_unit.removeFightTarget();
-						}else{
-
-							let data = {
-								functionGroup: "socketFunctions",  
-								function: "messageAll",
-								room_name: gameFunctions.params.room_name,
-								returnFunctionGroup: "connFunctions",
-								returnFunction: "runUnitFunction", //test
-								returnParameters: {
-									id: GameScene.selected_unit.id, 
-									function: "removeFightTarget",
-								},
-								message: "remove fight target"
-							}
-							connFunctions.messageServer(data)
-						}
-					break;	
-					default:
-					// code block
+							
+						break;					
+						default:
+						// code block
+					}		
 				}
-			}
+
+				// ██████  ██  ██████  ██   ██ ████████        ██████ ██      ██  ██████ ██   ██ 
+				// ██   ██ ██ ██       ██   ██    ██          ██      ██      ██ ██      ██  ██  
+				// ██████  ██ ██   ███ ███████    ██    █████ ██      ██      ██ ██      █████   
+				// ██   ██ ██ ██    ██ ██   ██    ██          ██      ██      ██ ██      ██  ██  
+				// ██   ██ ██  ██████  ██   ██    ██           ██████ ███████ ██  ██████ ██   ██ 			
+				
+				if(GameScene.right_click === true && GameUIScene.mode_check_state === 0){
+					
+					GameScene.sfx['clear'].play();
+					switch(gameFunctions.mode) {
+						case "move":
+
+							if(GameScene.online === false){
+								selected_unit.resetMove();
+							}else{
+
+								let data = {
+									functionGroup: "socketFunctions",  
+									function: "messageAll",
+									room_name: gameFunctions.params.room_name,
+									returnFunctionGroup: "connFunctions",
+									returnFunction: "runUnitFunction", //test
+									returnParameters: {
+										id: selected_unit.id, 
+										function: "resetMove",
+									},
+									message: "reset path"
+								}
+								connFunctions.messageServer(data)
+							}
+							
+						break;
+						case "shoot":
+
+							if(GameScene.online === false){
+								selected_unit.removeTarget();
+							}else{
+
+								let data = {
+									functionGroup: "socketFunctions",  
+									function: "messageAll",
+									room_name: gameFunctions.params.room_name,
+									returnFunctionGroup: "connFunctions",
+									returnFunction: "runUnitFunction", //test
+									returnParameters: {
+										id: selected_unit.id, 
+										function: "removeTarget",
+									},
+									message: "remove target"
+								}
+								connFunctions.messageServer(data)
+							}						
+						break;
+						case "charge":
+
+							if(GameScene.online === false){
+								selected_unit.resetMove();
+							}else{
+
+								let data = {
+									functionGroup: "socketFunctions",  
+									function: "messageAll",
+									room_name: gameFunctions.params.room_name,
+									returnFunctionGroup: "connFunctions",
+									returnFunction: "runUnitFunction", //test
+									returnParameters: {
+										id: selected_unit.id, 
+										function: "resetMove",
+									},
+									message: "reset path"
+								}
+								connFunctions.messageServer(data)
+							}						
+						break;
+						case "fight":
+
+							if(GameScene.online === false){
+								selected_unit.removeFightTarget();
+							}else{
+
+								let data = {
+									functionGroup: "socketFunctions",  
+									function: "messageAll",
+									room_name: gameFunctions.params.room_name,
+									returnFunctionGroup: "connFunctions",
+									returnFunction: "runUnitFunction", //test
+									returnParameters: {
+										id: selected_unit.id, 
+										function: "removeFightTarget",
+									},
+									message: "remove fight target"
+								}
+								connFunctions.messageServer(data)
+							}
+						break;	
+						default:
+						// code block
+					}
+				}
+
+			})
 			
 		}
 

@@ -154,64 +154,77 @@ const unit = class {
 // 	     # #       #       #       #          #    #     # #   #         # 
 // #     # #       #       #       #     #    #    #     # #    #  #     # 
 //  #####  ####### ####### #######  #####     #    ####### #     #  #####  	
-	
+
+selectUnit(single_unit=false) {
+
+	let skip = false
+	if(GameScene.online === true){
+		if(this.player !== gameFunctions.params.player_number){
+			skip = true;
+		}
+	}
+
+	if (this.side === gameFunctions.current_side && skip === false){
+		//TURN OLD SELECTED PLAYER MARKER, WHITE
+
+		if(GameScene.selected_unit){
+
+			GameScene.selected_unit.forEach((selected_unit) => {
+				selected_unit.resetColours();
+				if(gameFunctions.mode === "fight"){
+					selected_unit.resetFightRadius();
+				}
+				if(single_unit === true){
+					selected_unit.unselectHandler();
+				}
+			})
+		}
+
+		if(single_unit === true){
+			GameScene.selected_unit = []
+		}
+		GameScene.selected_unit.push(this);
+		
+		GameScene.selected_unit.forEach((selected_unit) => {
+			selected_unit.drawFlash(false)
+		})
+
+		if(gameFunctions.mode === 'move' || gameFunctions.mode === 'charge'){
+			this.setupDrawLiveTiles();
+
+		}
+		
+		
+		//RESET GHOST & COHESION IF THE GHOST SPRITE ISN'T SELECTED
+		if(!this.is_ghost){
+			
+			this.resetGhost();
+		}
+		
+		if(gameFunctions.mode === "fight"){
+			this.drawFightRadius()
+		}
+	}
+}
+
+
+//THIS CODE IS RUN IF THE UNIT IS SELECTED DIRECTLY INSTEAD OF SELECTED EN-MASSE
 selectHander (pointer) {
 
 	if (pointer.leftButtonReleased())
 	{
-		
-		let skip = false
-		if(GameScene.online === true){
-			if(this.parent.player !== gameFunctions.params.player_number){
-				skip = true;
-			}
-		}
-
-		if (this.parent.side === gameFunctions.current_side && skip === false){
-			//TURN OLD SELECTED PLAYER MARKER, WHITE
-
-			if(GameScene.selected_unit){
-				GameScene.selected_unit.resetColours();
-				if(gameFunctions.mode === "fight"){
-					GameScene.selected_unit.resetFightRadius();
-				}
-				
-				GameScene.selected_unit.unselectHandler();
-			}
-			GameScene.selected_unit = this.parent;
-			GameScene.selected_unit.drawFlash(false)
-			
-			if(gameFunctions.mode === 'move' || gameFunctions.mode === 'charge'){
-				// console.log("start")
-				this.parent.setupDrawLiveTiles();
-
-			}
-			
-			
-			//RESET GHOST & COHESION IF THE GHOST SPRITE ISN'T SELECTED
-			if(!this.is_ghost){
-				
-				this.parent.resetGhost();
-			}
-			
-			if(gameFunctions.mode === "fight"){
-				this.parent.drawFightRadius()
-			}
-			
-			GameScene.sfx['select'].play();
-			
-			GameScene.left_click = false;
-		}
-
+		this.parent.selectUnit(true);
+		GameScene.sfx['select'].play();		
+		GameScene.left_click = false;
 	}
 }
 
 
 unselectHandler() {
 	
-	// let old_selected = GameScene.selected_unit;
-	GameScene.selected_unit.drawFlash(true)
-	GameScene.selected_unit = undefined;
+	// GameScene.selected_unit.drawFlash(true)
+	// GameScene.selected_unit = undefined;
+	this.drawFlash(true)
 	
 	if(gameFunctions.mode === "move" || gameFunctions.mode === "charge"){
 		if(this.cohesion > 0){
@@ -1167,14 +1180,14 @@ unselectHandler() {
 					colours.fill_alpha = 0.5;
 				}
 
-				if(unit.id !== this.id || !GameScene.selected_unit){
+				if(unit.id !== this.id || GameScene.selected_unit.length === 0){
 					colours.circle_alpha = 0.4,
 					colours.fill_alpha = 0.35,
 					colours.line_colour = 0x808080; //grey
 					colours.line_alpha = 0.35;
 				}
 				
-				if(!GameScene.selected_unit){
+				if(GameScene.selected_unit.length === 0){
 					colours.fill_alpha = 0.15;
 					colours.line_alpha = 0.15;
 				}
