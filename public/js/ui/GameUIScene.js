@@ -91,35 +91,6 @@ var GameUIScene = new Phaser.Class({
 		}
 		
 
-		// #     # ######  ######     #    ####### #######       ####### ####### #     # ####### 
-		// #     # #     # #     #   # #      #    #                #    #        #   #     #    
-		// #     # #     # #     #  #   #     #    #                #    #         # #      #    
-		// #     # ######  #     # #     #    #    #####   #####    #    #####      #       #    
-		// #     # #       #     # #######    #    #                #    #         # #      #    
-		// #     # #       #     # #     #    #    #                #    #        #   #     #    
-		//  #####  #       ######  #     #    #    #######          #    ####### #     #    #    		
-		
-
-		/*
-		let text = "Current Side: "+gameFunctions.current_side+'\n'
-		
-		if(GameScene.selected_unit){
-			text += "Selected Unit: "+GameScene.selected_unit.id+'\n'	
-		}
-
-		text += "Phase: "+gameFunctions.mode+'\n'
-
-		text += "Mode State: "+gameFunctions.mode_state+'\n'		
-		text += "Check: "+GameUIScene.mode_check_state+'\n'
-		
-		
-		if(GameScene.active_actions){
-			text += "Active Actions: "+GameScene.active_actions+'\n'			
-		}
-
-		GameUIScene.text.setText(text)		
-
-		*/
     }
 });
 

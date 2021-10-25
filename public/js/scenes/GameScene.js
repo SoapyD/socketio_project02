@@ -403,6 +403,8 @@ var GameScene = new Phaser.Class({
 			})			
 		}
 		
+		
+		// GameScene.mouse_selection = new mouse_selection({scene: GameScene.scene});	
     },
 
     update: function (time, delta)
