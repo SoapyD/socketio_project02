@@ -209,11 +209,11 @@ exports.updateRoomConfig = (room, data) => {
 // #        #  #    ## #     #       #     # #     #    #    #     # 
 // #       ### #     # ######        ######  #     #    #    #     # 
 
-exports.findData = async(find_list) => {
+exports.findData = async(list) => {
 
     let promises = [];
 
-    find_list.forEach((list) => {
+    // find_list.forEach((list) => {
 
         if (list.params)
         {
@@ -224,7 +224,7 @@ exports.findData = async(find_list) => {
         else{
             promises.push(models[list.model][list.search_type]())
         }
-    })
+    // })
 
     return Promise.all(promises)
     .catch((err) => {
@@ -240,7 +240,7 @@ exports.findData = async(find_list) => {
 // #     # #    #  #       #     #    #    #             #    #  #       #     # #     # #    #  #     # 
 //  #####  #     # ####### #     #    #    #######       #     # #######  #####  ####### #     # ######  
 
-exports.createData = async(list, search_type="findOrCreate") => {
+exports.createData = async(list, search_type="create") => {
 
     let promises = [];
 

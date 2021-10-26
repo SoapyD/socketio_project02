@@ -13,6 +13,10 @@ const armySchema = new mongoose.Schema({
 
 	,cost: Number
 	
+	// ,squads: [{
+
+	// }]
+
 	,units: [{
 		
 		id: Number

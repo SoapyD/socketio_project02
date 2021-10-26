@@ -1,73 +1,71 @@
 
-const Army = require("../models/army");
+const models = require("../models");
+const utils = require("../utils");
 
-
-exports.getAll = (req,res) => {
+exports.getAll = async(req,res) => {
 	//get all products from DB
-	res.render("army/index")
-	// Product.find({}, function(err, products){
-	// 	if(err){
-	// 		console.log("Couldn't run 'find' function in product route");
-	// 		console.log(err);
-	// 	} else{
-	// 		res.render("products/index", {products:products});
-	// 	}
-	// });	
+	let items = await utils.queries.findData({
+		model: "Army"
+		,search_type: "find"
+		// ,params: [
+		// 	{name: "test"}
+		// ]
+	})
+
+	res.render("army/index",{armies: items[0]})
 };
 
-// exports.getSingle = (req, res) => { //middleware.isLoggedIn, 
-// 	//find product with provided ID
+exports.getSingle = async(req, res) => {
 
-// 	Product.findById(req.params.id).exec(function(err, product){
-// 		if(err){
-// 			console.log("Couldn't run 'find' function");
-// 		} else{
-// 			res.render("products/show", {product:product});
-// 		}
-// 	});		
-// };
+	let id = req.params.id;
 
-// exports.getEdit = (req,res) => { //, middleware.isCampGroundOwnership
+	let item = await utils.queries.findData({
+		model: "Army"
+		,search_type: "findOne"
+		,params: [
+			{_id: id}
+		]
+	})
 
-// 	Product.findById(req.params.id).exec(function(err, product){
-// 		if(err){
-// 			console.log("Couldn't run 'find' function");
-// 		} else{
-// 			res.render("products/edit", {product:product});
-// 		}
-// 	});		
-// };
+	res.render("army/show",{army: item[0]})	
+};
 
-// exports.getFormCreate = (req,res) => { //middleware.isLoggedIn, 
-// 	res.render("products/new");
-// };
+exports.getEdit = async(req,res) => {
 
-// exports.create = (req,res) => { //, middleware.isLoggedIn
+	let id = req.params.id;
+
+	let item = await utils.queries.findData({
+		model: "Army"
+		,search_type: "findOne"
+		,params: [
+			{_id: id}
+		]
+	})
+
+	res.render("army/edit", {army:item[0]});	
+};
+
+exports.getFormCreate = (req,res) => { 
+	res.render("army/new");
+};
+
+exports.create = async(req,res) => {
 	
-// 	// let author = {
-// 	// 	id: req.user._id,
-// 	// 	username: req.user.username
-// 	// }
-// 	let author = {
-// 		id: "5ef4d0322ad3f50b9b181ecA", //5ef4d0322ad3f50b9b181ec3
-// 		username: "tom_bombchild@hotmail.com"
-// 	}	
+	// let author = {
+	// 	id: req.user._id,
+	// 	username: req.user.username
+	// }
 	
-// 	Product.create ({
-// 		name: req.body.name,
-// 		image: req.body.image,
-// 		description: req.body.description,
-// 		cost: req.body.cost,
-// 		author: author
-// 	}, function(err, product){
-// 		if(err){
-// 			console.log("Couldn't add product");
-// 			console.log(err);
-// 		} else{
-// 			res.redirect("/products");
-// 		}
-// 	});	
-// };
+	let item = await utils.queries.createData({
+		model: "Army"
+		,params: [
+			req.body.params
+		]
+	})
+
+	res.redirect("/army/"+ item[0]._id)  	
+
+};
 
 // exports.update = (req,res) => { //, middleware.isCampGroundOwnership
 	
