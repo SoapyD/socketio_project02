@@ -144,12 +144,39 @@
 
         //CREATE MARKUP SCRIPT
         let markup = `
-        <li class="ui-state-default squad tr-grab" id="squad_`+number+`">      
+        <li class="ui-state-default squad tr-grab  no-padding" id="squad_`+number+`">      
 
             <div class="box">
-                <span>`+text_number+`</span>
+                <div>
+                    <span left-button>`+text_number+`</span>
+                </div>
 
-                <input class="form-control" type="text" name="[params][squads][][name]" placeholder="name" >
+                <div class="container">
+	                <div class="row">
+		
+                        <div class="col-md-4 no-padding">
+                            <div class="form-group">
+                                <p>Name:</p>
+                                <input class="form-control test" type="text" name="[params][squads][][name]">
+                            </div> 
+                        </div>  
+
+                        <div class="col-md-8 no-padding">
+                            <div class="form-group">                        
+                                <p>Name:</p>
+                                <input class="form-control" type="text" name="[params][squads][][name]">
+                            </div>        
+                            
+                        </div>  
+
+                        <div class="col-md-1 no-padding">
+                            <div class="form-group">     
+                                <p>Squad Size:</p>
+                                <input class="form-control" type="text" name="[params][squads][][name]">  
+                            </div>                         
+                        </div>              
+                    </div>
+                </div>
             </div>
 
             <% //if(user.id === report.owner) { %> 
@@ -173,6 +200,8 @@
         //GET ADD BUTTON FOR squad AND ADD CLICK FUNCTION TO IT
         let squad_button = $("#squad_"+number).children('.add-upgrade')
         squad_button.click(add_upgrade_function);
+
+        console.log($("#squad_"+number))
 
         let delete_squad_button = $("#squad_"+number).children('.delete-squad')
         delete_squad_button.click(delete_parent_function);
@@ -265,6 +294,7 @@
 
 
 		function delete_parent_function(){
+            
 		let parent = $(this).parent();
 		parent.remove()
 		// updateIndex()

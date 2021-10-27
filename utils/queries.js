@@ -185,6 +185,22 @@ exports.updateRoomConfig = (room, data) => {
 	return room.save()
 }
 
+//SQUAD
+
+exports.getSquads = (params) => {
+    return models.Squad.find(params)
+    .populate({path: 'unit'})
+    .populate({path: 'gun'})
+    .populate({path: 'melee'})
+    .populate({path: 'armour'})
+    .populate({
+        path: "available_upgrades",
+        populate: {
+            path: 'upgrade'     
+        }
+    })      
+}
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -216,9 +232,11 @@ exports.findData = async(list) => {
 
         if (list.params)
         {
-            list.params.forEach((item) => {
-                promises.push(models[list.model][list.search_type](item))
-            })
+            if(!list.populate){
+                list.params.forEach((item) => {
+                    promises.push(models[list.model][list.search_type](item))
+                })
+            }
         }
         else{
             promises.push(models[list.model][list.search_type]())

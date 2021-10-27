@@ -3,8 +3,6 @@ const mongoose = require("mongoose");
 
 const squadSchema = new mongoose.Schema({
 	name: String
-	,cost: Number
-
 	,min_size: Number
 	,max_size: Number
 	

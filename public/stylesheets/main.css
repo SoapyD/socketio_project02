@@ -137,7 +137,8 @@ canvas {
 	background-repeat: no-repeat;
 }
 .container{
-	padding: 0;	
+	padding: 0;
+	width: 95%;
 }
 
 a { 
@@ -232,4 +233,12 @@ a:focus, a:hover {
 	background: #b5e1ee;
 	border: 1px solid #62bfdb;
 	width: 32.5%;
+}
+
+
+
+.test {
+	min-width: 100%;
+	max-width: 100%;
+	box-sizing: border-box;
 }

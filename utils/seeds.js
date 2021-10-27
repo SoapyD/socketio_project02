@@ -313,17 +313,11 @@ exports.seedDB = async() => {
         upgrade_array.push(upgrade._id)
     })
 
-
-    let min_size = 5;
-    let cost = min_size * (unit[0].cost + gun[0].cost + armour[0].cost + melee[0].cost);
-
-
     list = {
         model: "Squad"
         ,params: [
            {
                 name: "tactical squad",
-                cost: cost,
                 min_size: 5,
                 max_size: 10,
                 unit: unit[0]._id,
@@ -334,9 +328,10 @@ exports.seedDB = async() => {
             },
         ]
     }
-    await queries.createData(list);    
+    await queries.createData(list);      
 
-
+    // let params = {}
+    // let info  = await queries.getSquads(params)
 
 
     console.log("Seeding Complete")
