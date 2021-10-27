@@ -23,7 +23,7 @@ const squadSchema = new mongoose.Schema({
 		ref: "Armour"
 	}
 
-	,available_upgrades: [
+	,upgrades: [
 		{
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "Upgrade"

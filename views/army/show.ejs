@@ -154,27 +154,40 @@
                 <div class="container">
 	                <div class="row">
 		
-                        <div class="col-md-4 no-padding">
+                        <div class="col-md-3 no-padding">
                             <div class="form-group">
                                 <p>Name:</p>
-                                <input class="form-control test" type="text" name="[params][squads][][name]">
+                                <input class="form-control" type="text" name="[params][squads][][input_name]">
                             </div> 
                         </div>  
 
-                        <div class="col-md-8 no-padding">
+                        <div class="col-md-5 no-padding">
                             <div class="form-group">                        
-                                <p>Name:</p>
-                                <input class="form-control" type="text" name="[params][squads][][name]">
+                                <p>Type:</p>
+                                <select class="form-control" name="[params][squads][][name]">
+                                    <option value=""></option>
+                                    <% squads.forEach((squad) => { %>
+                                        <option value="<%= squad._id %>"><%= squad.name %></option>
+                                    <% }) %>
+                                </select>                                
                             </div>        
                             
                         </div>  
 
-                        <div class="col-md-1 no-padding">
+                        <div class="col-md-2 no-padding">
                             <div class="form-group">     
                                 <p>Squad Size:</p>
-                                <input class="form-control" type="text" name="[params][squads][][name]">  
+                                <input class="form-control" type="number" min="5" max="10"  name="[params][squads][][size]">  
                             </div>                         
-                        </div>              
+                        </div>    
+                        
+                        <div class="col-md-2 no-padding">
+                            <div class="form-group">     
+                                <p>Squad Cost:</p>
+                                <input class="form-control" type="text" name="[params][squads][][cost]" disabled>  
+                            </div>                         
+                        </div>                            
+                        
                     </div>
                 </div>
             </div>
@@ -228,12 +241,15 @@
 
 		let parent = $(this).parent();
 
-		add_upgrade(parent)
+        //CHECK TO SEE A SQUAD IS SELECTED
+        let selected = parent.find("[name='[params][squads][][name]'] option:selected").val();
+        if(selected){
+            add_upgrade(parent, selected)
+        }
 
-		}
+	}
 
-		function add_upgrade(parent){
-
+	function add_upgrade(parent, selected){
 
 		let parent_span = $(parent[0]).find("span")[0].innerText
 		let text_number = 'Upgrade '+(parent.children().find('.upgrade').length + 1)
@@ -246,7 +262,18 @@
 			<div class="box">
 				<span>`+text_number+`</span>
 
-				<input class="form-control" type="text" name="[params][squads][][upgrades][][name]" placeholder="name" >
+                <select class="form-control" name="[params][squads][][upgrades][]">
+                    <option value=""></option>
+
+                    <% squads.forEach((squad) => { %>
+                        <% if(squad.upgrades) { %>
+                            <% squad.upgrades.forEach((upgrade) => { %>
+                                <option value="<%= upgrade._id %>"><%= upgrade.name %></option>
+                            <% }) %>
+                        <% } %>
+			        <% }) %>
+
+                </select>   
 
 			</div>
 
@@ -289,11 +316,11 @@
 // #     #  #  #     # #     # 
 // #     # ###  #####   #####  
 
-		// ADD THE "ADD squad" FUNCTION TO ANYTHING WITH THE ADD-squad CLASS
-		$(".add-squad").click(add_squad_function);	
+	// ADD THE "ADD squad" FUNCTION TO ANYTHING WITH THE ADD-squad CLASS
+	$(".add-squad").click(add_squad_function);	
 
 
-		function delete_parent_function(){
+	function delete_parent_function(){
             
 		let parent = $(this).parent();
 		parent.remove()

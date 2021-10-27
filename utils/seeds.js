@@ -324,7 +324,7 @@ exports.seedDB = async() => {
                 gun: gun[0]._id,
                 melee: melee[0]._id,
                 armour: armour[0]._id,
-                available_upgrades: upgrade_array,
+                upgrades: upgrade_array,
             },
         ]
     }

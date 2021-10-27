@@ -194,7 +194,7 @@ exports.getSquads = (params) => {
     .populate({path: 'melee'})
     .populate({path: 'armour'})
     .populate({
-        path: "available_upgrades",
+        path: "upgrades",
         populate: {
             path: 'upgrade'     
         }

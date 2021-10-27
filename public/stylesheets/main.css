@@ -227,6 +227,7 @@ a:focus, a:hover {
 	background: #b6e19f;
 	border: 2px solid #7ac952;
 	width: 100%;
+	padding: 2px;
 }
 
 .upgrade {
@@ -241,4 +242,9 @@ a:focus, a:hover {
 	min-width: 100%;
 	max-width: 100%;
 	box-sizing: border-box;
+}
+
+
+.form-group {
+	padding: 2px;
 }
