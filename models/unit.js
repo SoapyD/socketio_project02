@@ -3,8 +3,9 @@ const mongoose = require("mongoose");
 
 const unitSchema = new mongoose.Schema({
 	name: String
+	,cost: Number
+
 	,spritesheet: String
-	
 	,sprite_offset: Number
 	,size: Number
 	,cohesion: Number

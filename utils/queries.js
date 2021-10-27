@@ -1,7 +1,6 @@
 const models = require("../models");
 const Room = require("../models/room");
 
-
 exports.findRoom = (id) => {
     try{
         return Room.findById(id)
@@ -311,6 +310,29 @@ exports.destroyData = async(list) => {
 
 
 
+
+// ######  ####### #     # ####### #     # #######       ######     #    #######    #    
+// #     # #       ##   ## #     # #     # #             #     #   # #      #      # #   
+// #     # #       # # # # #     # #     # #             #     #  #   #     #     #   #  
+// ######  #####   #  #  # #     # #     # #####   ##### #     # #     #    #    #     # 
+// #   #   #       #     # #     #  #   #  #             #     # #######    #    ####### 
+// #    #  #       #     # #     #   # #   #             #     # #     #    #    #     # 
+// #     # ####### #     # #######    #    #######       ######  #     #    #    #     # 
+                                                                                      
+
+exports.removeData = async(list) => {
+
+    let promises = [];
+
+        list.forEach((item) => {
+            promises.push(models[item.model].remove({}))
+        })
+
+    return Promise.all(promises)
+    .catch((err) => {
+        console.log(err)
+    })      
+}
 
 
 

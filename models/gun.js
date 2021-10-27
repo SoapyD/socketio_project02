@@ -2,10 +2,12 @@ const mongoose = require("mongoose");
 
 
 const gunSchema = new mongoose.Schema({
-	shoot_name: String
-	,shoot_range: Number
-	,shoot_damage: Number
-	,shoot_ap: Number
+	name: String
+	,cost: Number
+	
+	,range: Number
+	,damage: Number
+	,ap: Number
 	,max_targets: Number
 	,blast_spritesheet: String
 	,blast_radius: Number

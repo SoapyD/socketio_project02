@@ -79,21 +79,21 @@
 
 
 <!-- CONTAINER TO CONTAINS THE VARIABLE, NESTED FORM -->
-<div class="container report-builder 
+<div class="container army-builder 
     <% if(1 !== 1) { //if(user.id !== report.owner) { %> 
     disable-form
     <% } %>">
 
-    <form action="/army/<%= army._id %>/join?_method=PUT" method="POST"
+    <form action="/army/<%= army._id %>?_method=PUT" method="POST"
         onsubmit="return confirm('Are you sure you want to save changes to this army?');">
 
         <% //if(user.id === report.owner) { %> 
-            <button class="btn btn-primary add-section" type="button">
+            <button class="btn btn-primary add-squad" type="button">
                 Add Squad
             </button>	
         <% //} %>
 
-        <ul class="sortable sortable-sections"></ul>
+        <ul class="sortable sortable-squads"></ul>
 
         </ul>    
 
@@ -136,52 +136,52 @@
 // #     # #     # #     #       #     # #       #     #    #     #  #     # #    ## 
 // #     # ######  ######         #####  #######  #####     #    ### ####### #     # 
 
-    function add_section_function(){
+    function add_squad_function(){
 
         //GENERATE A UNIQUE ID
-        let number = $(".section").length + 1
+        let number = $(".squad").length + 1
         let text_number = 'Squad '+number 
 
         //CREATE MARKUP SCRIPT
         let markup = `
-        <li class="ui-state-default section tr-grab" id="section_`+number+`">      
+        <li class="ui-state-default squad tr-grab" id="squad_`+number+`">      
 
             <div class="box">
                 <span>`+text_number+`</span>
 
-                <input class="form-control" type="text" name="Report[`+text_number+`][params][name]" placeholder="name" >
+                <input class="form-control" type="text" name="[params][squads][][name]" placeholder="name" >
             </div>
 
             <% //if(user.id === report.owner) { %> 
-                <button class="btn btn-primary add-subsection" type="button">
-                    Add Troop
+                <button class="btn btn-primary add-upgrade" type="button">
+                    Add Upgrade
                 </button>	  
-                <button class="btn btn-primary delete-section right-button" type="button">
+                <button class="btn btn-primary delete-squad right-button" type="button">
                     Delete Squad
                 </button>	                
             <% //} %>
 
-            <ul class="sortable sortable-subsections">
+            <ul class="sortable sortable-upgrades">
 
             </ul>
         </li>
         `
 
         // APPEND MARKUP TO SORTABLE UL TAG
-        $(".sortable-sections").append(markup)
+        $(".sortable-squads").append(markup)
 
-        //GET ADD BUTTON FOR SECTION AND ADD CLICK FUNCTION TO IT
-        let section_button = $("#section_"+number).children('.add-subsection')
-        section_button.click(add_subsection_function);
+        //GET ADD BUTTON FOR squad AND ADD CLICK FUNCTION TO IT
+        let squad_button = $("#squad_"+number).children('.add-upgrade')
+        squad_button.click(add_upgrade_function);
 
-        let delete_section_button = $("#section_"+number).children('.delete-section')
-        delete_section_button.click(delete_parent_function);
+        let delete_squad_button = $("#squad_"+number).children('.delete-squad')
+        delete_squad_button.click(delete_parent_function);
 
         <% //if(user.id === report.owner) { %> 
             updateSortable()
         <% //} %>
 
-        let return_data = $("#section_"+number)
+        let return_data = $("#squad_"+number)
         return return_data
 	}
 
@@ -194,48 +194,31 @@
 // #     # #     # #     #       #     # #     # #     # #     # #       #     #    #     #  #     # #    ## 
 // #     # ######  ######         #####   #####  ######   #####  #######  #####     #    ### ####### #     #	
 
-    // ADD A SUBSECTION TO THE PARENT OF "THIS" OBJECT
-	function add_subsection_function(){
+    // ADD A upgrade TO THE PARENT OF "THIS" OBJECT
+	function add_upgrade_function(){
 
 		let parent = $(this).parent();
 
-		add_subsection(parent)
+		add_upgrade(parent)
 
 		}
 
-		function add_subsection(parent){
+		function add_upgrade(parent){
 
 
 		let parent_span = $(parent[0]).find("span")[0].innerText
-		let text_number = 'Troop '+(parent.children().find('.subsection').length + 1)
-		let number = $(".subsection").length + 1        
+		let text_number = 'Upgrade '+(parent.children().find('.upgrade').length + 1)
+		let number = $(".upgrade").length + 1        
 
 
 		let markup = `        
-		<li class="ui-state-default subsection tr-grab" id="subsection_`+number+`">         
+		<li class="ui-state-default upgrade tr-grab" id="upgrade_`+number+`">         
 
 			<div class="box">
 				<span>`+text_number+`</span>
 
-				<select name="Report[`+parent_span+`][`+text_number+`][params][id]" type="number" class="full-width form-control subsection-options">
+				<input class="form-control" type="text" name="[params][squads][][upgrades][][name]" placeholder="name" >
 
-					<option value=""></option>
-
-				</select>
-			</div>
-
-			<div class="box">
-				<span>Alternate Name</span>
-				<input class="form-control subsection-name" type="text" name="Report[`+parent_span+`][`+text_number+`][params][name]" placeholder="name" >
-			</div>
-
-			<div class="box">
-				<span>Show Analysis Box</span>
-				<select name="Report[`+parent_span+`][`+text_number+`][params][show_analysis_box]" type="number" class="full-width form-control subsection-dropdown" multiple size="1">
-					<option value="1">Y</option>
-				</select>
-
-				
 			</div>
 
 			<ul class="sortable sortable-paragraphs">
@@ -243,8 +226,8 @@
 			</ul>            
 
 			<% //if(user.id === report.owner) { %>   
-				<button class="btn btn-primary delete-subsection right-button" type="button">
-					Delete Troop
+				<button class="btn btn-primary delete-upgrade right-button" type="button">
+					Delete Upgrade
 				</button>	                
 			<% //} %>   
 
@@ -252,19 +235,19 @@
 		`
 
 
-		//GET PARENT OF BUTTON THEN FULE SORTABLE SECTION UL WITHIN CHILDREN AND APPEND MARKUP
-		// $(this).parent().children('.sortable-subsections').append(markup)
-		parent.children('.sortable-subsections').append(markup)
-		let subsection_button = $("#subsection_"+number).children('.add-paragraph')
+		//GET PARENT OF BUTTON THEN FULE SORTABLE squad UL WITHIN CHILDREN AND APPEND MARKUP
+		// $(this).parent().children('.sortable-upgrades').append(markup)
+		parent.children('.sortable-upgrades').append(markup)
+		let upgrade_button = $("#upgrade_"+number).children('.add-paragraph')
 
-		let delete_subsection_button = $("#subsection_"+number).children('.delete-subsection')
-		delete_subsection_button.click(delete_parent_function);
+		let delete_upgrade_button = $("#upgrade_"+number).children('.delete-upgrade')
+		delete_upgrade_button.click(delete_parent_function);
 
 		<% //if(user.id === report.owner) { %>         
 			updateSortable()       
 		<% //} %>
 
-		let return_data = $("#subsection_"+number)
+		let return_data = $("#upgrade_"+number)
 		return return_data
 	}
 
@@ -277,8 +260,8 @@
 // #     #  #  #     # #     # 
 // #     # ###  #####   #####  
 
-		// ADD THE "ADD SECTION" FUNCTION TO ANYTHING WITH THE ADD-SECTION CLASS
-		$(".add-section").click(add_section_function);	
+		// ADD THE "ADD squad" FUNCTION TO ANYTHING WITH THE ADD-squad CLASS
+		$(".add-squad").click(add_squad_function);	
 
 
 		function delete_parent_function(){

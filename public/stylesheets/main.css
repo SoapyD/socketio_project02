@@ -208,9 +208,9 @@ a:focus, a:hover {
 	float: left;
 }
 
-.report-builder,
-.section,
-.subsection {
+.army-builder,
+.squad,
+.upgrade {
 	border-radius: 10px;
 	border: 1px solid #ccc;
 	margin-top: 10px;
@@ -218,17 +218,17 @@ a:focus, a:hover {
 	background: white;
 }
 
-.report-builder {
+.army-builder {
 	background: white;
 }
 
-.section {
+.squad {
 	background: #b6e19f;
 	border: 2px solid #7ac952;
 	width: 100%;
 }
 
-.subsection {
+.upgrade {
 	background: #b5e1ee;
 	border: 1px solid #62bfdb;
 	width: 32.5%;

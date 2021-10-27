@@ -13,22 +13,18 @@ const armySchema = new mongoose.Schema({
 
 	,cost: Number
 	
-	// ,squads: [{
-
-	// }]
-
-	,units: [{
-		
-		id: Number
-		,side: Number
-		,player: Number
-		,squad: Number		
-		
-		,unit_name: String
-		,shoot_name: String
-		,fight_name: String
-		,armour_name: String
-		
+	,squads: [{
+		name: String
+		,id: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Squad"
+		}
+		,upgrades: [{
+			id: {
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "Upgrade"
+			}
+		}]		
 	}]
 	
    ,created_date: {type: Date, default: Date.now}

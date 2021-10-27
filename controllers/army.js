@@ -135,7 +135,7 @@ exports.update = async(req,res) => {
 		]
 	})
 
-	await utils.queries.updateData(item[0], {
+	let updated = await utils.queries.updateData(item[0], {
 		model: "Army"
 		,params: [
 			req.body.params
