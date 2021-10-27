@@ -22,10 +22,10 @@ router.get("/:id", middleware.user_access, controllers.army.getSingle)
 router.get("/:id/edit", middleware.user_access, controllers.army.getEdit)
 
 //UPDATE PRODUCT
-// router.put("/:id", middleware.user_access, controllers.army.update)
+router.put("/:id", middleware.user_access, controllers.army.update)
 
 //DESTOY
-// router.delete("/:id", middleware.isLoggedIn, controller.delete)
+router.delete("/:id", middleware.user_access, controllers.army.delete)
 
 
 module.exports = router;

@@ -1,5 +1,14 @@
 <%- include("../partials/header") %>
  
+<script>
+// ######     #     #####  #######       #     # #######    #    ######  ####### ######  
+// #     #   # #   #     # #             #     # #         # #   #     # #       #     # 
+// #     #  #   #  #       #             #     # #        #   #  #     # #       #     # 
+// ######  #     # #  #### #####   ##### ####### #####   #     # #     # #####   ######  
+// #       ####### #     # #             #     # #       ####### #     # #       #   #   
+// #       #     # #     # #             #     # #       #     # #     # #       #    #  
+// #       #     #  #####  #######       #     # ####### #     # ######  ####### #     # 
+</script>
 
 
 <div class="container">
@@ -58,6 +67,17 @@
 </div>
 
 
+<script>
+// ######  ####### ####### #######        #####  ####### #     # #######    #    ### #     # ####### ######  
+// #     # #     # #     #    #          #     # #     # ##    #    #      # #    #  ##    # #       #     # 
+// #     # #     # #     #    #          #       #     # # #   #    #     #   #   #  # #   # #       #     # 
+// ######  #     # #     #    #    ##### #       #     # #  #  #    #    #     #  #  #  #  # #####   ######  
+// #   #   #     # #     #    #          #       #     # #   # #    #    #######  #  #   # # #       #   #   
+// #    #  #     # #     #    #          #     # #     # #    ##    #    #     #  #  #    ## #       #    #  
+// #     # ####### #######    #           #####  ####### #     #    #    #     # ### #     # ####### #     # 
+</script>
+
+
 <!-- CONTAINER TO CONTAINS THE VARIABLE, NESTED FORM -->
 <div class="container report-builder 
     <% if(1 !== 1) { //if(user.id !== report.owner) { %> 
@@ -97,6 +117,7 @@
 
 <script>
 
+
 	updateSortable = () => {
         $( ".sortable" ).sortable({
             // stop: updateIndex,
@@ -107,11 +128,19 @@
         $( ".sortable" ).disableSelection(); //make sortable text area unselectable  
     }
 
+//    #    ######  ######         #####  #######  #####  ####### ### ####### #     # 
+//   # #   #     # #     #       #     # #       #     #    #     #  #     # ##    # 
+//  #   #  #     # #     #       #       #       #          #     #  #     # # #   # 
+// #     # #     # #     # #####  #####  #####   #          #     #  #     # #  #  # 
+// ####### #     # #     #             # #       #          #     #  #     # #   # # 
+// #     # #     # #     #       #     # #       #     #    #     #  #     # #    ## 
+// #     # ######  ######         #####  #######  #####     #    ### ####### #     # 
+
     function add_section_function(){
 
         //GENERATE A UNIQUE ID
         let number = $(".section").length + 1
-        let text_number = 'Section '+number 
+        let text_number = 'Squad '+number 
 
         //CREATE MARKUP SCRIPT
         let markup = `
@@ -127,7 +156,7 @@
                 <button class="btn btn-primary add-subsection" type="button">
                     Add Troop
                 </button>	  
-                <button class="btn btn-primary delete-section" type="button">
+                <button class="btn btn-primary delete-section right-button" type="button">
                     Delete Squad
                 </button>	                
             <% //} %>
@@ -157,6 +186,14 @@
 	}
 
 
+//    #    ######  ######         #####  #     # ######   #####  #######  #####  ####### ### ####### #     # 
+//   # #   #     # #     #       #     # #     # #     # #     # #       #     #    #     #  #     # ##    # 
+//  #   #  #     # #     #       #       #     # #     # #       #       #          #     #  #     # # #   # 
+// #     # #     # #     # #####  #####  #     # ######   #####  #####   #          #     #  #     # #  #  # 
+// ####### #     # #     #             # #     # #     #       # #       #          #     #  #     # #   # # 
+// #     # #     # #     #       #     # #     # #     # #     # #       #     #    #     #  #     # #    ## 
+// #     # ######  ######         #####   #####  ######   #####  #######  #####     #    ### ####### #     #	
+
     // ADD A SUBSECTION TO THE PARENT OF "THIS" OBJECT
 	function add_subsection_function(){
 
@@ -170,18 +207,12 @@
 
 
 		let parent_span = $(parent[0]).find("span")[0].innerText
-		let text_number = 'Sub Section '+(parent.children().find('.subsection').length + 1)
+		let text_number = 'Troop '+(parent.children().find('.subsection').length + 1)
 		let number = $(".subsection").length + 1        
 
 
 		let markup = `        
-		<li class="ui-state-default subsection tr-grab" id="subsection_`+number+`">
-			
-			<% //if(user.id === report.owner) { %>   
-				<button class="btn btn-primary delete-subsection" type="button">
-					Delete Troop
-				</button>	                
-			<% //} %>            
+		<li class="ui-state-default subsection tr-grab" id="subsection_`+number+`">         
 
 			<div class="box">
 				<span>`+text_number+`</span>
@@ -211,6 +242,12 @@
 			
 			</ul>            
 
+			<% //if(user.id === report.owner) { %>   
+				<button class="btn btn-primary delete-subsection right-button" type="button">
+					Delete Troop
+				</button>	                
+			<% //} %>   
+
 		</li>                
 		`
 
@@ -231,6 +268,15 @@
 		return return_data
 	}
 
+
+// #     # ###  #####   #####  
+// ##   ##  #  #     # #     # 
+// # # # #  #  #       #       
+// #  #  #  #   #####  #       
+// #     #  #        # #       
+// #     #  #  #     # #     # 
+// #     # ###  #####   #####  
+
 		// ADD THE "ADD SECTION" FUNCTION TO ANYTHING WITH THE ADD-SECTION CLASS
 		$(".add-section").click(add_section_function);	
 
@@ -238,7 +284,7 @@
 		function delete_parent_function(){
 		let parent = $(this).parent();
 		parent.remove()
-		updateIndex()
+		// updateIndex()
 	}	
 
 </script>

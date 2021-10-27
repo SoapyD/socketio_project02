@@ -299,7 +299,7 @@ exports.destroyData = async(list) => {
 
     // destroy_list.forEach((list) => {
         list.params.forEach((item) => {
-            promises.push(models[list.model].destroy(item))
+            promises.push(models[list.model].deleteOne(item))
         })
     // })  
 

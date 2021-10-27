@@ -8,7 +8,7 @@ const armySchema = new mongoose.Schema({
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "User"
 		},
-		user_name: String
+		username: String
     }
 
 	,cost: Number

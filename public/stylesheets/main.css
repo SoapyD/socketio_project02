@@ -188,6 +188,10 @@ a:focus, a:hover {
 	
 }
 
+.nav>li>a:focus, 
+.nav>li>a:hover {
+    background-color: #ab2603;
+}
 
 
 .sortable { 
@@ -227,5 +231,5 @@ a:focus, a:hover {
 .subsection {
 	background: #b5e1ee;
 	border: 1px solid #62bfdb;
-	width: 49%;
+	width: 32.5%;
 }
