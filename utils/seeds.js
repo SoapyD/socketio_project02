@@ -286,7 +286,7 @@ exports.seedDB = async() => {
             armour: "basic",
             melee: "none",
             upgrades: [{name:"heavy weapon"}],
-            min_size: 5,
+            min_size: 3,
             max_size: 5,
         }
     )

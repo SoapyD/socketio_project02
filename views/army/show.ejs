@@ -126,6 +126,11 @@ let upgrade_data;
     squad_data = {
         id: "<%= squad._id %>",
         name: "<%= squad.name %>",
+        min_size: "<%= squad.min_size %>",
+        max_size: "<%= squad.max_size %>", 
+        unit: {
+            cost: "<%= squad.unit.cost %>"
+        },
         upgrades: []
     }
     <% squad.upgrades.forEach((upgrade) => { %>
@@ -240,6 +245,8 @@ let upgrade_data;
                 search.remove();
             }
             add_upgrades_table(markup_element)
+            update_squad_size(markup_element)
+            update_squad_cost(markup_element)
         })
 
 
@@ -255,10 +262,21 @@ let upgrade_data;
         return return_data
 	}
 
+    get_squad = (selected) => {
+        let return_squad;
+        squads.forEach((squad)=> {
+            if(squad.id === selected){
+                return_squad = squad
+            }
+        })  
+        
+        return return_squad;
+    }
 
     function add_upgrades_table(markup_element) {
 
         let selected = markup_element.find("[name='[params][squads][][name]'] option:selected").val();
+        let squad = get_squad(selected)
 
         let markup = 
         `
@@ -286,35 +304,29 @@ let upgrade_data;
                         </tr>
                     </thead>
 
-                    <tbody>	
-                            
+                    <tbody>	        
         `
 
             //LOOP THROUGH SQUADS DATA AND CREATE AN OPTION FOR EACH
-            squads.forEach((squad)=> {
-                if(squad.id === selected){
-                    if(squad.upgrades){
-                        squad.upgrades.forEach((upgrade) => {
-                            markup += 
-                            `
-                            <tr>
-                                <td>
-                                    <input type="checkbox" name="subscriptions[]" value="0" class="center-click">
-                                </td>
-                                    
-                                <td>`+upgrade.name+`</td>
-                                <td>`+upgrade.description+`</td>
-                                    
-                                <td class="center-text">`+upgrade.cost+`</td>	
-                            </tr>                            
-                            `
-                        })
-                    }
-                }
-            })        
-
-        markup += `											                                		
+            if(squad.upgrades){
+                squad.upgrades.forEach((upgrade) => {
+                    markup += 
+                    `
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="subscriptions[]" value="0" class="center-click">
+                        </td>
                             
+                        <td>`+upgrade.name+`</td>
+                        <td>`+upgrade.description+`</td>
+                            
+                        <td class="center-text">`+upgrade.cost+`</td>	
+                    </tr>                            
+                    `
+                })
+            }       
+
+        markup += `											                                		       
                     </tbody>
                 </table>
             </div>
@@ -324,8 +336,19 @@ let upgrade_data;
         let test = $(markup_element[0]).find('[name="table_space"]')
 
         $(markup_element[0]).find('[name="table_space"]').append(markup)
+    }
 
+    update_squad_size = (markup_element) => {
+        let selected = markup_element.find("[name='[params][squads][][name]'] option:selected").val();
+        let squad = get_squad(selected)
+        markup_element.find("[name='[params][squads][][size]']").val(squad.min_size); 
+    }
 
+    update_squad_cost = (markup_element) => {
+        let selected = markup_element.find("[name='[params][squads][][name]'] option:selected").val();
+        let squad = get_squad(selected)
+        
+        markup_element.find("[name='[params][squads][][cost]']").val(squad.unit.cost * squad.min_size);         
     }
 
 // #     # ###  #####   #####  
@@ -343,7 +366,7 @@ let upgrade_data;
 
 	updateSortable = () => {
         $( ".sortable" ).sortable({
-            // stop: updateIndex,
+            stop: updateIndex,
             opacity: 0.6,
             placeholder: "ui-state-highlight",
             forcePlaceholderSize: true
@@ -355,8 +378,24 @@ let upgrade_data;
             
 		let parent = $(this).parent();
 		parent.remove()
-		// updateIndex()
+		updateIndex()
 	}	
+
+
+    updateIndex = (e, ui) => {
+
+        //LOOP THROUGH EACH SECTION, SUBSECTION AND PARAGRAPH AND RELABEL THEIR NAMES ACCORDINGLY 
+        let squads = $(".squad");
+
+        squads.each(function (i) {
+
+            //RELABEL SECTION
+            let squad_name = 'Squad ' + (i + 1)
+            $(this).find('span')[0].innerText = squad_name
+            $(this).id = 'squad_' + (i + 1)
+        })
+
+    }    
 
 </script>
 
