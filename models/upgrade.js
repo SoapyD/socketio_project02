@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const upgradeSchema = new mongoose.Schema({
 	name: String
 	,cost: Number
+	,description: String
 
 	,unit: {
 		type: mongoose.Schema.Types.ObjectId,

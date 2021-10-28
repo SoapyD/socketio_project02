@@ -131,9 +131,7 @@ let upgrade_data;
     <% squad.upgrades.forEach((upgrade) => { %>
         upgrade_data = {
             id: "<%= upgrade._id %>",
-            name: "<%= upgrade.name %>",
-            description: "<%= upgrade.description %>",
-            cost: "<%= upgrade.cost %>"
+            name: "<%= upgrade.name %>"
         }
         squad_data.upgrades.push(upgrade_data)
     <% }) %>
@@ -166,8 +164,6 @@ let upgrade_data;
                 <div>
                     <span left-button>`+text_number+`</span>
                 </div>
-
-
 
                 <div class="container">
 	                <div class="row">
@@ -210,39 +206,29 @@ let upgrade_data;
                 </div>
             </div>
 
-            <div class="container top-padding">	
-
-            <div class="row">
-                
-                <div class="col-md-12" name="table_space">
-                </div>
-            </div>
-            </div>
-
-            
-            <% //if(user.id === report.owner) { %> 	  
+            <% //if(user.id === report.owner) { %> 
+                <button class="btn btn-primary add-upgrade" type="button">
+                    Add Upgrade
+                </button>	  
                 <button class="btn btn-primary delete-squad right-button" type="button">
                     Delete Squad
                 </button>	                
             <% //} %>
 
+            <ul class="sortable sortable-upgrades">
+
+            </ul>
         </li>
         `
 
         // APPEND MARKUP TO SORTABLE UL TAG
-        $(".sortable-squads").append(markup);
+        $(".sortable-squads").append(markup)
 
-        let markup_element = $("#squad_"+number)
+        //GET ADD BUTTON FOR squad AND ADD CLICK FUNCTION TO IT
+        let squad_button = $("#squad_"+number).children('.add-upgrade')
+        squad_button.click(add_upgrade_function);
 
-        $(markup_element[0]).find('[name="[params][squads][][name]"]').change(() => {
-            let search = $(markup_element[0]).find('[name="table_inner"]')
-            if(search.length > 0){
-                search.remove();
-            }
-            add_upgrades_table(markup_element)
-        })
-
-
+        console.log($("#squad_"+number))
 
         let delete_squad_button = $("#squad_"+number).children('.delete-squad')
         delete_squad_button.click(delete_parent_function);
@@ -256,77 +242,90 @@ let upgrade_data;
 	}
 
 
-    function add_upgrades_table(markup_element) {
+//    #    ######  ######         #####  #     # ######   #####  #######  #####  ####### ### ####### #     # 
+//   # #   #     # #     #       #     # #     # #     # #     # #       #     #    #     #  #     # ##    # 
+//  #   #  #     # #     #       #       #     # #     # #       #       #          #     #  #     # # #   # 
+// #     # #     # #     # #####  #####  #     # ######   #####  #####   #          #     #  #     # #  #  # 
+// ####### #     # #     #             # #     # #     #       # #       #          #     #  #     # #   # # 
+// #     # #     # #     #       #     # #     # #     # #     # #       #     #    #     #  #     # #    ## 
+// #     # ######  ######         #####   #####  ######   #####  #######  #####     #    ### ####### #     #	
 
-        let selected = markup_element.find("[name='[params][squads][][name]'] option:selected").val();
+    // ADD A upgrade TO THE PARENT OF "THIS" OBJECT
+	function add_upgrade_function(){
 
-        let markup = 
-        `
-        <div class="container top-padding" name="table_inner">	
+		let parent = $(this).parent();
 
-        <div class="row">
-            
-            <div class="col-md-12">
-                
-                <table id="sort top-padding">
-                    
-                    <colgroup>
-                        <col span="1" style="width: 5%;">
-                        <col span="1" style="width: 30%;">
-                        <col span="1" style="width: 60%;">						
-                        <col span="1" style="width: 5%;">
-                    </colgroup>
-                    
-                    <thead>
-                        <tr>
-                            <th><span class="text">Apply</span></th>
-                            <th><span class="text">Name</span></th>
-                            <th><span class="text">Description</span></th>
-                            <th class="center-text"><span class="text">Cost</span></th>									
-                        </tr>
-                    </thead>
+        //CHECK TO SEE A SQUAD IS SELECTED
+        let selected = parent.find("[name='[params][squads][][name]'] option:selected").val();
+        if(selected){
+            add_upgrade(parent, selected)
+        }
 
-                    <tbody>	
-                            
-        `
+	}
 
+	function add_upgrade(parent, selected){
+
+		let parent_span = $(parent[0]).find("span")[0].innerText
+		let text_number = 'Upgrade '+(parent.children().find('.upgrade').length + 1)
+		let number = $(".upgrade").length + 1        
+
+
+		let markup = `        
+		<li class="ui-state-default upgrade tr-grab" id="upgrade_`+number+`">         
+
+			<div class="box">
+				<span>`+text_number+`</span>
+
+                <select class="form-control" name="[params][squads][][upgrades][]">
+                    <option value=""></option>
+                `
             //LOOP THROUGH SQUADS DATA AND CREATE AN OPTION FOR EACH
             squads.forEach((squad)=> {
                 if(squad.id === selected){
                     if(squad.upgrades){
                         squad.upgrades.forEach((upgrade) => {
-                            markup += 
-                            `
-                            <tr>
-                                <td>
-                                    <input type="checkbox" name="subscriptions[]" value="0" class="center-click">
-                                </td>
-                                    
-                                <td>`+upgrade.name+`</td>
-                                <td>`+upgrade.description+`</td>
-                                    
-                                <td class="center-text">`+upgrade.cost+`</td>	
-                            </tr>                            
-                            `
+                            markup += `<option value="`+upgrade.id+`">`+upgrade.name+`</option>`
                         })
                     }
                 }
-            })        
+            })
+            
 
-        markup += `											                                		
-                            
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        </div>        
-        `
-        let test = $(markup_element[0]).find('[name="table_space"]')
+            markup += `
+                </select>   
 
-        $(markup_element[0]).find('[name="table_space"]').append(markup)
+			</div>
+
+			<ul class="sortable sortable-paragraphs">
+			
+			</ul>            
+
+			<% //if(user.id === report.owner) { %>   
+				<button class="btn btn-primary delete-upgrade right-button" type="button">
+					Delete Upgrade
+				</button>	                
+			<% //} %>   
+
+		</li>                
+		`
 
 
-    }
+		//GET PARENT OF BUTTON THEN FULE SORTABLE squad UL WITHIN CHILDREN AND APPEND MARKUP
+		// $(this).parent().children('.sortable-upgrades').append(markup)
+		parent.children('.sortable-upgrades').append(markup)
+		let upgrade_button = $("#upgrade_"+number).children('.add-paragraph')
+
+		let delete_upgrade_button = $("#upgrade_"+number).children('.delete-upgrade')
+		delete_upgrade_button.click(delete_parent_function);
+
+		<% //if(user.id === report.owner) { %>         
+			updateSortable()       
+		<% //} %>
+
+		let return_data = $("#upgrade_"+number)
+		return return_data
+	}
+
 
 // #     # ###  #####   #####  
 // ##   ##  #  #     # #     # 

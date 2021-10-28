@@ -11,7 +11,8 @@ exports.seedDB = async() => {
     ,{model: "Gun"}
     ,{model: "Melee"}
     ,{model: "Armour"}   
-    ,{model: "Squad"}    
+    ,{model: "Squad"}  
+    ,{model: "Upgrade"}    
     ]
 
     await queries.removeData(list);
@@ -227,6 +228,7 @@ exports.seedDB = async() => {
         ,params: [
            {
                 name: "heavy weapon",
+                description:"outfit one trooper with a heavy weapon",
                 cost: return_data[0].cost,
                 // unit: unit[0]._id,
                 gun: return_data[0]._id,
@@ -250,6 +252,7 @@ exports.seedDB = async() => {
         ,params: [
            {
                 name: "special weapon",
+                description:"outfit one trooper with a special weapon",
                 cost: return_data[0].cost,
                 // unit: unit[0]._id,
                 gun: return_data[0]._id,
@@ -262,53 +265,84 @@ exports.seedDB = async() => {
 
 
 
+    exports.createSquad(
+        {
+            type: "tactical squad",
+            unit: "marine",
+            gun: "bolter",
+            armour: "basic",
+            melee: "sword",
+            upgrades: [{name:"heavy weapon"},{name:"special weapon"}],
+            min_size: 5,
+            max_size: 10,
+        }
+    )
+
+    exports.createSquad(
+        {
+            type: "heavy squad",
+            unit: "marine",
+            gun: "heavy",
+            armour: "basic",
+            melee: "none",
+            upgrades: [{name:"heavy weapon"}],
+            min_size: 5,
+            max_size: 5,
+        }
+    )
 
 
+    console.log("Seeding Complete")
+
+}
+
+exports.createSquad = async(options) => {
 
     //Create Squad
+    let unit;
+    let gun;
+    let armour;
+    let melee;
+    let upgrades;
+    let upgrade_array = [];
 
-
-
-	let unit = await queries.findData({
+	unit = await queries.findData({
 		model: "Unit"
 		,search_type: "findOne"
 		,params: [
-			{name: "marine"}
+			{name: options.unit}
 		]
 	})     
 
-	let gun = await queries.findData({
+	gun = await queries.findData({
 		model: "Gun"
 		,search_type: "findOne"
 		,params: [
-			{name: "bolter"}
+			{name: options.gun}
 		]
 	})    
-	let armour = await queries.findData({
+	armour = await queries.findData({
 		model: "Armour"
 		,search_type: "findOne"
 		,params: [
-			{name: "basic"}
+			{name: options.armour}
 		]
     })
-	let melee = await queries.findData({
+	melee = await queries.findData({
 		model: "Melee"
 		,search_type: "findOne"
 		,params: [
-			{name: "sword"}
+			{name: options.melee}
 		]
 	})    
 
-	let upgrades = await queries.findData({
+	upgrades = await queries.findData({
 		model: "Upgrade"
 		,search_type: "findOne"
-		,params: [
-            {name: "heavy weapon"},
-            {name: "special weapon"}
-		]
+		,params: options.upgrades
 	})      
 
-    let upgrade_array = []
+    upgrade_array = []
     upgrades.forEach((upgrade) => {
         upgrade_array.push(upgrade._id)
     })
@@ -317,9 +351,9 @@ exports.seedDB = async() => {
         model: "Squad"
         ,params: [
            {
-                name: "tactical squad",
-                min_size: 5,
-                max_size: 10,
+                name: options.type,
+                min_size: options.min_size,
+                max_size: options.max_size,
                 unit: unit[0]._id,
                 gun: gun[0]._id,
                 melee: melee[0]._id,
@@ -328,13 +362,6 @@ exports.seedDB = async() => {
             },
         ]
     }
-    await queries.createData(list);      
-
-    // let params = {}
-    // let info  = await queries.getSquads(params)
-
-
-    console.log("Seeding Complete")
+    await queries.createData(list);     
 
 }
-
