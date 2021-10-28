@@ -118,15 +118,29 @@
 <script>
 
 
-	updateSortable = () => {
-        $( ".sortable" ).sortable({
-            // stop: updateIndex,
-            opacity: 0.6,
-            placeholder: "ui-state-highlight",
-            forcePlaceholderSize: true
-        });
-        $( ".sortable" ).disableSelection(); //make sortable text area unselectable  
+let squad = []
+let squad_data;
+let upgrade_data;
+<% squads.forEach((squad) => { %>
+
+    squad_data = {
+        id: "<%= squad._id %>",
+        name: "<%= squad.name %>",
+        upgrades: []
     }
+    <% squad.upgrades.forEach((upgrade) => { %>
+        upgrade_data = {
+            id: "<%= upgrade._id %>",
+            name: "<%= upgrade.name %>"
+        }
+        squad_data.upgrades.push(upgrade_data)
+    <% }) %>
+    squad.push(squad_data)
+
+<% }) %>
+
+console.log(squad_data)
+
 
 //    #    ######  ######         #####  #######  #####  ####### ### ####### #     # 
 //   # #   #     # #     #       #     # #       #     #    #     #  #     # ##    # 
@@ -319,6 +333,17 @@
 	// ADD THE "ADD squad" FUNCTION TO ANYTHING WITH THE ADD-squad CLASS
 	$(".add-squad").click(add_squad_function);	
 
+
+
+	updateSortable = () => {
+        $( ".sortable" ).sortable({
+            // stop: updateIndex,
+            opacity: 0.6,
+            placeholder: "ui-state-highlight",
+            forcePlaceholderSize: true
+        });
+        $( ".sortable" ).disableSelection(); //make sortable text area unselectable  
+    }
 
 	function delete_parent_function(){
             
