@@ -137,6 +137,7 @@ let upgrade_data;
         upgrade_data = {
             id: "<%= upgrade._id %>",
             name: "<%= upgrade.name %>",
+            upgrades_all_in_squad: "<%= upgrade.upgrades_all_in_squad %>",
             description: "<%= upgrade.description %>",
             cost: "<%= upgrade.cost %>"
         }
@@ -200,7 +201,7 @@ let upgrade_data;
                         <div class="col-md-2 no-padding">
                             <div class="form-group">     
                                 <p>Squad Size:</p>
-                                <input class="form-control" type="number" min="5" max="10"  name="[params][squads][][size]">  
+                                <input class="form-control" type="number" min="0" max="0"  name="[params][squads][][size]">  
                             </div>                         
                         </div>    
                         
@@ -249,13 +250,17 @@ let upgrade_data;
             update_squad_cost(markup_element)
         })
 
+        $(markup_element[0]).find('[name="[params][squads][][size]"]').change(() => {
+            update_squad_cost(markup_element)
+        })
+    
 
 
         let delete_squad_button = $("#squad_"+number).children('.delete-squad')
         delete_squad_button.click(delete_parent_function);
 
         <% //if(user.id === report.owner) { %> 
-            updateSortable()
+            // updateSortable()
         <% //} %>
 
         let return_data = $("#squad_"+number)
@@ -314,13 +319,13 @@ let upgrade_data;
                     `
                     <tr>
                         <td>
-                            <input type="checkbox" name="subscriptions[]" value="0" class="center-click">
+                            <input type="checkbox" name="[params][squads][][upgrades][][selected]" value="0" class="center-click">
                         </td>
                             
                         <td>`+upgrade.name+`</td>
                         <td>`+upgrade.description+`</td>
                             
-                        <td class="center-text">`+upgrade.cost+`</td>	
+                        <td class="center-text" name="cost">`+upgrade.cost+`</td>	
                     </tr>                            
                     `
                 })
@@ -333,9 +338,14 @@ let upgrade_data;
         </div>
         </div>        
         `
-        let test = $(markup_element[0]).find('[name="table_space"]')
+        // let test = $(markup_element[0]).find('[name="table_space"]')
 
         $(markup_element[0]).find('[name="table_space"]').append(markup)
+
+        $(markup_element[0]).find("[name='[params][squads][][upgrades][][selected]']").change(() => {
+            update_squad_cost(markup_element)
+        })    
+
     }
 
     update_squad_size = (markup_element) => {
@@ -347,8 +357,29 @@ let upgrade_data;
     update_squad_cost = (markup_element) => {
         let selected = markup_element.find("[name='[params][squads][][name]'] option:selected").val();
         let squad = get_squad(selected)
+
+        let squad_size = markup_element.find("[name='[params][squads][][size]']").val();
+        markup_element.find("[name='[params][squads][][size]']").attr({
+            "min" : squad.min_size,
+            "max" : squad.max_size,
+        });
+
+        let total_cost = squad.unit.cost * squad_size
+
+        let clicks_list = markup_element.find("[name='[params][squads][][upgrades][][selected]']")
         
-        markup_element.find("[name='[params][squads][][cost]']").val(squad.unit.cost * squad.min_size);         
+        clicks_list.each((index) => {
+            let click = clicks_list[index];
+            if(click.checked === true){
+                if(squad.upgrades[index].upgrades_all_in_squad === "false"){
+                    total_cost += Number(squad.upgrades[index].cost);
+                }else{
+                    total_cost += Number(squad.upgrades[index].cost) * squad_size;
+                }
+            }
+        })
+        
+        markup_element.find("[name='[params][squads][][cost]']").val(total_cost);         
     }
 
 // #     # ###  #####   #####  
@@ -364,15 +395,15 @@ let upgrade_data;
 
 
 
-	updateSortable = () => {
-        $( ".sortable" ).sortable({
-            stop: updateIndex,
-            opacity: 0.6,
-            placeholder: "ui-state-highlight",
-            forcePlaceholderSize: true
-        });
-        $( ".sortable" ).disableSelection(); //make sortable text area unselectable  
-    }
+	// updateSortable = () => {
+    //     $( ".sortable" ).sortable({
+    //         stop: updateIndex,
+    //         opacity: 0.6,
+    //         placeholder: "ui-state-highlight",
+    //         forcePlaceholderSize: true
+    //     });
+    //     $( ".sortable" ).disableSelection(); //make sortable text area unselectable  
+    // }
 
 	function delete_parent_function(){
             
@@ -392,7 +423,7 @@ let upgrade_data;
             //RELABEL SECTION
             let squad_name = 'Squad ' + (i + 1)
             $(this).find('span')[0].innerText = squad_name
-            $(this).id = 'squad_' + (i + 1)
+            $(this).attr("id",'squad_' + (i + 1)); 
         })
 
     }    

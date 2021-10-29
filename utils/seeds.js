@@ -253,6 +253,7 @@ exports.seedDB = async() => {
            {
                 name: "special weapon",
                 description:"outfit one trooper with a special weapon",
+                upgrades_all_in_squad: true,
                 cost: return_data[0].cost,
                 // unit: unit[0]._id,
                 gun: return_data[0]._id,

@@ -5,6 +5,7 @@ const upgradeSchema = new mongoose.Schema({
 	name: String
 	,cost: Number
 	,description: String
+	,upgrades_all_in_squad: {type: Boolean, default: false}
 
 	,unit: {
 		type: mongoose.Schema.Types.ObjectId,
