@@ -182,14 +182,14 @@ let upgrade_data;
                         <div class="col-md-3 no-padding">
                             <div class="form-group">
                                 <p>Name:</p>
-                                <input class="form-control" type="text" name="[params][squads][`+number+`][name]">
+                                <input class="form-control" type="text" name="[params][squads][`+number+`][name]" required>
                             </div> 
                         </div>  
 
                         <div class="col-md-5 no-padding">
                             <div class="form-group">                        
                                 <p>Type:</p>
-                                <select class="form-control" name="[params][squads][`+number+`][id]">
+                                <select class="form-control" name="[params][squads][`+number+`][id]" required>
                                     <option value=""></option>
                                     <% squads.forEach((squad) => { %>
                                         <option value="<%= squad._id %>"><%= squad.name %></option>
@@ -202,7 +202,7 @@ let upgrade_data;
                         <div class="col-md-2 no-padding">
                             <div class="form-group">     
                                 <p>Squad Size:</p>
-                                <input class="form-control" type="number" min="0" max="0"  name="[params][squads][`+number+`][size]">  
+                                <input class="form-control" type="number" min="0" max="0"  name="[params][squads][`+number+`][size]" required>  
                             </div>                         
                         </div>    
                         
