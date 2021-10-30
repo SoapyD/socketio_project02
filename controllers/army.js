@@ -47,6 +47,7 @@ exports.getSingle = async(req, res) => {
 
 	let squads  = await utils.queries.getSquads({})
 
+
 	res.render("army/show",{army: item[0], squads: squads})	
 };
 
