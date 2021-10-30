@@ -5,19 +5,48 @@ exports.seedDB = async() => {
 
     //REMOVE ALL DATA FOR MODELS WE WANT TO RESET
     let list = [
-    {model: "Room"}
-    ,{model: "Army"}
-    ,{model: "Unit"}
-    ,{model: "Gun"}
-    ,{model: "Melee"}
-    ,{model: "Armour"}   
-    ,{model: "Squad"}  
-    ,{model: "Upgrade"}    
+    {model: "Room"},
+    {model: "Army"},
+
+    {model: "Faction"},
+    {model: "Squad"} ,
+    {model: "Upgrade"},
+
+    {model: "Unit"},
+    {model: "Gun"},
+    {model: "Melee"},
+    {model: "Armour"},  
     ]
 
     await queries.removeData(list);
 
-    //CREATE UNITS
+
+    await exports.createUnits();
+    await exports.createGuns();
+    await exports.createMelee();
+    await exports.createArmour();
+    await exports.createUpgrades();    
+    
+    await exports.createSquads()
+    await exports.createFactions()
+
+
+    console.log("Seeding Complete")
+
+}
+
+
+
+    //  #####  ######  #######    #    ####### #######       #     # #     # ### #######  #####  
+    // #     # #     # #         # #      #    #             #     # ##    #  #     #    #     # 
+    // #       #     # #        #   #     #    #             #     # # #   #  #     #    #       
+    // #       ######  #####   #     #    #    #####   ##### #     # #  #  #  #     #     #####  
+    // #       #   #   #       #######    #    #             #     # #   # #  #     #          # 
+    // #     # #    #  #       #     #    #    #             #     # #    ##  #     #    #     # 
+    //  #####  #     # ####### #     #    #    #######        #####  #     # ###    #     #####  
+
+exports.createUnits = async() => {
+
     list = {
         model: "Unit"
         ,params: [
@@ -124,11 +153,22 @@ exports.seedDB = async() => {
             },         
         ]
     }
-    await queries.createData(list);
+    return Promise.all([queries.createData(list)]);
+
+}
 
 
+    //  #####  ######  #######    #    ####### #######        #####  #     # #     #  #####  
+    // #     # #     # #         # #      #    #             #     # #     # ##    # #     # 
+    // #       #     # #        #   #     #    #             #       #     # # #   # #       
+    // #       ######  #####   #     #    #    #####   ##### #  #### #     # #  #  #  #####  
+    // #       #   #   #       #######    #    #             #     # #     # #   # #       # 
+    // #     # #    #  #       #     #    #    #             #     # #     # #    ## #     # 
+    //  #####  #     # ####### #     #    #    #######        #####   #####  #     #  ##### 
 
-    //CREATE GUNS
+exports.createGuns = async() => {
+
+
     list = {
         model: "Gun"
         ,params: [
@@ -164,12 +204,26 @@ exports.seedDB = async() => {
             }, 
         ]
     }
-    await queries.createData(list);
 
+    return Promise.all([queries.createData(list)]);
+}
+
+
+//  #####  ######  #######    #    ####### #######       #     # ####### #       ####### ####### 
+// #     # #     # #         # #      #    #             ##   ## #       #       #       #       
+// #       #     # #        #   #     #    #             # # # # #       #       #       #       
+// #       ######  #####   #     #    #    #####   ##### #  #  # #####   #       #####   #####   
+// #       #   #   #       #######    #    #             #     # #       #       #       #       
+// #     # #    #  #       #     #    #    #             #     # #       #       #       #       
+//  #####  #     # ####### #     #    #    #######       #     # ####### ####### ####### ####### 
+
+exports.createMelee = async() => {
+
+    
     let tile_size = 32;
     let range = (tile_size * 2)-(tile_size / 2)
-
-    //CREATE MELEE
+    
+    
     list = {
         model: "Melee"
         ,params: [
@@ -191,10 +245,17 @@ exports.seedDB = async() => {
             },
         ]
     }
-    await queries.createData(list);
+    return Promise.all([queries.createData(list)]);
+}
 
-
-    //CREATE ARMOUR
+    //  #####  ######  #######    #    ####### #######          #    ######  #     # ####### #     # ######  
+    // #     # #     # #         # #      #    #               # #   #     # ##   ## #     # #     # #     # 
+    // #       #     # #        #   #     #    #              #   #  #     # # # # # #     # #     # #     # 
+    // #       ######  #####   #     #    #    #####   ##### #     # ######  #  #  # #     # #     # ######  
+    // #       #   #   #       #######    #    #             ####### #   #   #     # #     # #     # #   #   
+    // #     # #    #  #       #     #    #    #             #     # #    #  #     # #     # #     # #    #  
+    //  #####  #     # ####### #     #    #    #######       #     # #     # #     # #######  #####  #     # 
+exports.createArmour = async() => {
     list = {
         model: "Armour"
         ,params: [
@@ -210,11 +271,21 @@ exports.seedDB = async() => {
             },
         ]
     }
-    await queries.createData(list);
+    return Promise.all([queries.createData(list)]);
+}
 
 
-    //UPGRADES
 
+
+    //  #####  ######  #######    #    ####### #######       #     # ######   #####  ######     #    ######  #######  #####  
+    // #     # #     # #         # #      #    #             #     # #     # #     # #     #   # #   #     # #       #     # 
+    // #       #     # #        #   #     #    #             #     # #     # #       #     #  #   #  #     # #       #       
+    // #       ######  #####   #     #    #    #####   ##### #     # ######  #  #### ######  #     # #     # #####    #####  
+    // #       #   #   #       #######    #    #             #     # #       #     # #   #   ####### #     # #             # 
+    // #     # #    #  #       #     #    #    #             #     # #       #     # #    #  #     # #     # #       #     # 
+    //  #####  #     # ####### #     #    #    #######        #####  #        #####  #     # #     # ######  #######  #####  
+
+exports.createUpgrades = async() => {
 	let return_data = await queries.findData({
 		model: "Gun"
 		,search_type: "findOne"
@@ -262,10 +333,23 @@ exports.seedDB = async() => {
             },
         ]
     }
-    await queries.createData(list);   
+    return Promise.all([queries.createData(list)]); 
+}
 
 
 
+
+    //  #####  ######  #######    #    ####### #######        #####   #####  #     #    #    ######   #####  
+    // #     # #     # #         # #      #    #             #     # #     # #     #   # #   #     # #     # 
+    // #       #     # #        #   #     #    #             #       #     # #     #  #   #  #     # #       
+    // #       ######  #####   #     #    #    #####   #####  #####  #     # #     # #     # #     #  #####  
+    // #       #   #   #       #######    #    #                   # #   # # #     # ####### #     #       # 
+    // #     # #    #  #       #     #    #    #             #     # #    #  #     # #     # #     # #     # 
+    //  #####  #     # ####### #     #    #    #######        #####   #### #  #####  #     # ######   #####  
+
+exports.createSquads = async() => {
+
+    return Promise.all([
     exports.createSquad(
         {
             type: "tactical squad",
@@ -278,7 +362,7 @@ exports.seedDB = async() => {
             max_size: 10,
         }
     )
-
+    ,
     exports.createSquad(
         {
             type: "heavy squad",
@@ -291,10 +375,7 @@ exports.seedDB = async() => {
             max_size: 5,
         }
     )
-
-
-    console.log("Seeding Complete")
-
+    ]);    
 }
 
 exports.createSquad = async(options) => {
@@ -363,6 +444,66 @@ exports.createSquad = async(options) => {
             },
         ]
     }
-    await queries.createData(list);     
+    return Promise.all([queries.createData(list)])    
+
+}
+
+
+//  #####  ######  #######    #    ####### #######       #######    #     #####  ####### ### ####### #     #  #####  
+// #     # #     # #         # #      #    #             #         # #   #     #    #     #  #     # ##    # #     # 
+// #       #     # #        #   #     #    #             #        #   #  #          #     #  #     # # #   # #       
+// #       ######  #####   #     #    #    #####   ##### #####   #     # #          #     #  #     # #  #  #  #####  
+// #       #   #   #       #######    #    #             #       ####### #          #     #  #     # #   # #       # 
+// #     # #    #  #       #     #    #    #             #       #     # #     #    #     #  #     # #    ## #     # 
+//  #####  #     # ####### #     #    #    #######       #       #     #  #####     #    ### ####### #     #  #####  
+
+
+exports.createFactions = async() => {
+
+
+    return Promise.all([
+        exports.createFaction(
+            {
+                name: "space marines",
+                description: "big, burley, bruising murder men",
+                squads: [{name:"heavy squad"},{name:"tactical squad"}],
+            }
+        )
+        ,
+        exports.createFaction(
+            {
+                name: "Test",
+                description: "test force",
+                squads: [{name:"heavy squad"}],
+            }
+        )        
+        ]);
+
+}
+
+exports.createFaction = async(options) => {
+
+	let squads = await queries.findData({
+		model: "Squad"
+		,search_type: "find"
+		,params: options.squads
+	})   
+
+    let squad_array = []
+    squads.forEach((squad) => {
+        squad_array.push(squad[0]._id)
+    })
+
+    let list = {
+        model: "Faction"
+        ,params: [
+           {
+                name: options.name,
+                description: options.description,
+                squads: squad_array,
+            },
+        ]
+    }
+    return Promise.all([queries.createData(list)])   
 
 }

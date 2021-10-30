@@ -7,6 +7,7 @@ models.Armour = require("./armour");
 models.Melee = require("./melee");
 models.Gun = require("./gun");
 
+models.Faction = require("./faction");
 models.Army = require("./army");
 models.Squad = require("./squad");
 models.Upgrade = require("./upgrade");

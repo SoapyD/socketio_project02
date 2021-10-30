@@ -187,19 +187,38 @@ exports.updateRoomConfig = (room, data) => {
 
 //SQUAD
 
-exports.getSquads = (params) => {
-    return models.Squad.find(params)
+exports.getFaction = (params) => {
+    
+    return models.Faction.find(params)
+
+    .populate({
+        path: "squads",
+        model: "Squad",
+        populate: {
+            path: 'upgrades',
+            model: "Upgrade"          
+        }
+    })  
+
     .populate({path: 'unit'})
     .populate({path: 'gun'})
     .populate({path: 'melee'})
     .populate({path: 'armour'})
-    .populate({
-        path: "upgrades",
-        populate: {
-            path: 'upgrade'     
-        }
-    })      
 }
+
+// exports.getSquads = (params) => {
+//     return models.Squad.find(params)
+//     .populate({path: 'unit'})
+//     .populate({path: 'gun'})
+//     .populate({path: 'melee'})
+//     .populate({path: 'armour'})
+//     .populate({
+//         path: "upgrades",
+//         populate: {
+//             path: 'upgrade'     
+//         }
+//     }) 
+// }
 
 
 

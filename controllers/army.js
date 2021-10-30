@@ -45,11 +45,12 @@ exports.getSingle = async(req, res) => {
 		]
 	})
 
-	let squads  = await utils.queries.getSquads({})
+	let faction  = await utils.queries.getFaction({_id: item[0].faction})
 
+	let upgrades = faction[0].squads[0].upgrades
 	// console.log(item[0])		
 
-	res.render("army/show",{army: item[0], squads: squads})	
+	res.render("army/show",{army: item[0], squads: faction[0].squads})	
 };
 
 //  #####  ####### #######       ####### ######  ### ####### 
@@ -83,8 +84,14 @@ exports.getEdit = async(req,res) => {
 // #     # #          #          #       #     # #    #  #     #       #     # #    #  #       #     #    #    #       
 //  #####  #######    #          #       ####### #     # #     #        #####  #     # ####### #     #    #    ####### 
 
-exports.getFormCreate = (req,res) => { 
-	res.render("army/new");
+exports.getFormCreate = async(req,res) => { 
+
+	let item = await utils.queries.findData({
+		model: "Faction"
+		,search_type: "find"
+	})
+
+	res.render("army/new", {factions: item[0]});
 };
 
 //  #####  ######  #######    #    ####### ####### 

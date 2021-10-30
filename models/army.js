@@ -13,6 +13,11 @@ const armySchema = new mongoose.Schema({
 
 	,cost: Number
 	
+	,faction: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: "Faction"
+	}
+
 	,squads: [{
 		name: String
 		,size: Number
