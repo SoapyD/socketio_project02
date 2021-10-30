@@ -47,6 +47,7 @@ exports.getSingle = async(req, res) => {
 
 	let squads  = await utils.queries.getSquads({})
 
+	// console.log(item[0])		
 
 	res.render("army/show",{army: item[0], squads: squads})	
 };
@@ -143,7 +144,6 @@ exports.update = async(req,res) => {
 		params: []
 	}
 	options.params.push(req.body.params)
-
 
 	let updated = await utils.queries.updateData(item[0], options)
 

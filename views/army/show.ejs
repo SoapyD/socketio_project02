@@ -473,13 +473,11 @@ let upgrade_data;
 
                 element = add_squad_function();   
                 test = "<%= squad.min_size %>";             
-                // element.find("[name*='name']").val("<%= squad.name %>")
-                // element.find("[name*='size']").val("<%= squad.size %>")
+                element.find("[name*='name']").val("<%= squad.name %>")
                 element.find("[name*='id']").val("<%= squad.id %>")
 
                 add_upgrades_table(element, <%= i %> + 1)
                 update_squad_size(element)
-                update_squad_cost(element)
 
                 clicks_list = element.find("[name*='upgrades']")
                 clicks_list.each((index) => {
@@ -493,6 +491,9 @@ let upgrade_data;
                         <% }) %>
                     <% } %>
                 })
+
+                element.find("[name*='size']").val("<%= squad.size %>")
+                update_squad_cost(element)                
 
             <% }) %>
         <% } %>
