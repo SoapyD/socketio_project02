@@ -181,14 +181,14 @@ let upgrade_data;
                         <div class="col-md-3 no-padding">
                             <div class="form-group">
                                 <p>Name:</p>
-                                <input class="form-control" type="text" name="[params][squads][][input_name]">
+                                <input class="form-control" type="text" name="[params][squads][`+number+`][name]">
                             </div> 
                         </div>  
 
                         <div class="col-md-5 no-padding">
                             <div class="form-group">                        
                                 <p>Type:</p>
-                                <select class="form-control" name="[params][squads][][name]">
+                                <select class="form-control" name="[params][squads][`+number+`][id]">
                                     <option value=""></option>
                                     <% squads.forEach((squad) => { %>
                                         <option value="<%= squad._id %>"><%= squad.name %></option>
@@ -201,14 +201,14 @@ let upgrade_data;
                         <div class="col-md-2 no-padding">
                             <div class="form-group">     
                                 <p>Squad Size:</p>
-                                <input class="form-control" type="number" min="0" max="0"  name="[params][squads][][size]">  
+                                <input class="form-control" type="number" min="0" max="0"  name="[params][squads][`+number+`][size]">  
                             </div>                         
                         </div>    
                         
                         <div class="col-md-2 no-padding">
                             <div class="form-group">     
                                 <p>Squad Cost:</p>
-                                <input class="form-control" type="text" name="[params][squads][][cost]" disabled>  
+                                <input class="form-control" type="text" name="[params][squads][`+number+`][cost]"  readonly="readonly">  
                             </div>                         
                         </div>                            
                         
@@ -240,17 +240,17 @@ let upgrade_data;
 
         let markup_element = $("#squad_"+number)
 
-        $(markup_element[0]).find('[name="[params][squads][][name]"]').change(() => {
+        $(markup_element[0]).find('[name*="[id]"]').change(() => {
             let search = $(markup_element[0]).find('[name="table_inner"]')
             if(search.length > 0){
                 search.remove();
             }
-            add_upgrades_table(markup_element)
+            add_upgrades_table(markup_element, number)
             update_squad_size(markup_element)
             update_squad_cost(markup_element)
         })
 
-        $(markup_element[0]).find('[name="[params][squads][][size]"]').change(() => {
+        $(markup_element[0]).find('[name*="[size]"]').change(() => {
             update_squad_cost(markup_element)
         })
     
@@ -278,9 +278,9 @@ let upgrade_data;
         return return_squad;
     }
 
-    function add_upgrades_table(markup_element) {
+    function add_upgrades_table(markup_element, number) {
 
-        let selected = markup_element.find("[name='[params][squads][][name]'] option:selected").val();
+        let selected = markup_element.find("[name*='[id]'] option:selected").val();
         let squad = get_squad(selected)
 
         let markup = 
@@ -314,12 +314,12 @@ let upgrade_data;
 
             //LOOP THROUGH SQUADS DATA AND CREATE AN OPTION FOR EACH
             if(squad.upgrades){
-                squad.upgrades.forEach((upgrade) => {
+                squad.upgrades.forEach((upgrade, i) => {
                     markup += 
                     `
                     <tr>
                         <td>
-                            <input type="checkbox" name="[params][squads][][upgrades][][selected]" value="0" class="center-click">
+                            <input type="checkbox" name="[params][squads][`+number+`][upgrades][`+i+`][id]" value="`+upgrade.id+`" class="center-click">
                         </td>
                             
                         <td>`+upgrade.name+`</td>
@@ -342,31 +342,32 @@ let upgrade_data;
 
         $(markup_element[0]).find('[name="table_space"]').append(markup)
 
-        $(markup_element[0]).find("[name='[params][squads][][upgrades][][selected]']").change(() => {
+
+        $(markup_element[0]).find("[name*='selected']").change(() => {
             update_squad_cost(markup_element)
         })    
 
     }
 
     update_squad_size = (markup_element) => {
-        let selected = markup_element.find("[name='[params][squads][][name]'] option:selected").val();
+        let selected = markup_element.find("[name*='[id]'] option:selected").val();
         let squad = get_squad(selected)
-        markup_element.find("[name='[params][squads][][size]']").val(squad.min_size); 
+        markup_element.find("[name*='[size]']").val(squad.min_size); 
     }
 
     update_squad_cost = (markup_element) => {
-        let selected = markup_element.find("[name='[params][squads][][name]'] option:selected").val();
+        let selected = markup_element.find("[name*='[id]'] option:selected").val();
         let squad = get_squad(selected)
 
-        let squad_size = markup_element.find("[name='[params][squads][][size]']").val();
-        markup_element.find("[name='[params][squads][][size]']").attr({
+        let squad_size = markup_element.find("[name*='[size]']").val();
+        markup_element.find("[name*='[size]']").attr({
             "min" : squad.min_size,
             "max" : squad.max_size,
         });
 
         let total_cost = squad.unit.cost * squad_size
 
-        let clicks_list = markup_element.find("[name='[params][squads][][upgrades][][selected]']")
+        let clicks_list = markup_element.find("[name*='selected']")
         
         clicks_list.each((index) => {
             let click = clicks_list[index];
@@ -379,7 +380,7 @@ let upgrade_data;
             }
         })
         
-        markup_element.find("[name='[params][squads][][cost]']").val(total_cost);         
+        markup_element.find("[name*='[cost]']").val(total_cost);         
     }
 
 // #     # ###  #####   #####  
@@ -394,17 +395,6 @@ let upgrade_data;
 	$(".add-squad").click(add_squad_function);	
 
 
-
-	// updateSortable = () => {
-    //     $( ".sortable" ).sortable({
-    //         stop: updateIndex,
-    //         opacity: 0.6,
-    //         placeholder: "ui-state-highlight",
-    //         forcePlaceholderSize: true
-    //     });
-    //     $( ".sortable" ).disableSelection(); //make sortable text area unselectable  
-    // }
-
 	function delete_parent_function(){
             
 		let parent = $(this).parent();
@@ -416,14 +406,39 @@ let upgrade_data;
     updateIndex = (e, ui) => {
 
         //LOOP THROUGH EACH SECTION, SUBSECTION AND PARAGRAPH AND RELABEL THEIR NAMES ACCORDINGLY 
-        let squads = $(".squad");
+        let squad_elements = $(".squad");
 
-        squads.each(function (i) {
+        squad_elements.each(function (i) {
 
             //RELABEL SECTION
+            let old_squad_id = $(this).attr("id");
+            let old_squad_name = "["+old_squad_id.replace("_","s][")+"]";            
+
             let squad_name = 'Squad ' + (i + 1)
             $(this).find('span')[0].innerText = squad_name
-            $(this).attr("id",'squad_' + (i + 1)); 
+
+            
+            $(this).attr("id",'squad_' + (i + 1));
+
+            let elements;
+            //UPDATE INPUT FIELD NAMES
+            elements =  $(this).find('input')
+            elements.each((index) => {
+                let element_name = elements[index].name;
+                let id = i + 1
+                element_name = element_name.replace(old_squad_name,"[squads]["+id+"]")
+                elements[index].name = element_name;
+            })
+
+            //UPDATE SELECT FIELD NAMES
+            elements =  $(this).find('select')
+            elements.each((index) => {
+                let element_name = elements[index].name;
+                let id = i + 1
+                element_name = element_name.replace(old_squad_name,"[squads]["+id+"]")
+                elements[index].name = element_name;
+            })            
+            
         })
 
     }    

@@ -137,12 +137,14 @@ exports.update = async(req,res) => {
 		]
 	})
 
-	let updated = await utils.queries.updateData(item[0], {
-		model: "Army"
-		,params: [
-			req.body.params
-		]
-	})
+	let options = {
+		model: "Army",
+		params: []
+	}
+	options.params.push(req.body.params)
+
+
+	let updated = await utils.queries.updateData(item[0], options)
 
 	res.redirect("/army/" +req.params.id)	
 };
