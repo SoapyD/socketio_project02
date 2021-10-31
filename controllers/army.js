@@ -37,20 +37,11 @@ exports.getSingle = async(req, res) => {
 
 	let id = req.params.id;
 
-	let item = await utils.queries.findData({
-		model: "Army"
-		,search_type: "findOne"
-		,params: [
-			{_id: id}
-		]
-	})
+	let item = await utils.queries.getArmy({_id: id})		
 
-	let faction  = await utils.queries.getFaction({_id: item[0].faction})
+	let faction  = await utils.queries.getFaction({_id: item.faction._id})
 
-	let upgrades = faction[0].squads[0].upgrades
-	// console.log(item[0])		
-
-	res.render("army/show",{army: item[0], squads: faction[0].squads})	
+	res.render("army/show",{army: item, squads: faction.squads})	
 };
 
 //  #####  ####### #######       ####### ######  ### ####### 
@@ -65,15 +56,14 @@ exports.getEdit = async(req,res) => {
 
 	let id = req.params.id;
 
-	let item = await utils.queries.findData({
-		model: "Army"
-		,search_type: "findOne"
-		,params: [
-			{_id: id}
-		]
+	let item = await utils.queries.getArmy({_id: id})	
+
+	let factions = await utils.queries.findData({
+		model: "Faction"
+		,search_type: "find"
 	})
 
-	res.render("army/edit", {army:item[0]});	
+	res.render("army/edit", {army:item, factions: factions[0]});	
 };
 
 //  #####  ####### #######       ####### ####### ######  #     #        #####  ######  #######    #    ####### ####### 

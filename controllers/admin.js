@@ -1,6 +1,6 @@
 const passport = require("passport");
 const User = require("../models/user");
-
+const utils = require("../utils");
 
 
 exports.getLanding = (req, res) => {
@@ -62,10 +62,15 @@ exports.logoutUser = (req,res) => {
 }
 
 
-exports.getRoom = (req,res) => {
+exports.getRoom = async(req,res) => {
+
+	let armies = await utils.queries.getArmy({})		
+
+
 	let data = {
+		armies: armies,
 		address: process.env.SOCKET_ADDRESS,
 		instance_type: process.env.INSTANCE_TYPE
 	}
-	res.render("room", data);		
+	res.render("room", data);
 }

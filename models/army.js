@@ -21,12 +21,12 @@ const armySchema = new mongoose.Schema({
 	,squads: [{
 		name: String
 		,size: Number
-		,id: {
+		,squad: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "Squad"
 		}
 		,upgrades: [{
-			id: {
+			upgrade: {
 				type: mongoose.Schema.Types.ObjectId,
 				ref: "Upgrade"
 			}

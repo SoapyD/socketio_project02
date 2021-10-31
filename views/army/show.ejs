@@ -188,7 +188,7 @@ let upgrade_data;
                         <div class="col-md-5 no-padding">
                             <div class="form-group">                        
                                 <p>Type:</p>
-                                <select class="form-control" name="[params][squads][`+number+`][id]" required>
+                                <select class="form-control" name="[params][squads][`+number+`][squad]" required>
                                     <option value=""></option>
                                     <% squads.forEach((squad) => { %>
                                         <option value="<%= squad._id %>"><%= squad.name %></option>
@@ -240,7 +240,7 @@ let upgrade_data;
 
         let markup_element = $("#squad_"+number)
 
-        $(markup_element[0]).find('[name*="[id]"]').change(() => {
+        $(markup_element[0]).find('[name*="[squad]"]').change(() => {
             let search = $(markup_element[0]).find('[name="table_inner"]')
             if(search.length > 0){
                 search.remove();
@@ -275,7 +275,7 @@ let upgrade_data;
 
     function add_upgrades_table(markup_element, number) {
 
-        let selected = markup_element.find("[name*='[id]'] option:selected").val();
+        let selected = markup_element.find("[name*='[squad]'] option:selected").val();
         let squad = get_squad(selected)
 
         let markup = 
@@ -315,7 +315,7 @@ let upgrade_data;
                         `
                         <tr>
                             <td>
-                                <input type="checkbox" name="[params][squads][`+number+`][upgrades][`+i+`][id]" value="`+upgrade.id+`" class="center-click">
+                                <input type="checkbox" name="[params][squads][`+number+`][upgrades][`+i+`][upgrade]" value="`+upgrade.id+`" class="center-click">
                             </td>
                                 
                             <td>`+upgrade.name+`</td>
@@ -355,7 +355,7 @@ let upgrade_data;
 //  #####  #       ######  #     #    #    #######  #####  
 
     update_squad_size = (markup_element) => {
-        let selected = markup_element.find("[name*='[id]'] option:selected").val();
+        let selected = markup_element.find("[name*='[squad]'] option:selected").val();
         let squad = get_squad(selected)
         if(squad){
             markup_element.find("[name*='[size]']").val(squad.min_size); 
@@ -363,7 +363,7 @@ let upgrade_data;
     }
 
     update_squad_cost = (markup_element) => {
-        let selected = markup_element.find("[name*='[id]'] option:selected").val();
+        let selected = markup_element.find("[name*='[squad]'] option:selected").val();
         let squad = get_squad(selected)
 
         if(squad){
@@ -472,8 +472,8 @@ let upgrade_data;
 
                 element = add_squad_function();   
                 test = "<%= squad.min_size %>";             
-                element.find("[name*='name']").val("<%= squad.name %>")
-                element.find("[name*='id']").val("<%= squad.id %>")
+                element.find("[name*='[name]']").val("<%= squad.name %>")
+                element.find("[name*='[squad]']").val("<%= squad.squad._id %>")
 
                 add_upgrades_table(element, <%= i %> + 1)
                 update_squad_size(element)
@@ -484,7 +484,7 @@ let upgrade_data;
                     <% if(squad.upgrades) { %>
                         <% squad.upgrades.forEach((upgrade) => { %>
 
-                            if(element.value === "<%= upgrade.id %>"){
+                            if(element.value === "<%= upgrade.upgrade._id %>"){
                                 element.checked = true;
                             }
                         <% }) %>

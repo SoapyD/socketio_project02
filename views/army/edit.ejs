@@ -16,6 +16,27 @@
 					<input class="form-control" type="text" name="params[name]" placeholder="name" value="<%= army.name %>">
 				</div>
 
+				<div class="form-group">                        
+					<p>Faction:</p>
+					<select class="form-control" name="params[faction]" required>
+						<option value=""></option>
+						<% factions.forEach((faction) => { %>
+							<option value="<%= faction._id %>" 
+								<% if(army.faction.name === faction.name) { %>
+									selected
+								<% } %>							
+							>
+								<%= faction.name %>
+							</option>
+						<% }) %>
+					</select>                                
+				</div> 
+
+				<div class="form-group">     
+					<p>Army Total Cost:</p>
+					<input class="form-control" type="text" name="params[cost]" value="<%= army.cost %>" required>
+				</div>
+
 				<div class="form-group">					
 					<button class="btn btn-lg btn-primary btn-block">
 						Submit
@@ -23,7 +44,7 @@
 				</div>				
 
 			</form>
-			<a href="/army">Go Back</a>
+			<a href="/army/<%= army._id %>">Go Back</a>
 		</div>
 		
 	</div>

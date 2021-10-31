@@ -194,16 +194,54 @@ exports.getFaction = (params) => {
     .populate({
         path: "squads",
         model: "Squad",
-        populate: {
-            path: 'upgrades',
-            model: "Upgrade"          
-        }
+        populate: [
+            {path: 'upgrades',model: "Upgrade"},
+            {path: 'unit'},
+            {path: 'gun'},
+            {path: 'melee'},
+            {path: 'armour'},
+        ]
+        // populate: {
+        //     path: 'unit'
+        // }          
     })  
 
-    .populate({path: 'unit'})
-    .populate({path: 'gun'})
-    .populate({path: 'melee'})
-    .populate({path: 'armour'})
+    // .populate({path: 'unit'})
+    // .populate({path: 'gun'})
+    // .populate({path: 'melee'})
+    // .populate({path: 'armour'})
+}
+
+exports.getArmy = (params) => {
+
+    return models.Army.find(params)
+    .populate({path: 'faction'})
+    .populate(
+        // [
+        {
+            path: "squads",
+            populate: [
+            {
+                path: "squad",
+                // model: "Squad",
+                populate: [
+                        {path: 'unit'},  
+                        {path: 'gun'},
+                        {path: 'melee'},
+                        {path: 'armour'},
+                    ]
+            },
+            {
+                path: 'upgrades',
+                populate: {
+                    path: "upgrade"
+                }          
+            }]
+        },
+        
+        // ]
+    )  
+
 }
 
 // exports.getSquads = (params) => {
