@@ -8,9 +8,13 @@ exports.findRoom = (id) => {
         .populate({path: 'users'})
         .populate({
             path: "forces",
-            populate: {
-                path: 'user_id'     
-            }
+            // populate: {
+            //     path: 'user_id'     
+            // }
+            populate: [{
+                path: "army_list",
+                model: "Army"
+            }]            
         })        
         .exec()
     }
@@ -47,7 +51,15 @@ exports.findRoomsWithSocket = (socket_id) => {
     return Room.find({sockets: socket_id})
 }
 
-exports.createRoom = (data, socket_id) => {
+exports.createRoom = async(data, socket_id) => {
+
+	let armies = await exports.findData({
+		model: "Army"
+		,search_type: "find"
+		// ,params: [{_id: id}]
+	})
+
+
 
     let author = {
 		id: data.user_id,
@@ -77,6 +89,7 @@ exports.createRoom = (data, socket_id) => {
         }
         if(i === 0){
             force.user_id = data.user_id
+            force.army_list = armies[0]
         }
 		forces.push(force)
 	}

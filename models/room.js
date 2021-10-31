@@ -39,8 +39,19 @@ const roomSchema = new mongoose.Schema({
 		}		
 		,side: {type: Number, default: -1}
 		,start: {type: Number, default: -1}
-		,army: {type: Number, default: -1}
-		,army_id: {type: String, default: ""}
+		// ,army: {type: Number, default: -1}
+		// ,army_id: {type: String, default: ""}
+		,army_list: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "Army"
+			}			
+		]
+		,army_selected:
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Army"
+		}			
 		,ready: {type: Boolean, default: false}
 	}]
 	

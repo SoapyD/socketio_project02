@@ -64,11 +64,7 @@ exports.logoutUser = (req,res) => {
 
 exports.getRoom = async(req,res) => {
 
-	let armies = await utils.queries.getArmy({})		
-
-
 	let data = {
-		armies: armies,
 		address: process.env.SOCKET_ADDRESS,
 		instance_type: process.env.INSTANCE_TYPE
 	}

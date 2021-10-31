@@ -302,13 +302,24 @@ exports.joinRoom = async(network, data)  => {
 			//send room info back to socket
 			network.io.to(network.socket.id).emit('message_client', return_data);
 			
-			saved_room.sockets.forEach((socket)=> {
-				if(socket !== network.socket.id){
-					return_data.function = "updateRoomInfo";
-					return_data.message = "Update Room Info";
-					network.io.to(socket).emit('message_client', return_data);
-				}	
-			})
+
+			//SEND A USER AND FORCE DATA UPDATE TO ALL OTHER PLAYERS EXCEPT SENDER
+			return_data = {
+                functionGroup: "connFunctions"
+                ,function: "updateRoomInfo"
+                ,message: "Update Room Info"
+				,users: saved_room.users
+				,forces: saved_room.forces								
+			}
+			network.socket.to(data.room_name).emit('message_client', return_data);
+
+			// saved_room.sockets.forEach((socket)=> {
+			// 	if(socket !== network.socket.id){
+			// 		return_data.function = "updateRoomInfo";
+			// 		return_data.message = "Update Room Info";
+			// 		network.io.to(socket).emit('message_client', return_data);
+			// 	}	
+			// })
 		}
 		
 		

@@ -109,7 +109,7 @@ var ArmySelectUIScene = new Phaser.Class({
 					type: "save config",
 					subtype: "army",
 					player_number: gameFunctions.params.player_number,
-					value: parseInt(event.target.value),
+					value: event.target.value,
 					message: "set army for player "+gameFunctions.params.player_number
 				}				
 				connFunctions.messageServer(data)
@@ -174,10 +174,21 @@ var ArmySelectUIScene = new Phaser.Class({
 			if(i < gameFunctions.params.users.length){
 				player_name = gameFunctions.params.users[i].username
 			}
+
+			let forces_list = [];
+			if(gameFunctions.params.forces[i].army_list){
+				gameFunctions.params.forces[i].army_list.forEach((army) => {
+					forces_list.push({
+						name: army.name,
+						id: army._id
+					})
+				})
+			}
+
 			let options = {
 				name: player_name,
 				i: i,
-				armies: ['Army 1'],
+				armies: forces_list,
 				sides: gameFunctions.params.max_sides,
 				starts: 4
 			}
@@ -239,7 +250,7 @@ ArmySelectUIScene.addPlayer = (options) => {
 			
 	let dropdown_markup = "";
 	options.armies.forEach((army, i) => {
-		dropdown_markup += '<option value="'+i+'">'+army+'</option>'
+		dropdown_markup += '<option value="'+army.id+'">'+army.name+'</option>'
 	})
 
 	let dropdown_sides = "";
@@ -300,7 +311,8 @@ ArmySelectUIScene.updatePlayers = () => {
 
 ArmySelectUIScene.updateSelections = (options) => {
 	let id = '#'+options.player_number+'_'+options.subtype+'-select';
-	$(id).val(parseInt(options.value));	
+	// $(id).val(parseInt(options.value));
+	$(id).val(options.value);	
 }
 
 

@@ -1,6 +1,15 @@
 const models = require("../models");
 const queries = require("./queries");
 
+
+exports.resetRooms = async() => {
+    let list = [
+        {model: "Room"}, 
+    ]   
+    await queries.removeData(list);   
+    console.log("Rooms Reset") 
+}
+
 exports.seedDB = async() => {
 
     //REMOVE ALL DATA FOR MODELS WE WANT TO RESET
