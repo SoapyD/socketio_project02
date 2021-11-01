@@ -300,13 +300,18 @@ ArmySelectUIScene.addPlayer = (options) => {
 }
 
 ArmySelectUIScene.updatePlayers = () => {
+
+	//UPDATE PLAYER INFO
 	gameFunctions.params.users.forEach((user, i) => {
+		//UPDATE PLAYER ELEMENTS
 		let id = '#'+i+'_player';
 		let elements = $(id);
 		if(elements.length > 0){
 			elements.text(user.username);
 		}
 	})
+
+	//NEED TO ADD IN A BIT HERE THAT'LL UPDATE THE FORCES DROPDOWN
 }
 
 ArmySelectUIScene.updateSelections = (options) => {

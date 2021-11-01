@@ -235,6 +235,7 @@ exports.joinRoom = async(network, data)  => {
                     }
                 }
                 else{
+					/*
                     //ADD USER TO ROOM THEN RETURN DATA
 					room.users.push(data.user_id);
 
@@ -244,7 +245,10 @@ exports.joinRoom = async(network, data)  => {
 					room.forces[player_id].user_id = data.user_id;
                     room.sockets.push(network.socket.id);
                     saved_room = await room.save()	
-					
+					*/
+					let returned_rooms = await queriesUtil.joinRoom(network, data, room)
+					saved_room = returned_rooms[0];
+
                     return_data.parameters.message = "Room Joined. You're player number is : "+saved_room.users.indexOf(data.user_id)   
                     
 					network.io.to(network.socket.id).emit("message_client", return_data) 
@@ -273,7 +277,13 @@ exports.joinRoom = async(network, data)  => {
 				next_scene = "GameScene"
 			}
 
-			let player_number = saved_room.users.indexOf(data.user_id)			
+			// let player_number = saved_room.users.indexOf(data.user_id)
+			let player_number;
+			saved_room.users.forEach((user, i) => {
+				if(user.id === data.user_id){
+					player_number = i;
+				}
+			})			
 			//SEARCH FOR ROOM TO GET LINKED USER DATA
 			saved_room = await queriesUtil.findRoom(saved_room._id)					
 			
