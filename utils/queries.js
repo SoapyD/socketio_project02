@@ -8,12 +8,12 @@ exports.findRoom = (id) => {
         .populate({path: 'users'})
         .populate({
             path: "forces",
-            // populate: {
-            //     path: 'user_id'     
-            // }
             populate: [{
                 path: "army_list",
                 model: "Army"
+            },
+            {
+                path: "user"
             }]            
         })        
         .exec()
@@ -28,13 +28,7 @@ exports.findRooms = (room_name, include_users=true) => {
     try{
 		if(include_users === true){
             return Room.find({room_name: room_name})
-            .populate({path: 'users'})
-            // .populate({
-            //     path: "forces",
-            //     populate: {
-            //         path: 'user_id'     
-            //     }
-            // })            
+            .populate({path: 'users'})          
             .exec();
 		}else{
         	return Room.find({room_name: room_name})	
@@ -69,16 +63,15 @@ exports.createRoom = async(data, socket_id) => {
 	let armies = await exports.findData({
 		model: "Army"
 		,search_type: "find"
-		// ,params: [{_id: id}]
 	})
 
     let author = {
-		id: data.user_id,
+		id: data.user,
 		userName: data.user_name
     }
     
     let users = [];
-    users.push(data.user_id);
+    users.push(data.user);
 
     let sockets = [];
     sockets.push(socket_id);
@@ -95,11 +88,10 @@ exports.createRoom = async(data, socket_id) => {
 	let forces = [];
 	for(let i=0;i<config.max_players;i++){
 		let force = {
-            // user_id: data.user_id,
 			player_number: i
         }
         if(i === 0){
-            force.user_id = data.user_id
+            force.user = data.user
             force.army_list = armies[0]
         }
 		forces.push(force)
@@ -137,16 +129,15 @@ exports.joinRoom = async(network, data, room) => {
 	let armies = await exports.findData({
 		model: "Army"
 		,search_type: "find"
-		// ,params: [{_id: id}]
 	})
 
     //ADD USER TO ROOM THEN RETURN DATA
-    room.users.push(data.user_id);
+    room.users.push(data.user);
 
-    let player_id = room.users.indexOf(data.user_id);
+    let player_id = room.users.indexOf(data.user);
 
     //ADD USER ID TO THE FORCES LIST
-    room.forces[player_id].user_id = data.user_id;
+    room.forces[player_id].user = data.user;
     room.forces[player_id].army_list = armies[0];
     room.sockets.push(network.socket.id);
     saved_room = await room.save()	
@@ -271,6 +262,25 @@ exports.getFaction = (params) => {
     // .populate({path: 'gun'})
     // .populate({path: 'melee'})
     // .populate({path: 'armour'})
+}
+
+exports.getArmies = (options) => {
+
+    let promises = [];
+
+    let params = [];
+    options.forces.forEach((force) => {
+        params = {
+            _id: force.army
+        }
+        promises.push(exports.getArmy())
+    })
+
+    return Promise.all(promises)
+    .catch((err) => {
+        console.log(err)
+    })  
+
 }
 
 exports.getArmy = (params) => {

@@ -32,14 +32,18 @@ const roomSchema = new mongoose.Schema({
 	
 	,forces: [{
 		player_number: Number
-		,user_id: //{type: String, default: ""}
+		,user: //{type: String, default: ""}
 		{
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "User"
 		}		
 		,side: {type: Number, default: -1}
 		,start: {type: Number, default: -1}
-		// ,army: {type: Number, default: -1}
+		,army:
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Army"
+		}		
 		// ,army_id: {type: String, default: ""}
 		,army_list: [
 			{

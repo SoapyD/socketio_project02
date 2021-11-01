@@ -797,7 +797,7 @@ GameUIScene.advanceSide = () => {
 							alpha: 1
 						},
 						text: [
-							{id: i,label: force.user_id.username, x: 1, y: 1, height: 2, width: 2, align: "center", font: {height: 18}},
+							{id: i,label: force.user.username, x: 1, y: 1, height: 2, width: 2, align: "center", font: {height: 18}},
 						]
 					})
 

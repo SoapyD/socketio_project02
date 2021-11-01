@@ -58,7 +58,13 @@ var ArmySelectUIScene = new Phaser.Class({
 		}		
 
 		
-		
+		// ####### #     # ####### #     # #######       ######  #     # ####### ####### ####### #     #  #####  
+		// #       #     # #       ##    #    #          #     # #     #    #       #    #     # ##    # #     # 
+		// #       #     # #       # #   #    #          #     # #     #    #       #    #     # # #   # #       
+		// #####   #     # #####   #  #  #    #    ##### ######  #     #    #       #    #     # #  #  #  #####  
+		// #        #   #  #       #   # #    #          #     # #     #    #       #    #     # #   # #       # 
+		// #         # #   #       #    ##    #          #     # #     #    #       #    #     # #    ## #     # 
+		// #######    #    ####### #     #    #          ######   #####     #       #    ####### #     #  #####  		
         
         //ADD CLICK FUNCTIONALITY TO THE CHARACTER SELECTOR
         character_form.on('click', function (event) {
@@ -122,9 +128,9 @@ var ArmySelectUIScene = new Phaser.Class({
             {        
                 let data = {
 					functionGroup: "socketFunctions",  
-					function: "sceneTransition",
+					function: "startGame",
 					scene: "GameScene",
-					room_name: gameFunctions.params.room_name,
+					room_id: gameFunctions.params.room_id,
 					message: "Starting Game Scene"
                 }
                     
@@ -146,27 +152,14 @@ var ArmySelectUIScene = new Phaser.Class({
 			});
 		
 		
-		
-		// let sheet_functions = {}
-		// sheet_functions.add_player = (options) => {
-			
-		// 	let dropdown_markup = "";
-		// 	options.armies.forEach((army, i) => {
-		// 		dropdown_markup += '<option value="'+i+'">'+army+'</option>'
-		// 	})
-			
-		// 	let markup = `
-		// 	<label id="`+options.i+`_player">`+options.name+`</label>
-
-		// 	<select name="characters" id="`+options.i+`_character-select">
-		// 		<option value="">--Please choose a force--</option>
-		// 		`+dropdown_markup+`
-		// 	</select>
-		// 	`
-			
-		// 	$(".players").append(markup)
-		// 	}
-		
+	
+//  #####  ####### ####### #     # ######        #     #    #    #       #     # #######  #####  
+// #     # #          #    #     # #     #       #     #   # #   #       #     # #       #     # 
+// #       #          #    #     # #     #       #     #  #   #  #       #     # #       #       
+//  #####  #####      #    #     # ######  ##### #     # #     # #       #     # #####    #####  
+//       # #          #    #     # #              #   #  ####### #       #     # #             # 
+// #     # #          #    #     # #               # #   #     # #       #     # #       #     # 
+//  #####  #######    #     #####  #                #    #     # #######  #####  #######  #####  		
 		
 		for(let i=0;i<gameFunctions.params.max_players;i++){
 			let player_num = i+1
@@ -246,6 +239,14 @@ var ArmySelectUIScene = new Phaser.Class({
 });
 
 
+//    #    ######  ######        # #     # ######  ######     #    ####### #######       ######  #          #    #     # ####### ######  
+//   # #   #     # #     #      #  #     # #     # #     #   # #      #    #             #     # #         # #    #   #  #       #     # 
+//  #   #  #     # #     #     #   #     # #     # #     #  #   #     #    #             #     # #        #   #    # #   #       #     # 
+// #     # #     # #     #    #    #     # ######  #     # #     #    #    #####   ##### ######  #       #     #    #    #####   ######  
+// ####### #     # #     #   #     #     # #       #     # #######    #    #             #       #       #######    #    #       #   #   
+// #     # #     # #     #  #      #     # #       #     # #     #    #    #             #       #       #     #    #    #       #    #  
+// #     # ######  ######  #        #####  #       ######  #     #    #    #######       #       ####### #     #    #    ####### #     # 
+
 ArmySelectUIScene.addPlayer = (options) => {
 			
 	let dropdown_markup = "";
@@ -320,6 +321,14 @@ ArmySelectUIScene.updateSelections = (options) => {
 	$(id).val(options.value);	
 }
 
+
+//  #####  #     # #######  #####  #    #        #####  ####### #     # ######  #       ####### ####### ####### 
+// #     # #     # #       #     # #   #        #     # #     # ##   ## #     # #       #          #    #       
+// #       #     # #       #       #  #         #       #     # # # # # #     # #       #          #    #       
+// #       ####### #####   #       ###    ##### #       #     # #  #  # ######  #       #####      #    #####   
+// #       #     # #       #       #  #         #       #     # #     # #       #       #          #    #       
+// #     # #     # #       #     # #   #        #     # #     # #     # #       #       #          #    #       
+//  #####  #     # #######  #####  #    #        #####  ####### #     # #       ####### #######    #    ####### 
 
 ArmySelectUIScene.checkComplete = () => {
 	let value_count = 0;

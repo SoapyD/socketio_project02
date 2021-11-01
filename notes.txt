@@ -24,21 +24,26 @@ SETUP
 /////////////////////////////////////////
 
 -DONE -Move unit and weapon definitions to the server and pass them into the room as the ejs file loads
-
 -DONE -Flesh out the army builder so players can build a list from a redimentary force list
+-DONE -Pass the list of armies to the room so they can be used.
+
+
+-Use the armies generated and selected to load into the game.
+    -Replace local coding for unit definitions
+
+-Move "local game testing" process to server so it passes force information to the room via the loading of the room
+    -pass the data we have to setup in the creation of the gameloop to the server
 
 -Show only armies created by an author to show on their armies page.
 
--Pass the list of armies to the room so they can be used.
-    -Set a number of default armies and use author name to check for armies created by that user
+
+-Set a number of default armies and use author name to check for armies created by that user
 
 -add in a step to new games that allows players to setup units
     -Also add in a function to automatically place units
     -Load armies names into selection lists
     -Pass the name of the armies available to a player to all other users
 
--Use the armies generated and selected to load into the game.
-    -Replace local coding for unit definitions
 
 
 

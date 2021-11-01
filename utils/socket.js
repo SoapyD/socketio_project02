@@ -116,7 +116,7 @@ exports.createRoom = async(network, data)  => {
 
             //CHECK TO SEE IF THE USER IS ALREADY IN THE ROOM OR NOT IN THE ROOM BUT ABLE TO JOIN IT
             let room = rooms[0];
-            if(room.users.indexOf(data.user_id) > -1){
+            if(room.users.indexOf(data.user) > -1){
                 if(room.sockets.indexOf(network.socket.id) > -1){
                     return_data.parameters.message = "You're already in this room";							
                 }else{
@@ -134,7 +134,7 @@ exports.createRoom = async(network, data)  => {
         else{
             let room = await queriesUtil.createRoom(data, network.socket.id)
 			
-			let player_number = room.users.indexOf(data.user_id)
+			let player_number = room.users.indexOf(data.user)
 			
 			//SEARCH FOR ROOM TO GET LINKED USER DATA
 			room = await queriesUtil.findRoom(room._id)	
@@ -149,7 +149,6 @@ exports.createRoom = async(network, data)  => {
                 ,message: "Room Info"
 				,users: room.users
 				,forces: room.forces
-				// ,user_name: data.user_name
 				,room_name: data.room_name
 				,room_id: room._id
 				,max_players: room.config.max_players
@@ -220,7 +219,7 @@ exports.joinRoom = async(network, data)  => {
             }
             else{
                 //IF USER IS A MEMBER OF THE ROOM
-                if(room.users.indexOf(data.user_id) > -1){
+                if(room.users.indexOf(data.user) > -1){
                     //IF THE USER IS STILL IN THE ROOM
                     if(room.sockets.indexOf(network.socket.id) > -1){
                         return_data.parameters.message = "You're already in this room";
@@ -235,21 +234,11 @@ exports.joinRoom = async(network, data)  => {
                     }
                 }
                 else{
-					/*
-                    //ADD USER TO ROOM THEN RETURN DATA
-					room.users.push(data.user_id);
 
-					let player_id = room.users.indexOf(data.user_id);
-
-					//ADD USER ID TO THE FORCES LIST
-					room.forces[player_id].user_id = data.user_id;
-                    room.sockets.push(network.socket.id);
-                    saved_room = await room.save()	
-					*/
 					let returned_rooms = await queriesUtil.joinRoom(network, data, room)
 					saved_room = returned_rooms[0];
 
-                    return_data.parameters.message = "Room Joined. You're player number is : "+saved_room.users.indexOf(data.user_id)   
+                    return_data.parameters.message = "Room Joined. You're player number is : "+saved_room.users.indexOf(data.user)   
                     
 					network.io.to(network.socket.id).emit("message_client", return_data) 
 
@@ -277,10 +266,9 @@ exports.joinRoom = async(network, data)  => {
 				next_scene = "GameScene"
 			}
 
-			// let player_number = saved_room.users.indexOf(data.user_id)
 			let player_number;
 			saved_room.users.forEach((user, i) => {
-				if(user.id === data.user_id){
+				if(user.id === data.user){
 					player_number = i;
 				}
 			})			
@@ -297,7 +285,6 @@ exports.joinRoom = async(network, data)  => {
 				,forces: saved_room.forces
 				,config: saved_room.config
 				,units: saved_room.units
-				// ,user_name: data.user_name
 				,room_name: data.room_name
 				,room_id: saved_room._id
 				,max_players: saved_room.config.max_players
@@ -372,16 +359,31 @@ exports.messageAll = (network, data) => {
 	network.io.in(data.room_name).emit("message_client", return_data)     	
 }
 
+// exports.selectArmy = (network, data) => {
+// 	let return_data = {
+// 		functionGroup: "connFunctions",
+// 		function: "test",
+// 		message: "Army Selected"
+// 	}	
+	
+// 	network.io.in(data.room_name).emit("message_client", return_data)     	
+// }
 
-exports.selectArmy = (network, data) => {
+exports.startGame = async(network, data) => {
+
+	//GET ROOM & ARMIES
+	let room = await queriesUtil.findRoom(data.room_id)			
+	let armies = await queriesUtil.getArmies({forces: room.forces})
 
 	let return_data = {
 		functionGroup: "connFunctions",
-		function: "test",
-		message: "Army Selected"
+		function: "sceneTransition",
+		scene: data.scene,
+		armies: armies,
+		message: data.message
 	}	
 	
-	network.io.in(data.room_name).emit("message_client", return_data)     	
+	network.io.in(room.room_name).emit("message_client", return_data)	
 }
 
 exports.sceneTransition = (network, data) => {
@@ -480,20 +482,23 @@ exports.updateRoom = async(network, data) => {
 						
 						break;
 					case 'save config':
-						room = await queriesUtil.updateRoomConfig(room, data)
-						
-						return_data = {
-							functionGroup: "connFunctions",
-							function: "updateRoomInfo",
-							message: "selection updated",
-							parameters: {
-								player_number: data.player_number,
-								subtype: data.subtype,
-								value: data.value
-							}
-						}	
-
-						network.io.in(data.room_name).emit("message_client", return_data)						
+						if(data.value !== -1 && data.value !== '-1'){
+							room = await queriesUtil.updateRoomConfig(room, data)
+							
+	
+							return_data = {
+								functionGroup: "connFunctions",
+								function: "updateRoomInfo",
+								message: "selection updated",
+								parameters: {
+									player_number: data.player_number,
+									subtype: data.subtype,
+									value: data.value
+								}
+							}	
+	
+							network.io.in(data.room_name).emit("message_client", return_data)						
+						}
 						break;	
 				}
 				

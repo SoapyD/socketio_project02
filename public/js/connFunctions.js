@@ -34,7 +34,7 @@ connFunctions.checkMessages = (socket) => {
             functionGroup: "socketFunctions",  
             function: "createRoom",
             
-            user_id: document.querySelector('#userID').value,     
+            user: document.querySelector('#userID').value,     
             user_name: document.querySelector('#userName').value,
             room_name: document.querySelector('#roomName').value,
             password: document.querySelector('#password').value,
@@ -68,7 +68,7 @@ connFunctions.checkMessages = (socket) => {
             functionGroup: "socketFunctions",  
             function: "joinRoom",
             
-            user_id: document.querySelector('#userID').value,     
+            user: document.querySelector('#userID').value,     
             user_name: document.querySelector('#userName').value,
             room_name: document.querySelector('#roomName').value,
             password: document.querySelector('#password').value,
@@ -182,6 +182,13 @@ connFunctions.checkMessages = (socket) => {
 
 connFunctions.sceneTransition = (data) => {
     // console.log(data.message)
+
+	//save any data that's been passed back from the server
+	if(data.armies){
+		data.armies.forEach((army, i) => {
+			gameFunctions.params.forces[i].army = army
+		})
+	}
 
 	
 	if(gameFunctions.current_uiscene){

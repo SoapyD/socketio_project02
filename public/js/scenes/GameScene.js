@@ -21,8 +21,8 @@ var GameScene = new Phaser.Class({
 			let force;
 			force = {
 				side: 0,
-				user_id: {
-					username: "Test"
+				user: {
+					userName: "Test"
 				}
 				,ready: false
 			}
@@ -30,8 +30,8 @@ var GameScene = new Phaser.Class({
 
 			force = {
 				side: 1,
-				user_id: {
-					username: "Test2"
+				user: {
+					userName: "Test2"
 				}
 				,ready: false				
 			}
