@@ -22,7 +22,7 @@ var GameScene = new Phaser.Class({
 			force = {
 				side: 0,
 				user: {
-					userName: "Test"
+					username: "Test"
 				}
 				,ready: false
 			}
@@ -31,7 +31,7 @@ var GameScene = new Phaser.Class({
 			force = {
 				side: 1,
 				user: {
-					userName: "Test2"
+					username: "Test2"
 				}
 				,ready: false				
 			}
@@ -304,7 +304,7 @@ var GameScene = new Phaser.Class({
 		if(gameFunctions.units_preload.length === 0){
 			// GameScene.seed();
 			
-
+			/*
 			switch(instance_type){
 				case "DEV":
 					GameScene.seed3();
@@ -337,6 +337,8 @@ var GameScene = new Phaser.Class({
 					}
 					break;
 			}			
+			*/
+
 			
 		}
 
