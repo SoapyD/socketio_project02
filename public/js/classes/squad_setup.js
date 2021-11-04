@@ -3,51 +3,37 @@
 const squad_setup = class {
 	constructor(options) {	
 		
-        this.scene = options.scene;
-		this.player = options.player;
-		this.side = options.side;
-		this.angle = options.angle;
-		this.squad = 0;
+		this.scene = options.scene;
+		this.unit_list = options.unit_list;
 		this.forces = options.forces;
+		this.tile_size = options.tile_size;
 
-		// this.unit_list = options.unit_list
-		// this.tile_size = options.tile_size,
-		// this.unit_types = options.unit_types,
-		// this.projectile_weapon_types = options.projectile_weapon_types,
-		// this.combat_weapon_types = options.combat_weapon_types,
-		// this.armour_types = options.armour_types			
+		this.placeSquads();
 	}
-	
-	
-	copyObject(return_obj, object) {
-		for (const element in object){
-			return_obj[element] = object[element];
-		}
-	}	
 
 
 	placeSquads(){
-		let squad;
 
 		//LOOP THROUGH ALL FORCES
 		this.forces.forEach((force, force_id) => {
-			force.army.squads((squad, squad_id) => {
-				for(let i=0;i<squad.size; i++){
+			force.army[0].squads.forEach((squad_data, squad_id) => {
+				let squad = squad_data.squad;
+				for(let i=0;i<squad_data.size; i++){
 					let unit_data = {
 
 						id: gameFunctions.units.length,
 						
 						side: force.side, //this can be used if each side has multiple players
-						player: force.player, //this is the specific owner of the unit
+						player: force.player_number, //this is the specific owner of the unit
 						squad: squad_id, //this can be used for squad checks like unit cohesion
-						size:, //the grid size of the object used when plotting movement
-						scene:,
-						angle:,
-						x:,
-						y:,
+						scene: this.scene,
+						angle: 0,
+						x: (3 + (2*i)) * this.tile_size,
+						y: 3 * this.tile_size,
 						
 						
-						unit_name:,
+						size: squad.unit.size, //the grid size of the object used when plotting movement
+						unit_name: squad.unit.name,
 						death_sfx: squad.unit.death_sfx,
 						symbol_id: squad.unit.symbol_id,
 						spritesheet: squad.unit.spritesheet,
@@ -59,25 +45,25 @@ const squad_setup = class {
 						fighting_bonus: squad.unit.fighting_bonus,
 						shooting_bonus: squad.unit.shooting_bonus,
 						
-						armour_name: squad.unit.armour.name,
-						armour: squad.unit.armour.value,
+						armour_name: squad.armour.name,
+						armour: squad.armour.value,
 						
-						fight_name: squad.unit.melee.name,
-						fight_range: squad.unit.melee.range,
-						fight_ap: squad.unit.melee.ap,
-						fight_damage: squad.unit.melee.damage,		
-						fight_max_target: squad.unit.melee.max_targets,
+						fight_name: squad.melee.name,
+						fight_range: squad.melee.range,
+						fight_ap: squad.melee.ap,
+						fight_damage: squad.melee.damage,		
+						fight_max_target: squad.melee.max_targets,
 						
-						shoot_name: squad.unit.gun.name,
-						shoot_range: squad.unit.gun.range,
-						shoot_damage: squad.unit.gun.damage,
-						shoot_ap: squad.unit.gun.ap,
-						blast_spritesheet: squad.unit.gun.blast_spritesheet,
-						blast_radius: squad.unit.gun.blast_radius,
-						max_targets: squad.unit.gun.max_targets,
-						
-						
+						shoot_name: squad.gun.name,
+						shoot_range: squad.gun.range,
+						shoot_damage: squad.gun.damage,
+						shoot_ap: squad.gun.ap,
+						blast_spritesheet: squad.gun.blast_spritesheet,
+						blast_radius: squad.gun.blast_radius,
+						max_targets: squad.gun.max_targets,
 					}
+
+					this.unit_list.push(new unit(unit_data));					
 				}
 			})
 		})

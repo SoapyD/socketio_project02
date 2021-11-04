@@ -302,6 +302,16 @@ var GameScene = new Phaser.Class({
 		GameScene.setupCamera();
 		
 		if(gameFunctions.units_preload.length === 0){
+
+			let options = {
+				scene: GameScene.scene,
+				unit_list: gameFunctions.units,
+				forces: gameFunctions.params.forces,
+				tile_size: gameFunctions.tile_size
+			}
+
+			GameScene.squad_setup = new squad_setup(options)
+
 			// GameScene.seed();
 			
 			/*
@@ -349,7 +359,9 @@ var GameScene = new Phaser.Class({
 		// ███████  ██████  ██   ██ ██████        ███████ ██   ██   ████   ███████ ██████  
 
 		if(gameFunctions.units_preload.length > 0){
-			
+
+			/*
+
 			let options = {
 				unit_list: gameFunctions.units,
 				scene: GameScene.scene,
@@ -362,6 +374,7 @@ var GameScene = new Phaser.Class({
 				combat_weapon_types: GameScene.combat_weapon_types,
 				armour_types: GameScene.armour_types
 			}
+
 			GameScene.unit_setup = new unit_setup(options)
 			
 			// gameFunctions.units = [];
@@ -402,7 +415,8 @@ var GameScene = new Phaser.Class({
 				//THIS FUNCTIONS NEEDS TURNING BACK ON BUT CURRENTLY IS CAUSING ERRORS WHEN RUN
 				created_unit.updateUnitElements(created_unit.sprite)
 				
-			})			
+			})
+			*/		
 		}
 		
 		

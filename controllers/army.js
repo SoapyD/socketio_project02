@@ -39,9 +39,9 @@ exports.getSingle = async(req, res) => {
 
 	let item = await utils.queries.getArmy({_id: id})		
 
-	let faction  = await utils.queries.getFaction({_id: item.faction._id})
+	let faction  = await utils.queries.getFaction({_id: item[0].faction._id})
 
-	res.render("army/show",{army: item, squads: faction.squads})	
+	res.render("army/show",{army: item[0], squads: faction[0].squads})	
 };
 
 //  #####  ####### #######       ####### ######  ### ####### 
@@ -63,7 +63,7 @@ exports.getEdit = async(req,res) => {
 		,search_type: "find"
 	})
 
-	res.render("army/edit", {army:item, factions: factions[0]});	
+	res.render("army/edit", {army:item[0], factions: factions[0]});	
 };
 
 //  #####  ####### #######       ####### ####### ######  #     #        #####  ######  #######    #    ####### ####### 
