@@ -700,6 +700,9 @@ GameUIScene.advanceSide = () => {
 	gameFunctions.current_side += 1
 	if(gameFunctions.current_side >= sides){
 		gameFunctions.current_side = 0
+
+		gameFunctions.params.turn_number++;
+		GameUIScene.hud_item.setText("c_Turn",gameFunctions.params.turn_number)	
 	}
 	
 
@@ -764,7 +767,7 @@ GameUIScene.advanceSide = () => {
 			},
 			text: [
 				{id: 'Turn',label: 'Turn:', x: 0, y: 0, height: 3},
-				{id: 'c_Turn',label: '-1', x: 3, y: 0, box: {fill_colour: 0xffffff, fill_alpha: 1, radius: 5, width: 2, height: 3}},				
+				{id: 'c_Turn',label: gameFunctions.params.turn_number, x: 3, y: 0, box: {fill_colour: 0xffffff, fill_alpha: 1, radius: 5, width: 2, height: 3}},				
 			]
 		});
 

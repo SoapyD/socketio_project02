@@ -47,6 +47,10 @@ const unit = class {
 		this.fight_ap = options.fight_ap;
 		this.fight_damage = options.fight_damage;
 		this.in_combat = false;
+		if(options.in_combat){
+			this.in_combat = options.in_combat;
+		}
+
 		this.in_combat_with = [];
 		this.fight_max_targets = options.fight_max_targets;		
 		this.fight_targets = [];

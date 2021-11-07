@@ -261,14 +261,16 @@ exports.joinRoom = async(network, data)  => {
 			
 			let has_saved_data = false;
 			let next_scene = "ArmySelectMenuScene"
+			let armies;
 			if(saved_room.units.length > 0){
 				has_saved_data = true
+				armies = await queriesUtil.getArmies({forces: saved_room.forces})
 				next_scene = "GameScene"
 			}
 
 			let player_number;
 			saved_room.users.forEach((user, i) => {
-				if(user.id === data.user){
+				if(user._id.toString() === data.user){
 					player_number = i;
 				}
 			})			
@@ -294,6 +296,7 @@ exports.joinRoom = async(network, data)  => {
 				,has_saved_data: has_saved_data
 				// ,room: saved_room
 				,scene: next_scene
+				,armies: armies
 			}
 			network.socket.join(data.room_name)
 			//send room info back to socket

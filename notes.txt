@@ -12,8 +12,6 @@ SBT GAME NOTES
 SIDES AND ACTIONS
 /////////////////////////////////////////
 
--Add a turn counter
-
 -Add in a check for a player win so we know when the game ends
 
 -keep track of what player/side killed a unit so score can be tallied at the end of the game
@@ -23,13 +21,6 @@ SIDES AND ACTIONS
 SETUP
 /////////////////////////////////////////
 
--DONE -Move unit and weapon definitions to the server and pass them into the room as the ejs file loads
--DONE -Flesh out the army builder so players can build a list from a redimentary force list
--DONE -Pass the list of armies to the room so they can be used.
-
-
--Use the armies generated and selected to load into the game.
-    -Replace local coding for unit definitions
 
 -Move "local game testing" process to server so it passes force information to the room via the loading of the room
     -pass the data we have to setup in the creation of the gameloop to the server
@@ -61,20 +52,25 @@ SELECTION
 BUGS
 /////////////////////////////////////////
 
--NEEDS MONITORING -A second shot didn't fire for some reason, which has stopped the game from progressing
-    -Possibly because they were in base to base contact with a unit that couldn't fight, then that unit was the target of the shot
-    -Wonder if this is related to the angle >= -1 check as active_actions are being passed to all players, 
-    so the ticket message is being passed to everyone
-    -Added a check that'll print off the values used if the angle is -1
-
 -BUG -There's seems to be a bug when updating a room where the room id won't be found. Not game breaking but it'd be good to know why.
 There's possibly a lock on the record if it's being updated by multiple players which may happen with sides going at once.
+    -Socket wasn't able to compare user id to saved ids because the saved ids where objects instead of string.
+    -Action button loads now but is in a blank state rather than a "set action" state. pressing it does show the correct action
+    -Units are slightly out of position from where the should be starting.
+
 
 -BUG -When unit can't move over a space they're not allowed to go, the ghost still generate there and the "allowed" sound plays.
 
 -BUG -Desyncs occur if the window isn't visible.
     -Maybe add in a mechanism for numbering saves so when the window becomes active again, check the last save with the current value to see if things need updating.
 
+-BUG -Reload from save didn't show the "run action" button when the reload method changed
+
+-NEEDS MONITORING -A second shot didn't fire for some reason, which has stopped the game from progressing
+    -Possibly because they were in base to base contact with a unit that couldn't fight, then that unit was the target of the shot
+    -Wonder if this is related to the angle >= -1 check as active_actions are being passed to all players, 
+    so the ticket message is being passed to everyone
+    -Added a check that'll print off the values used if the angle is -1
 
 
 /////////////////////////////////////////
@@ -114,6 +110,14 @@ DONE
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+-DONE -Use the armies generated and selected to load into the game.
+    -DONE -Replace local coding for unit definitions
+
+-DONE -Add a turn counter
+-DONE -Move unit and weapon definitions to the server and pass them into the room as the ejs file loads
+-DONE -Flesh out the army builder so players can build a list from a redimentary force list
+-DONE -Pass the list of armies to the room so they can be used.
 
 -DONE -I think I ended a turn too early which caused the turn not to pass over correctly
     -related to the number of max sides passed from the server.

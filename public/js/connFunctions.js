@@ -322,6 +322,14 @@ connFunctions.updateRoomInfo = (data) => {
 	
 }
 
+//  #####     #    #     # #######        #####     #    #     # #######
+// #     #   # #   #     # #             #     #   # #   ##   ## #       
+// #        #   #  #     # #             #        #   #  # # # # #       
+//  #####  #     # #     # #####   ##### #  #### #     # #  #  # #####   
+//       # #######  #   #  #             #     # ####### #     # #       
+// #     # #     #   # #   #             #     # #     # #     # #       
+//  #####  #     #    #    #######        #####  #     # #     # ####### 
+
 connFunctions.saveGame = (mode) => {
 	
 	let data = {
@@ -330,6 +338,7 @@ connFunctions.saveGame = (mode) => {
 		message: "save game",
 		type: "save room",
 		room_name: gameFunctions.params.room_name,
+		turn_number: gameFunctions.params.turn_number,
 		current_side: gameFunctions.current_side,
 		// current_player: gameFunctions.current_player,
 		mode: mode,

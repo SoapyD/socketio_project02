@@ -20,7 +20,8 @@ gameFunctions.params = {
 	player_side: -1,
 	max_players: 2,
 	max_sides: 2,
-	readied_players: 0
+	readied_players: 0,
+	turn_number: 0,
 }
 
 

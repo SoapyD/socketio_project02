@@ -300,125 +300,25 @@ var GameScene = new Phaser.Class({
 		
 		GameScene.setupMap();
 		GameScene.setupCamera();
+
 		
+		let options = {
+			scene: GameScene.scene,
+			unit_list: gameFunctions.units,
+			forces: gameFunctions.params.forces,
+			tile_size: gameFunctions.tile_size
+		}
+		GameScene.squad_setup = new squad_setup(options)
+
+		//SETUP THE SQUADS IF THE GAME ISN'T BEING LOADED FROM A PREVIOUS SAVE
 		if(gameFunctions.units_preload.length === 0){
 
-			let options = {
-				scene: GameScene.scene,
-				unit_list: gameFunctions.units,
-				forces: gameFunctions.params.forces,
-				tile_size: gameFunctions.tile_size
-			}
-
-			GameScene.squad_setup = new squad_setup(options)
-
-			// GameScene.seed();
-			
-			/*
-			switch(instance_type){
-				case "DEV":
-					GameScene.seed3();
-					break;
-				case "DEV-ONLINE":
-					// if(gameFunctions.params.max_players > 2){
-					// 	GameScene.seed2();
-					// }else{
-					// 	GameScene.seed();
-					// }
-					switch(gameFunctions.params.max_players){
-						case 1:
-							GameScene.seed3();
-							break;
-						case 2:
-							// GameScene.seed();
-							GameScene.seed3();
-							break;
-						default:
-							GameScene.seed2();
-							break;
-					}
-					
-					break;
-				default:
-					if(gameFunctions.params.max_players > 2){
-						GameScene.seed2();
-					}else{
-						GameScene.seed();
-					}
-					break;
-			}			
-			*/
-
-			
+			GameScene.squad_setup.placeSquads();	
+		}else{
+			GameScene.squad_setup.reloadSquads();
 		}
 
-		// ██       ██████   █████  ██████        ███████  █████  ██    ██ ███████ ██████  
-		// ██      ██    ██ ██   ██ ██   ██       ██      ██   ██ ██    ██ ██      ██   ██ 
-		// ██      ██    ██ ███████ ██   ██ █████ ███████ ███████ ██    ██ █████   ██   ██ 
-		// ██      ██    ██ ██   ██ ██   ██            ██ ██   ██  ██  ██  ██      ██   ██ 
-		// ███████  ██████  ██   ██ ██████        ███████ ██   ██   ████   ███████ ██████  
 
-		if(gameFunctions.units_preload.length > 0){
-
-			/*
-
-			let options = {
-				unit_list: gameFunctions.units,
-				scene: GameScene.scene,
-				player: 0,
-				side: 0,
-				angle : 90,
-				tile_size: gameFunctions.tile_size,
-				unit_types: GameScene.unit_types,
-				projectile_weapon_types: GameScene.projectile_weapon_types,
-				combat_weapon_types: GameScene.combat_weapon_types,
-				armour_types: GameScene.armour_types
-			}
-
-			GameScene.unit_setup = new unit_setup(options)
-			
-			// gameFunctions.units = [];
-			gameFunctions.units_preload.forEach((unit) => {
-
-				options.player = unit.player;
-				options.side = unit.side;
-				options.x = unit.x;
-				options.y = unit.y;
-				options.unit_name = unit.unit_name;
-				options.shoot_name = unit.shoot_name;
-				options.fight_name = unit.fight_name;
-				options.armour_name = unit.armour_name;
-
-				let created_unit = GameScene.unit_setup.placeFunction(options, "pos")
-
-				created_unit.player = unit.player;
-				created_unit.side = unit.side;
-				created_unit.squad = unit.squad;
-				created_unit.drawTint()
-				
-				created_unit.health = unit.health;
-				created_unit.alive = unit.alive;
-				created_unit.in_combat = unit.in_combat;
-
-				created_unit.sprite.angle = Phaser.Math.RadToDeg(unit.rotation);
-				created_unit.sprite.x -= gameFunctions.tile_size * created_unit.sprite_offset;
-				created_unit.sprite.y -= gameFunctions.tile_size * created_unit.sprite_offset;
-				
-				if(created_unit.sprite_ghost){
-					created_unit.sprite_ghost.angle = Phaser.Math.RadToDeg(unit.rotation);
-					created_unit.sprite_ghost.x -= gameFunctions.tile_size * created_unit.sprite_offset;
-					created_unit.sprite_ghost.y -= gameFunctions.tile_size * created_unit.sprite_offset;
-				}
-
-				// created_unit.drawHealth()
-
-				//THIS FUNCTIONS NEEDS TURNING BACK ON BUT CURRENTLY IS CAUSING ERRORS WHEN RUN
-				created_unit.updateUnitElements(created_unit.sprite)
-				
-			})
-			*/		
-		}
-		
 		
 		// GameScene.mouse_selection = new mouse_selection({scene: GameScene.scene});	
     },

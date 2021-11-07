@@ -80,7 +80,8 @@ exports.createRoom = async(data, socket_id) => {
 	let config = {
 		max_players: data.players
 		,max_sides: 4 //data.sides
-		,current_player: 0
+		,turn_number: 0
+        ,current_player: 0
 		,current_side: 0
 		,mode: ""
 	}
@@ -175,6 +176,7 @@ exports.saveRoom = (room) => {
 
 exports.updateRoom = (room, data) => {
 	
+    room.config.turn_number = data.turn_number
 	room.config.current_side = data.current_side
 	room.config.current_player = data.current_player
     room.config.mode = data.mode
