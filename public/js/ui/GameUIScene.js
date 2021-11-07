@@ -127,6 +127,7 @@ GameUIScene.loadSingleButton = (scene) => {
 	}
 	else{
 		GameUIScene.checkButtonVisability();
+		GameUIScene.advanceMode(); //NEEDED TO SHOW THE RIGHT MENU AFTER A RELOAD		
 	}
 	// GameUIScene.advanceMode();	
 }

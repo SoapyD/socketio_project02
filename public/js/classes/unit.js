@@ -61,8 +61,14 @@ const unit = class {
 
 		this.sprite_offset = options.sprite_offset;
 		
-		let x = options.x + gameFunctions.tile_size * this.sprite_offset;
-		let y = options.y + gameFunctions.tile_size * this.sprite_offset;
+		let x = options.x;
+		let y = options.y;
+		if(options.loaded){
+			//don't add offset
+		}else{
+			x += gameFunctions.tile_size * this.sprite_offset;
+			y += gameFunctions.tile_size * this.sprite_offset;			
+		}
 
 		this.depth_sprite_flash = 6;		
 		this.depth_sprite = 4;

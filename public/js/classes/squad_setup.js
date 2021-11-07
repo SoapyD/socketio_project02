@@ -46,7 +46,8 @@ const squad_setup = class {
 					y: unit.y,
 					angle: unit.rotation,
 					in_combat: unit.in_combat,
-					health: unit.health
+					health: unit.health,
+					loaded: true,
 				})
 			}
 		})		
@@ -96,6 +97,9 @@ const squad_setup = class {
 			max_targets: options.squad.gun.max_targets,
 		}
 
+		if(options.loaded){
+			unit_data.loaded = options.loaded;
+		}
 		if(options.in_combat){
 			unit_data.in_combat = options.in_combat;
 		}

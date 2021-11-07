@@ -256,6 +256,8 @@ connFunctions.setRoomInfo = (data) => {
 		// gameFunctions.current_player = data.room.config.current_player
 		gameFunctions.mode = data.config.mode
 		gameFunctions.mode_state = data.config.mode_state
+		// 
+
 		
 		gameFunctions.units_preload = data.units;
 	}

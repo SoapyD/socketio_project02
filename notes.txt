@@ -54,9 +54,9 @@ BUGS
 
 -BUG -There's seems to be a bug when updating a room where the room id won't be found. Not game breaking but it'd be good to know why.
 There's possibly a lock on the record if it's being updated by multiple players which may happen with sides going at once.
-    -Socket wasn't able to compare user id to saved ids because the saved ids where objects instead of string.
+    -DONE -Socket wasn't able to compare user id to saved ids because the saved ids where objects instead of string.
+    -DONE -Units are slightly out of position from where the should be starting.
     -Action button loads now but is in a blank state rather than a "set action" state. pressing it does show the correct action
-    -Units are slightly out of position from where the should be starting.
 
 
 -BUG -When unit can't move over a space they're not allowed to go, the ghost still generate there and the "allowed" sound plays.
