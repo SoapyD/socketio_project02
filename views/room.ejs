@@ -84,7 +84,8 @@
 </div> -->
 
 <script>
-	socket_address = "<%= address %>";
+
+    socket_address = "<%= address %>";
 	instance_type = "<%= instance_type %>";
 	
 </script>
@@ -119,11 +120,24 @@
 <script src="/js/functions.js"></script>
 
 <script>
-// 	ADDED THE BELOW AS, FOR SOME REASON THE DOM ALYER FOR THE WINDOW IS MISALIGNED
-$( document ).ready(function() {
-    // $('#gameContainer').children()[0].style.transform = ""; //turned off as fixed by removing scaling option in main
-    // $('#gameContainer').children()[0].style.transformOrigin = ""; //turned off as fixed by removing scaling option in main
-});
+
+<% if(room) { %>
+        let room_data = <%- JSON.stringify(room) %>
+        let army_data = <%- JSON.stringify(armies) %>  
+        console.log(room_data)
+        gameFunctions.params.room_name = room_data.room_name
+    	// gameFunctions.params.room_id = room_data.room_id
+        gameFunctions.params.users = room_data.users	
+        gameFunctions.params.forces = room_data.forces
+        gameFunctions.params.player_number = 0
+        gameFunctions.params.max_players = room_data.config.max_players
+        gameFunctions.params.max_sides = room_data.config.max_sides	
+
+        gameFunctions.params.forces.forEach((force, i) => {
+            force.army = army_data[i]
+        })
+
+<% } %>
 	
 	
 </script>

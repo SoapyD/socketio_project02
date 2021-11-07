@@ -3,6 +3,9 @@ const mouse_selection = class {
         this.scene = options.scene
         this.selected = [];
 
+        this.center = {x:0, y:0};
+        this.selection_info = {};
+
         this.selection = this.scene.add.rectangle(0, 0, 0, 0, 0x1d7196, 0.5)
 
         this.scene.input.on(Phaser.Input.Events.POINTER_DOWN, this.handlePointerDown, this)
@@ -76,6 +79,10 @@ const mouse_selection = class {
             selectionRect.height
         )
         
+        this.center = {
+            x: selectionRect.x + (selectionRect.width / 2),
+            y: selectionRect.y + (selectionRect.height / 2),            
+        }
         // do something with selected
     }
 
@@ -87,14 +94,28 @@ const mouse_selection = class {
     {
         this.selection.width = 0
         this.selection.height = 0
-        // console.log(this.selected)
 
-        if(this.selected.length > 0){
-            this.selected.forEach((selection) => {
-                selection.gameObject.parent.selectUnit();
-                // console.log(selection.gameObject.parent)
-            })
+        if(this.selected){
+            this.selection_info = {};
+            if(this.selected.length > 0){
+                this.selected.forEach((selection) => {
+                    let unit = selection.gameObject.parent;
+                    unit.selectUnit();
+
+                    let info = {
+                        id: unit.id,
+                        offset: {
+                            x: unit.sprite.x - this.center.x,
+                            y: unit.sprite.y - this.center.y,                            
+                        }
+                    }
+                    this.selection_info[unit.id] = info;
+                })
+            }
+            GameScene.multi_select_pause = true;
         }
+
+        this.selected = undefined;
     }
 
 }

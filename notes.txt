@@ -21,12 +21,7 @@ SIDES AND ACTIONS
 SETUP
 /////////////////////////////////////////
 
-
--Move "local game testing" process to server so it passes force information to the room via the loading of the room
-    -pass the data we have to setup in the creation of the gameloop to the server
-
 -Show only armies created by an author to show on their armies page.
-
 
 -Set a number of default armies and use author name to check for armies created by that user
 
@@ -45,26 +40,18 @@ SELECTION
 -Create a means of selecting multiple units at the same times
     -DONE -Add in a "mouse selection class" to handle the mouse selection process
     -DONE -Change the selected_unit code so it can handle an array of selected units instead of just one
-    -Handle the differences if multiple units are selected at once
-
+    -DONE -Handle the differences if multiple units are selected at once
+    -Movement currently can't be calculated at once
+        -This is because there's only one instance of path finding which gets reset if more than one function is run
 
 /////////////////////////////////////////
 BUGS
 /////////////////////////////////////////
 
--BUG -There's seems to be a bug when updating a room where the room id won't be found. Not game breaking but it'd be good to know why.
-There's possibly a lock on the record if it's being updated by multiple players which may happen with sides going at once.
-    -DONE -Socket wasn't able to compare user id to saved ids because the saved ids where objects instead of string.
-    -DONE -Units are slightly out of position from where the should be starting.
-    -Action button loads now but is in a blank state rather than a "set action" state. pressing it does show the correct action
-
-
 -BUG -When unit can't move over a space they're not allowed to go, the ghost still generate there and the "allowed" sound plays.
 
 -BUG -Desyncs occur if the window isn't visible.
     -Maybe add in a mechanism for numbering saves so when the window becomes active again, check the last save with the current value to see if things need updating.
-
--BUG -Reload from save didn't show the "run action" button when the reload method changed
 
 -NEEDS MONITORING -A second shot didn't fire for some reason, which has stopped the game from progressing
     -Possibly because they were in base to base contact with a unit that couldn't fight, then that unit was the target of the shot
@@ -90,8 +77,6 @@ THINGS TO DO (EVENTUALLY)
 
 -if a sides/start points aren't set properly, don't allow the game to advance
 
--Load up armies associated with users in army selection dropdowns
-
 -Add in at least 3 maps to use
 
 -Action Types
@@ -110,6 +95,19 @@ DONE
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+-DONE -Move "local game testing" process to server so it passes force information to the room via the loading of the room
+    -pass the data we have to setup in the creation of the gameloop to the server
+
+-DONE -Reload from save didn't show the "run action" button when the reload method changed
+
+-DONE -Load up armies associated with users in army selection dropdowns
+
+-DONE -There's seems to be a bug when updating a room where the room id won't be found. Not game breaking but it'd be good to know why.
+There's possibly a lock on the record if it's being updated by multiple players which may happen with sides going at once.
+    -DONE -Socket wasn't able to compare user id to saved ids because the saved ids where objects instead of string.
+    -DONE -Units are slightly out of position from where the should be starting.
+    -DONE -Action button loads now but is in a blank state rather than a "set action" state. pressing it does show the correct action
 
 -DONE -Use the armies generated and selected to load into the game.
     -DONE -Replace local coding for unit definitions

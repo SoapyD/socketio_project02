@@ -14,32 +14,6 @@ var GameScene = new Phaser.Class({
     preload: function()
     {		
 
-		switch(instance_type){
-			case "DEV":
-			gameFunctions.params.player_number = 0;
-			gameFunctions.params.forces = []
-			let force;
-			force = {
-				side: 0,
-				user: {
-					username: "Test"
-				}
-				,ready: false
-			}
-			gameFunctions.params.forces.push(force)
-
-			force = {
-				side: 1,
-				user: {
-					username: "Test2"
-				}
-				,ready: false				
-			}
-			gameFunctions.params.forces.push(force)			
-			break;
-		}		
-
-
 		//CREATE A LOAD SCREEN FOR THE GAME
 		var width = this.cameras.main.width;
 		var height = this.cameras.main.height;
@@ -312,7 +286,6 @@ var GameScene = new Phaser.Class({
 
 		//SETUP THE SQUADS IF THE GAME ISN'T BEING LOADED FROM A PREVIOUS SAVE
 		if(gameFunctions.units_preload.length === 0){
-
 			GameScene.squad_setup.placeSquads();	
 		}else{
 			GameScene.squad_setup.reloadSquads();
@@ -320,7 +293,8 @@ var GameScene = new Phaser.Class({
 
 
 		
-		// GameScene.mouse_selection = new mouse_selection({scene: GameScene.scene});	
+		// GameScene.mouse_selection = new mouse_selection({scene: GameScene.scene});
+		GameScene.multi_select_pause = false;	
     },
 
     update: function (time, delta)
@@ -354,7 +328,7 @@ var GameScene = new Phaser.Class({
 		GameScene.marker.setVisible(!GameScene.checkCollision(pointerTileX,pointerTileY));  
 		
 		
-		if(GameScene.selected_unit.length > 0){
+		if(GameScene.selected_unit.length > 0 && GameScene.multi_select_pause === false){
 			// let selected_unit = GameScene.selected_unit[0];
 			GameScene.selected_unit.forEach((selected_unit) => {
 
@@ -370,7 +344,16 @@ var GameScene = new Phaser.Class({
 						case "move":
 							
 							if(GameScene.online === false){
-								selected_unit.findPath({pointer: worldPoint});
+
+								//USED FOR MULTIPLE SELECTIONS TO APPLY MOVEMENT
+								let used_pointer = worldPoint
+								if(GameScene.mouse_selection.selection_info){
+									let info = GameScene.mouse_selection.selection_info[selected_unit.id];
+									used_pointer.x += info.offset.x
+									used_pointer.y += info.offset.y
+								}
+
+								selected_unit.findPath({pointer: used_pointer});
 							}else{
 
 								let data = {
@@ -565,6 +548,7 @@ var GameScene = new Phaser.Class({
 			
 		}
 
+		GameScene.multi_select_pause = false;
 		GameScene.left_click = false;
 		GameScene.right_click = false;		
 

@@ -192,22 +192,18 @@ selectUnit(single_unit=false) {
 
 		if(single_unit === true){
 			GameScene.selected_unit = []
+			if(gameFunctions.mode === 'move' || gameFunctions.mode === 'charge'){
+				this.setupDrawLiveTiles();
+			}			
 		}
 		GameScene.selected_unit.push(this);
 		
 		GameScene.selected_unit.forEach((selected_unit) => {
 			selected_unit.drawFlash(false)
-		})
-
-		if(gameFunctions.mode === 'move' || gameFunctions.mode === 'charge'){
-			this.setupDrawLiveTiles();
-
-		}
-		
+		})		
 		
 		//RESET GHOST & COHESION IF THE GHOST SPRITE ISN'T SELECTED
 		if(!this.is_ghost){
-			
 			this.resetGhost();
 		}
 		

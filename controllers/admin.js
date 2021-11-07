@@ -66,7 +66,42 @@ exports.getRoom = async(req,res) => {
 
 	let data = {
 		address: process.env.SOCKET_ADDRESS,
-		instance_type: process.env.INSTANCE_TYPE
+		instance_type: process.env.INSTANCE_TYPE,
 	}
+
+	//CREATE ROOM IF THIS IS A DEV INSTANCE
+	switch(process.env.INSTANCE_TYPE){
+		case "DEV":
+			let options = {
+				user: "6069bd7bc7b18a43c84292b4", //a user id we can user as an author
+				user_name: "test",
+				players: 1, //max players
+				room_name: "test room",
+				password: ""
+
+			}
+			let room = await utils.queries.createRoom(options, "network.socket.id")
+
+			room.forces[0].side = 0;
+			room.forces[0].start = 0;
+			room.forces[0].army = '617de6b6c447ae5608e847ee'; //test army reference
+
+			// room.forces[1].side = 1;			
+			// room.forces[1].start = 1;
+			// room.forces[1].army = 'Test';
+
+			let armies = await utils.queries.getArmies({forces: room.forces})
+
+			room.save();
+
+			data.room = room;
+			data.armies = armies;
+			break;
+	}
+
+
 	res.render("room", data);
 }
+
+
+
