@@ -21,6 +21,8 @@ SIDES AND ACTIONS
 SETUP
 /////////////////////////////////////////
 
+-Load in any upgrades to the unit during the setupsquad process
+
 -Show only armies created by an author to show on their armies page.
 
 -Set a number of default armies and use author name to check for armies created by that user
