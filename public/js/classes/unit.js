@@ -752,7 +752,80 @@ unselectHandler() {
 	// ██   ██ ██████  ███████ ██  █  ██ █████ ██      ██ ██    ██ █████   █████    ██    ██ ██      █████   ███████ 
 	// ██   ██ ██   ██ ██   ██ ██ ███ ██       ██      ██  ██  ██  ██               ██    ██ ██      ██           ██ 
 	// ██████  ██   ██ ██   ██  ███ ███        ███████ ██   ████   ███████          ██    ██ ███████ ███████ ███████ 
-																												 
+
+	getSpiralMatrix = (n, x_start, y_start) => {
+        const results = [];
+        // for(let i=0;i<n;i++){
+        // 	results.push([])
+        // }
+
+        let counter = 1;
+        let startRow = 0;
+        let endRow = n - 1;
+        let startColumn = 0;
+        let endColumn = n - 1;
+
+        while(startColumn <= endColumn && startRow <= endRow){
+			//COUNT TOP ROW FROM LEFT TO RIGHT
+        	for(let i= startColumn; i <= endColumn; i++){
+				// results[startRow][i] = counter;
+				results.push({
+					id: counter,
+					pointer: {
+					x: (x_start + i) * GameScene.map.tileWidth,
+					y: (y_start + startRow) * GameScene.map.tileHeight
+					}
+				})
+        		counter++;
+        	}
+        	startRow++;
+
+			//COUNT RIGHT COLUMN FROM TOP TO BOTTOM
+        	for(let i=startRow; i<= endRow; i++){
+				// results[i][endColumn] = counter;
+				results.push({
+					id: counter,
+					pointer: {
+					x: (x_start + endColumn) * GameScene.map.tileWidth,
+					y: (y_start + i) * GameScene.map.tileHeight
+					}
+				})				
+        		counter++;
+        	}
+        	endColumn--;
+			
+			//BOTTOM ROW
+        	for(let i=endColumn; i>= startColumn; i--){
+				// results[endRow][i] = counter;
+				results.push({
+					id: counter,
+					pointer: {
+					x: (x_start + i) * GameScene.map.tileWidth,
+					y: (y_start + endRow) * GameScene.map.tileHeight
+					}
+				})						
+        		counter++;
+        	}
+        	endRow--;
+
+        	for(let i=endRow; i>=startRow; i--){
+				// results[i][startColumn] = counter;
+				results.push({
+					id: counter,
+					pointer: {
+					x: (x_start + startColumn) * GameScene.map.tileWidth,
+					y: (y_start + i) * GameScene.map.tileHeight
+					}
+				})					
+        		counter++;
+        	}
+        	startColumn++;			
+		}
+		
+		return results;
+    }
+			
+
 	setupDrawLiveTiles() {
 
 		this.live_tiles = [];
@@ -770,18 +843,22 @@ unselectHandler() {
 		if(endX > GameScene.map.width) endX = GameScene.map.width
 		if(endY > GameScene.map.height) endY = GameScene.map.height
 
-		for(let y=startY;y<=endY;y++){
-			for(let x=startX;x<=endX;x++){
-				let options = {
-					pointer: {
-					x: x * GameScene.map.tileWidth,
-					y: y * GameScene.map.tileHeight
-					}
-				}
-				this.check_tiles.push(options)
-			}
-		}
+		//WE NEED TO CHECK MOVEMENT POSITIONS AS A SPIRAL MOVING INWARDS TO GET THE MOST EFFICIENT MOVEMENT CHECKS
+		this.check_tiles = this.getSpiralMatrix((endX - startX) + 1, startX, startY);
 
+		// for(let y=startY;y<=endY;y++){
+		// 	for(let x=startX;x<=endX;x++){
+		// 		let options = {
+		// 			pointer: {
+		// 			x: x * GameScene.map.tileWidth,
+		// 			y: y * GameScene.map.tileHeight
+		// 			}
+		// 		}
+		// 		this.check_tiles.push(options)
+		// 	}
+		// }
+
+		this.tiles_checked = 0;
 		this.runDrawLiveTiles()
 	}
 
@@ -829,18 +906,52 @@ unselectHandler() {
 			let check_y = (check_tile.pointer.y / GameScene.map.tileHeight) + this.sprite_offset
 				
 			let found = this.live_tiles.some(i => i.x === check_x && i.y === check_y);
-			if(found === false){
+
+			//NO NEED TO CHECK POSITIONS THAT AREN'T CLOSE ENOUGH TO REACH
+			let distance = gameFunctions.twoPointDistance({x: this.sprite.x / gameFunctions.tile_size, y: this.sprite.y / gameFunctions.tile_size}, {x: check_x,y: check_y});
+
+			let cell = GameScene.grid[check_y - this.sprite_offset][check_x - this.sprite_offset];
+			let acceptable_tile = false
+			if(GameScene.acceptable_tiles.includes(cell)){
+				acceptable_tile = true;
+			}			
+
+			if(found === false && distance <= this.movement && acceptable_tile === true){
 				checking_tile = true;
 				// console.log('before: ',this.check_tiles_position)
 				this.runDrawLiveTiles();
+
+				this.tiles_checked++;
 				break;
 			}else{
 				// console.log("found")
 			}
 		}
 
-		// if(checking_tile === false){
+		if(checking_tile === false){
 			GameScene.resetTempSprites();
+
+			/*
+			//PATH TO DESTINATION
+			if(process.path){
+				process.path.forEach((tile)=> {
+					this.scene.temp_sprites.push(
+						this.scene.physics.add.image(
+							tile.x * GameScene.map.tileWidth,
+							tile.y * GameScene.map.tileHeight,"white").setTint(0xff3333).setDepth(0)
+					)
+				})				
+			}
+
+			//DESTINATION
+			this.scene.temp_sprites.push(
+				this.scene.physics.add.image(
+					process.pointer.x + 16,
+					process.pointer.y + 16,"white").setTint(0x00FF00).setDepth(0)
+			);
+
+			let test;
+			*/
 			this.live_tiles.forEach((tile)=> {
 				this.scene.temp_sprites.push(
 					this.scene.physics.add.image(
@@ -848,8 +959,12 @@ unselectHandler() {
 						tile.y * GameScene.map.tileHeight,"marker").setDepth(0)
 				)
 			})			
-		// }
-		/**/
+		}
+
+
+		if(checking_tile === false){
+			console.log("tiles checked:",this.tiles_checked)
+		}
 	}
 
 

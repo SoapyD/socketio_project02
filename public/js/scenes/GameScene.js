@@ -347,10 +347,12 @@ var GameScene = new Phaser.Class({
 
 								//USED FOR MULTIPLE SELECTIONS TO APPLY MOVEMENT
 								let used_pointer = worldPoint
-								if(GameScene.mouse_selection.selection_info){
-									let info = GameScene.mouse_selection.selection_info[selected_unit.id];
-									used_pointer.x += info.offset.x
-									used_pointer.y += info.offset.y
+								if(GameScene.mouse_selection){
+									if(GameScene.mouse_selection.selection_info){
+										let info = GameScene.mouse_selection.selection_info[selected_unit.id];
+										used_pointer.x += info.offset.x
+										used_pointer.y += info.offset.y
+									}
 								}
 
 								selected_unit.findPath({pointer: used_pointer});
@@ -748,6 +750,8 @@ GameScene.setupMap = () => {
 		}
 		if(!properties[i].collide) acceptable_tiles.push(i+1);
 	}
+
+	GameScene.acceptable_tiles = acceptable_tiles;
 	/**/
 	// acceptable_tiles.push(1);
 	GameScene.pathfinder = new pathfinder(grid, acceptable_tiles);			
