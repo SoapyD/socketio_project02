@@ -962,9 +962,9 @@ unselectHandler() {
 		}
 
 
-		if(checking_tile === false){
-			console.log("tiles checked:",this.tiles_checked)
-		}
+		// if(checking_tile === false){
+		// 	console.log("tiles checked:",this.tiles_checked)
+		// }
 	}
 
 

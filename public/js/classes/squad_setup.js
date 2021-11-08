@@ -16,6 +16,9 @@ const squad_setup = class {
 		this.forces.forEach((force, force_id) => {
 			force.army[0].squads.forEach((squad_data, squad_id) => {
 				let squad = squad_data.squad;
+
+				//CHECK TO SEE IF ANY OF THE UPPGRADES NEED TO GET APPLIED TO ALL UNITS IN THE SQUAD
+
 				for(let i=0;i<squad_data.size; i++){
 					this.addUnit({
 						force: force,
