@@ -21,7 +21,9 @@ SIDES AND ACTIONS
 SETUP
 /////////////////////////////////////////
 
--Load in any upgrades to the unit during the setupsquad process
+-DONE -Load in any upgrades to the unit during the setupsquad process
+
+-Make sure any upgrades are saved so they can be reloaded
 
 -Show only armies created by an author to show on their armies page.
 
@@ -30,7 +32,7 @@ SETUP
 -add in a step to new games that allows players to setup units
     -Also add in a function to automatically place units
     -Load armies names into selection lists
-    -Pass the name of the armies available to a player to all other users
+
 
 
 
@@ -97,6 +99,8 @@ DONE
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+-DONE -Pass the name of the armies available to a player to all other users
 
 -DONE -Move "local game testing" process to server so it passes force information to the room via the loading of the room
     -pass the data we have to setup in the creation of the gameloop to the server

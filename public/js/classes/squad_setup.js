@@ -18,8 +18,22 @@ const squad_setup = class {
 				let squad = squad_data.squad;
 
 				//CHECK TO SEE IF ANY OF THE UPPGRADES NEED TO GET APPLIED TO ALL UNITS IN THE SQUAD
+				let universal_upgrades = [];
+				let single_upgrades = [];
+				squad.upgrades.forEach((upgrade) => {
+					if(upgrade.upgrades_all_in_squad === false){
+						single_upgrades.push(upgrade);
+					}else{
+						universal_upgrades.push(upgrade);
+					}
+				})  
 
 				for(let i=0;i<squad_data.size; i++){
+					let single_upgrade;
+					if(single_upgrades.length > i){
+						single_upgrade = single_upgrades[i];
+					}
+
 					this.addUnit({
 						force: force,
 						squad: squad,
@@ -27,6 +41,8 @@ const squad_setup = class {
 						x: (3 + (2*i)) * this.tile_size,
 						y: 3 * this.tile_size,
 						angle: 0,
+						universal_upgrades: universal_upgrades,
+						single_upgrade: single_upgrade
 					})
 				}
 			})
@@ -39,6 +55,8 @@ const squad_setup = class {
 
 			let force = gameFunctions.params.forces[unit.player];
 			let squad = force.army[0].squads[unit.squad].squad;
+
+			//UPGRADES, SINGLE AND UNIVERSAL NEED ADDING BACK IN
 
 			if(unit.alive === true){
 				this.addUnit({
@@ -57,6 +75,48 @@ const squad_setup = class {
 	}
 
 	addUnit = (options) => {
+
+		let armour_class = options.squad.armour;
+		let gun_class = options.squad.gun;
+		let melee_class = options.squad.melee;
+		let unit_class = options.squad.unit;
+
+
+		if(options.universal_upgrades) {
+			options.universal_upgrades.forEach((upgrade) => {
+				if(upgrade.armour){
+					armour_class = upgrade.armour;
+				}
+				if(upgrade.gun){
+					gun_class = upgrade.gun;
+				}
+				if(upgrade.melee){
+					melee_class = upgrade.melee;
+				}
+				if(upgrade.unit){
+					unit_class = upgrade.unit;
+				}					
+			})
+		}	
+
+		//OVERWRITE MULTIPLE UPGRADES WITH SINGLE SPECIFIC UPGRADE
+		if(options.single_upgrade){
+			let single_upgrade = options.single_upgrade;
+			if(single_upgrade.armour){
+				armour_class = single_upgrade.armour;
+			}
+			if(single_upgrade.gun){
+				gun_class = single_upgrade.gun;
+			}
+			if(single_upgrade.melee){
+				melee_class = single_upgrade.melee;
+			}
+			if(single_upgrade.unit){
+				unit_class = single_upgrade.unit;
+			}									
+		}
+
+
 		let unit_data = {
 
 			id: gameFunctions.units.length,
@@ -69,35 +129,35 @@ const squad_setup = class {
 			x: options.x,
 			y: options.y,
 			
-			size: options.squad.unit.size, //the grid size of the object used when plotting movement
-			unit_name: options.squad.unit.name,
-			death_sfx: options.squad.unit.death_sfx,
-			symbol_id: options.squad.unit.symbol_id,
-			spritesheet: options.squad.unit.spritesheet,
-			sprite_offset: options.squad.unit.sprite_offset,
-			health: options.squad.unit.health,
-			max_health: options.squad.unit.max_health,
-			movement: options.squad.unit.movement,
-			cohesion: options.squad.unit.cohesion, //the maximum distance a unit can be from another member of it's squad						
-			fighting_bonus: options.squad.unit.fighting_bonus,
-			shooting_bonus: options.squad.unit.shooting_bonus,
+			size: unit_class.size, //the grid size of the object used when plotting movement
+			unit_name: unit_class.name,
+			death_sfx: unit_class.death_sfx,
+			symbol_id: unit_class.symbol_id,
+			spritesheet: unit_class.spritesheet,
+			sprite_offset: unit_class.sprite_offset,
+			health: unit_class.health,
+			max_health: unit_class.max_health,
+			movement: unit_class.movement,
+			cohesion: unit_class.cohesion, //the maximum distance a unit can be from another member of it's squad						
+			fighting_bonus: unit_class.fighting_bonus,
+			shooting_bonus: unit_class.shooting_bonus,
 			
-			armour_name: options.squad.armour.name,
-			armour: options.squad.armour.value,
+			armour_name: armour_class.name,
+			armour: armour_class.value,
 			
-			fight_name: options.squad.melee.name,
-			fight_range: options.squad.melee.range,
-			fight_ap: options.squad.melee.ap,
-			fight_damage: options.squad.melee.damage,		
-			fight_max_target: options.squad.melee.max_targets,
+			fight_name: melee_class.name,
+			fight_range: melee_class.range,
+			fight_ap: melee_class.ap,
+			fight_damage: melee_class.damage,		
+			fight_max_target: melee_class.max_targets,
 			
-			shoot_name: options.squad.gun.name,
-			shoot_range: options.squad.gun.range,
-			shoot_damage: options.squad.gun.damage,
-			shoot_ap: options.squad.gun.ap,
-			blast_spritesheet: options.squad.gun.blast_spritesheet,
-			blast_radius: options.squad.gun.blast_radius,
-			max_targets: options.squad.gun.max_targets,
+			shoot_name: gun_class.name,
+			shoot_range: gun_class.range,
+			shoot_damage: gun_class.damage,
+			shoot_ap: gun_class.ap,
+			blast_spritesheet: gun_class.blast_spritesheet,
+			blast_radius: gun_class.blast_radius,
+			max_targets: gun_class.max_targets,
 		}
 
 		if(options.loaded){

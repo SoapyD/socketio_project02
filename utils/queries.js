@@ -302,20 +302,31 @@ exports.getArmy = (params) => {
                         {path: 'gun'},
                         {path: 'melee'},
                         {path: 'armour'},
+                        {
+                            path: 'upgrades',
+                            populate: [
+                                {path: "upgrade"},
+                                {path: 'unit'},  
+                                {path: 'gun'},
+                                {path: 'melee'},
+                                {path: 'armour'},
+                                ]                 
+                        }
                     ]
             },
-            {
-                path: 'upgrades',
-                populate: {
-                    path: "upgrade",
-                    populate: [
-                        {path: 'unit'},  
-                        {path: 'gun'},
-                        {path: 'melee'},
-                        {path: 'armour'},
-                    ]                    
-                }          
-            }]
+            // {
+            //     path: 'upgrades',
+            //     populate: {
+            //         path: "upgrade",
+            //         populate: [
+            //             {path: 'unit'},  
+            //             {path: 'gun'},
+            //             {path: 'melee'},
+            //             {path: 'armour'},
+            //         ]                    
+            //     }          
+            // }
+            ]
         },
         
         // ]
