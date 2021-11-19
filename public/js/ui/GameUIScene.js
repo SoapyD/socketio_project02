@@ -247,7 +247,7 @@ GameUIScene.advanceMode = () => {
 			break;
 		case 1:
 			//activate movement
-			GameScene.sfxHandler("button");
+			GameScene.game_setup.sfxHandler("button");
 			activated = GameUIScene.activateMovement();
 
 			if(activated === true){
@@ -273,7 +273,7 @@ GameUIScene.advanceMode = () => {
 			break;
 		case 3:
 			//activate shoot
-			GameScene.sfxHandler("button");			
+			GameScene.game_setup.sfxHandler("button");			
 			GameUIScene.activateShooting();
 
 			gameFunctions.btn_sprite[0].hideButton()
@@ -294,7 +294,7 @@ GameUIScene.advanceMode = () => {
 			break;
 		case 5:
 			//activate charge
-			GameScene.sfxHandler("button");			
+			GameScene.game_setup.sfxHandler("button");			
 			activated = GameUIScene.activateCharging();
 
 			if(activated === true){
@@ -319,7 +319,7 @@ GameUIScene.advanceMode = () => {
 			break;
 		case 7:
 			//activate fight
-			GameScene.sfxHandler("button");	
+			GameScene.game_setup.sfxHandler("button");	
 			GameUIScene.activateFighting();
 			gameFunctions.btn_sprite[0].hideButton()
 			GameUIScene.mode_check_state = 1;
@@ -339,7 +339,7 @@ GameUIScene.advanceMode = () => {
 			break;
 		case 9:
 			//activate end turn
-			GameScene.sfxHandler("end_turn")
+			GameScene.game_setup.sfxHandler("end_turn")
 			GameUIScene.sendReadyUp();
 			GameUIScene.nextSide();			
 			break;
@@ -576,7 +576,7 @@ GameUIScene.nextSide = () => {
 		}
 	})
 	// GameScene.sfx["end_turn"].play();
-	GameScene.sfxHandler("end_turn")
+	GameScene.game_setup.sfxHandler("end_turn")
 	
 	if(GameScene.online === false){
 		GameUIScene.advanceSide()
@@ -697,7 +697,7 @@ GameUIScene.advanceSide = () => {
 			// for (let i=0;i<4;i++){
 			// let i = 0
 
-				let colour = GameScene.getSideColour(force.side)
+				let colour = GameScene.game_setup.getSideColour(force.side)
 				let width = 100;
 
 				GameUIScene.forces_hud[i] = {}

@@ -12,6 +12,8 @@ const unit = class {
 		this.size = options.size; //the grid size of the object used when plotting movement
 		this.cohesion = options.cohesion; //the maximum distance a unit can be from another member of it's squad
 		
+		this.upgrade_id = options.upgrade_id
+
 		this.alive = true;
 		
 		this.path = [];
@@ -488,7 +490,7 @@ unselectHandler() {
 	
 	drawTint(){
 
-		let colour = GameScene.getSideColour(this.side);
+		let colour = GameScene.game_setup.getSideColour(this.side);
 		this.colour = colour.colour
 		this.colour_gray = colour.colour_gray;
 		this.colour_info = colour.colour_info;

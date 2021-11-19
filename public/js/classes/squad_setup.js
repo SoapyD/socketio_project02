@@ -42,7 +42,8 @@ const squad_setup = class {
 						y: 3 * this.tile_size,
 						angle: 0,
 						universal_upgrades: universal_upgrades,
-						single_upgrade: single_upgrade
+						single_upgrade: single_upgrade,
+						upgrade_id: i,
 					})
 				}
 			})
@@ -55,6 +56,22 @@ const squad_setup = class {
 
 			let force = gameFunctions.params.forces[unit.player];
 			let squad = force.army[0].squads[unit.squad].squad;
+
+			//CHECK TO SEE IF ANY OF THE UPPGRADES NEED TO GET APPLIED TO ALL UNITS IN THE SQUAD
+			let universal_upgrades = [];
+			let single_upgrades = [];
+			squad.upgrades.forEach((upgrade) => {
+				if(upgrade.upgrades_all_in_squad === false){
+					single_upgrades.push(upgrade);
+				}else{
+					universal_upgrades.push(upgrade);
+				}
+			})  
+
+			let single_upgrade;
+			if(unit.upgrade_id !== -1){
+				single_upgrade = single_upgrades[unit.upgrade_id];
+			}
 
 			//UPGRADES, SINGLE AND UNIVERSAL NEED ADDING BACK IN
 
@@ -69,6 +86,9 @@ const squad_setup = class {
 					in_combat: unit.in_combat,
 					health: unit.health,
 					loaded: true,
+					universal_upgrades: universal_upgrades,
+					single_upgrade: single_upgrade,
+					upgrade_id: unit.upgrade_id,
 				})
 			}
 		})		
@@ -168,8 +188,11 @@ const squad_setup = class {
 		}
 		if(options.health){
 			unit_data.health = options.health;
-		}		
-
+		}	
+		unit_data.upgrade_id = -1;	
+		if(options.single_upgrade){
+			unit_data.upgrade_id = options.upgrade_id
+		}
 
 		this.unit_list.push(new unit(unit_data));
 	}

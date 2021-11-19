@@ -356,6 +356,7 @@ connFunctions.saveGame = (mode) => {
 			,player: unit.player
 			,squad: unit.squad		
 			
+			,upgrade_id: unit.upgrade_id
 			,unit_name: unit.unit_name
 			,shoot_name: unit.shoot_name
 			,fight_name: unit.fight_name

@@ -21,10 +21,6 @@ SIDES AND ACTIONS
 SETUP
 /////////////////////////////////////////
 
--DONE -Load in any upgrades to the unit during the setupsquad process
-
--Make sure any upgrades are saved so they can be reloaded
-
 -Show only armies created by an author to show on their armies page.
 
 -Set a number of default armies and use author name to check for armies created by that user
@@ -99,6 +95,9 @@ DONE
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+-DONE -Load in any upgrades to the unit during the setupsquad process
+-DONE -Make sure any upgrades are saved so they can be reloaded
 
 -DONE -Pass the name of the armies available to a player to all other users
 

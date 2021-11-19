@@ -91,6 +91,8 @@
 </script>
 
 
+<script src="/js/classes/loading_Screen.js"></script>
+<script src="/js/classes/game_setup.js"></script>
 <script src="/js/classes/mouse_selection.js"></script>
 <script src="/js/classes/hud.js"></script>
 <script src="/js/classes/button.js"></script>
@@ -121,7 +123,7 @@
 
 <script>
 
-<% if(room) { %>
+<% if(typeof room !== 'undefined') { %>
         let room_data = <%- JSON.stringify(room) %>
         let army_data = <%- JSON.stringify(armies) %>  
         console.log(room_data)
