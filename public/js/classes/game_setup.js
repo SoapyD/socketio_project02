@@ -5,6 +5,7 @@ const game_setup = class {
         this.scene = options.scene;
         this.scene_container = options.scene_container
 
+
 		// ██████   █████  ██████   █████  ███    ███ ███████ 
 		// ██   ██ ██   ██ ██   ██ ██   ██ ████  ████ ██      
 		// ██████  ███████ ██████  ███████ ██ ████ ██ ███████ 
@@ -120,6 +121,8 @@ const game_setup = class {
 		this.scene.load.audio('song2', [ 'song2.mp3' ])
 		this.scene.load.audio('song3', [ 'song3.mp3' ])
 
+		
+
     }
 
     loadSound = () => {
@@ -167,48 +170,48 @@ const game_setup = class {
 		})
     }
 
-// ███████  ██████  ██    ██ ███    ██ ██████        ██   ██  █████  ███    ██ ██████  ██      ███████ ██████  ███████ 
-// ██      ██    ██ ██    ██ ████   ██ ██   ██       ██   ██ ██   ██ ████   ██ ██   ██ ██      ██      ██   ██ ██      
-// ███████ ██    ██ ██    ██ ██ ██  ██ ██   ██ █████ ███████ ███████ ██ ██  ██ ██   ██ ██      █████   ██████  ███████ 
-//      ██ ██    ██ ██    ██ ██  ██ ██ ██   ██       ██   ██ ██   ██ ██  ██ ██ ██   ██ ██      ██      ██   ██      ██ 
-// ███████  ██████   ██████  ██   ████ ██████        ██   ██ ██   ██ ██   ████ ██████  ███████ ███████ ██   ██ ███████ 
+	// ███████  ██████  ██    ██ ███    ██ ██████        ██   ██  █████  ███    ██ ██████  ██      ███████ ██████  ███████ 
+	// ██      ██    ██ ██    ██ ████   ██ ██   ██       ██   ██ ██   ██ ████   ██ ██   ██ ██      ██      ██   ██ ██      
+	// ███████ ██    ██ ██    ██ ██ ██  ██ ██   ██ █████ ███████ ███████ ██ ██  ██ ██   ██ ██      █████   ██████  ███████ 
+	//      ██ ██    ██ ██    ██ ██  ██ ██ ██   ██       ██   ██ ██   ██ ██  ██ ██ ██   ██ ██      ██      ██   ██      ██ 
+	// ███████  ██████   ██████  ██   ████ ██████        ██   ██ ██   ██ ██   ████ ██████  ███████ ███████ ██   ██ ███████ 
 
-sfxHandler = (sfx) => {
-	
-	if (!this.scene_container.scene.sound.locked)
-	{
-		// already unlocked so play
-		this.scene_container.sfx[sfx].play();
-	}
-	else
-	{
-		// wait for 'unlocked' to fire and then play
-		this.scene_container.scene.sound.once(Phaser.Sound.Events.UNLOCKED, () => {
-			this.scene_container.sfx[sfx].play();
-		})
-	}
-}
-
-musicHandler = () => {
-	
-	if(this.scene_container.music_playing === false){
-				
+	sfxHandler = (sfx) => {
+		
 		if (!this.scene_container.scene.sound.locked)
 		{
 			// already unlocked so play
-			this.scene_container.music[this.scene_container.music_track].play();
+			this.scene_container.sfx[sfx].play();
 		}
 		else
 		{
 			// wait for 'unlocked' to fire and then play
 			this.scene_container.scene.sound.once(Phaser.Sound.Events.UNLOCKED, () => {
-				this.scene_container.music[this.scene_container.music_track].play();
+				this.scene_container.sfx[sfx].play();
 			})
-		}				
-		
-		this.scene_container.music_playing = true;
+		}
 	}
-}
+
+	musicHandler = () => {
+		
+		if(this.scene_container.music_playing === false){
+					
+			if (!this.scene_container.scene.sound.locked)
+			{
+				// already unlocked so play
+				this.scene_container.music[this.scene_container.music_track].play();
+			}
+			else
+			{
+				// wait for 'unlocked' to fire and then play
+				this.scene_container.scene.sound.once(Phaser.Sound.Events.UNLOCKED, () => {
+					this.scene_container.music[this.scene_container.music_track].play();
+				})
+			}				
+			
+			this.scene_container.music_playing = true;
+		}
+	}
 
     setupTable = () => {
 
@@ -225,7 +228,7 @@ musicHandler = () => {
         var cursors = this.scene.input.keyboard.createCursorKeys();		
 				
 		// Handles the clicks on the map to make the character move
-		this.scene.input.on('pointerup',this.scene_container.clickHandler);
+		this.scene.input.on('pointerup',this.clickHandler);
 		
 		this.setupMap();
 		this.setupCamera();
@@ -278,7 +281,7 @@ musicHandler = () => {
             for(var x = 0; x < this.scene_container.map.width; x++){
                 // In each cell we store the ID of the tile, which corresponds
                 // to its index in the tileset of the map ("ID" field in Tiled)
-                col.push(this.scene_container.getTileID(x,y));
+                col.push(this.getTileID(x,y));
             }
             grid.push(col);
         }
@@ -307,6 +310,11 @@ musicHandler = () => {
         this.scene_container.pathfinder = new pathfinder(grid, acceptable_tiles);			
     }
     
+	getTileID = function(x,y){
+		var tile = this.scene_container.map.getTileAt(x, y);
+		return tile.index;
+	};
+
     //  #####  ####### ####### #     # ######         #####     #    #     # ####### ######     #    
     // #     # #          #    #     # #     #       #     #   # #   ##   ## #       #     #   # #   
     // #       #          #    #     # #     #       #        #   #  # # # # #       #     #  #   #  
@@ -382,9 +390,19 @@ musicHandler = () => {
 		var pointerTileY = this.scene_container.map.worldToTileY(worldPoint.y);
 		this.scene_container.marker.x = this.scene_container.map.tileToWorldX(pointerTileX);
 		this.scene_container.marker.y = this.scene_container.map.tileToWorldY(pointerTileY);
-		this.scene_container.marker.setVisible(!this.scene_container.checkCollision(pointerTileX,pointerTileY));          
+		this.scene_container.marker.setVisible(!this.checkCollision(pointerTileX,pointerTileY));          
     }
 
+	checkCollision = function(x,y){
+		var tile = this.scene_container.map.getTileAt(x, y);
+		if (tile){
+			return tile.properties.collide == true;		
+		}
+		else{
+			return
+		}
+	};
+	
 
     getSideColour = (side) => {
         let colour = {};
@@ -414,5 +432,294 @@ musicHandler = () => {
         
         return colour
     }
+
+	//  #####  #       ###  #####  #    #       #     #    #    #     # ######  #       ####### ######  
+	// #     # #        #  #     # #   #        #     #   # #   ##    # #     # #       #       #     # 
+	// #       #        #  #       #  #         #     #  #   #  # #   # #     # #       #       #     # 
+	// #       #        #  #       ###    ##### ####### #     # #  #  # #     # #       #####   ######  
+	// #       #        #  #       #  #         #     # ####### #   # # #     # #       #       #   #   
+	// #     # #        #  #     # #   #        #     # #     # #    ## #     # #       #       #    #  
+	//  #####  ####### ###  #####  #    #       #     # #     # #     # ######  ####### ####### #     # 
+
+	clickHandler = function(pointer){
+
+
+		if (pointer.leftButtonReleased())
+		{	
+			GameScene.left_click = true;
+		}		
+		if (pointer.rightButtonReleased())
+		{	
+			GameScene.right_click = true;
+		}			
+	};
+
+
+	checkUnitClicks = () => {
+
+		var worldPoint = this.scene.input.activePointer.positionToCamera(this.scene.cameras.main);	
+
+		if(this.scene_container.selected_unit.length > 0 && this.scene_container.multi_select_pause === false){
+			// let selected_unit = this.scene_container.selected_unit[0];
+			this.scene_container.selected_unit.forEach((selected_unit) => {
+
+				// ██      ███████ ███████ ████████        ██████ ██      ██  ██████ ██   ██ 
+				// ██      ██      ██         ██          ██      ██      ██ ██      ██  ██  
+				// ██      █████   █████      ██    █████ ██      ██      ██ ██      █████   
+				// ██      ██      ██         ██          ██      ██      ██ ██      ██  ██  
+				// ███████ ███████ ██         ██           ██████ ███████ ██  ██████ ██   ██ 
+
+				if(this.scene_container.left_click === true && GameUIScene.mode_check_state === 0){
+
+					switch(gameFunctions.mode) {
+						case "move":
+							
+							if(this.scene_container.online === false){
+
+								//USED FOR MULTIPLE SELECTIONS TO APPLY MOVEMENT
+								let used_pointer = worldPoint
+								if(this.scene_container.mouse_selection){
+									if(this.scene_container.mouse_selection.selection_info){
+										let info = this.scene_container.mouse_selection.selection_info[selected_unit.id];
+										used_pointer.x += info.offset.x
+										used_pointer.y += info.offset.y
+									}
+								}
+
+								selected_unit.findPath({pointer: used_pointer});
+							}else{
+
+								let data = {
+									functionGroup: "socketFunctions",  
+									function: "messageAll",
+									room_name: gameFunctions.params.room_name,
+									returnFunctionGroup: "connFunctions",
+									returnFunction: "runUnitFunction", //test
+									returnParameters: {
+										id: selected_unit.id, 
+										function: "findPath",
+										function_parameter: {pointer: worldPoint}
+									},
+									message: "set move"
+								}
+								connFunctions.messageServer(data)
+							}
+						break;
+						case "shoot":
+
+							if(this.scene_container.online === false){
+								selected_unit.findTarget({pointer: worldPoint});
+							}else{
+
+								let data = {
+									functionGroup: "socketFunctions",  
+									function: "messageAll",
+									room_name: gameFunctions.params.room_name,
+									returnFunctionGroup: "connFunctions",
+									returnFunction: "runUnitFunction", //test
+									returnParameters: {
+										id: selected_unit.id, 
+										function: "findTarget",
+										function_parameter: {pointer: worldPoint}
+									},
+									message: "set shot target"
+								}
+								connFunctions.messageServer(data)
+							}
+						break;
+						case "charge":
+
+							if(this.scene_container.online === false){
+								selected_unit.findPath({pointer: worldPoint});
+							}else{
+
+								let data = {
+									functionGroup: "socketFunctions",  
+									function: "messageAll",
+									room_name: gameFunctions.params.room_name,
+									returnFunctionGroup: "connFunctions",
+									returnFunction: "runUnitFunction", //test
+									returnParameters: {
+										id: selected_unit.id, 
+										function: "findPath",
+										function_parameter: {pointer: worldPoint}
+									},
+									message: "set charge"
+								}
+								connFunctions.messageServer(data)
+							}						
+						break;		
+						case "fight":
+
+							if(this.scene_container.online === false){
+								selected_unit.findFightTarget({pointer: worldPoint});
+							}else{
+
+								let data = {
+									functionGroup: "socketFunctions",  
+									function: "messageAll",
+									room_name: gameFunctions.params.room_name,
+									returnFunctionGroup: "connFunctions",
+									returnFunction: "runUnitFunction", //test
+									returnParameters: {
+										id: selected_unit.id, 
+										function: "findFightTarget",
+										function_parameter: {pointer: worldPoint}
+									},
+									message: "set fight target"
+								}
+								connFunctions.messageServer(data)
+							}
+							
+						break;					
+						default:
+						// code block
+					}		
+				}
+
+				// ██████  ██  ██████  ██   ██ ████████        ██████ ██      ██  ██████ ██   ██ 
+				// ██   ██ ██ ██       ██   ██    ██          ██      ██      ██ ██      ██  ██  
+				// ██████  ██ ██   ███ ███████    ██    █████ ██      ██      ██ ██      █████   
+				// ██   ██ ██ ██    ██ ██   ██    ██          ██      ██      ██ ██      ██  ██  
+				// ██   ██ ██  ██████  ██   ██    ██           ██████ ███████ ██  ██████ ██   ██ 			
+				
+				if(this.scene_container.right_click === true && GameUIScene.mode_check_state === 0){
+					
+					this.scene_container.sfx['clear'].play();
+					switch(gameFunctions.mode) {
+						case "move":
+
+							if(this.scene_container.online === false){
+								selected_unit.resetMove();
+							}else{
+
+								let data = {
+									functionGroup: "socketFunctions",  
+									function: "messageAll",
+									room_name: gameFunctions.params.room_name,
+									returnFunctionGroup: "connFunctions",
+									returnFunction: "runUnitFunction", //test
+									returnParameters: {
+										id: selected_unit.id, 
+										function: "resetMove",
+									},
+									message: "reset path"
+								}
+								connFunctions.messageServer(data)
+							}
+							
+						break;
+						case "shoot":
+
+							if(this.scene_container.online === false){
+								selected_unit.removeTarget();
+							}else{
+
+								let data = {
+									functionGroup: "socketFunctions",  
+									function: "messageAll",
+									room_name: gameFunctions.params.room_name,
+									returnFunctionGroup: "connFunctions",
+									returnFunction: "runUnitFunction", //test
+									returnParameters: {
+										id: selected_unit.id, 
+										function: "removeTarget",
+									},
+									message: "remove target"
+								}
+								connFunctions.messageServer(data)
+							}						
+						break;
+						case "charge":
+
+							if(this.scene_container.online === false){
+								selected_unit.resetMove();
+							}else{
+
+								let data = {
+									functionGroup: "socketFunctions",  
+									function: "messageAll",
+									room_name: gameFunctions.params.room_name,
+									returnFunctionGroup: "connFunctions",
+									returnFunction: "runUnitFunction", //test
+									returnParameters: {
+										id: selected_unit.id, 
+										function: "resetMove",
+									},
+									message: "reset path"
+								}
+								connFunctions.messageServer(data)
+							}						
+						break;
+						case "fight":
+
+							if(this.scene_container.online === false){
+								selected_unit.removeFightTarget();
+							}else{
+
+								let data = {
+									functionGroup: "socketFunctions",  
+									function: "messageAll",
+									room_name: gameFunctions.params.room_name,
+									returnFunctionGroup: "connFunctions",
+									returnFunction: "runUnitFunction", //test
+									returnParameters: {
+										id: selected_unit.id, 
+										function: "removeFightTarget",
+									},
+									message: "remove fight target"
+								}
+								connFunctions.messageServer(data)
+							}
+						break;	
+						default:
+						// code block
+					}
+				}
+
+			})
+			
+		}
+
+		this.scene_container.multi_select_pause = false;
+		this.scene_container.left_click = false;
+		this.scene_container.right_click = false;				
+	}
+
+
+
+	// ██    ██ ██████  ██████   █████  ████████ ███████       ███████ ██      ███████ ███    ███ ███████ ███    ██ ████████ ███████ 
+	// ██    ██ ██   ██ ██   ██ ██   ██    ██    ██            ██      ██      ██      ████  ████ ██      ████   ██    ██    ██      
+	// ██    ██ ██████  ██   ██ ███████    ██    █████   █████ █████   ██      █████   ██ ████ ██ █████   ██ ██  ██    ██    ███████ 
+	// ██    ██ ██      ██   ██ ██   ██    ██    ██            ██      ██      ██      ██  ██  ██ ██      ██  ██ ██    ██         ██ 
+	//  ██████  ██      ██████  ██   ██    ██    ███████       ███████ ███████ ███████ ██      ██ ███████ ██   ████    ██    ███████ 
+
+	updateElements = () => {
+																																	  
+		//CHECK BULLET DEATH
+		let bullets = [];
+		if(this.scene_container.bullets){
+			this.scene_container.bullets.forEach((bullet) => {
+				bullet.checkRange();
+				if(bullet.delete === false){
+					bullets.push(bullet)
+				}
+			})
+		}
+		
+		this.scene_container.bullets = bullets;
+		
+		if(gameFunctions.units){
+			gameFunctions.units.forEach((unit) => {
+				if(unit.side === gameFunctions.current_side){
+
+					if(unit.is_moving === true){
+						// unit.draw_health()
+						unit.updateUnitElements(unit.sprite);
+					}
+				}
+			})
+		}		
+	}
 
 }

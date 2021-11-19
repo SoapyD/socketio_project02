@@ -126,7 +126,7 @@
 <% if(typeof room !== 'undefined') { %>
         let room_data = <%- JSON.stringify(room) %>
         let army_data = <%- JSON.stringify(armies) %>  
-        console.log(room_data)
+        // console.log(room_data)
         gameFunctions.params.room_name = room_data.room_name
     	// gameFunctions.params.room_id = room_data.room_id
         gameFunctions.params.users = room_data.users	
