@@ -17,7 +17,7 @@ var GameScene = new Phaser.Class({
 		GameScene.scene = this.scene.get('GameScene')
 		gameFunctions.current_scene = this.scene.get('GameScene');
 
-		GameScene.loading_screen = new loading_screen({scene: GameScene.scene, launch_uiscene: "GameUIScene"})
+		GameScene.loading_screen = new loading_screen({scene: GameScene.scene, launch_uiscene: "ArmySetupUIScene"}) //GameUIScene
 		GameScene.game_setup = new game_setup({scene: GameScene.scene, scene_container: GameScene})
 
     },
@@ -27,6 +27,8 @@ var GameScene = new Phaser.Class({
     {
 		GameScene.game_setup.loadSound();
 		GameScene.game_setup.setupTable();
+
+		GameScene.game_setup.setupSquads();		
     },
 
     update: function (time, delta)
@@ -36,11 +38,26 @@ var GameScene = new Phaser.Class({
 		GameScene.game_setup.updateMarker(); 
 		GameScene.controls.update(delta);
 		
-		GameScene.game_setup.checkUnitClicks();
+		switch(GameScene.game_state){
 
-		GameScene.game_setup.updateElements();
+			case 0:
+				//PLACE UNITS LOOP
+				break;			
 
-		GameScene.pathfinder.update();
+			case 1:
+
+				
+				GameScene.game_state++;
+				break;
+			case 2:
+				GameScene.game_setup.checkUnitClicks();
+				GameScene.game_setup.updateElements();
+				GameScene.pathfinder.update();
+
+				break;
+		}
+
+
 	}
 });
 

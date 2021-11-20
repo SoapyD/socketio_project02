@@ -32,6 +32,7 @@ const game_setup = class {
 		
 		this.scene_container.master_sfx_volume = 0.3;
 		
+		this.scene_container.game_state = 0;
 
 		this.scene_container.active_actions = 0;
 		this.scene_container.bullets = [];
@@ -51,6 +52,8 @@ const game_setup = class {
 		this.scene_container.endX = 0
 		this.scene_container.endY = 0
 		
+		this.scene_container.multi_select_pause = false;	
+
 		// gameFunctions.units = []
 
 		let max_sides = 6;
@@ -232,24 +235,7 @@ const game_setup = class {
 		
 		this.setupMap();
 		this.setupCamera();
-
-		
-		let options = {
-			scene: this.scene,
-			unit_list: gameFunctions.units,
-			forces: gameFunctions.params.forces,
-			tile_size: gameFunctions.tile_size
-		}
-		this.scene_container.squad_setup = new squad_setup(options)
-
-		//SETUP THE SQUADS IF THE GAME ISN'T BEING LOADED FROM A PREVIOUS SAVE
-		if(gameFunctions.units_preload.length === 0){
-			this.scene_container.squad_setup.placeSquads();	
-		}else{
-			this.scene_container.squad_setup.reloadSquads();
-		}
-		
-		this.scene_container.multi_select_pause = false;	        
+	        
     }
 
     //  #####  ####### ####### #     # ######        #     #    #    ######  
@@ -371,6 +357,35 @@ const game_setup = class {
     
         this.scene_container.minimap.startFollow(this.scene_container.rectangle);	
     }
+
+
+	//  #####  ####### ####### #     # ######         #####   #####  #     #    #    ######   #####  
+	// #     # #          #    #     # #     #       #     # #     # #     #   # #   #     # #     # 
+	// #       #          #    #     # #     #       #       #     # #     #  #   #  #     # #       
+	//  #####  #####      #    #     # ######  #####  #####  #     # #     # #     # #     #  #####  
+	// 	  	 # #          #    #     # #                   # #   # # #     # ####### #     #       # 
+	// #     # #          #    #     # #             #     # #    #  #     # #     # #     # #     # 
+	//  #####  #######    #     #####  #              #####   #### #  #####  #     # ######   #####  
+
+
+	setupSquads = () => {
+		let options = {
+			scene: this.scene,
+			unit_list: gameFunctions.units,
+			forces: gameFunctions.params.forces,
+			tile_size: gameFunctions.tile_size
+		}
+		this.scene_container.squad_setup = new squad_setup(options)
+
+		//SETUP THE SQUADS IF THE GAME ISN'T BEING LOADED FROM A PREVIOUS SAVE
+		if(gameFunctions.units_preload.length === 0){
+			this.scene_container.squad_setup.placeSquads();	
+		}else{
+			this.scene_container.squad_setup.reloadSquads();
+		}
+	}
+
+
 
 
     // ███    ███  █████  ██████  ██   ██ ███████ ██████  

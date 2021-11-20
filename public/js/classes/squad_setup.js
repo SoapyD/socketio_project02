@@ -38,8 +38,8 @@ const squad_setup = class {
 						force: force,
 						squad: squad,
 						squad_id: squad_id,
-						x: (3 + (2*i)) * this.tile_size,
-						y: 3 * this.tile_size,
+						x: 1 * this.tile_size, //(3 + (2*i))
+						y: -2 * this.tile_size, //3
 						angle: 0,
 						universal_upgrades: universal_upgrades,
 						single_upgrade: single_upgrade,

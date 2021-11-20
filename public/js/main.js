@@ -56,7 +56,7 @@ gameFunctions.config = {
 
 switch(instance_type){
 	case "DEV":
-		gameFunctions.config.scene = [ GameScene, GameUIScene ]
+		gameFunctions.config.scene = [ GameScene, ArmySetupUIScene, GameUIScene ]
 		// gameFunctions.config.scene = [ GameScene, ArmySetupUIScene ]
 		break;
 	case "DEV-ONLINE":

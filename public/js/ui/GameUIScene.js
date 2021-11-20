@@ -19,7 +19,7 @@ var GameUIScene = new Phaser.Class({
 		
 		GameUIScene.mode_check_state = 0;
 		GameUIScene.mode_check_timer = 0;
-		GameUIScene.scene = this.scene.get('GameUIScene')
+		// GameUIScene.scene = this.scene.get('GameUIScene')
 	
 		// this.load.html('in_game_ui', './html/in_game_ui.html');    
     },

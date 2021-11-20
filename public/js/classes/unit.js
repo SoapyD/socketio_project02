@@ -12,9 +12,10 @@ const unit = class {
 		this.size = options.size; //the grid size of the object used when plotting movement
 		this.cohesion = options.cohesion; //the maximum distance a unit can be from another member of it's squad
 		
-		this.upgrade_id = options.upgrade_id
+		this.upgrade_id = options.upgrade_id;
+		// this.setup = false;
 
-		this.alive = true;
+		this.alive = false;
 		
 		this.path = [];
 		this.is_moving = false;
@@ -1278,6 +1279,7 @@ unselectHandler() {
 	
 	cohesionCheck() {
 		
+		let units_check = 0;
 		gameFunctions.units.forEach((unit) => {
 			if(unit.alive === true && unit.player === this.player && unit.squad === this.squad) //unit.id !== this.id && 
 			{		
@@ -1316,9 +1318,14 @@ unselectHandler() {
 				}
 
 				unit.drawPath(colours)
-				
+				units_check++;
 			}
 		})
+
+		//IF ALL OTHER UNITS IN THE SQUAD ARE DEAD, AUTO-PASS THE CHECK
+		if(units_check === 1){
+			this.cohesion_check = true
+		}
 		
 	}
 
