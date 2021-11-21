@@ -365,7 +365,7 @@ connFunctions.readyUp = (data) => {
 	let scene;
 	switch(data.parameters.ui_scene){
 		case "GameUIScene":
-			scene = GameScene
+			scene = GameUIScene
 			break;
 		case "ArmySetupUIScene":
 			scene = ArmySetupUIScene

@@ -208,7 +208,7 @@ var ArmySelectUIScene = new Phaser.Class({
 					options.value = force.start
 					ArmySelectUIScene.updateSelections(options)
 				}
-				if(force.army > -1){
+				if(force.army && force.army !== "-1"){
 					options.subtype = "army"
 					options.player_number = force.player_number
 					options.value = force.army
@@ -310,6 +310,20 @@ ArmySelectUIScene.updatePlayers = () => {
 		if(elements.length > 0){
 			elements.text(user.username);
 		}
+
+		//ADD THAT PLAYERS FORCES TO THEIR ARMY DROPDOWN
+		id = '#'+i+'_army-select';
+		elements = $(id);
+		if(elements.length > 0){
+			// ADD IN ARMIES IF NON HAVE BEEN ADDED IN ALREADY
+
+			if($('#'+i+'_army-select option').length === 1){
+				let army_list = gameFunctions.params.forces[i].army_list;
+				army_list.forEach((army) => {
+					elements.append($('<option>', {value:army._id, text:army.name}));
+				})
+			}
+		}		
 	})
 
 	//NEED TO ADD IN A BIT HERE THAT'LL UPDATE THE FORCES DROPDOWN

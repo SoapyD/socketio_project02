@@ -229,7 +229,9 @@ exports.updateRoomConfig = (room, data) => {
 				room.forces[data.player_number].start = data.value;
 				break;
 			case 'army':
-				room.forces[data.player_number].army = data.value;
+                // if(data.value !== ""){
+                    room.forces[data.player_number].army = data.value;
+                // }
 				break;
 		}		
 	}
