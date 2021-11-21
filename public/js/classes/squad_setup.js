@@ -20,11 +20,11 @@ const squad_setup = class {
 				//CHECK TO SEE IF ANY OF THE UPPGRADES NEED TO GET APPLIED TO ALL UNITS IN THE SQUAD
 				let universal_upgrades = [];
 				let single_upgrades = [];
-				squad.upgrades.forEach((upgrade) => {
-					if(upgrade.upgrades_all_in_squad === false){
-						single_upgrades.push(upgrade);
+				squad_data.upgrades.forEach((item) => {
+					if(item.upgrade.upgrades_all_in_squad === false){
+						single_upgrades.push(item.upgrade);
 					}else{
-						universal_upgrades.push(upgrade);
+						universal_upgrades.push(item.upgrade);
 					}
 				})  
 

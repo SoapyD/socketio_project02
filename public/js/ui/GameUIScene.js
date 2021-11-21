@@ -85,7 +85,7 @@ var GameUIScene = new Phaser.Class({
 
 				break;
 		}
-		let all_ready = GameUIScene.checkReadyUp();
+		let all_ready = connFunctions.checkReadyUp();
 		if(GameUIScene.mode_check_timer > 0 && all_ready === true){
 			GameUIScene.mode_check_timer--;
 		}
@@ -251,7 +251,7 @@ GameUIScene.advanceMode = () => {
 			activated = GameUIScene.activateMovement();
 
 			if(activated === true){
-				GameUIScene.sendReadyUp();
+				connFunctions.sendReadyUp("GameUIScene");
 				GameScene.resetTempSprites();
 				gameFunctions.btn_sprite[0].hideButton()
 				GameUIScene.mode_check_state = 1;
@@ -278,7 +278,7 @@ GameUIScene.advanceMode = () => {
 
 			gameFunctions.btn_sprite[0].hideButton()
 			GameUIScene.mode_check_state = 1;
-			GameUIScene.sendReadyUp();
+			connFunctions.sendReadyUp("GameUIScene");
 			break;
 			
 		case 4:
@@ -298,7 +298,7 @@ GameUIScene.advanceMode = () => {
 			activated = GameUIScene.activateCharging();
 
 			if(activated === true){
-				GameUIScene.sendReadyUp();
+				connFunctions.sendReadyUp("GameUIScene");
 				GameScene.resetTempSprites();
 				gameFunctions.btn_sprite[0].hideButton()
 				GameUIScene.mode_check_state = 1;
@@ -323,7 +323,7 @@ GameUIScene.advanceMode = () => {
 			GameUIScene.activateFighting();
 			gameFunctions.btn_sprite[0].hideButton()
 			GameUIScene.mode_check_state = 1;
-			GameUIScene.sendReadyUp();
+			connFunctions.sendReadyUp("GameUIScene");
 			break
 		case 8:
 			//setup end turn
@@ -340,7 +340,7 @@ GameUIScene.advanceMode = () => {
 		case 9:
 			//activate end turn
 			GameScene.game_setup.sfxHandler("end_turn")
-			GameUIScene.sendReadyUp();
+			connFunctions.sendReadyUp("GameUIScene");
 			GameUIScene.nextSide();			
 			break;
 	}
@@ -776,64 +776,6 @@ GameUIScene.advanceSide = () => {
 	}
 
 
-// ######  #######    #    ######  #     #       #     # ######  
-// #     # #         # #   #     #  #   #        #     # #     # 
-// #     # #        #   #  #     #   # #         #     # #     # 
-// ######  #####   #     # #     #    #    ##### #     # ######  
-// #   #   #       ####### #     #    #          #     # #       
-// #    #  #       #     # #     #    #          #     # #       
-// #     # ####### #     # ######     #           #####  #  
-
-GameUIScene.sendReadyUp = () => {
-	if(GameScene.online === false){
-		GameUIScene.readyUp({parameters: {player_id:gameFunctions.params.player_number}})
-	}else{
-		let data = {
-			functionGroup: "socketFunctions",  
-			function: "messageAll",
-			room_name: gameFunctions.params.room_name,
-			returnFunctionGroup: "GameUIScene",
-			returnFunction: "readyUp",
-			returnParameters: {
-				player_id:gameFunctions.params.player_number
-			},
-			message: "ready player "+gameFunctions.params.player_number
-		}
-
-		connFunctions.messageServer(data)		
-	}
-}
-
-GameUIScene.readyUp = (data) => {
-	gameFunctions.params.forces[data.parameters.player_id].ready = true;
-	GameUIScene.setForcesHUD(data.parameters.player_id, "ready", true, false)	
-}
-
-GameUIScene.checkReadyUp = () => {
-	let all_ready = false;
-	let ready_count = 0;
-	let player_count = 0;
-	gameFunctions.params.forces.forEach((force) => {
-		if (force.ready === true){
-			ready_count++;
-		}
-		if(force.side === gameFunctions.current_side){
-			player_count++;
-		}
-	})
-	if(ready_count === player_count){
-		all_ready = true;
-
-		//IF ALL READY, RESET READY STATUS FOR EVERYONE
-		// gameFunctions.params.forces.forEach((force) => {
-		// 	force.ready = false;
-		// })
-	}	
-
-	return all_ready;
-}
-
-
 
 // ███████ ██    ██ ███    ██  ██████ ████████ ██  ██████  ███    ██ ███████ 
 // ██      ██    ██ ████   ██ ██         ██    ██ ██    ██ ████   ██ ██      
@@ -855,33 +797,16 @@ GameUIScene.checkAllCombat = () => {
 }
 
 
-GameUIScene.hideButtons = () => {
-	gameFunctions.btn_sprite.forEach((btn) => {
-		btn.hideButton();
-		btn.text.visible = false;
-	})
-}
-
-GameUIScene.showButtons = () => {
-	gameFunctions.btn_sprite.forEach((btn) => {
-		btn.showButton();
-		btn.text.visible = true;	
-	})
-}
-
 GameUIScene.checkButtonVisability = () => {
 	if(GameScene.online === true){
 		if(gameFunctions.params.player_side === gameFunctions.current_side){
 			// if(start_check === true){
-				GameUIScene.showButtons()	
+				gameFunctions.showButtons()	
 			// }
 		}else{
-			GameUIScene.hideButtons()
+			gameFunctions.hideButtons()
 		}
 	}
-	// else{
-	// 	GameUIScene.showButtons()
-	// }
 }
 
 

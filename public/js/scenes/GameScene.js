@@ -43,12 +43,12 @@ var GameScene = new Phaser.Class({
 			case 0:
 				//PLACE UNITS LOOP
 				break;			
-
 			case 1:
-
-				
+				gameFunctions.current_uiscene.scene.start("GameUIScene")
+				// gameFunctions.current_scene.scene.start("GameUIScene")
 				GameScene.game_state++;
-				break;
+				break;			
+
 			case 2:
 				GameScene.game_setup.checkUnitClicks();
 				GameScene.game_setup.updateElements();

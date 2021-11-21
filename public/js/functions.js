@@ -13,3 +13,18 @@ gameFunctions.twoPointDistance = (pos_start, pos_end) => {
 	// console.log(pos_start, pos_end)
 	return Math.sqrt(Math.pow(pos_start.x - pos_end.x, 2) + Math.pow(pos_start.y - pos_end.y, 2))
 }
+
+
+gameFunctions.hideButtons = () => {
+	gameFunctions.btn_sprite.forEach((btn) => {
+		btn.hideButton();
+		btn.text.visible = false;
+	})
+}
+
+gameFunctions.showButtons = () => {
+	gameFunctions.btn_sprite.forEach((btn) => {
+		btn.showButton();
+		btn.text.visible = true;	
+	})
+}

@@ -14,8 +14,8 @@ var ArmySetupUIScene = new Phaser.Class({
         this.load.spritesheet("buttons", "./img/buttons3.jpg", 
         { frameWidth: 100, frameHeight: 50, endFrame: 3 });	
 
-        ArmySetupUIScene.state = -1;
-        ArmySetupUIScene.state_max = 1;
+        ArmySetupUIScene.state = 0;
+        ArmySetupUIScene.state_max = 4;
         ArmySetupUIScene.unit_id = -1;
     },
 
@@ -31,56 +31,13 @@ var ArmySetupUIScene = new Phaser.Class({
 		gameFunctions.current_uiscene = this.scene.get('ArmySetupUIScene');
 
         ArmySetupUIScene.loadSingleButton(this)
-        gameFunctions.btn_sprite[0].updateText("Finish Placement")	
 
         ArmySetupUIScene.setupHUD();
-        ArmySetupUIScene.runAdvanceMode();
     },
 
     update: function (time, delta)
-    {
-        // switch( gameFunctions.config.game_state) {
-        //     case 0:
-
-        //     break;
-
-        //     default:
-        //     // code block
-        // }	                 
-
-        let current_unit;
-        // var worldPoint = GameScene.scene.input.activePointer.positionToCamera(GameScene.scene.cameras.main);
-        if(ArmySetupUIScene.unit_id !== -1){
-            current_unit = gameFunctions.units[ArmySetupUIScene.unit_id];
-            current_unit.alive = true;
-            // if(current_unit.alive === false){
-            current_unit.sprite.x = GameScene.marker.x + (gameFunctions.tile_size /  2);
-            current_unit.sprite.y = GameScene.marker.y + (gameFunctions.tile_size / 2);
-            current_unit.updateElements(current_unit.sprite)     
-            
-            current_unit.sprite_ghost.x = GameScene.marker.x + (gameFunctions.tile_size /  2);
-            current_unit.sprite_ghost.y = GameScene.marker.y + (gameFunctions.tile_size / 2);
-            current_unit.updateElements(current_unit.sprite_ghost)
-            
-            if(current_unit.cohesion > 0){
-                current_unit.cohesionCheck();
-            }                
-            // }
-        }
-
-        if(GameScene.left_click === true){
-            if(current_unit){
-                // current_unit.alive = true;
-                // if(current_unit.cohesion > 0){
-                //     current_unit.cohesionCheck();
-                // }
-                if(current_unit.cohesion_check === true){
-                    ArmySetupUIScene.runAdvanceMode();
-                }
-            }
-        }
-
-        GameScene.left_click = false;
+    {                
+        ArmySetupUIScene.checkMode();
 
     }
 });
@@ -104,7 +61,7 @@ ArmySetupUIScene.loadSingleButton = (scene) => {
 		height: 50,
 		width: 250,
 		label:  "+",
-		clickAction: ArmySetupUIScene.advanceMode,
+		clickAction: ArmySetupUIScene.runAdvanceMode,
 		callbackParams: callbackParams,
 		array: gameFunctions.btn_sprite
 	}
@@ -211,7 +168,7 @@ ArmySetupUIScene.setupHUD = () => {
         // }
         })
 
-        ArmySetupUIScene.setAllWaitingHUD();
+        // ArmySetupUIScene.setAllWaitingHUD();
     }
 }
 
@@ -224,15 +181,15 @@ ArmySetupUIScene.setForcesHUD = (i, text, is_visible, is_gray) => {
     }
 }
 
-ArmySetupUIScene.setAllWaitingHUD = () => {
-    gameFunctions.params.forces.forEach((force, i) => {
-        if(force.side === gameFunctions.current_side){
-            ArmySetupUIScene.setForcesHUD(i, "unready", true, true)
-        }else{
-            ArmySetupUIScene.setForcesHUD(i, "unready", false, true)
-        }
-    })
-}
+// ArmySetupUIScene.setAllWaitingHUD = () => {
+//     gameFunctions.params.forces.forEach((force, i) => {
+//         if(force.side === gameFunctions.current_side){
+//             ArmySetupUIScene.setForcesHUD(i, "unready", true, true)
+//         }else{
+//             ArmySetupUIScene.setForcesHUD(i, "unready", false, true)
+//         }
+//     })
+// }
 
 
 // ███    ███  ██████  ██████  ███████       ██   ██  █████  ███    ██ ██████  ██      ███████ ██████  
@@ -243,33 +200,147 @@ ArmySetupUIScene.setAllWaitingHUD = () => {
 
 ArmySetupUIScene.runAdvanceMode = () => {
 	ArmySetupUIScene.state++;
-	if(ArmySetupUIScene.state > ArmySetupUIScene.state_max){
-		ArmySetupUIScene.state = 0;
-	}
-	
-	ArmySetupUIScene.advanceMode()	
+	// if(ArmySetupUIScene.state > ArmySetupUIScene.state_max){
+	// 	ArmySetupUIScene.state = 3; //where the modes loop
+	// }	
 }
 
-ArmySetupUIScene.advanceMode = () => {
+ArmySetupUIScene.checkMode = () => {
 	let options = {}
 	// let btn;
 	let activated = false;
 	switch(ArmySetupUIScene.state){
+
 		case 0:
+            gameFunctions.btn_sprite[0].updateText("Start Placement")				
+            ArmySetupUIScene.runAdvanceMode();
+			break;        
+        case 1:
+            //pause until placement starts
+            break;
+        case 2:
+            gameFunctions.hideButtons()            				
+            ArmySetupUIScene.runAdvanceMode();
+            GameScene.left_click = false;            
+			break;
+        case 3:
 			//GET THE ID OF THE NEXT UNIT TO SETUP
             ArmySetupUIScene.unit_id = -1
 			gameFunctions.units.forEach((unit) => {
 
                 if(unit.player === gameFunctions.params.player_number && unit.alive === false && ArmySetupUIScene.unit_id === -1){
                     ArmySetupUIScene.unit_id = unit.id;
+
+                    ArmySetupUIScene.setForcesHUD(gameFunctions.params.player_number, "squad "+unit.squad, true, false)
                 }
             })
             
-			ArmySetupUIScene.state++;
+            if(ArmySetupUIScene.unit_id !== -1){
+                ArmySetupUIScene.runAdvanceMode();
+            }else{
+                ArmySetupUIScene.state = 5;
+            }
 			break;
-        case 1:
+        case 4:
             //WAITING FOR UNIT TO BE PLACED
+
+            let current_unit;
+            if(ArmySetupUIScene.unit_id !== -1){
+
+                current_unit = gameFunctions.units[ArmySetupUIScene.unit_id];
+
+                let options = {
+                    unit_id: ArmySetupUIScene.unit_id,
+                    x: GameScene.marker.x + (gameFunctions.tile_size /  2),
+                    y: GameScene.marker.y + (gameFunctions.tile_size /  2),                    
+                }
+                
+                if(GameScene.online === true){
+                    let data = {
+                        functionGroup: "socketFunctions",  
+                        function: "messageAll",
+                        room_name: gameFunctions.params.room_name,
+                        returnFunctionGroup: "ArmySetupUIScene",
+                        returnFunction: "moveUnit",
+                        returnParameters: options,
+                        message: "move unit"
+                    }				
+                    connFunctions.messageServer(data)                
+                }else{
+                    ArmySetupUIScene.moveUnit(options);
+                }
+
+            }
+    
+            if(GameScene.left_click === true){
+                if(current_unit){
+                    if(current_unit.cohesion_check === true){
+                        // ArmySetupUIScene.runAdvanceMode();
+                        ArmySetupUIScene.state = 3;
+                    }
+                }
+            }
+            // GameScene.left_click = false;
+
+            break;
+
+        case 5:
+            gameFunctions.showButtons()  
+            gameFunctions.btn_sprite[0].updateText("Finish Placement")
+            ArmySetupUIScene.runAdvanceMode();          
+            break;
+
+        case 6:
+            //wait for player to press finish placement button
+            break;
+
+        case 7:
+            gameFunctions.hideButtons();  
+            // ArmySetupUIScene.setForcesHUD(gameFunctions.params.player_number, "waiting", true, true)
+            
+            if(GameScene.online === true){
+                connFunctions.sendReadyUp(ArmySetupUIScene);
+            }else{
+                GameScene.game_state++;
+            }
+            ArmySetupUIScene.runAdvanceMode();
+            break;
+            
+        case 8:
+            let all_ready = connFunctions.checkReadyUp(false);
+            if(all_ready === true){
+                GameScene.game_state++;
+            }
             break;
     }
+
+
+    // gameFunctions.btn_sprite[0].updateText(GameScene.left_click)
+    GameScene.left_click = false	
 }
 
+
+ArmySetupUIScene.moveUnit = (options) => {
+
+    // console.log(options)
+	if(options.parameters){
+		options = options.parameters
+	}
+
+    if(options.unit_id !== -1){
+        let current_unit = gameFunctions.units[options.unit_id];
+        current_unit.alive = true;
+    
+        current_unit.sprite.x = options.x;
+        current_unit.sprite.y = options.y;
+        current_unit.updateElements(current_unit.sprite)     
+        
+        current_unit.sprite_ghost.x = options.x;
+        current_unit.sprite_ghost.y = options.y;
+        current_unit.updateElements(current_unit.sprite_ghost)
+        
+        if(current_unit.cohesion > 0){
+            current_unit.cohesionCheck();
+        }       
+    } 
+    }

@@ -82,9 +82,11 @@ exports.getRoom = async(req,res) => {
 			}
 			let room = await utils.queries.createRoom(options, "network.socket.id")
 
+			let army = await utils.queries.getArmy({name: "Test"})
+
 			room.forces[0].side = 0;
 			room.forces[0].start = 0;
-			room.forces[0].army = '617de6b6c447ae5608e847ee'; //test army reference
+			room.forces[0].army = army[0]._id; //test army reference
 
 			// room.forces[1].side = 1;			
 			// room.forces[1].start = 1;

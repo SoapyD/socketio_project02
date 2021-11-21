@@ -370,8 +370,7 @@ exports.createSquads = async() => {
             min_size: 5,
             max_size: 10,
         }
-    )
-    ,
+    ),
     exports.createSquad(
         {
             type: "heavy squad",
@@ -383,7 +382,19 @@ exports.createSquads = async() => {
             min_size: 3,
             max_size: 5,
         }
-    )
+    ),
+    exports.createSquad(
+        {
+            type: "tank",
+            unit: "tank",
+            gun: "heavy",
+            armour: "heavy",
+            melee: "none",
+            // upgrades: [{name:"heavy weapon"}],
+            min_size: 1,
+            max_size: 1,
+        }
+    ),    
     ]);    
 }
 
@@ -475,17 +486,20 @@ exports.createFactions = async() => {
             {
                 name: "space marines",
                 description: "big, burley, bruising murder men",
-                squads: [{name:"heavy squad"},{name:"tactical squad"}],
+                squads: [
+                    {name:"heavy squad"},
+                    {name:"tactical squad"},
+                    {name:"tank"},                    
+                ],
             }
-        )
-        ,
-        exports.createFaction(
-            {
-                name: "Test",
-                description: "test force",
-                squads: [{name:"heavy squad"}],
-            }
-        )        
+        ),
+        // exports.createFaction(
+        //     {
+        //         name: "Test",
+        //         description: "test force",
+        //         squads: [{name:"heavy squad"}],
+        //     }
+        // ),        
         ]);
 
 }

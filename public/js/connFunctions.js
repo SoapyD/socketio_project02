@@ -324,6 +324,87 @@ connFunctions.updateRoomInfo = (data) => {
 	
 }
 
+// ##################################################################################
+// ##################################################################################
+// ##################################################################################
+// ######  #######    #    ######  #     #       #     # ######  
+// #     # #         # #   #     #  #   #        #     # #     # 
+// #     # #        #   #  #     #   # #         #     # #     # 
+// ######  #####   #     # #     #    #    ##### #     # ######  
+// #   #   #       ####### #     #    #          #     # #       
+// #    #  #       #     # #     #    #          #     # #       
+// #     # ####### #     # ######     #           #####  #  
+// ##################################################################################
+// ##################################################################################
+// ##################################################################################
+
+connFunctions.sendReadyUp = (ui_scene) => {
+	if(GameScene.online === false){
+		connFunctions.readyUp({parameters: {player_id:gameFunctions.params.player_number}})
+	}else{
+		let data = {
+			functionGroup: "socketFunctions",  
+			function: "messageAll",
+			room_name: gameFunctions.params.room_name,
+			returnFunctionGroup: "connFunctions",
+			returnFunction: "readyUp",
+			returnParameters: {
+				player_id:gameFunctions.params.player_number,
+				ui_scene: ui_scene
+			},
+			message: "ready player "+gameFunctions.params.player_number
+		}
+
+		connFunctions.messageServer(data)		
+	}
+}
+
+connFunctions.readyUp = (data) => {
+	gameFunctions.params.forces[data.parameters.player_id].ready = true;
+
+	let scene;
+	switch(data.parameters.ui_scene){
+		case "GameUIScene":
+			scene = GameScene
+			break;
+		case "ArmySetupUIScene":
+			scene = ArmySetupUIScene
+			break;			
+	}
+
+	if(scene){
+		scene.setForcesHUD(data.parameters.player_id, "ready", true, false)	
+	}
+}
+
+connFunctions.checkReadyUp = (check_side_only=true) => {
+	let all_ready = false;
+	let ready_count = 0;
+	let player_count = 0;
+	gameFunctions.params.forces.forEach((force) => {
+		if (force.ready === true){
+			ready_count++;
+		}
+		if(check_side_only === true){
+			if(force.side === gameFunctions.current_side){
+				player_count++;
+			}
+		}else{
+			player_count++;
+		}
+	})
+	if(ready_count === player_count){
+		all_ready = true;
+	}	
+
+	return all_ready;
+}
+
+
+
+// ##################################################################################
+// ##################################################################################
+// ##################################################################################
 //  #####     #    #     # #######        #####     #    #     # #######
 // #     #   # #   #     # #             #     #   # #   ##   ## #       
 // #        #   #  #     # #             #        #   #  # # # # #       
@@ -331,6 +412,9 @@ connFunctions.updateRoomInfo = (data) => {
 //       # #######  #   #  #             #     # ####### #     # #       
 // #     # #     #   # #   #             #     # #     # #     # #       
 //  #####  #     #    #    #######        #####  #     # #     # ####### 
+// ##################################################################################
+// ##################################################################################
+// ##################################################################################
 
 connFunctions.saveGame = (mode) => {
 	
@@ -450,7 +534,8 @@ connFunctions.test = (data) => {
 availableFunctions = {
     connFunctions: connFunctions,
 	GameScene: GameScene,
-	GameUIScene: GameUIScene
+	ArmySetupUIScene: ArmySetupUIScene,
+	GameUIScene: GameUIScene,
 }
 
 connFunctions.checkMessages(socket)
