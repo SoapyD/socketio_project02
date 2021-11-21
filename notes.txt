@@ -56,6 +56,10 @@ BUGS
     -Added a check that'll print off the values used if the angle is -1
 
 -Player 2 setup a selection of shots but only 1 actually triggered
+    -This is because the shooting action has a minus shooting angle.
+    -Think is may be due to the sprite being used instead of the parent when p2 goes as the shoot goes perfectly fine on P1s turn
+
+-P2 , when loading back into the game, can't see any units as they're all set to alive=false on the server after P1 rejoins
 
 /////////////////////////////////////////
 THINGS TO DO (EVENTUALLY)
