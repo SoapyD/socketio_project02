@@ -29,6 +29,7 @@ var GameScene = new Phaser.Class({
 		GameScene.game_setup.setupTable();
 
 		GameScene.game_setup.setupSquads();		
+		
     },
 
     update: function (time, delta)
@@ -41,11 +42,10 @@ var GameScene = new Phaser.Class({
 		switch(GameScene.game_state){
 
 			case 0:
-				//PLACE UNITS LOOP
+				//PLACE UNITS LOOP			
 				break;			
 			case 1:
 				gameFunctions.current_uiscene.scene.start("GameUIScene")
-				// gameFunctions.current_scene.scene.start("GameUIScene")
 				GameScene.game_state++;
 				break;			
 

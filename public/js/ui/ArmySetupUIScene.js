@@ -33,6 +33,11 @@ var ArmySetupUIScene = new Phaser.Class({
         ArmySetupUIScene.loadSingleButton(this)
 
         ArmySetupUIScene.setupHUD();
+
+        if(gameFunctions.units_preload.length > 0){
+            GameScene.game_state = 1;
+        }	
+
     },
 
     update: function (time, delta)
@@ -228,7 +233,7 @@ ArmySetupUIScene.checkMode = () => {
             ArmySetupUIScene.unit_id = -1
 			gameFunctions.units.forEach((unit) => {
 
-                if(unit.player === gameFunctions.params.player_number && unit.alive === false && ArmySetupUIScene.unit_id === -1){
+                if((unit.player === gameFunctions.params.player_number || GameScene.online === false) && unit.alive === false){ //&& ArmySetupUIScene.unit_id === -1
                     ArmySetupUIScene.unit_id = unit.id;
 
                     ArmySetupUIScene.setForcesHUD(gameFunctions.params.player_number, "squad "+unit.squad, true, false)
@@ -275,8 +280,20 @@ ArmySetupUIScene.checkMode = () => {
             if(GameScene.left_click === true){
                 if(current_unit){
                     if(current_unit.cohesion_check === true){
-                        // ArmySetupUIScene.runAdvanceMode();
-                        ArmySetupUIScene.state = 3;
+                        let clash = false;
+                        //CHECK TO SEE IF THERE'S A CLASH
+                        gameFunctions.units.forEach((unit) => {
+                            if(unit.id !== current_unit.id){
+                                let is_touching = current_unit.checkSpriteOverlap(current_unit.sprite_ghost,unit.sprite_ghost)
+                                if(is_touching === true){
+                                    clash = true;
+                                }
+                            }
+                        })
+                        if(clash === false){
+                            // ArmySetupUIScene.runAdvanceMode();
+                            ArmySetupUIScene.state = 3;
+                        }
                     }
                 }
             }

@@ -75,7 +75,7 @@ exports.getRoom = async(req,res) => {
 			let options = {
 				user: "6069bd7bc7b18a43c84292b4", //a user id we can user as an author
 				user_name: "test",
-				players: 1, //max players
+				players: 2, //max players
 				room_name: "test room",
 				password: ""
 
@@ -86,11 +86,12 @@ exports.getRoom = async(req,res) => {
 
 			room.forces[0].side = 0;
 			room.forces[0].start = 0;
-			room.forces[0].army = army[0]._id; //test army reference
+			room.forces[0].army = army[0]._id;
 
-			// room.forces[1].side = 1;			
-			// room.forces[1].start = 1;
-			// room.forces[1].army = 'Test';
+			room.forces[1].side = 1;			
+			room.forces[1].start = 1;
+			room.forces[1].army = army[0]._id;
+			room.forces[1].user = "6069bd7bc7b18a43c84292b4";
 
 			let armies = await utils.queries.getArmies({forces: room.forces})
 

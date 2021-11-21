@@ -16,8 +16,6 @@ SIDES AND ACTIONS
 
 -keep track of what player/side killed a unit so score can be tallied at the end of the game
 
--Stop units from being placed if they're clashing with other units
-
 
 
 /////////////////////////////////////////
@@ -27,11 +25,6 @@ SETUP
 -Show only armies created by an author to show on their armies page.
 
 -Set a number of default armies and use author name to check for armies created by that user
-
--add in a step to new games that allows players to setup units
-    -Also add in a function to automatically place units
-    -Load armies names into selection lists
-
 
 
 
@@ -61,10 +54,6 @@ BUGS
     -Wonder if this is related to the angle >= -1 check as active_actions are being passed to all players, 
     so the ticket message is being passed to everyone
     -Added a check that'll print off the values used if the angle is -1
-
-
--Hand to hand fighing is broken
-    -couldn't get any fights to occur
 
 -Player 2 setup a selection of shots but only 1 actually triggered
 
@@ -103,6 +92,15 @@ DONE
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+-DONE -Stop units from being placed if they're clashing with other units
+
+-DONE -add in a step to new games that allows players to setup units
+    -Also add in a function to automatically place units
+
+-DONE -Hand to hand fighing is broken
+    -couldn't get any fights to occur
+    -max_melee_targets in the squad setup function was mislablled so wasn't being set properly
 
 -DONE -2 player army selection menu doesn't work any more online since the new army lists started being used
     -The army list from the newly added player wasn't being used to populate the dropdown list so their selection wasn't being pulled through
