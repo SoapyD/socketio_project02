@@ -16,6 +16,11 @@ SIDES AND ACTIONS
 
 -keep track of what player/side killed a unit so score can be tallied at the end of the game
 
+-Stop units from being placed if they're clashing with other units
+
+-BUG -2 player army selection menu doesn't work any more online since the new army lists started being used
+-BUG -When a second player loads into the army select menu if P1 has already selected a force, it's not auto-selected for P2
+
 
 /////////////////////////////////////////
 SETUP
