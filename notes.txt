@@ -55,11 +55,11 @@ BUGS
     so the ticket message is being passed to everyone
     -Added a check that'll print off the values used if the angle is -1
 
--Player 2 setup a selection of shots but only 1 actually triggered
-    -This is because the shooting action has a minus shooting angle.
-    -Think is may be due to the sprite being used instead of the parent when p2 goes as the shoot goes perfectly fine on P1s turn
 
--P2 , when loading back into the game, can't see any units as they're all set to alive=false on the server after P1 rejoins
+
+-BUG -Reloads won't work sometimes because one of the armies loads in with only an army reference instead of the full army
+    -This is down to a second player joining while the 1st player is still joining, which resets the unit list.
+
 
 /////////////////////////////////////////
 THINGS TO DO (EVENTUALLY)
@@ -96,6 +96,14 @@ DONE
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+-DONE -Player 2 setup a selection of shots but only 1 actually triggered
+    -This is because the shooting action has a minus shooting angle.
+    -Think is may be due to the sprite being used instead of the parent when p2 goes as the shoot goes perfectly fine on P1s turn
+    -This was down to a wrong if statement regarding angles in the unit class. I was treating radians as angles, which caused issued
+
+-DONE -P2 , when loading back into the game, can't see any units as they're all set to alive=false on the server after P1 rejoins
+
 
 -DONE -Stop units from being placed if they're clashing with other units
 

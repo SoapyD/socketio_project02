@@ -15,7 +15,7 @@ const unit = class {
 		this.upgrade_id = options.upgrade_id;
 		// this.setup = false;
 
-		this.alive = false;
+		this.alive = options.alive;
 		
 		this.path = [];
 		this.is_moving = false;
@@ -1585,7 +1585,7 @@ unselectHandler() {
 			this.targets.forEach( async(target, i) => {
 
 				let angle = Phaser.Math.Angle.BetweenPoints(this.sprite, target);
-				if(angle > -1){				
+				// if(angle > -1){				
 
 					GameScene.active_actions++;
 
@@ -1610,15 +1610,15 @@ unselectHandler() {
 
 					GameScene.bullets.push(new bullet(options))
 					//BULLET DEATH KILLS THE GRAPHIC
-				}
-				else
-				{
-					console.log("--------------------------")					
-					console.log("Shooting angle is Zero")
-					console.log(this.sprite)
-					console.log(target)
-					console.log("--------------------------")
-				}
+				// }
+				// else
+				// {
+				// 	console.log("--------------------------")					
+				// 	console.log("Shooting angle is Zero")
+				// 	console.log(this.sprite)
+				// 	console.log(target)
+				// 	console.log("--------------------------")
+				// }
 			})
 			if(this.targets.length > 0){
 				this.shot = true;

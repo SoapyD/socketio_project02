@@ -41,6 +41,7 @@ const squad_setup = class {
 						x: 1 * this.tile_size, //(3 + (2*i))
 						y: -2 * this.tile_size, //3
 						angle: 0,
+						alive: false,
 						universal_upgrades: universal_upgrades,
 						single_upgrade: single_upgrade,
 						upgrade_id: i,
@@ -55,12 +56,13 @@ const squad_setup = class {
 		gameFunctions.units_preload.forEach((unit) => {
 
 			let force = gameFunctions.params.forces[unit.player];
-			let squad = force.army[0].squads[unit.squad].squad;
+			let squad_data = force.army[0].squads[unit.squad];
+			let squad = squad_data.squad;
 
 			//CHECK TO SEE IF ANY OF THE UPPGRADES NEED TO GET APPLIED TO ALL UNITS IN THE SQUAD
 			let universal_upgrades = [];
 			let single_upgrades = [];
-			squad.upgrades.forEach((upgrade) => {
+			squad_data.upgrades.forEach((upgrade) => {
 				if(upgrade.upgrades_all_in_squad === false){
 					single_upgrades.push(upgrade);
 				}else{
@@ -85,6 +87,7 @@ const squad_setup = class {
 					angle: unit.rotation,
 					in_combat: unit.in_combat,
 					health: unit.health,
+					alive: unit.alive,
 					loaded: true,
 					universal_upgrades: universal_upgrades,
 					single_upgrade: single_upgrade,
@@ -148,6 +151,7 @@ const squad_setup = class {
 			angle: options.angle,
 			x: options.x,
 			y: options.y,
+			alive: options.alive,
 			
 			size: unit_class.size, //the grid size of the object used when plotting movement
 			unit_name: unit_class.name,

@@ -98,6 +98,7 @@ const bullet = class {
 	
 	kill(){
 
+		//WOUND ANY UNITS IF ITS IN THE BLAST RADIUS
 		if(this.blast_radius > 1){
 			gameFunctions.units.forEach((unit) => {
 				
@@ -159,6 +160,9 @@ const bullet = class {
 		
 		this.sprite.destroy();
 		GameScene.active_actions--;
+		// if(this.delete === true){
+		// 	console.log("BULLET ALREADY DEAD!")
+		// }
 		this.delete = true;
 	}
 	
@@ -166,7 +170,8 @@ const bullet = class {
 		let current_range = Math.sqrt(Math.pow(this.origin.x - this.sprite.x, 2) + Math.pow(this.origin.y - this.sprite.y, 2))
 		
 
-		if (current_range >= this.range){
+		if (current_range >= this.range && this.delete === false){
+			// console.log("THIS IS A RANGE KILL!!!!!!!!")
 			this.kill();
 		}
 		
