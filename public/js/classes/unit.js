@@ -470,6 +470,8 @@ unselectHandler() {
 		}
 		this.sprite_action.destroy();
 		this.sprite_symbol.destroy();
+		this.text_graphic.destroy();
+		this.text.destroy();
 
 		this.bar_graphic.destroy();
 		this.path_graphic.destroy();

@@ -8,6 +8,12 @@ SBT GAME NOTES
 /////////////////////////////////////////////////////////////////////////////////////
 
 
+-Need to think of damage and wounds in terms of small numbers (1s and 2s), so its easier to determine who wins
+
+-maybe have friendly units in combat be able to be hit by friendly fire. 
+    -That or make friendly fire a thing in the whole game so people need to be aware of lines of sight
+
+
 /////////////////////////////////////////
 SIDES AND ACTIONS
 /////////////////////////////////////////
@@ -56,10 +62,11 @@ BUGS
     -Added a check that'll print off the values used if the angle is -1
 
 
-
 -BUG -Reloads won't work sometimes because one of the armies loads in with only an army reference instead of the full army
     -This is down to a second player joining while the 1st player is still joining, which resets the unit list.
 
+-BUG -Something in the deployment loop is really slowing things down. After a couple of units are setup it gets very slow
+things speed back up again as soon as it's done
 
 /////////////////////////////////////////
 THINGS TO DO (EVENTUALLY)
@@ -96,6 +103,8 @@ DONE
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+-DONE -killing a character doesn't rid the 0/2 sign
 
 -DONE -Player 2 setup a selection of shots but only 1 actually triggered
     -This is because the shooting action has a minus shooting angle.
