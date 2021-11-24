@@ -75,6 +75,7 @@ const roomSchema = new mongoose.Schema({
 		
 		,health: Number
 		,alive: Boolean
+		,killed_by: Number
 		,in_combat: Boolean
 		
 		,x: {type: Number, default: 0}

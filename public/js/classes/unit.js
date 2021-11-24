@@ -16,6 +16,7 @@ const unit = class {
 		// this.setup = false;
 
 		this.alive = options.alive;
+		this.killed_by = -1;
 		
 		this.path = [];
 		this.is_moving = false;
@@ -456,6 +457,7 @@ unselectHandler() {
 		target.health -= options.damage;
 		target.drawHealth(this.sprite)
 		if(target.health <= 0){
+			this.killed_by = options.attacker_id; 
 			target.kill();
 		}
 	}	
@@ -1804,6 +1806,7 @@ unselectHandler() {
 				bonus: this.fighting_bonus,
 				// attacker: this,
 				random_roll: roll,
+				attacker_id: this.id,
 				defender_id: target
 			}			
 			

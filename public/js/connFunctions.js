@@ -448,6 +448,7 @@ connFunctions.saveGame = (mode) => {
 			
 			,health: unit.health
 			,alive: unit.alive
+			,killed_by: unit.killed_by
 			,in_combat: unit.in_combat
 			
 			,x: unit.sprite.x

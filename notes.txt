@@ -20,8 +20,6 @@ SIDES AND ACTIONS
 
 -Add in a check for a player win so we know when the game ends
 
--keep track of what player/side killed a unit so score can be tallied at the end of the game
-
 
 
 /////////////////////////////////////////
@@ -103,6 +101,8 @@ DONE
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+-DONE -keep track of what player/side killed a unit so score can be tallied at the end of the game
 
 -DONE -killing a character doesn't rid the 0/2 sign
 

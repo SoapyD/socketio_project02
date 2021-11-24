@@ -70,6 +70,7 @@ const bullet = class {
 					ap: bullet.parent.unit.shoot_ap,
 					bonus: bullet.parent.unit.shooting_bonus,
 					random_roll: gameFunctions.getRandomInt(20),
+					attacker_id: bullet.parent.unit.id,
 					defender_id: unit.parent.id
 				}				
 				
@@ -113,6 +114,7 @@ const bullet = class {
 						bonus: this.unit.shooting_bonus,	
 						// attacker: this.unit,
 						random_roll: gameFunctions.getRandomInt(20),
+						attacker_id: this.unit.id,
 						defender_id: unit.id
 					}
 
