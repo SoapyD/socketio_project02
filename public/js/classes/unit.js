@@ -109,17 +109,16 @@ const unit = class {
 			this.sprite_ghost.on('pointerup', this.selectHander)
 		// }
 
-		this.sprite_symbol = options.scene.add.image(x,y,"symbols").setScale(0.08)
-		this.sprite_symbol.x += (this.sprite.displayWidth / 2) //- (this.sprite_symbol.displayWidth / 2)
-		this.sprite_symbol.y -= (this.sprite.displayHeight / 2) //- (this.sprite_symbol.displayHeight / 2)
+		this.sprite_symbol = options.scene.add.image(x,y,"symbols").setScale(0.05 * (this.size + 1))
+		this.sprite_symbol.x += (this.sprite.displayWidth / 2) - (this.sprite_symbol.displayWidth / 2)
+		this.sprite_symbol.y -= (this.sprite.displayHeight / 2) + (this.sprite_symbol.displayHeight / 2)
 		this.sprite_symbol.setFrame(options.symbol_id).setDepth(this.depth_sprite_symbol);
 		
 
 		//action sprite
-		this.sprite_action = options.scene.add.image(x,y,"symbols").setScale(0.08)
-		this.sprite_action.x += (this.sprite.displayWidth / 2) //- (this.sprite_symbol.displayWidth / 2)
-		this.sprite_action.y += (this.sprite.displayHeight / 2) //- (this.sprite_symbol.displayHeight / 2)		
+		this.sprite_action = options.scene.add.image(x,y,"symbols").setScale(0.08 * (this.size + 1))		
 		this.sprite_action.setFrame(0).setDepth(this.depth_sprite_symbol);
+		this.sprite_action.alpha = 0.4
 		this.sprite_action.visible = false
 		
 		//THIS EXPLOSION
@@ -132,6 +131,9 @@ const unit = class {
 		
 		//SETUP GRAPHICS THAT CAN BE USED TO DRAW ACTIONS
 		this.bar_graphic = options.scene.add.graphics().setDepth(this.depth_health);
+		this.bar_back_graphic = options.scene.add.graphics().setDepth(this.depth_health);
+
+
 		this.path_graphic = options.scene.add.graphics().setDepth(this.depth_path);
 		this.cohesion_graphic = options.scene.add.graphics().setDepth(this.depth_cohesion);
 		this.fight_graphic = options.scene.add.graphics().setDepth(this.depth_fight_radius);
@@ -476,6 +478,7 @@ unselectHandler() {
 		this.text.destroy();
 
 		this.bar_graphic.destroy();
+		this.bar_back_graphic.destroy();
 		this.path_graphic.destroy();
 		this.cohesion_graphic.destroy();
 		this.fight_graphic.destroy();
@@ -558,11 +561,11 @@ unselectHandler() {
 	
 	updateUnitElements(sprite){
 		this.drawHealth(sprite);
-		this.sprite_symbol.x = sprite.x + (this.sprite.displayWidth / 2) //- (this.sprite_symbol.displayWidth / 2)
-		this.sprite_symbol.y = sprite.y - (this.sprite.displayHeight / 2) //- (this.sprite_symbol.displayHeight / 2)
+		this.sprite_symbol.x = sprite.x + (this.sprite.displayWidth / 2) - (this.sprite_symbol.displayWidth / 2)
+		this.sprite_symbol.y = sprite.y - (this.sprite.displayHeight / 2) + (this.sprite_symbol.displayHeight / 2)
 
-		this.sprite_action.x = sprite.x + (this.sprite.displayWidth / 2) //- (this.sprite_symbol.displayWidth / 2)
-		this.sprite_action.y = sprite.y + (this.sprite.displayHeight / 2) //- (this.sprite_symbol.displayHeight / 2)
+		this.sprite_action.x = sprite.x //+ (this.sprite.displayWidth / 2)
+		this.sprite_action.y = sprite.y //+ (this.sprite.displayHeight / 2)
 
 	}	
 	
@@ -582,8 +585,8 @@ unselectHandler() {
 		if(string !== ""){
 
 			this.text.setText(string);
-			this.text.x = sprite.x -(this.text.width / 2) + (this.sprite.displayWidth / 2)
-			this.text.y = sprite.y - (this.sprite.displayHeight / 2) + 10
+			this.text.x = sprite.x - this.text.width + (this.sprite.displayWidth / 2)
+			this.text.y = sprite.y - this.text.height + (this.sprite.displayHeight / 2)
 
 			this.text_graphic.clear();
 			this.text_graphic.fillStyle(0xFFFFFF).setDepth(this.depth_text_box);
@@ -592,11 +595,29 @@ unselectHandler() {
 
 	}
 	
+
+	drawBacking(width){
+
+		let radius_graphic = this.bar_back_graphic;
+		this.bar_back_graphic.clear();
+
+		radius_graphic.lineStyle(1, 0xFFFFFF, 0.5);
+		radius_graphic.fillStyle(0x000000, 0.75);
+		let circle = new Phaser.Geom.Circle(this.sprite_ghost.x, this.sprite_ghost.y, (width / 2)+5);
+		radius_graphic.fillCircleShape(circle).setDepth(this.depth_health - 0.5);
+
+		radius_graphic.strokePath();		
+	}	
+
     drawHealth(sprite)
     {
         this.bar_graphic.clear();
-		let width = this.sprite.width;
-		let height = this.sprite.height;
+
+		let width = gameFunctions.tile_size * (this.size * 3)
+		if(width === 0){
+			width = gameFunctions.tile_size
+		}
+		// width *= 0.8
 		
 		
 		let pos = {
@@ -623,8 +644,9 @@ unselectHandler() {
 	
 		
 		// arc (x, y, radius, startAngle, endAngle, anticlockwise)
-		
-		this.bar_graphic.lineStyle(7, fill_colour, 0.5);
+		this.drawBacking(width);
+
+		this.bar_graphic.lineStyle(7, fill_colour, 0.75);
 		this.bar_graphic.arc(pos.x, pos.y, width / 2, Phaser.Math.DegToRad(angle), Phaser.Math.DegToRad(0), true) //.setStartAngle(90);
 		this.bar_graphic.strokePath();
     }
@@ -745,8 +767,8 @@ unselectHandler() {
 
 		this.fight_graphic.clear();
 		let radius_graphic = this.fight_graphic;
-		radius_graphic.lineStyle(1, 0x0000FF, 0.5);
-		radius_graphic.fillStyle(0x0000FF, 0.35);
+		radius_graphic.lineStyle(1.5, 0x0000FF, 0.5);
+		radius_graphic.fillStyle(0x0000FF, 0.05);
 		let circle = new Phaser.Geom.Circle(this.sprite_ghost.x, this.sprite_ghost.y, (this.fight_range));
 		radius_graphic.fillCircleShape(circle).setDepth(this.depth_fight_radius);
 

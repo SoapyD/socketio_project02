@@ -14,6 +14,24 @@ SBT GAME NOTES
     -That or make friendly fire a thing in the whole game so people need to be aware of lines of sight
 
 
+
+/////////////////////////////////////////
+WOUNDING
+/////////////////////////////////////////
+
+-Wounding roll 20, 
+    -hit_chance = this.armour - options.ap + options.bonus; 
+    -bonus is currently a minus value on the attacking unit. Could be a combo of the defender and attacker
+    -1 is a crit fail (no affect but maybe mean they can't shoot/attack next turn)
+    -20 is crit success
+    -Damage is out of 100
+
+-Wounding roll 10
+    -Essentially armour vs armour piercing of the weapon
+    -factor in bonus' for attackers and defenders
+    -If wounding occurs, weapon damage is inflicted
+    -Maybe have crit hit/failure rate as changable
+
 /////////////////////////////////////////
 SIDES AND ACTIONS
 /////////////////////////////////////////
@@ -65,6 +83,8 @@ BUGS
 
 -BUG -Something in the deployment loop is really slowing things down. After a couple of units are setup it gets very slow
 things speed back up again as soon as it's done
+
+-BUG -Smaller units weren't able to attack a tank because the center of it is out of range
 
 /////////////////////////////////////////
 THINGS TO DO (EVENTUALLY)
