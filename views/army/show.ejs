@@ -131,6 +131,7 @@ let upgrade_data;
         unit: {
             cost: "<%= squad.unit.cost %>"
         },
+        cost_per_unit: "<%= squad.cost_per_unit %>", 
         upgrades: []
     }
     <% squad.upgrades.forEach((upgrade) => { %>
@@ -373,7 +374,7 @@ let upgrade_data;
                 "max" : squad.max_size,
             });
 
-            let total_cost = squad.unit.cost * squad_size
+            let total_cost = squad.cost_per_unit * squad_size
     
             let clicks_list = markup_element.find("[name*='upgrades']")
             

@@ -667,7 +667,7 @@ GameUIScene.advanceSide = () => {
 
 		let hud_width = 200;
 
-		
+		//SETUP HUD ITEM THAT DISPLAYS THE CURRENT TURN NUMBER
 		GameUIScene.hud_item = new hud({
 			scene: GameUIScene.scene,
 			// grid: true,
@@ -691,6 +691,7 @@ GameUIScene.advanceSide = () => {
 			]
 		});
 
+		//SETUP A HUD ITEM FOR EACH FORCE AVAILABLE
 		if(gameFunctions.params.forces){
 			GameUIScene.forces_hud = {};
 			gameFunctions.params.forces.forEach((force, i) => {
@@ -700,6 +701,7 @@ GameUIScene.advanceSide = () => {
 				let colour = GameScene.game_setup.getSideColour(force.side)
 				let width = 100;
 
+				//THE HEADER CONTAINS THE PLAYER USERNAME
 				GameUIScene.forces_hud[i] = {}
 				GameUIScene.forces_hud[i]["header"] =
 					new hud({
@@ -724,12 +726,36 @@ GameUIScene.advanceSide = () => {
 						]
 					})
 
-					GameUIScene.forces_hud[i]["footer"] =
+				GameUIScene.forces_hud[i]["body"] =
 					new hud({
 						scene: GameUIScene.scene,
 						// grid: true,
 			
 						x: (i*width)+(hud_width * 1) + 2, y: 50+2,
+						x_itts: 4, y_itts: 4,
+						x_indent: 0, y_indent: 0,			
+						width: width, height: 25,
+			
+						fill_colour: colour.colour,
+						fill_alpha: 0.9,
+						radius: 0,
+						border: {
+							width: 4,
+							colour: 000000,
+							alpha: 1
+						},
+						text: [
+							{id: i,label: "points: 0", x: 1, y: 1, height: 2, width: 2, align: "center", font: {height: 12}},
+						]
+					})
+
+				//THE FOOTER CONTAINS THE FORCE WAITING AND READY STATYS
+				GameUIScene.forces_hud[i]["footer"] =
+					new hud({
+						scene: GameUIScene.scene,
+						// grid: true,
+			
+						x: (i*width)+(hud_width * 1) + 2, y: 75+2,
 						x_itts: 4, y_itts: 4,
 						x_indent: 0, y_indent: 0,			
 						width: width, height: 25,
@@ -747,8 +773,8 @@ GameUIScene.advanceSide = () => {
 							{id: i,label: '', x: 1, y: 1, height: 2, width: 2, align: "center", font: {height: 12}},
 						]
 					})					
-			
-					GameUIScene.forces_hud[i]["footer"].setVisible(false);
+		
+				GameUIScene.forces_hud[i]["footer"].setVisible(false);
 			// }
 			})
 
@@ -772,6 +798,26 @@ GameUIScene.advanceSide = () => {
 			}else{
 				GameUIScene.setForcesHUD(i, "unready", false, true)
 			}
+		})
+	}
+
+	GameUIScene.updatePointsHUD = () => {
+		//FOREACH FORCE
+		gameFunctions.params.forces.forEach((force, i) => {
+			//LOOP THROUGH EACH UNIT AND SAY WHO KILLED THEM
+
+			let points = 0;
+			gameFunctions.units.forEach((unit) => {
+				if(unit.killed_by !== -1){
+					let killing_unit = gameFunctions.units[unit.killed_by]
+					if(killing_unit.player === force.player_number){
+						points+= unit.cost;
+					}
+				}
+			})
+
+			let element = GameUIScene.forces_hud[i]["body"]
+			element.setText(i,"points: "+points)
 		})
 	}
 

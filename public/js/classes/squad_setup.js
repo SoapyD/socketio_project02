@@ -139,6 +139,12 @@ const squad_setup = class {
 			}									
 		}
 
+		let cost = 0;
+		cost += armour_class.cost;
+		cost += gun_class.cost;
+		cost += melee_class.cost;
+		cost += unit_class.cost;						
+
 
 		let unit_data = {
 
@@ -152,6 +158,7 @@ const squad_setup = class {
 			x: options.x,
 			y: options.y,
 			alive: options.alive,
+			cost: cost,
 			
 			size: unit_class.size, //the grid size of the object used when plotting movement
 			unit_name: unit_class.name,

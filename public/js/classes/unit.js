@@ -11,7 +11,8 @@ const unit = class {
 		this.squad = options.squad;; //this can be used for squad checks like unit cohesion
 		this.size = options.size; //the grid size of the object used when plotting movement
 		this.cohesion = options.cohesion; //the maximum distance a unit can be from another member of it's squad
-		
+		this.cost = options.cost;
+
 		this.upgrade_id = options.upgrade_id;
 		// this.setup = false;
 
@@ -90,7 +91,7 @@ const unit = class {
 		
 		//SPRITES
 		this.spritesheet = options.spritesheet;
-		this.sprite = options.scene.physics.add.image(x,y,options.spritesheet) //.setInteractive();
+		this.sprite = options.scene.physics.add.image(x,y,options.spritesheet).setScale(0.8); //.setInteractive();
 		this.sprite.setImmovable(true)
 		this.sprite.setDepth(this.depth_sprite);
 		this.sprite.angle = options.angle;
@@ -100,7 +101,7 @@ const unit = class {
 		
 		
 		// if(GameScene.online === false || (GameScene.online === true && this.player === gameFunctions.params.player_number)){
-			this.sprite_ghost = options.scene.add.image(x,y,options.spritesheet).setInteractive();
+			this.sprite_ghost = options.scene.add.image(x,y,options.spritesheet).setInteractive().setScale(0.8);
 			this.sprite_ghost.alpha = 1; //0.5;
 			this.sprite_ghost.angle = options.angle;
 			this.sprite_ghost.parent = this;
@@ -109,10 +110,12 @@ const unit = class {
 			this.sprite_ghost.on('pointerup', this.selectHander)
 		// }
 
+		this.symbol_id = options.symbol_id;
 		this.sprite_symbol = options.scene.add.image(x,y,"symbols").setScale(0.05 * (this.size + 1))
 		this.sprite_symbol.x += (this.sprite.displayWidth / 2) - (this.sprite_symbol.displayWidth / 2)
 		this.sprite_symbol.y -= (this.sprite.displayHeight / 2) + (this.sprite_symbol.displayHeight / 2)
 		this.sprite_symbol.setFrame(options.symbol_id).setDepth(this.depth_sprite_symbol);
+		this.sprite_symbol.alpha = 0.5
 		
 
 		//action sprite
@@ -395,7 +398,7 @@ unselectHandler() {
 
 	wound(options){
 	
-		let hit_chance = this.armour - options.ap + options.bonus;
+		let hit_chance = this.armour - (options.ap + options.bonus);
 		// let random_roll = this.getRandomInt(20);
 		
 		let result = ""
@@ -459,7 +462,8 @@ unselectHandler() {
 		target.health -= options.damage;
 		target.drawHealth(this.sprite)
 		if(target.health <= 0){
-			this.killed_by = options.attacker_id; 
+			this.killed_by = options.attacker_id;
+			GameUIScene.updatePointsHUD();
 			target.kill();
 		}
 	}	
@@ -596,14 +600,14 @@ unselectHandler() {
 	}
 	
 
-	drawBacking(width){
+	drawBacking(sprite, width){
 
 		let radius_graphic = this.bar_back_graphic;
 		this.bar_back_graphic.clear();
 
-		radius_graphic.lineStyle(1, 0xFFFFFF, 0.5);
-		radius_graphic.fillStyle(0x000000, 0.75);
-		let circle = new Phaser.Geom.Circle(this.sprite_ghost.x, this.sprite_ghost.y, (width / 2)+5);
+		radius_graphic.lineStyle(1, 0x000000, 0.5);
+		radius_graphic.fillStyle(0x000000, 0.5);
+		let circle = new Phaser.Geom.Circle(sprite.x, sprite.y, (width / 2)+5);
 		radius_graphic.fillCircleShape(circle).setDepth(this.depth_health - 0.5);
 
 		radius_graphic.strokePath();		
@@ -617,7 +621,10 @@ unselectHandler() {
 		if(width === 0){
 			width = gameFunctions.tile_size
 		}
-		// width *= 0.8
+		if(this.sprite_offset === 0){
+			width = gameFunctions.tile_size * (this.size * 2)
+		}
+		width *= 0.8
 		
 		
 		let pos = {
@@ -644,7 +651,7 @@ unselectHandler() {
 	
 		
 		// arc (x, y, radius, startAngle, endAngle, anticlockwise)
-		this.drawBacking(width);
+		this.drawBacking(sprite, width);
 
 		this.bar_graphic.lineStyle(7, fill_colour, 0.75);
 		this.bar_graphic.arc(pos.x, pos.y, width / 2, Phaser.Math.DegToRad(angle), Phaser.Math.DegToRad(0), true) //.setStartAngle(90);

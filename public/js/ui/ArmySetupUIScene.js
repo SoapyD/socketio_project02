@@ -256,9 +256,12 @@ ArmySetupUIScene.checkMode = () => {
 
                 let options = {
                     unit_id: ArmySetupUIScene.unit_id,
-                    x: GameScene.marker.x + (gameFunctions.tile_size /  2),
-                    y: GameScene.marker.y + (gameFunctions.tile_size /  2),                    
+                    x: GameScene.marker.x + (gameFunctions.tile_size * current_unit.sprite_offset),
+                    y: GameScene.marker.y + (gameFunctions.tile_size * current_unit.sprite_offset),                    
                 }
+                // if(unit.sprite_ === 0.5){
+                //     options.x = 
+                // }
                 
                 if(GameScene.online === true){
                     let data = {

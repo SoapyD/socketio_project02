@@ -23,6 +23,8 @@ const squadSchema = new mongoose.Schema({
 		ref: "Armour"
 	}
 
+	,cost_per_unit: Number
+
 	,upgrades: [
 		{
 			type: mongoose.Schema.Types.ObjectId,

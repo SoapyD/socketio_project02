@@ -86,6 +86,8 @@ things speed back up again as soon as it's done
 
 -BUG -Smaller units weren't able to attack a tank because the center of it is out of range
 
+-BUG -Setup units doesn't stop players from putting unit on a terrain block
+
 /////////////////////////////////////////
 THINGS TO DO (EVENTUALLY)
 /////////////////////////////////////////
