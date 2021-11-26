@@ -284,7 +284,7 @@ ArmySetupUIScene.checkMode = () => {
                 if(current_unit){
                     if(current_unit.cohesion_check === true){
                         let clash = false;
-                        //CHECK TO SEE IF THERE'S A CLASH
+                        //CHECK TO SEE IF THERE'S A CLASH WITH AN EXISTING UNIT
                         gameFunctions.units.forEach((unit) => {
                             if(unit.id !== current_unit.id){
                                 let is_touching = current_unit.checkSpriteOverlap(current_unit.sprite_ghost,unit.sprite_ghost)
@@ -293,6 +293,28 @@ ArmySetupUIScene.checkMode = () => {
                                 }
                             }
                         })
+
+                        if(clash === false){
+                            let x_pos =  GameScene.marker.x / gameFunctions.tile_size;
+                            let y_pos =  GameScene.marker.y / gameFunctions.tile_size;                        
+                            let cell = GameScene.grid[y_pos][x_pos];
+    
+                            //CHECK TO SEE IF THERE'S A CLASH WITH A TERRAIN TILE
+                            let process = {
+                                parent: current_unit,
+                                obj_size: current_unit.size,
+                            }
+                            let node = {
+                                cell: cell,
+                                pos: {
+                                    x: x_pos,
+                                    y: y_pos
+                                }
+                            }
+    
+                            clash = GameScene.pathfinder.checkCell(process, node)
+                        }
+
                         if(clash === false){
                             // ArmySetupUIScene.runAdvanceMode();
                             ArmySetupUIScene.state = 3;

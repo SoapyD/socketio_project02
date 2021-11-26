@@ -774,7 +774,7 @@ unselectHandler() {
 
 		this.fight_graphic.clear();
 		let radius_graphic = this.fight_graphic;
-		radius_graphic.lineStyle(1.5, 0x0000FF, 0.5);
+		radius_graphic.lineStyle(2, 0x0000FF, 0.5);
 		radius_graphic.fillStyle(0x0000FF, 0.05);
 		let circle = new Phaser.Geom.Circle(this.sprite_ghost.x, this.sprite_ghost.y, (this.fight_range));
 		radius_graphic.fillCircleShape(circle).setDepth(this.depth_fight_radius);
@@ -1695,7 +1695,7 @@ unselectHandler() {
 		let on_unit = false;
 		
 
-		if(unit.fight_damage === 0){
+		if(this.fight_damage === 0){
 			skip = true
 			GameScene.showMessage("cannot fight, unit has no fight damage")
 		}
@@ -1715,10 +1715,10 @@ unselectHandler() {
 			GameScene.sfx['clear'].play();
 		}		
 		
-		let dest = {
-			x: pos.end_x,
-			y: pos.end_y,
-		}
+		// let dest = {
+		// 	x: pos.end_x,
+		// 	y: pos.end_y,
+		// }
 
 		let check = false;
 		let found_unit;

@@ -273,7 +273,7 @@ exports.createMelee = async() => {
                 damage: 2,
                 ap: 2,
                 max_targets : 3,
-                range: 1
+                range: range * 1
             },            
         ]
     }

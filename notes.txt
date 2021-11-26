@@ -86,8 +86,6 @@ things speed back up again as soon as it's done
 
 -BUG -Smaller units weren't able to attack a tank because the center of it is out of range
 
--BUG -Setup units doesn't stop players from putting unit on a terrain block
-
 /////////////////////////////////////////
 THINGS TO DO (EVENTUALLY)
 /////////////////////////////////////////
@@ -123,6 +121,8 @@ DONE
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+-DONE -Setup units doesn't stop players from putting unit on a terrain block
 
 -DONE -keep track of what player/side killed a unit so score can be tallied at the end of the game
 
