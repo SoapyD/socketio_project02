@@ -1,5 +1,5 @@
 
-const socket = io(socket_address)
+const socket = io(socket_address, {transports: ["websocket"]})
 
 
 
