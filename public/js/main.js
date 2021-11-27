@@ -63,7 +63,7 @@ switch(instance_type){
 		gameFunctions.config.scene = [ MainMenuScene, ArmySelectMenuScene, ArmySelectUIScene, GameScene, GameUIScene, ArmySetupUIScene]
 		break;		
 	default:
-		gameFunctions.config.scene = [ MainMenuScene, ArmySelectMenuScene, ArmySelectUIScene, ArmySetupUIScene, GameScene, GameUIScene]
+		gameFunctions.config.scene = [ MainMenuScene, ArmySelectMenuScene, ArmySelectUIScene, GameScene, GameUIScene, ArmySetupUIScene]
 		break;
 }
 
