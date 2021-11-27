@@ -356,7 +356,7 @@ exports.messageAll = (network, data) => {
 		message: data.message,
 	}	
 
-	console.log(return_data)
+	// console.log(return_data)
 	// if(data.returnFunction === 'woundUnit'){
 	// 	console.log(data.room_name)	
 	// 	console.log(return_data)

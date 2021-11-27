@@ -151,7 +151,7 @@ connFunctions.checkMessages = (socket) => {
 					console.log(data)
 					break;
 			}
-			console.log(data)
+			// console.log(data)
 		}
 		// if(data.function === 'woundUnit'){
 		// 	console.log("WOUNDING")
