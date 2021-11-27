@@ -352,7 +352,12 @@ ArmySetupUIScene.checkMode = () => {
             let all_ready = connFunctions.checkReadyUp(false);
             if(all_ready === true){
                 GameScene.game_state++;
+                ArmySetupUIScene.runAdvanceMode();
             }
+            break;
+        
+        case 9:
+            //waiting for next scene to load
             break;
     }
 
