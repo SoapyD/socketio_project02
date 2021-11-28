@@ -41,9 +41,8 @@ var ArmySetupUIScene = new Phaser.Class({
     },
 
     update: function (time, delta)
-    {                
+    {       
         ArmySetupUIScene.checkMode();
-
     }
 });
 
@@ -248,33 +247,25 @@ ArmySetupUIScene.checkMode = () => {
 			break;
         case 4:
             //WAITING FOR UNIT TO BE PLACED
-
             let current_unit;
+            let options;
             if(ArmySetupUIScene.unit_id !== -1){
 
                 current_unit = gameFunctions.units[ArmySetupUIScene.unit_id];
-
-                let options = {
+                
+                options = {
                     unit_id: ArmySetupUIScene.unit_id,
                     x: GameScene.marker.x + (gameFunctions.tile_size * current_unit.sprite_offset),
                     y: GameScene.marker.y + (gameFunctions.tile_size * current_unit.sprite_offset),                    
                 }
-                // if(unit.sprite_ === 0.5){
-                //     options.x = 
-                // }
+    
+
+                let skip = false;
+                if(current_unit.sprite.x === options.x && current_unit.sprite.y === options.y){
+                    skip = true;
+                }
                 
-                if(GameScene.online === true){
-                    let data = {
-                        functionGroup: "socketFunctions",  
-                        function: "messageAll",
-                        room_name: gameFunctions.params.room_name,
-                        returnFunctionGroup: "ArmySetupUIScene",
-                        returnFunction: "moveUnit",
-                        returnParameters: options,
-                        message: "move unit"
-                    }				
-                    connFunctions.messageServer(data)                
-                }else{
+                if(skip === false){
                     ArmySetupUIScene.moveUnit(options);
                 }
 
@@ -316,7 +307,18 @@ ArmySetupUIScene.checkMode = () => {
                         }
 
                         if(clash === false){
-                            // ArmySetupUIScene.runAdvanceMode();
+                            if(GameScene.online === true){
+                                let data = {
+                                    functionGroup: "socketFunctions",  
+                                    function: "messageAll",
+                                    room_name: gameFunctions.params.room_name,
+                                    returnFunctionGroup: "ArmySetupUIScene",
+                                    returnFunction: "moveUnit",
+                                    returnParameters: options,
+                                    message: "move unit"
+                                }				
+                                connFunctions.messageServer(data)                
+                            }
                             ArmySetupUIScene.state = 3;
                         }
                     }

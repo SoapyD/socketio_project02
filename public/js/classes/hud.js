@@ -46,6 +46,7 @@ const hud = class {
 	}
 
 	drawBox(){
+		this.graphics.clear();
 		this.graphics.fillStyle(this.fill_colour, this.fill_alpha);
         this.graphics.fillRoundedRect(this.x, this.y, this.width, this.height, this.radius);
 
