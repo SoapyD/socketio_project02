@@ -227,6 +227,11 @@ GameUIScene.runAdvanceMode = () => {
 		gameFunctions.mode_state = 0;
 	}
 	
+	//UNREADY ALL UNITS
+	gameFunctions.params.forces.forEach((force) => {
+		force.ready = false;
+	})
+
 	GameUIScene.advanceMode()	
 }
 

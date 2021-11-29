@@ -59,6 +59,8 @@ BUGS
 
 -BUG -Small units with no fight stats should still be locked into combat?
 
+-BUG -shooting has caused one side to advance it's actions before all the players in the side are ready
+
 /////////////////////////////////////////
 THINGS TO DO (EVENTUALLY)
 /////////////////////////////////////////
