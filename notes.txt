@@ -49,7 +49,7 @@ BUGS
 
 -NEEDS MONITORING -A second shot didn't fire for some reason, which has stopped the game from progressing
     -Possibly because they were in base to base contact with a unit that couldn't fight, then that unit was the target of the shot
-    -Wonder if this is related to the angle >= -1 check as active_actions are being passed to all players, 
+    -Wonder if this is related to the angle >= -1 check as active_actions are beings passed to all players, 
     so the ticket message is being passed to everyone
     -Added a check that'll print off the values used if the angle is -1
 
@@ -59,7 +59,8 @@ BUGS
 
 -BUG -Small units with no fight stats should still be locked into combat?
 
--BUG -shooting has caused one side to advance it's actions before all the players in the side are ready
+-BUG -Bug trying to save multiple times a the same time for the same room. Consider having on the room creator be able to save things.
+
 
 /////////////////////////////////////////
 THINGS TO DO (EVENTUALLY)
@@ -97,6 +98,8 @@ DONE
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 
+-DONE -shooting has caused one side to advance it's actions before all the players in the side are ready
+    -There was no mans of resetting ready status' for armies which was causing the desync
 
 /////////////////////////////////////////
 WOUNDING
