@@ -62,6 +62,12 @@ const game_setup = class {
 			this.scene_container.unit_collisions.push(this.scene.add.group());
 		}
 
+		// this.scene_container.fight_collisions = []
+		// for(let i=0; i<max_sides; i++){
+		// 	this.scene_container.fight_collisions.push(this.scene.add.group());
+		// }
+
+
 		// ██       ██████   █████  ██████         █████  ███████ ███████ ███████ ████████ ███████ 
 		// ██      ██    ██ ██   ██ ██   ██       ██   ██ ██      ██      ██         ██    ██      
 		// ██      ██    ██ ███████ ██   ██ █████ ███████ ███████ ███████ █████      ██    ███████ 
@@ -293,7 +299,8 @@ const game_setup = class {
         this.scene_container.acceptable_tiles = acceptable_tiles;
     
         // acceptable_tiles.push(1);
-        this.scene_container.pathfinder = new pathfinder(grid, acceptable_tiles);			
+		this.scene_container.pathfinder = new pathfinder(grid, acceptable_tiles);	
+		this.scene_container.collisions = new collisions({scene: this.scene});		
     }
     
 	getTileID = function(x,y){

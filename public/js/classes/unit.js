@@ -136,10 +136,11 @@ const unit = class {
 		this.bar_graphic = options.scene.add.graphics().setDepth(this.depth_health);
 		this.bar_back_graphic = options.scene.add.graphics().setDepth(this.depth_health);
 
+		this.fight_graphic = options.scene.add.graphics().setDepth(this.depth_fight_radius);
+		// GameScene.fight_collisions[this.side].add(this.sprite)
 
 		this.path_graphic = options.scene.add.graphics().setDepth(this.depth_path);
 		this.cohesion_graphic = options.scene.add.graphics().setDepth(this.depth_cohesion);
-		this.fight_graphic = options.scene.add.graphics().setDepth(this.depth_fight_radius);
 		this.blast_graphics = [];
 		for(let i=0; i<10; i++){
 			this.blast_graphics.push(options.scene.add.graphics().setDepth(this.depth_explosion));
@@ -161,7 +162,9 @@ const unit = class {
 		this.drawFlash()
 
 		this.updateElements(this.sprite);
-		
+	
+
+
 		this.selectHander = this.selectHander.bind(this);
 	}
 
@@ -1742,22 +1745,38 @@ unselectHandler() {
 		
 	}	
 
-	checkCombatDistance(sprite, unit) {
-		let clash = false
-		let dist = gameFunctions.twoPointDistance(sprite, unit.sprite);
-		dist -= unit.size * gameFunctions.tile_size; 
-		if(dist <= this.fight_range){
-			clash = true
-		}
+	// checkCombatDistance(sprite, unit) {
+	// 	let clash = false
+	// 	let dist = gameFunctions.twoPointDistance(sprite, unit.sprite);
+	// 	dist -= unit.size * gameFunctions.tile_size; 
+	// 	if(dist <= this.fight_range){
+	// 		clash = true
+	// 	}
 
-		return clash
-	}
+	// 	return clash
+	// }
 	
 	checkCombat() {
 		
 		let in_combat_range = false
 
+		let fight_circle;
+
 		gameFunctions.units.forEach((unit) => {
+
+			// let rectangle = new u_rectangle({
+			// 	x: unit.sprite.x - (unit.sprite.width / 2),
+			// 	y: unit.sprite.y - (unit.sprite.height / 2),
+			// 	w: unit.sprite.width ,
+			// 	h: unit.sprite.height 
+			// })
+
+			let unit_circle = new u_circle({
+				x: unit.sprite.x,
+				y: unit.sprite.y,
+				r: unit.sprite.width / 2
+			});
+
 
 			let clash = false;
 			if(unit.alive === true && this.alive === true && unit.id !== this.id && unit.player !== this.player && unit.side !== this.side){
@@ -1766,11 +1785,28 @@ unselectHandler() {
 					//check to see if movement ends in an attack
 					if(this.sprite_ghost){
 						// clash = this.checkSpriteOverlap(this.sprite_ghost, unit.sprite, true)
-						clash = this.checkCombatDistance(this.sprite_ghost, unit)
+						// clash = this.checkCombatDistance(this.sprite_ghost, unit)
+
+						fight_circle = new u_circle({
+							x: this.ghost_sprite.x,
+							y: this.ghost_sprite.y,
+							r: this.fight_range
+						});
+						// clash = GameScene.collisions.circleRect(fight_circle, rectangle);
+						clash = GameScene.collisions.circleCircle(fight_circle, unit_circle);						
+						
 					}
 				}else{
 					// clash = this.checkSpriteOverlap(this.sprite, unit.sprite, true)
-					clash = this.checkCombatDistance(this.sprite, unit)
+					// clash = this.checkCombatDistance(this.sprite, unit)
+
+					fight_circle = new u_circle({
+						x: this.sprite.x,
+						y: this.sprite.y,
+						r: this.fight_range
+					});
+					// clash = GameScene.collisions.circleRect(fight_circle, rectangle);
+					clash = GameScene.collisions.circleCircle(fight_circle, unit_circle);					
 				}
 
 				if(clash === true){
