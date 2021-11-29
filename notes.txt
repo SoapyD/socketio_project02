@@ -8,30 +8,6 @@ SBT GAME NOTES
 /////////////////////////////////////////////////////////////////////////////////////
 
 
--Need to think of damage and wounds in terms of small numbers (1s and 2s), so its easier to determine who wins
-
--maybe have friendly units in combat be able to be hit by friendly fire. 
-    -That or make friendly fire a thing in the whole game so people need to be aware of lines of sight
-
-
-
-/////////////////////////////////////////
-WOUNDING
-/////////////////////////////////////////
-
--Wounding roll 20, 
-    -hit_chance = this.armour - options.ap + options.bonus; 
-    -bonus is currently a minus value on the attacking unit. Could be a combo of the defender and attacker
-    -1 is a crit fail (no affect but maybe mean they can't shoot/attack next turn)
-    -20 is crit success
-    -Damage is out of 100
-
--Wounding roll 10
-    -Essentially armour vs armour piercing of the weapon
-    -factor in bonus' for attackers and defenders
-    -If wounding occurs, weapon damage is inflicted
-    -Maybe have crit hit/failure rate as changable
-
 /////////////////////////////////////////
 SIDES AND ACTIONS
 /////////////////////////////////////////
@@ -81,10 +57,7 @@ BUGS
 -BUG -Reloads won't work sometimes because one of the armies loads in with only an army reference instead of the full army
     -This is down to a second player joining while the 1st player is still joining, which resets the unit list.
 
--BUG -Something in the deployment loop is really slowing things down. After a couple of units are setup it gets very slow
-things speed back up again as soon as it's done
-
--BUG -Smaller units weren't able to attack a tank because the center of it is out of range
+-BUG -Small units with no fight stats should still be locked into combat?
 
 /////////////////////////////////////////
 THINGS TO DO (EVENTUALLY)
@@ -121,6 +94,36 @@ DONE
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////
+WOUNDING
+/////////////////////////////////////////
+
+-Need to think of damage and wounds in terms of small numbers (1s and 2s), so its easier to determine who wins
+
+-maybe have friendly units in combat be able to be hit by friendly fire. 
+    -That or make friendly fire a thing in the whole game so people need to be aware of lines of sight
+
+-Wounding roll 20, 
+    -hit_chance = this.armour - options.ap + options.bonus; 
+    -bonus is currently a minus value on the attacking unit. Could be a combo of the defender and attacker
+    -1 is a crit fail (no affect but maybe mean they can't shoot/attack next turn)
+    -20 is crit success
+    -Damage is out of 100
+
+-Wounding roll 10
+    -Essentially armour vs armour piercing of the weapon
+    -factor in bonus' for attackers and defenders
+    -If wounding occurs, weapon damage is inflicted
+    -Maybe have crit hit/failure rate as changable
+/////////////////////////////////////////
+
+-DONE -Something in the deployment loop is really slowing things down. After a couple of units are setup it gets very slow
+things speed back up again as soon as it's done
+    -It was the fact a graphic wasn't being cleared before it was redrawn in the HUD class
+
+-DONE -Smaller units weren't able to attack a tank because the center of it is out of range
 
 -DONE -Setup units doesn't stop players from putting unit on a terrain block
 

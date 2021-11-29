@@ -160,6 +160,7 @@ const unit = class {
 				
 		this.drawTint()
 		this.drawFlash()
+		this.drawFightRadius()
 
 		this.updateElements(this.sprite);
 	
@@ -219,9 +220,9 @@ selectUnit(single_unit=false) {
 			this.resetGhost();
 		}
 		
-		if(gameFunctions.mode === "fight"){
-			this.drawFightRadius()
-		}
+		// if(gameFunctions.mode === "fight"){
+		// 	this.drawFightRadius()
+		// }
 	}
 }
 
@@ -313,7 +314,7 @@ unselectHandler() {
 				
 		this.path_graphic.clear();
 		this.cohesion_graphic.clear();
-		this.fight_graphic.clear();
+		// this.fight_graphic.clear();
 		this.resetDrawInfo();
 		
 		this.blast_graphics.forEach((graphic) => {
@@ -325,7 +326,7 @@ unselectHandler() {
 		
 		this.path = [];
 		this.path_graphic.clear();		
-		this.fight_graphic.clear();
+		// this.fight_graphic.clear();
 		this.resetGhost();
 		this.updateElements(this.sprite_ghost);
 		
@@ -564,6 +565,7 @@ unselectHandler() {
 		this.updateUnitElements(sprite);
 		this.drawInfo(sprite);
 		this.drawHealth(sprite);
+		this.drawFightRadius();
 	}
 	
 	updateUnitElements(sprite){
@@ -1676,13 +1678,63 @@ unselectHandler() {
 // #        #  #     # #     #    #    
 // #       ###  #####  #     #    #    		
 	
+	checkClickPosition (pointer) {
+		let click_check = -1;
+
+		let click_circle;
+
+		gameFunctions.units.forEach((unit) => {
+
+			let unit_circle = new u_circle({
+				x: unit.sprite.x,
+				y: unit.sprite.y,
+				r: unit.sprite.width / 2
+			});
+
+			//CHECK TO SEE IF THE UNIT CLASHES WITH THE CLICK POSITION
+			let clash = false;
+			if(unit.alive === true && this.alive === true && unit.id !== this.id && unit.player !== this.player && unit.side !== this.side){
+				
+				click_circle = new u_circle({
+					x: pointer.x,
+					y: pointer.y,
+					r: 1
+				});
+				clash = GameScene.collisions.circleCircle(click_circle, unit_circle);	
+
+				if(clash === true){			
+					//IF IT DOES, CHECK TO SEE THEY'RE IN RANGE OF THE FIGHT RADIUS
+
+					let fight_circle = new u_circle({
+						x: this.sprite.x,
+						y: this.sprite.y,
+						r: this.fight_range
+					});
+					
+					clash = GameScene.collisions.circleCircle(fight_circle, unit_circle);
+
+					if(clash === false){
+						click_check = 0;
+					}else{
+						click_check = 1;
+					}
+
+				}
+			}
+		})
+
+		return click_check;		
+	}
+
 	
 	findFightTarget (options) {
 
 		
-		let scene = this.scene;
+		// let scene = this.scene;
 		let pointer = options.pointer;		
-		
+		let skip = false
+		let on_unit = false;
+
 		//GET BASE POSITIONAL DATA
 		let pos = {
 			start_x: this.sprite.x,
@@ -1691,23 +1743,28 @@ unselectHandler() {
 			end_y: Math.floor(pointer.y / gameFunctions.tile_size) * gameFunctions.tile_size + (gameFunctions.tile_size / 2),
 		}
 
-		let current_range = Math.sqrt(Math.pow(this.sprite.x - pos.end_x, 2) + Math.pow(this.sprite.y - pos.end_y, 2))
+		// let current_range = Math.sqrt(Math.pow(this.sprite.x - pos.end_x, 2) + Math.pow(this.sprite.y - pos.end_y, 2))
 		
-		
-		let skip = false
-		let on_unit = false;
-		
+		// if(current_range > (this.fight_range) && skip === false){
+		// 	skip = true;
+		// 	GameScene.showMessage("target out of range")	
+		// }
 
+		let click_check = this.checkClickPosition (pointer)
+		if(click_check === -1){
+			skip = true;
+			// GameScene.showMessage("no unit selected")
+		}
+		if(click_check === 0){
+			skip = true;
+			GameScene.showMessage("unit out of range")
+		}		
+		
 		if(this.fight_damage === 0){
 			skip = true
 			GameScene.showMessage("cannot fight, unit has no fight damage")
 		}
 
-		if(current_range > (this.fight_range) && skip === false){
-			skip = true;
-			GameScene.showMessage("target out of range")	
-		}
-		
 		//SKIP IF THE POINTER IS OVER THE SHOOTING UNITS, put here so it doesn't play the clear sound
 		if (this.sprite.getBounds().contains(pointer.x, pointer.y)) {
 			skip = true;
@@ -1764,13 +1821,6 @@ unselectHandler() {
 
 		gameFunctions.units.forEach((unit) => {
 
-			// let rectangle = new u_rectangle({
-			// 	x: unit.sprite.x - (unit.sprite.width / 2),
-			// 	y: unit.sprite.y - (unit.sprite.height / 2),
-			// 	w: unit.sprite.width ,
-			// 	h: unit.sprite.height 
-			// })
-
 			let unit_circle = new u_circle({
 				x: unit.sprite.x,
 				y: unit.sprite.y,
@@ -1784,15 +1834,12 @@ unselectHandler() {
 				if(this.path.length > 0 && this.is_moving === false){
 					//check to see if movement ends in an attack
 					if(this.sprite_ghost){
-						// clash = this.checkSpriteOverlap(this.sprite_ghost, unit.sprite, true)
-						// clash = this.checkCombatDistance(this.sprite_ghost, unit)
 
 						fight_circle = new u_circle({
 							x: this.ghost_sprite.x,
 							y: this.ghost_sprite.y,
 							r: this.fight_range
 						});
-						// clash = GameScene.collisions.circleRect(fight_circle, rectangle);
 						clash = GameScene.collisions.circleCircle(fight_circle, unit_circle);						
 						
 					}
@@ -1811,6 +1858,20 @@ unselectHandler() {
 
 				if(clash === true){
 					
+					// let graphic1 = this.scene.add.graphics().setDepth(100);
+					// graphic1.lineStyle(2, 0x0000FF, 0.5);
+					// graphic1.fillStyle(0x0000FF, 0.05);
+					// let circle1 = new Phaser.Geom.Circle(unit_circle.x, unit_circle.y, unit_circle.r);
+					// graphic1.fillCircleShape(circle1).setDepth(100);
+					// graphic1.strokePath();	
+
+					// let graphic2 = this.scene.add.graphics().setDepth(100);
+					// graphic2.lineStyle(2, 0x0000FF, 0.5);
+					// graphic2.fillStyle(0x0000FF, 0.05);
+					// let circle2 = new Phaser.Geom.Circle(fight_circle.x, fight_circle.y, fight_circle.r);
+					// graphic2.fillCircleShape(circle2).setDepth(100);
+					// graphic2.strokePath()					
+
 					const found = this.in_combat_with.some(el => el.id === unit.id);
 					// if (!found) arr.push({ id, username: name });
 					if(found === false){
