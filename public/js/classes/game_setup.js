@@ -764,6 +764,13 @@ const game_setup = class {
 					if(this.scene_container.hovered_unit_id !== unit.id){
 						this.scene_container.hovered_unit_id = unit.id
 						GameUIScene.setUnitHUD(unit)
+
+						if(this.scene_container.selected_unit.length > 0){
+							let selected_unit = this.scene_container.selected_unit[0];
+							if(selected_unit.side !== unit.side){
+								GameUIScene.setChanceHUD(selected_unit, unit)
+							}
+						}						
 					}
 				}
 			})
@@ -771,6 +778,7 @@ const game_setup = class {
 
 		if(touching_unit === false){
 			GameUIScene.hideUnitHUD();
+			GameUIScene.hideChanceHUD();
 			this.scene_container.hovered_unit_id = -1;
 		}
 	}

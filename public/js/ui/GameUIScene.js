@@ -858,6 +858,46 @@ GameUIScene.advanceSide = () => {
 		GameUIScene.hud_unit.setVisible(false);
 
 
+		//SETUP HUD ITEM THAT DISPLAYS THE CURRENT TURN NUMBER
+		GameUIScene.hud_chance = new hud({
+			scene: GameUIScene.scene,
+			// grid: true,
+
+			x: 2, y: 2+250,
+			x_itts: 6, y_itts: 8,
+			x_indent: 10, y_indent: 6,			
+			width: hud_width, height: 100,
+
+			fill_colour: 0xe6ffff,
+			fill_alpha: 0.9,
+			radius: { tl: 0, tr: 12, bl: 12, br: 12 },
+			border: {
+				width: 4,
+				colour: 000000,
+				alpha: 1
+			},
+			text: [
+				{id: 'h_mel_chance',label: 'Melee Chance:', x: 0, y: 0, height: 3,
+				font: {height: 22},
+				},
+				{id: 'f_mel_chance',label: gameFunctions.params.turn_number, x: 4, y: 0, 
+				font: {height: 22},
+				box: {fill_colour: 0xffffff, fill_alpha: 1, radius: 5, width: 1.25, height: 3}},	
+				
+				{id: 'h_gun_chance',label: 'Shoot Chance:', x: 0, y: 4, height: 3,
+				font: {height: 22},
+				},
+				{id: 'f_gun_chance',label: gameFunctions.params.turn_number, x: 4, y: 4, 
+				font: {height: 22},
+				box: {fill_colour: 0xffffff, fill_alpha: 1, radius: 5, width: 1.25, height: 3}},					
+
+			]
+		});
+
+		// GameUIScene.hideChanceHUD(false);
+
+
+
 		//SETUP A HUD ITEM FOR EACH FORCE AVAILABLE
 		if(gameFunctions.params.forces){
 			GameUIScene.forces_hud = {};
@@ -975,6 +1015,26 @@ GameUIScene.advanceSide = () => {
 
 	GameUIScene.hideUnitHUD = () => {
 		let element = GameUIScene.hud_unit
+		element.setVisible(false);
+	}
+
+
+	GameUIScene.setChanceHUD = (selected_unit, target_unit) => {
+		let element = GameUIScene.hud_chance
+		element.setVisible(true);
+
+		let mel_chance = target_unit.armour - (selected_unit.fight_ap + selected_unit.fighting_bonus);
+		let gun_chance = target_unit.armour - (selected_unit.shoot_ap + selected_unit.shooting_bonus);
+
+		mel_chance = Math.round(100-((mel_chance / 20) * 100),2) + '%'
+		gun_chance = Math.round(100-((gun_chance / 20) * 100),2) + '%'
+
+		element.setText("f_mel_chance",mel_chance)
+		element.setText("f_gun_chance",gun_chance)
+	}
+
+	GameUIScene.hideChanceHUD = () => {
+		let element = GameUIScene.hud_chance
 		element.setVisible(false);
 	}
 
