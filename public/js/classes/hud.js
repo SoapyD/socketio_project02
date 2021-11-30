@@ -85,8 +85,18 @@ const hud = class {
 				this.y+(item.y*this.y_itts)+this.y_indent, 
 				item.box.width * this.x_itts, 
 				item.box.height * this.y_itts, 
-				item.box.radius);			
-			
+				item.box.radius);				
+
+			if(item.box.border){
+				text_item.graphics.lineStyle(item.box.border.width, item.box.border.colour, item.box.border.alpha);
+				text_item.graphics.strokeRoundedRect(
+					this.x+(item.x*this.x_itts)+this.x_indent, 
+					this.y+(item.y*this.y_itts)+this.y_indent, 
+					item.box.width * this.x_itts, 
+					item.box.height * this.y_itts, 
+					item.box.radius);
+			}	
+
 		}else{
 			text_item.text = this.scene.add.text(0, 0, item.label, style).setDepth(200);
 
@@ -111,7 +121,8 @@ const hud = class {
 			}
 			
 		}	
-		
+
+
 		return text_item;
 	}
 
@@ -165,6 +176,9 @@ const hud = class {
 
 			for (let key in this.text){
 				this.text[key]["text"].visible = false;
+				if(this.text[key].graphics){
+					this.text[key].graphics.visible = false;
+				}
 			}
 		}
 		if(is_visible === true){
@@ -172,6 +186,9 @@ const hud = class {
 
 			for (let key in this.text){
 				this.text[key]["text"].visible = true;
+				if(this.text[key].graphics){
+					this.text[key].graphics.visible = true;
+				}			
 			}			
 		}		
 	}

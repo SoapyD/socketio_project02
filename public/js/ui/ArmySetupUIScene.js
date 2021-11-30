@@ -85,7 +85,7 @@ ArmySetupUIScene.loadSingleButton = (scene) => {
 
 ArmySetupUIScene.setupHUD = () => {
 
-    let hud_width = 200;
+    let hud_width = 240;
 
     
     ArmySetupUIScene.hud_item = new hud({

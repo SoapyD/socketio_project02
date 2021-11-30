@@ -670,7 +670,7 @@ GameUIScene.advanceSide = () => {
 
 	GameUIScene.setupHUD = () => {
 
-		let hud_width = 200;
+		let hud_width = 240;
 
 		//SETUP HUD ITEM THAT DISPLAYS THE CURRENT TURN NUMBER
 		GameUIScene.hud_item = new hud({
@@ -695,6 +695,168 @@ GameUIScene.advanceSide = () => {
 				{id: 'c_Turn',label: gameFunctions.params.turn_number, x: 3, y: 0, box: {fill_colour: 0xffffff, fill_alpha: 1, radius: 5, width: 2, height: 3}},				
 			]
 		});
+
+
+		//
+		GameUIScene.hud_unit = new hud({
+			scene: GameUIScene.scene,
+			grid: false,
+
+			x: 2, y: 2+50,
+			x_itts: 24, y_itts: 8,
+			x_indent: 10, y_indent: 6,			
+			width: hud_width, height: 200,
+
+			fill_colour: 0xe6ffff,
+			fill_alpha: 0.9,
+			radius: { tl: 0, tr: 12, bl: 12, br: 12 },
+			border: {
+				width: 4,
+				colour: 000000,
+				alpha: 1
+			},
+			text: [
+
+				{id: 'u_h',label: "unit", x: 0, y: 0, 
+				font: {height: 22},
+				box: {
+					fill_colour: 0xffffff, fill_alpha: 1, radius: 5, width: 22, height: 1, 
+					border: {width: 1, colour: 0xe000000, alpha: 1}
+					}
+				},
+
+				//ROW 1
+				{id: 'r1_h',label: 'type', x: 0, y: 2, height: 1, 
+				font: {height: 22}
+				},
+
+				{id: 'h_m',label: 'M', x: 7, y: 1, height: 1, width: 3, align: "center", 
+				font: {height: 22}
+				},
+				{id: 'f_m',label: gameFunctions.params.turn_number, x: 7, y: 2, 
+				font: {height: 22},
+				box: {
+					fill_colour: 0xffffff, fill_alpha: 1, radius: 5, width: 3, height: 1, 
+					border: {width: 1, colour: 0xe000000, alpha: 1}
+					}
+				},
+
+				{id: 'h_sb',label: 'SB', x: 11, y: 1, height: 1, width: 3, align: "center",
+				font: {height: 22},
+				},
+				{id: 'f_sb',label: gameFunctions.params.turn_number, x: 11, y: 2, 
+				font: {height: 22},
+				box: {
+					fill_colour: 0xffffff, fill_alpha: 1, radius: 5, width: 3, height: 1, 
+					border: {width: 1, colour: 0xe000000, alpha: 1}
+					}
+				},
+
+				{id: 'h_fb',label: 'FB', x: 15, y: 1, height: 1, width: 3, align: "center",
+				font: {height: 22},	
+				},
+				{id: 'f_fb',label: gameFunctions.params.turn_number, x: 15, y: 2,
+				font: {height: 22},
+				box: {
+					fill_colour: 0xffffff, fill_alpha: 1, radius: 5, width: 3, height: 1, 
+					border: {width: 1, colour: 0xe000000, alpha: 1}
+					}
+				},
+
+				{id: 'h_a',label: 'A', x: 19, y: 1, height: 1, width: 3, align: "center",
+				font: {height: 22},
+				},
+				{id: 'f_a',label: gameFunctions.params.turn_number, x: 19, y: 2, 
+				font: {height: 22},
+				box: {
+					fill_colour: 0xffffff, fill_alpha: 1, radius: 5, width: 3, height: 1, 
+					border: {width: 1, colour: 0xe000000, alpha: 1}
+					}
+				},				
+
+
+				//ROW 2
+				{id: 'r2_h',label: 'gun', x: 0, y: 4, height: 1,
+				font: {height: 22},
+				},
+
+				{id: 'h_gun_d',label: 'D', x: 7, y: 3, height: 1, width: 3, align: "center",
+				font: {height: 22},
+				},
+				{id: 'f_gun_d',label: gameFunctions.params.turn_number, x: 7, y: 4,
+				font: {height: 22},
+				box: {
+					fill_colour: 0xffffff, fill_alpha: 1, radius: 5, width: 3, height: 1, 
+					border: {width: 1, colour: 0xe000000, alpha: 1}
+					}
+				},
+
+				{id: 'h_gun_ap',label: 'AP', x: 11, y: 3, height: 1, width: 3, align: "center",
+				font: {height: 22},
+				},
+				{id: 'f_gun_ap',label: gameFunctions.params.turn_number, x: 11, y: 4, 
+				font: {height: 22},
+				box: {
+					fill_colour: 0xffffff, fill_alpha: 1, radius: 5, width: 3, height: 1, 
+					border: {width: 1, colour: 0xe000000, alpha: 1}
+					}
+				},				
+
+				{id: 'h_gun_r',label: 'Range', x: 15, y: 3, height: 1, width: 7, align: "center",
+				font: {height: 22},
+				},
+				{id: 'f_gun_r',label: gameFunctions.params.turn_number, x: 15, y: 4,
+				font: {height: 22},
+				box: {
+					fill_colour: 0xffffff, fill_alpha: 1, radius: 5, width: 7, height: 1, 
+					border: {width: 1, colour: 0xe000000, alpha: 1}
+					}
+				},
+
+
+				//ROW 3
+				{id: 'r3_h',label: 'melee', x: 0, y: 6, height: 1,
+				font: {height: 22},
+				},
+
+				{id: 'h_mel_d',label: 'D', x: 7, y: 5, height: 1, width: 3, align: "center",
+				font: {height: 22},
+				},
+				{id: 'f_mel_d',label: gameFunctions.params.turn_number, x: 7, y: 6, 
+				font: {height: 22},
+				box: {
+					fill_colour: 0xffffff, fill_alpha: 1, radius: 5, width: 3, height: 1, 
+					border: {width: 1, colour: 0xe000000, alpha: 1}
+					}
+				},
+
+				{id: 'h_mel_ap',label: 'AP', x: 11, y: 5, height: 1, width: 3, align: "center",
+				font: {height: 22},
+				},
+				{id: 'f_mel_ap',label: gameFunctions.params.turn_number, x: 11, y: 6,
+				font: {height: 22},
+				box: {
+					fill_colour: 0xffffff, fill_alpha: 1, radius: 5, width: 3, height: 1, 
+					border: {width: 1, colour: 0xe000000, alpha: 1}
+					}
+				},				
+
+				{id: 'h_mel_r',label: 'Range', x: 15, y: 5, height: 1, width: 7, align: "center",
+				font: {height: 22},
+				},
+				{id: 'f_mel_r',label: gameFunctions.params.turn_number, x: 15, y: 6,
+				font: {height: 22},
+				box: {
+					fill_colour: 0xffffff, fill_alpha: 1, radius: 5, width: 7, height: 1, 
+					border: {width: 1, colour: 0xe000000, alpha: 1}
+					}
+				},
+
+			]
+		});
+
+		GameUIScene.hud_unit.setVisible(false);
+
 
 		//SETUP A HUD ITEM FOR EACH FORCE AVAILABLE
 		if(gameFunctions.params.forces){
@@ -785,6 +947,35 @@ GameUIScene.advanceSide = () => {
 
 			GameUIScene.setAllWaitingHUD();
 		}
+	}
+
+
+	GameUIScene.setUnitHUD = (unit) => {
+		let element = GameUIScene.hud_unit
+		element.setVisible(true);
+
+		element.setText("u_h",unit.unit_name)
+
+		element.setText("f_m",unit.movement)
+		element.setText("f_sb",unit.shooting_bonus)
+		element.setText("f_fb",unit.fighting_bonus)
+		element.setText("f_a",unit.armour)
+
+		element.setText("r2_h",unit.shoot_name)
+		element.setText("f_gun_d",unit.shoot_damage)
+		element.setText("f_gun_ap",unit.shoot_ap)
+		element.setText("f_gun_r",unit.max_targets+'x'+unit.shoot_range)
+
+		element.setText("r3_h",unit.fight_name)
+		element.setText("f_mel_d",unit.fight_damage)
+		element.setText("f_mel_ap",unit.fight_ap)
+		element.setText("f_mel_r",unit.fight_max_targets+'x'+unit.fight_range)		
+	
+	}
+
+	GameUIScene.hideUnitHUD = () => {
+		let element = GameUIScene.hud_unit
+		element.setVisible(false);
 	}
 
 	GameUIScene.setForcesHUD = (i, text, is_visible, is_gray) => {

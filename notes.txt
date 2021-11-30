@@ -8,6 +8,12 @@ SBT GAME NOTES
 /////////////////////////////////////////////////////////////////////////////////////
 
 
+-Need a HUD item that shows a breakdown of the current unit / weapon as well as the damange chance for a ticket
+
+-Need to display what rooms a user has created and provide a means of deleting them
+    -limit users to only having so many rooms open
+
+
 /////////////////////////////////////////
 SIDES AND ACTIONS
 /////////////////////////////////////////
