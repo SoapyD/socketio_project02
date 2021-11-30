@@ -210,8 +210,6 @@ selectUnit(single_unit=false) {
 			}			
 		}
 		GameScene.selected_unit.push(this);
-
-		GameUIScene.setUnitHUD(this)
 		
 		GameScene.selected_unit.forEach((selected_unit) => {
 			selected_unit.drawFlash(false)

@@ -51,6 +51,8 @@ const game_setup = class {
 		this.scene_container.startY = 0
 		this.scene_container.endX = 0
 		this.scene_container.endY = 0
+
+		this.hovered_unit_id = -1;
 		
 		this.scene_container.multi_select_pause = false;	
 
@@ -716,7 +718,7 @@ const game_setup = class {
 	// ██    ██ ██      ██   ██ ██   ██    ██    ██            ██      ██      ██      ██  ██  ██ ██      ██  ██ ██    ██         ██ 
 	//  ██████  ██      ██████  ██   ██    ██    ███████       ███████ ███████ ███████ ██      ██ ███████ ██   ████    ██    ███████ 
 
-	updateElements = () => {
+	updateElements = (worldPoint) => {
 																																	  
 		//CHECK BULLET DEATH
 		let bullets = [];
@@ -731,6 +733,15 @@ const game_setup = class {
 		
 		this.scene_container.bullets = bullets;
 		
+
+		let click_circle = new u_circle({
+			x: worldPoint.x,
+			y: worldPoint.y,
+			r: 1
+		});
+
+
+		let touching_unit = false;
 		if(gameFunctions.units){
 			gameFunctions.units.forEach((unit) => {
 				if(unit.side === gameFunctions.current_side){
@@ -740,8 +751,28 @@ const game_setup = class {
 						unit.updateUnitElements(unit.sprite);
 					}
 				}
+
+				let unit_circle = new u_circle({
+					x: unit.sprite.x,
+					y: unit.sprite.y,
+					r: unit.sprite.width / 2
+				});
+				let clash = GameScene.collisions.circleCircle(click_circle, unit_circle);
+
+				if(clash === true){
+					touching_unit = true;
+					if(this.scene_container.hovered_unit_id !== unit.id){
+						this.scene_container.hovered_unit_id = unit.id
+						GameUIScene.setUnitHUD(unit)
+					}
+				}
 			})
 		}		
+
+		if(touching_unit === false){
+			GameUIScene.hideUnitHUD();
+			this.scene_container.hovered_unit_id = -1;
+		}
 	}
 
 }

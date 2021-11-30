@@ -76,7 +76,7 @@ var GameScene = new Phaser.Class({
 				// })
 
 				GameScene.game_setup.checkUnitClicks();
-				GameScene.game_setup.updateElements();
+				GameScene.game_setup.updateElements(worldPoint);
 				GameScene.pathfinder.update();
 
 				break;
