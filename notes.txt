@@ -8,7 +8,11 @@ SBT GAME NOTES
 /////////////////////////////////////////////////////////////////////////////////////
 
 
--Need a HUD item that shows a breakdown of the current unit / weapon as well as the damange chance for a ticket
+-DONE -Need a HUD item that shows a breakdown of the current unit / weapon as well as the damange chance for a ticket
+
+-Add a popup to the bottom of the unit_hud that'll display the current units change of damaging the unit being hovered over
+    -The above needs to display for melee and shooting damage
+
 
 -Need to display what rooms a user has created and provide a means of deleting them
     -limit users to only having so many rooms open

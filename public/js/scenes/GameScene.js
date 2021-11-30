@@ -58,23 +58,6 @@ var GameScene = new Phaser.Class({
 
 			case 2:
 
-				// GameScene.fight_circle.x = worldPoint.x;
-				// GameScene.fight_circle.y = worldPoint.y;
-				// gameFunctions.units.forEach((unit) => {
-
-				// 	let rectangle = new u_rectangle({
-				// 		x: unit.sprite.x - 16,
-				// 		y: unit.sprite.y - 16,
-				// 		w: 32,
-				// 		h: 32
-				// 	})
-
-				// 	let collision = GameScene.collisions.circleRect(GameScene.fight_circle, rectangle)
-				// 	if(collision === true){
-				// 		console.log("clash")
-				// 	}
-				// })
-
 				GameScene.game_setup.checkUnitClicks();
 				GameScene.game_setup.updateElements(worldPoint);
 				GameScene.pathfinder.update();
