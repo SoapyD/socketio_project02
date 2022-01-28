@@ -8,12 +8,6 @@ SBT GAME NOTES
 /////////////////////////////////////////////////////////////////////////////////////
 
 
--DONE -Need a HUD item that shows a breakdown of the current unit / weapon as well as the damange chance for a ticket
-
--Add a popup to the bottom of the unit_hud that'll display the current units change of damaging the unit being hovered over
-    -The above needs to display for melee and shooting damage
-
-
 -Need to display what rooms a user has created and provide a means of deleting them
     -limit users to only having so many rooms open
 
@@ -48,6 +42,7 @@ SELECTION
     -Movement currently can't be calculated at once
         -This is because there's only one instance of path finding which gets reset if more than one function is run
 
+
 /////////////////////////////////////////
 BUGS
 /////////////////////////////////////////
@@ -63,14 +58,14 @@ BUGS
     so the ticket message is being passed to everyone
     -Added a check that'll print off the values used if the angle is -1
 
-
 -BUG -Reloads won't work sometimes because one of the armies loads in with only an army reference instead of the full army
     -This is down to a second player joining while the 1st player is still joining, which resets the unit list.
 
 -BUG -Small units with no fight stats should still be locked into combat?
 
 -BUG -Bug trying to save multiple times a the same time for the same room. Consider having on the room creator be able to save things.
-
+    -Caused by moving from a "current player" to "current side" check when saving
+    -Would need to check if this is the "first player" of a side, so only saves once
 
 /////////////////////////////////////////
 THINGS TO DO (EVENTUALLY)
@@ -107,6 +102,11 @@ DONE
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+-DONE -Need a HUD item that shows a breakdown of the current unit / weapon as well as the damange chance for a ticket
+
+-DONE -Add a popup to the bottom of the unit_hud that'll display the current units change of damaging the unit being hovered over
+    -The above needs to display for melee and shooting damage
 
 -DONE -shooting has caused one side to advance it's actions before all the players in the side are ready
     -There was no mans of resetting ready status' for armies which was causing the desync
