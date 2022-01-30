@@ -45,7 +45,8 @@ var ArmySelectUIScene = new Phaser.Class({
         character_form.setScrollFactor(0);
         // character_form.setPerspective(800);
         character_form.setAlpha(0)
-        character_form.addListener('click');
+		character_form.addListener('click');
+		
 		// console.log(character_form)
 		
 		//CHANGE THE IMAGE TO REFLECT THE CURRENT MAX PLAYER SETUP
@@ -69,10 +70,20 @@ var ArmySelectUIScene = new Phaser.Class({
         //ADD CLICK FUNCTIONALITY TO THE CHARACTER SELECTOR
         character_form.on('click', function (event) {
 
-            if (event.target.name === 'sides')
+			// console.log(event.target.parentElement)
+			// console.log(event.target.parentElement.name)			
+
+			//chrome and IE trigger the event on the parent dropdown
+			//firefox counts the target as the option selected, so we have to check the parent name
+            if (event.target.name === 'sides' || event.target.parentElement.name  === 'sides')
             {
-				let num = event.target.id.indexOf('_')
-				let player_number = parseInt(event.target.id.substring(0,num))
+				let target = event.target
+				if(event.target.parentElement.name === 'sides'){
+					target = event.target.parentElement;
+				}
+
+				let num = target.id.indexOf('_')
+				let player_number = parseInt(target.id.substring(0,num))
 
 				let data = {
 					functionGroup: "socketFunctions",  
@@ -81,16 +92,21 @@ var ArmySelectUIScene = new Phaser.Class({
 					type: "save config",
 					subtype: "side",
 					player_number: player_number,
-					value: parseInt(event.target.value),
+					value: parseInt(target.value),
 					message: "set side for player "+player_number
 				}				
 				connFunctions.messageServer(data)
 				
 			}
-            if (event.target.name === 'starts')
+            if (event.target.name === 'starts' || event.target.parentElement.name  === 'starts')
             {
-				let num = event.target.id.indexOf('_')
-				let player_number = parseInt(event.target.id.substring(0,num))
+				let target = event.target
+				if(event.target.parentElement.name === 'starts'){
+					target = event.target.parentElement;
+				}
+
+				let num = target.id.indexOf('_')
+				let player_number = parseInt(target.id.substring(0,num))
 
 				let data = {
 					functionGroup: "socketFunctions",  
@@ -99,14 +115,18 @@ var ArmySelectUIScene = new Phaser.Class({
 					type: "save config",
 					subtype: "start",
 					player_number: player_number,
-					value: parseInt(event.target.value),
+					value: parseInt(target.value),
 					message: "set start for player "+player_number
 				}				
 				connFunctions.messageServer(data)				
 				
 			}			
-            if (event.target.name === 'armies')
+            if (event.target.name === 'armies' || event.target.parentElement.name  === 'armies')
             {
+				let target = event.target
+				if(event.target.parentElement.name === 'armies'){
+					target = event.target.parentElement;
+				}				
 
 				let data = {
 					functionGroup: "socketFunctions",  
@@ -115,7 +135,7 @@ var ArmySelectUIScene = new Phaser.Class({
 					type: "save config",
 					subtype: "army",
 					player_number: gameFunctions.params.player_number,
-					value: event.target.value,
+					value: target.value,
 					message: "set army for player "+gameFunctions.params.player_number
 				}				
 				connFunctions.messageServer(data)

@@ -47,6 +47,11 @@ SELECTION
 BUGS
 /////////////////////////////////////////
 
+-FIXED -Army selection screen doesn't trigger properly on firefox, selections are one click behind
+    -It's down to what firefox considers the target of the event. When an option is selected the target is the option itself, 
+    not the parent selection element. In Chrome and IE, a click on the option is still counted as a click on the select element 
+
+
 -BUG -When unit can't move over a space they're not allowed to go, the ghost still generate there and the "allowed" sound plays.
 
 -BUG -Desyncs occur if the window isn't visible.
@@ -66,6 +71,8 @@ BUGS
 -BUG -Bug trying to save multiple times a the same time for the same room. Consider having on the room creator be able to save things.
     -Caused by moving from a "current player" to "current side" check when saving
     -Would need to check if this is the "first player" of a side, so only saves once
+
+
 
 /////////////////////////////////////////
 THINGS TO DO (EVENTUALLY)
