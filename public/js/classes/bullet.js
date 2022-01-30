@@ -162,6 +162,10 @@ const bullet = class {
 		
 		this.sprite.destroy();
 		GameScene.active_actions--;
+
+		if(GameScene.active_actions === 0){
+			connFunctions.sendReadyUp("GameUIScene");
+		}		
 		// if(this.delete === true){
 		// 	console.log("BULLET ALREADY DEAD!")
 		// }

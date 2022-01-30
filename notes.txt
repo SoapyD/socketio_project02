@@ -29,6 +29,24 @@ SETUP
 -Set a number of default armies and use author name to check for armies created by that user
 
 
+/////////////////////////////////////////
+READY UP
+/////////////////////////////////////////
+
+-BUG -When playing on two instances (one chrome, one firefox), firefox ends up being slow and stuttering to the point where the 
+game breaks and some units are stil considered as being active
+    -P1 = chrome, P2 = firefox. P1 sets up movement and triggers it. The movement plays out fine for P1 but P2 slowly plays the
+    movement, then something happens that causes the units to leave "ghosts" in their movement tracks before the stop moving.
+    -The above units don't finish their movement and are still counted as "moving" and count towards the "active actions" count
+    -GameUIScene action timer check -> GameUIScene.runAdvanceMode -> GameUIScene.advanceMode -> GameUIScene.selectMode
+    -I think the bug is being caused by one player running action timer slightly faster than everyone else, just running select
+    mode before things finish for other players.
+
+-Realised that "ready up" was being automatically set per user but should be setting when the setup actions have been completed
+-Added the check to moving, fighting and shooting, which looks to have resolved the issue
+
+-Need to hide the "ready up" for players not in the current side
+-Need to skip running "charge" and showing and running "fight" if there isn't any units that can do either
 
 
 /////////////////////////////////////////
@@ -43,6 +61,8 @@ SELECTION
         -This is because there's only one instance of path finding which gets reset if more than one function is run
 
 
+
+
 /////////////////////////////////////////
 BUGS
 /////////////////////////////////////////
@@ -50,7 +70,6 @@ BUGS
 -FIXED -Army selection screen doesn't trigger properly on firefox, selections are one click behind
     -It's down to what firefox considers the target of the event. When an option is selected the target is the option itself, 
     not the parent selection element. In Chrome and IE, a click on the option is still counted as a click on the select element 
-
 
 -BUG -When unit can't move over a space they're not allowed to go, the ghost still generate there and the "allowed" sound plays.
 

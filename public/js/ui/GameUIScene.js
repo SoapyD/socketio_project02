@@ -85,7 +85,8 @@ var GameUIScene = new Phaser.Class({
 
 				break;
 		}
-		let all_ready = connFunctions.checkReadyUp();
+		let check_side_only = false;
+		let all_ready = connFunctions.checkReadyUp(check_side_only);
 		if(GameUIScene.mode_check_timer > 0 && all_ready === true){
 			GameUIScene.mode_check_timer--;
 		}
@@ -256,7 +257,7 @@ GameUIScene.advanceMode = () => {
 			activated = GameUIScene.activateMovement();
 
 			if(activated === true){
-				connFunctions.sendReadyUp("GameUIScene");
+				// connFunctions.sendReadyUp("GameUIScene");
 				GameScene.resetTempSprites();
 				gameFunctions.btn_sprite[0].hideButton()
 				GameUIScene.mode_check_state = 1;
@@ -283,7 +284,7 @@ GameUIScene.advanceMode = () => {
 
 			gameFunctions.btn_sprite[0].hideButton()
 			GameUIScene.mode_check_state = 1;
-			connFunctions.sendReadyUp("GameUIScene");
+			// connFunctions.sendReadyUp("GameUIScene");
 			break;
 			
 		case 4:
@@ -303,7 +304,7 @@ GameUIScene.advanceMode = () => {
 			activated = GameUIScene.activateCharging();
 
 			if(activated === true){
-				connFunctions.sendReadyUp("GameUIScene");
+				// connFunctions.sendReadyUp("GameUIScene");
 				GameScene.resetTempSprites();
 				gameFunctions.btn_sprite[0].hideButton()
 				GameUIScene.mode_check_state = 1;
@@ -328,7 +329,7 @@ GameUIScene.advanceMode = () => {
 			GameUIScene.activateFighting();
 			gameFunctions.btn_sprite[0].hideButton()
 			GameUIScene.mode_check_state = 1;
-			connFunctions.sendReadyUp("GameUIScene");
+			// connFunctions.sendReadyUp("GameUIScene");
 			break
 		case 8:
 			//setup end turn

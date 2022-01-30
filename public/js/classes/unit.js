@@ -1434,25 +1434,37 @@ unselectHandler() {
 						
 						
 						//WHEN THE END OF THE PATH IS REACHED
-						if(this.sprite.x / gameFunctions.tile_size === end_path.x && this.sprite.y / gameFunctions.tile_size === end_path.y){
-							this.path_graphic.clear()
-							this.path = [];
-							this.is_moving = false;
-							GameScene.active_actions--;
-							
-							if(endFunction){
-								switch(endFunction){
-									case "move":
-										this.moved = true;
-										this.combat_check = this.checkCombat();
-										GameScene.sfx["end_path"].play();
-										 
-										break;
-									default:
-								}
-							}
+						try{
+							if(this.sprite.x / gameFunctions.tile_size === end_path.x && this.sprite.y / gameFunctions.tile_size === end_path.y){
+								this.path_graphic.clear()
+								this.path = [];
+								this.is_moving = false;
+								GameScene.active_actions--;
 
-							
+								if(GameScene.active_actions === 0){
+									connFunctions.sendReadyUp("GameUIScene");
+								}
+								
+								if(endFunction){
+									switch(endFunction){
+										case "move":
+											this.moved = true;
+											this.combat_check = this.checkCombat();
+											GameScene.sfx["end_path"].play();
+											 
+											break;
+										default:
+									}
+								}							
+							}
+						}
+						catch (error){
+							// console.log("ERROR FINISHING PATH")
+							// console.log(error)
+							// console.log(end_path)
+							// console.log(this.path)
+							// console.log(this.path.length - 1)
+							// console.log("//////////////////////////////")
 						}
 					}.bind(this)			
 				}
@@ -1955,6 +1967,11 @@ unselectHandler() {
 				}
 			}
 			GameScene.active_actions--;
+
+			if(GameScene.active_actions === 0){
+				connFunctions.sendReadyUp("GameUIScene");
+			}
+
 		})
 		
 		if(this.fight_targets.length > 0){
