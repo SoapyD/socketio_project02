@@ -1381,8 +1381,9 @@ unselectHandler() {
 		
 		if (this.path.length > 1 && this.is_moving === false){
 			
-			// if(this.path.length > 1){
-				GameScene.active_actions++;	
+			GameScene.active_actions++;
+			// if(unit.player === gameFunctions.params.player){
+			// 	GameScene.active_actions++;	
 			// }
 			
 			this.is_moving = true;
@@ -1966,10 +1967,15 @@ unselectHandler() {
 					connFunctions.messageServer(data)
 				}
 			}
-			GameScene.active_actions--;
 
+			// if(unit.player === gameFunctions.params.player){
+			// 	GameScene.active_actions--;	
+			// 	connFunctions.sendReadyUp("GameUIScene");
+			// }				
+
+			GameScene.active_actions--;	
 			if(GameScene.active_actions === 0){
-				connFunctions.sendReadyUp("GameUIScene");
+				connFunctions.sendReadyUp("GameUIScene");			
 			}
 
 		})

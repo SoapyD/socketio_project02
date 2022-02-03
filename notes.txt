@@ -48,6 +48,11 @@ game breaks and some units are stil considered as being active
 -Need to hide the "ready up" for players not in the current side
 -Need to skip running "charge" and showing and running "fight" if there isn't any units that can do either
 
+-changed things so the actions case statement is being checked in the update so it's easier to handle "ready up" functions
+
+-move works
+-shoot works
+-fight doesn't work yet
 
 /////////////////////////////////////////
 SELECTION
@@ -70,6 +75,8 @@ BUGS
 -FIXED -Army selection screen doesn't trigger properly on firefox, selections are one click behind
     -It's down to what firefox considers the target of the event. When an option is selected the target is the option itself, 
     not the parent selection element. In Chrome and IE, a click on the option is still counted as a click on the select element 
+
+-BUG -Selected a newly built army but only the first test army loaded
 
 -BUG -When unit can't move over a space they're not allowed to go, the ghost still generate there and the "allowed" sound plays.
 

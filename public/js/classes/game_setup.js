@@ -493,7 +493,7 @@ const game_setup = class {
 				// ██      ██      ██         ██          ██      ██      ██ ██      ██  ██  
 				// ███████ ███████ ██         ██           ██████ ███████ ██  ██████ ██   ██ 
 
-				if(this.scene_container.left_click === true && GameUIScene.mode_check_state === 0){
+				if(this.scene_container.left_click === true){ // && GameUIScene.mode_check_state === 0){
 
 					switch(gameFunctions.mode) {
 						case "move":
@@ -607,7 +607,7 @@ const game_setup = class {
 				// ██   ██ ██ ██    ██ ██   ██    ██          ██      ██      ██ ██      ██  ██  
 				// ██   ██ ██  ██████  ██   ██    ██           ██████ ███████ ██  ██████ ██   ██ 			
 				
-				if(this.scene_container.right_click === true && GameUIScene.mode_check_state === 0){
+				if(this.scene_container.right_click === true) { // && GameUIScene.mode_check_state === 0){
 					
 					this.scene_container.sfx['clear'].play();
 					switch(gameFunctions.mode) {

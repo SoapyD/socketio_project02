@@ -57,11 +57,15 @@ var GameUIScene = new Phaser.Class({
     update: async function (time, delta)
     {
 
+		/*
  		//  █████   ██████ ████████ ██  ██████  ███    ██       ████████ ██ ███    ███ ███████ ██████  
 		// ██   ██ ██         ██    ██ ██    ██ ████   ██          ██    ██ ████  ████ ██      ██   ██ 
 		// ███████ ██         ██    ██ ██    ██ ██ ██  ██ █████    ██    ██ ██ ████ ██ █████   ██████  
 		// ██   ██ ██         ██    ██ ██    ██ ██  ██ ██          ██    ██ ██  ██  ██ ██      ██   ██ 
 		// ██   ██  ██████    ██    ██  ██████  ██   ████          ██    ██ ██      ██ ███████ ██   ██ 
+
+		let check_side_only = false;
+		let all_ready = connFunctions.checkReadyUp(check_side_only);
 
 		switch(GameUIScene.mode_check_state){
 			case 2:
@@ -70,7 +74,7 @@ var GameUIScene = new Phaser.Class({
 				}
 				break;
 			case 3:
-				if(GameScene.active_actions === 0){
+				if(GameScene.active_actions === 0 && all_ready === true){
 					
 					GameUIScene.runAdvanceMode()
 					GameUIScene.mode_check_state = 0;
@@ -85,12 +89,13 @@ var GameUIScene = new Phaser.Class({
 
 				break;
 		}
-		let check_side_only = false;
-		let all_ready = connFunctions.checkReadyUp(check_side_only);
+
 		if(GameUIScene.mode_check_timer > 0 && all_ready === true){
 			GameUIScene.mode_check_timer--;
 		}
-		
+		*/
+
+		GameUIScene.advanceMode();
 
     }
 });
@@ -116,7 +121,7 @@ GameUIScene.loadSingleButton = (scene) => {
 		height: 50,
 		width: 250,
 		label:  "+",
-		clickAction: GameUIScene.advanceMode,
+		clickAction: GameUIScene.readyAdvanceMode,
 		callbackParams: callbackParams,
 		array: gameFunctions.btn_sprite
 	}
@@ -128,7 +133,7 @@ GameUIScene.loadSingleButton = (scene) => {
 	}
 	else{
 		GameUIScene.checkButtonVisability();
-		GameUIScene.advanceMode(); //NEEDED TO SHOW THE RIGHT MENU AFTER A RELOAD		
+		// GameUIScene.advanceMode(); //NEEDED TO SHOW THE RIGHT MENU AFTER A RELOAD		
 	}
 	// GameUIScene.advanceMode();	
 }
@@ -221,7 +226,13 @@ GameUIScene.runSelectMode = (options) => {
 // ██ ████ ██ ██    ██ ██   ██ █████   █████ ███████ ███████ ██ ██  ██ ██   ██ ██      █████   ██████  
 // ██  ██  ██ ██    ██ ██   ██ ██            ██   ██ ██   ██ ██  ██ ██ ██   ██ ██      ██      ██   ██ 
 // ██      ██  ██████  ██████  ███████       ██   ██ ██   ██ ██   ████ ██████  ███████ ███████ ██   ██ 
-                                                                                                    
+
+GameUIScene.resetReady = () => {
+	gameFunctions.params.forces.forEach((force) => {
+		force.ready = false;
+	})	
+}
+
 GameUIScene.runAdvanceMode = () => {
 	gameFunctions.mode_state++;
 	if(gameFunctions.mode_state > gameFunctions.mode_state_max){
@@ -236,8 +247,15 @@ GameUIScene.runAdvanceMode = () => {
 	GameUIScene.advanceMode()	
 }
 
+GameUIScene.readyAdvanceMode = () => {
+	gameFunctions.btn_sprite[0].hideButton();
+	connFunctions.sendReadyUp("GameUIScene");
+}
+
 GameUIScene.advanceMode = () => {
 	let options = {}
+	let check_side_only = false;
+	let all_ready = false;	
 	// let btn;
 	let activated = false;
 	switch(gameFunctions.mode_state){
@@ -249,9 +267,29 @@ GameUIScene.advanceMode = () => {
 			if(gameFunctions.params.player_side === gameFunctions.current_side){
 				gameFunctions.btn_sprite[0].showButton();				
 			}			
+			// GameUIScene.runAdvanceMode();
+			
+			// 
+			if(gameFunctions.params.player_side !== gameFunctions.current_side){
+				connFunctions.sendReadyUp("GameUIScene");			
+			}	
+			
 			gameFunctions.mode_state++;
 			break;
+
+		// WAIT FOR ALL PLAYERS TO "READY UP" THEIR ACTIONS
+
 		case 1:
+			// WAIT FOR ALL PLAYERS TO READY UP
+
+			all_ready = connFunctions.checkReadyUp(check_side_only);
+			if(all_ready === true){
+				gameFunctions.mode_state++;
+				GameUIScene.resetReady();
+			}
+			break;
+		
+		case 2:
 			//activate movement
 			GameScene.game_setup.sfxHandler("button");
 			activated = GameUIScene.activateMovement();
@@ -260,12 +298,23 @@ GameUIScene.advanceMode = () => {
 				// connFunctions.sendReadyUp("GameUIScene");
 				GameScene.resetTempSprites();
 				gameFunctions.btn_sprite[0].hideButton()
-				GameUIScene.mode_check_state = 1;
+				// GameUIScene.mode_check_state = 1;
 				// mode_triggered = true;
+				gameFunctions.mode_state++;
 			}
 			break;
-			
-		case 2:
+		
+		case 3:
+			// WAIT FOR ALL PLAYERS TO READY UP
+
+			all_ready = connFunctions.checkReadyUp(check_side_only);
+			if(all_ready === true){
+				gameFunctions.mode_state++;
+				GameUIScene.resetReady();
+			}
+			break;
+
+		case 4:
 			//setup shoot
 			options.mode = "shoot"
 			GameUIScene.selectMode(options);
@@ -275,19 +324,44 @@ GameUIScene.advanceMode = () => {
 			}		
 			GameUIScene.checkAllCombat();
 			connFunctions.saveGame("shoot");
+
+			if(gameFunctions.params.player_side !== gameFunctions.current_side){
+				connFunctions.sendReadyUp("GameUIScene");			
+			}				
 			gameFunctions.mode_state++;
 			break;
-		case 3:
+				
+		case 5:
+			// WAIT FOR ALL PLAYERS TO READY UP
+
+			all_ready = connFunctions.checkReadyUp(check_side_only);
+			if(all_ready === true){
+				gameFunctions.mode_state++;
+				GameUIScene.resetReady();
+			}
+			break;
+
+		case 6:
 			//activate shoot
 			GameScene.game_setup.sfxHandler("button");			
 			GameUIScene.activateShooting();
-
+			
 			gameFunctions.btn_sprite[0].hideButton()
-			GameUIScene.mode_check_state = 1;
+			gameFunctions.mode_state++;
 			// connFunctions.sendReadyUp("GameUIScene");
 			break;
 			
-		case 4:
+		case 7:
+			// WAIT FOR ALL PLAYERS TO READY UP
+
+			all_ready = connFunctions.checkReadyUp(check_side_only);
+			if(all_ready === true){
+				gameFunctions.mode_state++;
+				GameUIScene.resetReady();
+			}
+			break;
+
+		case 8:
 			//setup charge
 			options.mode = "charge"
 			GameUIScene.selectMode(options);
@@ -295,60 +369,128 @@ GameUIScene.advanceMode = () => {
 			if(gameFunctions.params.player_side === gameFunctions.current_side){
 				gameFunctions.btn_sprite[0].showButton();
 			}	
+
+			if(gameFunctions.params.player_side !== gameFunctions.current_side){
+				connFunctions.sendReadyUp("GameUIScene");			
+			}				
 			connFunctions.saveGame("charge");			
 			gameFunctions.mode_state++;
 			break;
-		case 5:
+
+		case 9:
+			// WAIT FOR ALL PLAYERS TO READY UP
+
+			all_ready = connFunctions.checkReadyUp(check_side_only);
+			if(all_ready === true){
+				gameFunctions.mode_state++;
+				GameUIScene.resetReady();
+			}
+			break;
+
+		case 10:
 			//activate charge
 			GameScene.game_setup.sfxHandler("button");			
 			activated = GameUIScene.activateCharging();
-
+			
 			if(activated === true){
 				// connFunctions.sendReadyUp("GameUIScene");
 				GameScene.resetTempSprites();
 				gameFunctions.btn_sprite[0].hideButton()
-				GameUIScene.mode_check_state = 1;
+				gameFunctions.mode_state++;
 			}
 			break;
 			
-		case 6:
-			//setup fight
+		case 11:
+			// WAIT FOR ALL PLAYERS TO READY UP
+
+			all_ready = connFunctions.checkReadyUp(check_side_only);
+			if(all_ready === true){
+				gameFunctions.mode_state++;
+				GameUIScene.resetReady();
+			}
+			break;
+
+		case 12:
+				//setup fight
 			options.mode = "fight"
 			GameUIScene.selectMode(options);
 			gameFunctions.btn_sprite[0].updateText("trigger fight")
 			if(gameFunctions.params.player_side === gameFunctions.current_side){
 				gameFunctions.btn_sprite[0].showButton();				
-			}		
+			}	
+			
+			if(gameFunctions.params.player_side !== gameFunctions.current_side){
+				connFunctions.sendReadyUp("GameUIScene");			
+			}				
 			GameUIScene.checkAllCombat();
 			connFunctions.saveGame("fight");
 			gameFunctions.mode_state++;
 			break;
-		case 7:
+
+		case 13:
+			// WAIT FOR ALL PLAYERS TO READY UP
+
+			all_ready = connFunctions.checkReadyUp(check_side_only);
+			if(all_ready === true){
+				gameFunctions.mode_state++;
+				GameUIScene.resetReady();
+			}
+			break;
+
+		case 14:
 			//activate fight
 			GameScene.game_setup.sfxHandler("button");	
 			GameUIScene.activateFighting();
 			gameFunctions.btn_sprite[0].hideButton()
-			GameUIScene.mode_check_state = 1;
+			gameFunctions.mode_state++;
 			// connFunctions.sendReadyUp("GameUIScene");
 			break
-		case 8:
+
+		case 15:
+			// WAIT FOR ALL PLAYERS TO READY UP
+
+			all_ready = connFunctions.checkReadyUp(check_side_only);
+			if(all_ready === true){
+				gameFunctions.mode_state++;
+				GameUIScene.resetReady();
+			}
+			break;
+
+		case 16:
 			//setup end turn
 			options.mode = "end turn"
 			GameUIScene.selectMode(options);
 			gameFunctions.btn_sprite[0].updateText("end turn")
 			if(gameFunctions.params.player_side === gameFunctions.current_side){
 				gameFunctions.btn_sprite[0].showButton();				
-			}		
+			}	
+			
+			if(gameFunctions.params.player_side !== gameFunctions.current_side){
+				connFunctions.sendReadyUp("GameUIScene");			
+			}				
 			GameUIScene.checkAllCombat();
 			connFunctions.saveGame("end turn");
 			gameFunctions.mode_state++;
 			break;
-		case 9:
+
+		case 17:
+			// WAIT FOR ALL PLAYERS TO READY UP
+
+			all_ready = connFunctions.checkReadyUp(check_side_only);
+			if(all_ready === true){
+				gameFunctions.mode_state++;
+				GameUIScene.resetReady();
+			}
+			break;
+
+		case 18:
 			//activate end turn
 			GameScene.game_setup.sfxHandler("end_turn")
 			connFunctions.sendReadyUp("GameUIScene");
 			GameUIScene.nextSide();			
 			break;
+
+
 	}
 }
 
@@ -644,10 +786,10 @@ GameUIScene.advanceSide = () => {
 		start_check = true;
 	}
 	if(start_check === false){
-		if(gameFunctions.params.player_side === gameFunctions.current_side){
+		// if(gameFunctions.params.player_side === gameFunctions.current_side){
 			gameFunctions.mode_state = -1
 			GameUIScene.runAdvanceMode();
-		}
+		// }
 
 		gameFunctions.params.forces.forEach((force) => {
 			force.ready = false;
