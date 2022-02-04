@@ -279,7 +279,7 @@ exports.getArmies = (options) => {
         params = {
             _id: force.army
         }
-        promises.push(exports.getArmy())
+        promises.push(exports.getArmy(params))
     })
 
     return Promise.all(promises)

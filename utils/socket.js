@@ -439,7 +439,8 @@ exports.updateRoom = async(network, data) => {
 				let return_data;
 				
 				switch(data.type){
-					case "ready force":
+						/*
+						case "ready force":
 						room.forces[data.player_number].ready = true;
 						room.markModified('forces');	
 						let updated_room = await queriesUtil.saveRoom(room)
@@ -474,6 +475,24 @@ exports.updateRoom = async(network, data) => {
 						}
 
 					break;
+					*/
+					case "end turn":
+						//RESET ALL ROOMS BACK TO "UNREADY"
+						room.forces.forEach((force) => {
+							force.ready = false;
+						})
+						room.markModified('forces');	
+						room = await queriesUtil.saveRoom(room)							
+
+						return_data = {
+							functionGroup: "GameUIScene",
+							function: "advanceSide",
+							message: "next side"
+						}								
+						network.io.in(data.room_name).emit("message_client", return_data)
+
+					break;
+
 					case 'save room':
 						room = await queriesUtil.updateRoom(room, data)
 												

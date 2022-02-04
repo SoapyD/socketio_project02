@@ -128,6 +128,9 @@ GameUIScene.loadSingleButton = (scene) => {
 	
 	gameFunctions.btn_sprite.push(new button(options))
 
+
+	GameUIScene.resetReady();
+
 	if(gameFunctions.units_preload.length === 0){
 		GameUIScene.advanceSide()
 	}
@@ -233,19 +236,28 @@ GameUIScene.resetReady = () => {
 	})	
 }
 
-GameUIScene.runAdvanceMode = () => {
-	gameFunctions.mode_state++;
-	if(gameFunctions.mode_state > gameFunctions.mode_state_max){
-		gameFunctions.mode_state = 0;
-	}
-	
-	//UNREADY ALL UNITS
+GameUIScene.setOthersReady = () => {
 	gameFunctions.params.forces.forEach((force) => {
-		force.ready = false;
-	})
+		if(gameFunctions.params.player_side !== gameFunctions.current_side){
+			force.ready = true;			
+		}	
 
-	GameUIScene.advanceMode()	
+	})	
 }
+
+// GameUIScene.runAdvanceMode = () => {
+// 	gameFunctions.mode_state++;
+// 	if(gameFunctions.mode_state > gameFunctions.mode_state_max){
+// 		gameFunctions.mode_state = 0;
+// 	}
+	
+// 	//UNREADY ALL UNITS
+// 	gameFunctions.params.forces.forEach((force) => {
+// 		force.ready = false;
+// 	})
+
+// 	GameUIScene.advanceMode()	
+// }
 
 GameUIScene.readyAdvanceMode = () => {
 	gameFunctions.btn_sprite[0].hideButton();
@@ -270,9 +282,10 @@ GameUIScene.advanceMode = () => {
 			// GameUIScene.runAdvanceMode();
 			
 			// 
-			if(gameFunctions.params.player_side !== gameFunctions.current_side){
-				connFunctions.sendReadyUp("GameUIScene");			
-			}	
+			// if(gameFunctions.params.player_side !== gameFunctions.current_side){
+			// 	connFunctions.sendReadyUp("GameUIScene");			
+			// }	
+			GameUIScene.setOthersReady();
 			
 			gameFunctions.mode_state++;
 			break;
@@ -294,12 +307,16 @@ GameUIScene.advanceMode = () => {
 			GameScene.game_setup.sfxHandler("button");
 			activated = GameUIScene.activateMovement();
 
-			if(activated === true){
+			if(activated !== 0){
 				// connFunctions.sendReadyUp("GameUIScene");
 				GameScene.resetTempSprites();
 				gameFunctions.btn_sprite[0].hideButton()
 				// GameUIScene.mode_check_state = 1;
 				// mode_triggered = true;
+				if(activated === -1){
+					connFunctions.sendReadyUp("GameUIScene");	
+				}
+
 				gameFunctions.mode_state++;
 			}
 			break;
@@ -314,6 +331,7 @@ GameUIScene.advanceMode = () => {
 			}
 			break;
 
+			
 		case 4:
 			//setup shoot
 			options.mode = "shoot"
@@ -325,9 +343,10 @@ GameUIScene.advanceMode = () => {
 			GameUIScene.checkAllCombat();
 			connFunctions.saveGame("shoot");
 
-			if(gameFunctions.params.player_side !== gameFunctions.current_side){
-				connFunctions.sendReadyUp("GameUIScene");			
-			}				
+			// if(gameFunctions.params.player_side !== gameFunctions.current_side){
+			// 	connFunctions.sendReadyUp("GameUIScene");			
+			// }				
+			GameUIScene.setOthersReady();
 			gameFunctions.mode_state++;
 			break;
 				
@@ -344,11 +363,17 @@ GameUIScene.advanceMode = () => {
 		case 6:
 			//activate shoot
 			GameScene.game_setup.sfxHandler("button");			
-			GameUIScene.activateShooting();
+			activated = GameUIScene.activateShooting();
 			
-			gameFunctions.btn_sprite[0].hideButton()
-			gameFunctions.mode_state++;
-			// connFunctions.sendReadyUp("GameUIScene");
+			if(activated !== 0){
+				gameFunctions.btn_sprite[0].hideButton()
+				gameFunctions.mode_state++;
+				// connFunctions.sendReadyUp("GameUIScene");
+				if(activated === -1){
+					connFunctions.sendReadyUp("GameUIScene");	
+				}				
+			}
+
 			break;
 			
 		case 7:
@@ -370,9 +395,10 @@ GameUIScene.advanceMode = () => {
 				gameFunctions.btn_sprite[0].showButton();
 			}	
 
-			if(gameFunctions.params.player_side !== gameFunctions.current_side){
-				connFunctions.sendReadyUp("GameUIScene");			
-			}				
+			// if(gameFunctions.params.player_side !== gameFunctions.current_side){
+			// 	connFunctions.sendReadyUp("GameUIScene");			
+			// }		
+			GameUIScene.setOthersReady();		
 			connFunctions.saveGame("charge");			
 			gameFunctions.mode_state++;
 			break;
@@ -392,10 +418,15 @@ GameUIScene.advanceMode = () => {
 			GameScene.game_setup.sfxHandler("button");			
 			activated = GameUIScene.activateCharging();
 			
-			if(activated === true){
+			if(activated !== 0){
 				// connFunctions.sendReadyUp("GameUIScene");
 				GameScene.resetTempSprites();
 				gameFunctions.btn_sprite[0].hideButton()
+
+				if(activated === -1){
+					connFunctions.sendReadyUp("GameUIScene");	
+				}
+				
 				gameFunctions.mode_state++;
 			}
 			break;
@@ -419,9 +450,10 @@ GameUIScene.advanceMode = () => {
 				gameFunctions.btn_sprite[0].showButton();				
 			}	
 			
-			if(gameFunctions.params.player_side !== gameFunctions.current_side){
-				connFunctions.sendReadyUp("GameUIScene");			
-			}				
+			// if(gameFunctions.params.player_side !== gameFunctions.current_side){
+			// 	connFunctions.sendReadyUp("GameUIScene");			
+			// }	
+			GameUIScene.setOthersReady();			
 			GameUIScene.checkAllCombat();
 			connFunctions.saveGame("fight");
 			gameFunctions.mode_state++;
@@ -440,10 +472,20 @@ GameUIScene.advanceMode = () => {
 		case 14:
 			//activate fight
 			GameScene.game_setup.sfxHandler("button");	
-			GameUIScene.activateFighting();
-			gameFunctions.btn_sprite[0].hideButton()
-			gameFunctions.mode_state++;
-			// connFunctions.sendReadyUp("GameUIScene");
+			
+			activated = GameUIScene.activateFighting();
+
+			if(activated !== 0){
+				gameFunctions.btn_sprite[0].hideButton()
+
+				// if(activated === -1){
+				// 	connFunctions.sendReadyUp("GameUIScene");	
+				// }		
+				GameUIScene.setOthersReady();		
+				gameFunctions.mode_state++;
+				// connFunctions.sendReadyUp("GameUIScene");
+			}
+
 			break
 
 		case 15:
@@ -486,11 +528,35 @@ GameUIScene.advanceMode = () => {
 		case 18:
 			//activate end turn
 			GameScene.game_setup.sfxHandler("end_turn")
+			// connFunctions.sendReadyUp("GameUIScene");
 			connFunctions.sendReadyUp("GameUIScene");
-			GameUIScene.nextSide();			
+
+			GameUIScene.nextSide();
+			gameFunctions.mode_state++;			
 			break;
 
+		case 19:
+			//waiting for end_turn to be sent back
 
+
+			all_ready = connFunctions.checkReadyUp(check_side_only);
+			if(all_ready === true){
+				gameFunctions.mode_state = 0;
+
+				GameUIScene.setAllWaitingHUD();
+				GameUIScene.resetReady();
+
+				// gameFunctions.params.forces.forEach((force) => {
+				// 	if(gameFunctions.params.player_side === gameFunctions.current_side){
+				// 		force.ready = false;
+				// 	}
+				// })	
+
+			}
+
+			break;
+
+			/**/
 	}
 }
 
@@ -512,39 +578,38 @@ GameUIScene.activateMovement = () => {
 		}
 	})		
 	
-	let activated = false;
+	let activated = 0;
 	if(cohesion_check === true){
+		activated = -1;
 		gameFunctions.units.forEach((unit) => {
-			if(unit.path.length > 0 && unit.player === gameFunctions.params.player_number){
+			if(unit.path.length > 0){
 				//unit.path.length > 0 &&
-				
-				if(GameScene.online === false){
-					unit.move();
-				}else{
-					let data = {
-						functionGroup: "socketFunctions",  
-						function: "messageAll",
-						room_name: gameFunctions.params.room_name,
-						returnFunctionGroup: "connFunctions",
-						returnFunction: "runUnitFunction",
-						returnParameters: {
-							id: unit.id, 
-							path: unit.path,
-							function: "move"
-						},
-						message: "move units"
+				if(unit.player === gameFunctions.params.player_number){
+					if(GameScene.online === false){
+						unit.move();
+					}else{
+						let data = {
+							functionGroup: "socketFunctions",  
+							function: "messageAll",
+							room_name: gameFunctions.params.room_name,
+							returnFunctionGroup: "connFunctions",
+							returnFunction: "runUnitFunction",
+							returnParameters: {
+								id: unit.id, 
+								path: unit.path,
+								function: "move"
+							},
+							message: "move units"
+						}
+	
+						connFunctions.messageServer(data)
 					}
-
-					connFunctions.messageServer(data)
 				}
-				
-				// if(unit.path.length > 1){
-				// 	GameScene.active_actions++;	
-				// }
-					
+
+				activated = 1;
 			}
 		})
-		activated = true;
+		
 	}else{
 		let options = {
 			scene: GameScene.scene,
@@ -563,34 +628,41 @@ GameUIScene.activateMovement = () => {
 }
 
 GameUIScene.activateShooting = () => {
+
+	let activated = -1;
 	gameFunctions.units.forEach((unit) => {
 		
 		if(GameScene.online === false){
 			unit.shoot();
 		}else{
 
-			if(unit.targets.length > 0 && unit.player === gameFunctions.params.player_number){
-				let data = {
-					functionGroup: "socketFunctions",  
-					function: "messageAll",
-					room_name: gameFunctions.params.room_name,
-					returnFunctionGroup: "connFunctions",
-					returnFunction: "runUnitFunction",
-					returnParameters: {
-						id: unit.id, 
-						targets: unit.targets,
-						function: "shoot"
-					},
-					message: "shoot units"
+			if(unit.targets.length > 0){
+				if(unit.player === gameFunctions.params.player_number){
+					let data = {
+						functionGroup: "socketFunctions",  
+						function: "messageAll",
+						room_name: gameFunctions.params.room_name,
+						returnFunctionGroup: "connFunctions",
+						returnFunction: "runUnitFunction",
+						returnParameters: {
+							id: unit.id, 
+							targets: unit.targets,
+							function: "shoot"
+						},
+						message: "shoot units"
+					}
+	
+					// console.log(data)
+					connFunctions.messageServer(data)
 				}
-
-				// console.log(data)
-				connFunctions.messageServer(data)			
+				
+				activated = 1
 			}
 			
 		}
-
 	})	
+
+	return activated;
 }
 
 
@@ -608,47 +680,50 @@ GameUIScene.activateCharging = () => {
 		}
 	})
 	
-	let activated = true;
+	let activated = 0;
 	if(cohesion_check === true){ // && in_combat === true){
+		activated = -1;
+
 		gameFunctions.units.forEach((unit) => {
 			
-			if(unit.path.length > 0 && unit.player === gameFunctions.params.player_number){
-
-				if(GameScene.online === false){
-					
-					if(unit.path.length > 0){
-						unit.move("checkCombat");
-					}
-					
-				}else{
-				
-					if(unit.path.length > 0){
-
-						let data = {
-							functionGroup: "socketFunctions",  
-							function: "messageAll",
-							room_name: gameFunctions.params.room_name,
-							returnFunctionGroup: "connFunctions",
-							returnFunction: "runUnitFunction",
-							returnParameters: {
-								id: unit.id, 
-								path: unit.path,
-								function: "move",
-								function_parameter: "checkCombat" 
-							},
-							message: "charge units"
+			if(unit.path.length > 0){
+				if(unit.player === gameFunctions.params.player_number){
+					if(GameScene.online === false){
+						
+						if(unit.path.length > 0){
+							unit.move("checkCombat");
 						}
-
-						connFunctions.messageServer(data)
-
+						
+					}else{
+					
+						if(unit.path.length > 0){
+	
+							let data = {
+								functionGroup: "socketFunctions",  
+								function: "messageAll",
+								room_name: gameFunctions.params.room_name,
+								returnFunctionGroup: "connFunctions",
+								returnFunction: "runUnitFunction",
+								returnParameters: {
+									id: unit.id, 
+									path: unit.path,
+									function: "move",
+									function_parameter: "checkCombat" 
+								},
+								message: "charge units"
+							}
+	
+							connFunctions.messageServer(data)
+	
+						}
 					}
 				}
 				
 				// if(unit.path.length > 1){
 				// 	GameScene.active_actions++;	
 				// }
+				activated = 1;
 			}
-
 		})
 		
 	}else{
@@ -661,7 +736,6 @@ GameUIScene.activateCharging = () => {
 			text: "Cannot charge unless all unit coherency is met."
 		}
 		new popup(options)
-		activated = false;
 	}
 	
 	//TRIGGER COMBAT WHEN UNITS HAVE MOVED
@@ -671,38 +745,46 @@ GameUIScene.activateCharging = () => {
 
 
 GameUIScene.activateFighting = () => {
+
+
+	let activated = -1;
 	
 	gameFunctions.units.forEach((unit) => {
 
-		if(unit.fight_targets.length > 0 && unit.player === gameFunctions.params.player_number){
-
-			if(GameScene.online === false){
-
-				unit.fight()
-				
-			}else{
-
-				let data = {
-					functionGroup: "socketFunctions",  
-					function: "messageAll",
-					room_name: gameFunctions.params.room_name,
-					returnFunctionGroup: "connFunctions",
-					returnFunction: "runUnitFunction",
-					returnParameters: {
-						id: unit.id, 
-						fight_targets: unit.fight_targets,
-						function: "fight"
-					},
-					message: "fight units"
+		if(unit.fight_targets.length > 0){
+			if(unit.player === gameFunctions.params.player_number){
+				if(GameScene.online === false){
+	
+					unit.fight()
+					
+				}else{
+	
+					let data = {
+						functionGroup: "socketFunctions",  
+						function: "messageAll",
+						room_name: gameFunctions.params.room_name,
+						returnFunctionGroup: "connFunctions",
+						returnFunction: "runUnitFunction",
+						returnParameters: {
+							id: unit.id, 
+							fight_targets: unit.fight_targets,
+							function: "fight"
+						},
+						message: "fight units"
+					}
+	
+					connFunctions.messageServer(data)
 				}
-
-				connFunctions.messageServer(data)
 			}
+
+			activated = 1;
 		}
 
 	})
 	
 	//TRIGGER COMBAT WHEN UNITS HAVE MOVED
+
+	return activated
 }
 
 
@@ -726,23 +808,25 @@ GameUIScene.nextSide = () => {
 	// GameScene.sfx["end_turn"].play();
 	GameScene.game_setup.sfxHandler("end_turn")
 	
-	if(GameScene.online === false){
-		GameUIScene.advanceSide()
-	}else{
+	GameUIScene.advanceSide()
 
-		let data = {
-			functionGroup: "socketFunctions",  
-			function: "updateRoom",
-			type: "ready force",
-			room_name: gameFunctions.params.room_name,
-			player_number: gameFunctions.params.player_number,
-			player_side: gameFunctions.params.player_side
-			// params: {
-			// }
-		}
+	// if(GameScene.online === false){
+	// 	GameUIScene.advanceSide()
+	// }else{
 
-		connFunctions.messageServer(data)		
-	}
+	// 	let data = {
+	// 		functionGroup: "socketFunctions",  
+	// 		function: "updateRoom",
+	// 		type: "end turn",
+	// 		room_name: gameFunctions.params.room_name,
+	// 		player_number: gameFunctions.params.player_number,
+	// 		player_side: gameFunctions.params.player_side
+	// 		// params: {
+	// 		// }
+	// 	}
+
+	// 	connFunctions.messageServer(data)		
+	// }
 }
 
 GameUIScene.advanceSide = () => {
@@ -781,22 +865,22 @@ GameUIScene.advanceSide = () => {
 	})
 
 
-	let start_check = false;
-	if(gameFunctions.current_side === -1){
-		start_check = true;
-	}
-	if(start_check === false){
+	// let start_check = false;
+	// if(gameFunctions.current_side === -1){
+	// 	start_check = true;
+	// }
+	// if(start_check === false){
 		// if(gameFunctions.params.player_side === gameFunctions.current_side){
-			gameFunctions.mode_state = -1
-			GameUIScene.runAdvanceMode();
+			// gameFunctions.mode_state = -1
+			// GameUIScene.runAdvanceMode();
 		// }
 
-		gameFunctions.params.forces.forEach((force) => {
-			force.ready = false;
-		})
-		GameUIScene.setAllWaitingHUD();
+		// gameFunctions.params.forces.forEach((force) => {
+		// 	force.ready = false;
+		// })
+		// GameUIScene.setAllWaitingHUD();
 
-	}
+	// }
 
 	GameUIScene.checkButtonVisability();
 }

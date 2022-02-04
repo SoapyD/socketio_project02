@@ -7,7 +7,7 @@ gameFunctions.mode = '';
 // gameFunctions.current_player = -1;
 gameFunctions.current_side = -1;
 gameFunctions.mode_state = 0;
-gameFunctions.mode_state_max = 9;
+// gameFunctions.mode_state_max = 9;
 gameFunctions.tile_size = 32;
 
 gameFunctions.params = {

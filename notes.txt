@@ -41,21 +41,23 @@ game breaks and some units are stil considered as being active
     -GameUIScene action timer check -> GameUIScene.runAdvanceMode -> GameUIScene.advanceMode -> GameUIScene.selectMode
     -I think the bug is being caused by one player running action timer slightly faster than everyone else, just running select
     mode before things finish for other players.
+    -Realised that "ready up" was being automatically set per user but should be setting when the setup actions have been completed
+    -Added the check to moving, fighting and shooting, which looks to have resolved the issue
 
--Realised that "ready up" was being automatically set per user but should be setting when the setup actions have been completed
--Added the check to moving, fighting and shooting, which looks to have resolved the issue
 
 -Need to hide the "ready up" for players not in the current side
 -Need to skip running "charge" and showing and running "fight" if there isn't any units that can do either
 
--changed things so the actions case statement is being checked in the update so it's easier to handle "ready up" functions
+-DONE -changed things so the actions case statement is being checked in the update so it's easier to handle "ready up" functions
 
--move works
--shoot works
--fight doesn't work yet
+-DONE -move works
+-DONE -shoot works
+-DONE -charge works
+-DONE -fight works
+-End button doesn't work
 
 /////////////////////////////////////////
-SELECTION
+SELECTION - PAUSED
 /////////////////////////////////////////
 
 -Create a means of selecting multiple units at the same times
@@ -71,12 +73,6 @@ SELECTION
 /////////////////////////////////////////
 BUGS
 /////////////////////////////////////////
-
--FIXED -Army selection screen doesn't trigger properly on firefox, selections are one click behind
-    -It's down to what firefox considers the target of the event. When an option is selected the target is the option itself, 
-    not the parent selection element. In Chrome and IE, a click on the option is still counted as a click on the select element 
-
--BUG -Selected a newly built army but only the first test army loaded
 
 -BUG -When unit can't move over a space they're not allowed to go, the ghost still generate there and the "allowed" sound plays.
 
@@ -98,6 +94,7 @@ BUGS
     -Caused by moving from a "current player" to "current side" check when saving
     -Would need to check if this is the "first player" of a side, so only saves once
 
+-BUG -Clicking on a unit in the fight phase when they're not in combat gets rid of their fight radius for some reason
 
 
 /////////////////////////////////////////
@@ -128,13 +125,43 @@ THINGS TO DO (EVENTUALLY)
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
-DONE
+######  ####### #     # ####### 
+#     # #     # ##    # #       
+#     # #     # # #   # #       
+#     # #     # #  #  # #####   
+#     # #     # #   # # #       
+#     # #     # #    ## #       
+######  ####### #     # ####### 
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+
+-FIXED -Army selection screen doesn't trigger properly on firefox, selections are one click behind
+    -It's down to what firefox considers the target of the event. When an option is selected the target is the option itself, 
+    not the parent selection element. In Chrome and IE, a click on the option is still counted as a click on the select element 
+
+-FIXED -Selected a newly built army but only the first test army loaded
+    -I wasn't passing the selected army ID parameter to the army finder so all saved armies were being returned.
 
 -DONE -Need a HUD item that shows a breakdown of the current unit / weapon as well as the damange chance for a ticket
 
