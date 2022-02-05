@@ -10,7 +10,8 @@ exports.connect = () => {
 	mongoose.connect("mongodb+srv://admin:"+password+"@cluster0.cvy6a.azure.mongodb.net/"+dbname+"?retryWrites=true&w=majority", 
 	{ 
 		useNewUrlParser: true, 
-		useUnifiedTopology: true 
+		useUnifiedTopology: true,
+		retryWrites: true
 	}
 	).then(() => {
 		console.log('Connected to DB!');

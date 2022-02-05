@@ -437,24 +437,33 @@ exports.updateRoom = async(network, data) => {
 		if(room){
 			try{
 				let return_data;
-				
+
+				return_data = {
+					functionGroup: "connFunctions", //data.ui_scene
+					function: "readyUp",
+					message: "ready up",
+					parameters: {
+						player_number: data.player_number
+						//runAdvanceMode
+					}
+				}					
+
 				switch(data.type){
-						/*
-						case "ready force":
+
+					case "ready force":
 						room.forces[data.player_number].ready = true;
 						room.markModified('forces');	
 						let updated_room = await queriesUtil.saveRoom(room)
 
-						// let updated_room = await queriesUtil.findRoom(room.id)
 						let readied = 0;
 						let total_side = 0;
 						updated_room.forces.forEach((force) => {
-							if(force.side === data.player_side){
+							// if(force.side === data.player_side){
 								total_side++;
 								if(force.ready === true){
 									readied++;
 								}
-							}
+							// }
 						})
 						if(readied === total_side){
 							//END THE TURN
@@ -464,18 +473,14 @@ exports.updateRoom = async(network, data) => {
 								force.ready = false;
 							})
 							updated_room.markModified('forces');	
-							updated_room = await queriesUtil.saveRoom(updated_room)							
-
-							return_data = {
-								functionGroup: "GameUIScene",
-								function: "advanceSide",
-								message: "next side"
-							}								
-							network.io.in(data.room_name).emit("message_client", return_data)							
+							updated_room = await queriesUtil.saveRoom(updated_room)	
+							
+							return_data.parameters.options = data.options;						
 						}
 
+						network.io.in(data.room_name).emit("message_client", return_data)
 					break;
-					*/
+					
 					case "end turn":
 						//RESET ALL ROOMS BACK TO "UNREADY"
 						room.forces.forEach((force) => {
@@ -529,7 +534,9 @@ exports.updateRoom = async(network, data) => {
 			}
 			catch(err){
 				console.log("Error trying to update room")
-				console.log(err)			
+				// console.log(err)
+				
+				exports.updateRoom(network, data)
 			}			
 		}
 	}

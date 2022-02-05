@@ -1443,7 +1443,7 @@ unselectHandler() {
 								GameScene.active_actions--;
 
 								if(GameScene.active_actions === 0){
-									connFunctions.sendReadyUp("GameUIScene");
+									GameUIScene.readyAdvanceMode();
 								}
 								
 								if(endFunction){
@@ -1966,16 +1966,11 @@ unselectHandler() {
 						}				
 					connFunctions.messageServer(data)
 				}
-			}
-
-			// if(unit.player === gameFunctions.params.player){
-			// 	GameScene.active_actions--;	
-			// 	connFunctions.sendReadyUp("GameUIScene");
-			// }				
+			}		
 
 			GameScene.active_actions--;	
 			if(GameScene.active_actions === 0){
-				connFunctions.sendReadyUp("GameUIScene");			
+				GameUIScene.readyAdvanceMode();		
 			}
 
 		})

@@ -15,8 +15,27 @@ var GameUIScene = new Phaser.Class({
         { frameWidth: 100, frameHeight: 50, endFrame: 3 });	
 		
 		GameUIScene.scene = this.scene.get('GameUIScene')
-		GameUIScene.text = this.add.text(0, 0, "", { fill: '#00ff00' }).setDepth(20);
-		
+
+	
+
+		let options = {
+			x: 0,
+			y: gameFunctions.config.height,
+			width: 300,
+			height: 100,
+			scene: GameUIScene.scene
+		}
+
+		GameUIScene.debug_console = new debug_console(options);	
+
+		// GameUIScene.text = this.add.text(0, gameFunctions.config.height - height, "", { fill: '#000000' })
+		// .setDepth(120);
+
+		// GameUIScene.text_box = GameUIScene.scene.add.rectangle(
+		// 	(width / 2), gameFunctions.config.height - (height / 2), 
+		// 	width, height, 0xffffff)
+		// .setDepth(100);
+
 		GameUIScene.mode_check_state = 0;
 		GameUIScene.mode_check_timer = 0;
 		// GameUIScene.scene = this.scene.get('GameUIScene')
@@ -57,52 +76,26 @@ var GameUIScene = new Phaser.Class({
     update: async function (time, delta)
     {
 
-		/*
- 		//  █████   ██████ ████████ ██  ██████  ███    ██       ████████ ██ ███    ███ ███████ ██████  
-		// ██   ██ ██         ██    ██ ██    ██ ████   ██          ██    ██ ████  ████ ██      ██   ██ 
-		// ███████ ██         ██    ██ ██    ██ ██ ██  ██ █████    ██    ██ ██ ████ ██ █████   ██████  
-		// ██   ██ ██         ██    ██ ██    ██ ██  ██ ██          ██    ██ ██  ██  ██ ██      ██   ██ 
-		// ██   ██  ██████    ██    ██  ██████  ██   ████          ██    ██ ██      ██ ███████ ██   ██ 
+		let console_text = "";
+		console_text += 'Mode: '+gameFunctions.mode_state+'\r'
+		console_text += 'Actions: '+GameScene.active_actions+'\r\r'
 
-		let check_side_only = false;
-		let all_ready = connFunctions.checkReadyUp(check_side_only);
+		console_text += 'Forces:\r'
+		gameFunctions.params.forces.forEach((force, id) => {
+			console_text += id+') | Side: '+force.side+' | Ready: '+force.ready+'\r'		
+		})
 
-		switch(GameUIScene.mode_check_state){
-			case 2:
-				if(GameUIScene.mode_check_timer === 0){
-					GameUIScene.mode_check_state = 3;
-				}
-				break;
-			case 3:
-				if(GameScene.active_actions === 0 && all_ready === true){
-					
-					GameUIScene.runAdvanceMode()
-					GameUIScene.mode_check_state = 0;
-				}
-				break;				
-			case 1:
-				
-				GameUIScene.mode_check_state = 2;
-				GameUIScene.mode_check_timer = 200;
-				break;
-			default:
+		GameUIScene.debug_console.updateText(console_text)
 
-				break;
-		}
-
-		if(GameUIScene.mode_check_timer > 0 && all_ready === true){
-			GameUIScene.mode_check_timer--;
-		}
-		*/
 
 		GameUIScene.advanceMode();
 
     }
 });
 
-GameUIScene.delay =	async(ms) => {
-	return new Promise(resolve => setTimeout(resolve, ms));
-}	
+// GameUIScene.delay =	async(ms) => {
+// 	return new Promise(resolve => setTimeout(resolve, ms));
+// }	
 
 // ██       ██████   █████  ██████        ██████  ██    ██ ████████ ████████  ██████  ███    ██ ███████ 
 // ██      ██    ██ ██   ██ ██   ██       ██   ██ ██    ██    ██       ██    ██    ██ ████   ██ ██      
@@ -129,16 +122,15 @@ GameUIScene.loadSingleButton = (scene) => {
 	gameFunctions.btn_sprite.push(new button(options))
 
 
-	GameUIScene.resetReady();
+	// GameUIScene.resetReady();
 
 	if(gameFunctions.units_preload.length === 0){
 		GameUIScene.advanceSide()
 	}
 	else{
 		GameUIScene.checkButtonVisability();
-		// GameUIScene.advanceMode(); //NEEDED TO SHOW THE RIGHT MENU AFTER A RELOAD		
 	}
-	// GameUIScene.advanceMode();	
+
 }
 
 
@@ -230,38 +222,34 @@ GameUIScene.runSelectMode = (options) => {
 // ██  ██  ██ ██    ██ ██   ██ ██            ██   ██ ██   ██ ██  ██ ██ ██   ██ ██      ██      ██   ██ 
 // ██      ██  ██████  ██████  ███████       ██   ██ ██   ██ ██   ████ ██████  ███████ ███████ ██   ██ 
 
-GameUIScene.resetReady = () => {
-	gameFunctions.params.forces.forEach((force) => {
-		force.ready = false;
-	})	
-}
-
-GameUIScene.setOthersReady = () => {
-	gameFunctions.params.forces.forEach((force) => {
-		if(gameFunctions.params.player_side !== gameFunctions.current_side){
-			force.ready = true;			
-		}	
-
-	})	
-}
-
-// GameUIScene.runAdvanceMode = () => {
-// 	gameFunctions.mode_state++;
-// 	if(gameFunctions.mode_state > gameFunctions.mode_state_max){
-// 		gameFunctions.mode_state = 0;
-// 	}
-	
-// 	//UNREADY ALL UNITS
+// GameUIScene.resetReady = () => {
 // 	gameFunctions.params.forces.forEach((force) => {
 // 		force.ready = false;
-// 	})
-
-// 	GameUIScene.advanceMode()	
+// 	})	
 // }
+
+// GameUIScene.setOthersReady = () => {
+// 	gameFunctions.params.forces.forEach((force) => {
+// 		if(gameFunctions.params.player_side !== gameFunctions.current_side){
+// 			force.ready = true;			
+// 		}	
+
+// 	})	
+// }
+
+GameUIScene.runAdvanceMode = () => {
+	gameFunctions.mode_state++;
+	if(gameFunctions.mode_state > 19){
+		gameFunctions.mode_state = 0;
+	}
+} 
 
 GameUIScene.readyAdvanceMode = () => {
 	gameFunctions.btn_sprite[0].hideButton();
-	connFunctions.sendReadyUp("GameUIScene");
+	connFunctions.sendReadyUp({
+		completion_function_group: "GameUIScene",
+		completion_function: 'runAdvanceMode'
+	});
 }
 
 GameUIScene.advanceMode = () => {
@@ -271,67 +259,45 @@ GameUIScene.advanceMode = () => {
 	// let btn;
 	let activated = false;
 	switch(gameFunctions.mode_state){
+
 		case 0:
-			//setup movement
 			options.mode = "move"
 			GameUIScene.selectMode(options);
 			gameFunctions.btn_sprite[0].updateText("trigger move")
 			if(gameFunctions.params.player_side === gameFunctions.current_side){
 				gameFunctions.btn_sprite[0].showButton();				
-			}			
-			// GameUIScene.runAdvanceMode();
-			
-			// 
-			// if(gameFunctions.params.player_side !== gameFunctions.current_side){
-			// 	connFunctions.sendReadyUp("GameUIScene");			
-			// }	
-			GameUIScene.setOthersReady();
-			
-			gameFunctions.mode_state++;
+			}
+			else{
+				GameUIScene.readyAdvanceMode();
+			}
+			gameFunctions.mode_state++;	
 			break;
-
-		// WAIT FOR ALL PLAYERS TO "READY UP" THEIR ACTIONS
 
 		case 1:
-			// WAIT FOR ALL PLAYERS TO READY UP
-
-			all_ready = connFunctions.checkReadyUp(check_side_only);
-			if(all_ready === true){
-				gameFunctions.mode_state++;
-				GameUIScene.resetReady();
-			}
+			//WAIT FOR PLAYERS TO READY UP
 			break;
-		
+
 		case 2:
 			//activate movement
 			GameScene.game_setup.sfxHandler("button");
 			activated = GameUIScene.activateMovement();
 
 			if(activated !== 0){
-				// connFunctions.sendReadyUp("GameUIScene");
 				GameScene.resetTempSprites();
 				gameFunctions.btn_sprite[0].hideButton()
-				// GameUIScene.mode_check_state = 1;
-				// mode_triggered = true;
+
 				if(activated === -1){
-					connFunctions.sendReadyUp("GameUIScene");	
+					GameUIScene.readyAdvanceMode();
 				}
 
 				gameFunctions.mode_state++;
 			}
 			break;
-		
-		case 3:
-			// WAIT FOR ALL PLAYERS TO READY UP
 
-			all_ready = connFunctions.checkReadyUp(check_side_only);
-			if(all_ready === true){
-				gameFunctions.mode_state++;
-				GameUIScene.resetReady();
-			}
+		case 3:
+			//WAIT FOR PLAYERS TO READY UP
 			break;
 
-			
 		case 4:
 			//setup shoot
 			options.mode = "shoot"
@@ -339,26 +305,19 @@ GameUIScene.advanceMode = () => {
 			gameFunctions.btn_sprite[0].updateText("trigger shoot")
 			if(gameFunctions.params.player_side === gameFunctions.current_side){
 				gameFunctions.btn_sprite[0].showButton();				
+			}else{
+				GameUIScene.readyAdvanceMode();
 			}		
 			GameUIScene.checkAllCombat();
 			connFunctions.saveGame("shoot");
 
-			// if(gameFunctions.params.player_side !== gameFunctions.current_side){
-			// 	connFunctions.sendReadyUp("GameUIScene");			
-			// }				
-			GameUIScene.setOthersReady();
+			// GameUIScene.setOthersReady();
 			gameFunctions.mode_state++;
 			break;
-				
-		case 5:
-			// WAIT FOR ALL PLAYERS TO READY UP
 
-			all_ready = connFunctions.checkReadyUp(check_side_only);
-			if(all_ready === true){
-				gameFunctions.mode_state++;
-				GameUIScene.resetReady();
-			}
-			break;
+		case 5:
+			//WAIT FOR PLAYERS TO READY UP
+			break;			
 
 		case 6:
 			//activate shoot
@@ -368,23 +327,17 @@ GameUIScene.advanceMode = () => {
 			if(activated !== 0){
 				gameFunctions.btn_sprite[0].hideButton()
 				gameFunctions.mode_state++;
-				// connFunctions.sendReadyUp("GameUIScene");
+
 				if(activated === -1){
-					connFunctions.sendReadyUp("GameUIScene");	
+					GameUIScene.readyAdvanceMode();	
 				}				
 			}
 
 			break;
-			
-		case 7:
-			// WAIT FOR ALL PLAYERS TO READY UP
 
-			all_ready = connFunctions.checkReadyUp(check_side_only);
-			if(all_ready === true){
-				gameFunctions.mode_state++;
-				GameUIScene.resetReady();
-			}
-			break;
+		case 7:
+			//WAIT FOR PLAYERS TO READY UP
+			break;	
 
 		case 8:
 			//setup charge
@@ -393,25 +346,18 @@ GameUIScene.advanceMode = () => {
 			gameFunctions.btn_sprite[0].updateText("trigger charge")
 			if(gameFunctions.params.player_side === gameFunctions.current_side){
 				gameFunctions.btn_sprite[0].showButton();
-			}	
+			}else{
+				GameUIScene.readyAdvanceMode();
+			}		
 
-			// if(gameFunctions.params.player_side !== gameFunctions.current_side){
-			// 	connFunctions.sendReadyUp("GameUIScene");			
-			// }		
-			GameUIScene.setOthersReady();		
+			// GameUIScene.setOthersReady();		
 			connFunctions.saveGame("charge");			
 			gameFunctions.mode_state++;
 			break;
 
 		case 9:
-			// WAIT FOR ALL PLAYERS TO READY UP
-
-			all_ready = connFunctions.checkReadyUp(check_side_only);
-			if(all_ready === true){
-				gameFunctions.mode_state++;
-				GameUIScene.resetReady();
-			}
-			break;
+			//WAIT FOR PLAYERS TO READY UP
+			break;	
 
 		case 10:
 			//activate charge
@@ -419,55 +365,41 @@ GameUIScene.advanceMode = () => {
 			activated = GameUIScene.activateCharging();
 			
 			if(activated !== 0){
-				// connFunctions.sendReadyUp("GameUIScene");
 				GameScene.resetTempSprites();
 				gameFunctions.btn_sprite[0].hideButton()
 
 				if(activated === -1){
-					connFunctions.sendReadyUp("GameUIScene");	
+					GameUIScene.readyAdvanceMode();	
 				}
 				
 				gameFunctions.mode_state++;
 			}
-			break;
-			
-		case 11:
-			// WAIT FOR ALL PLAYERS TO READY UP
+			break;			
 
-			all_ready = connFunctions.checkReadyUp(check_side_only);
-			if(all_ready === true){
-				gameFunctions.mode_state++;
-				GameUIScene.resetReady();
-			}
-			break;
+		case 11:
+			//WAIT FOR PLAYERS TO READY UP
+			break;	
 
 		case 12:
-				//setup fight
+			//setup fight
 			options.mode = "fight"
 			GameUIScene.selectMode(options);
 			gameFunctions.btn_sprite[0].updateText("trigger fight")
 			if(gameFunctions.params.player_side === gameFunctions.current_side){
 				gameFunctions.btn_sprite[0].showButton();				
+			}else{
+				GameUIScene.readyAdvanceMode();
 			}	
 			
-			// if(gameFunctions.params.player_side !== gameFunctions.current_side){
-			// 	connFunctions.sendReadyUp("GameUIScene");			
-			// }	
-			GameUIScene.setOthersReady();			
+			// GameUIScene.setOthersReady();			
 			GameUIScene.checkAllCombat();
 			connFunctions.saveGame("fight");
 			gameFunctions.mode_state++;
 			break;
 
 		case 13:
-			// WAIT FOR ALL PLAYERS TO READY UP
-
-			all_ready = connFunctions.checkReadyUp(check_side_only);
-			if(all_ready === true){
-				gameFunctions.mode_state++;
-				GameUIScene.resetReady();
-			}
-			break;
+			//WAIT FOR PLAYERS TO READY UP
+			break;				
 
 		case 14:
 			//activate fight
@@ -478,24 +410,18 @@ GameUIScene.advanceMode = () => {
 			if(activated !== 0){
 				gameFunctions.btn_sprite[0].hideButton()
 
-				// if(activated === -1){
-				// 	connFunctions.sendReadyUp("GameUIScene");	
-				// }		
-				GameUIScene.setOthersReady();		
+				if(activated === -1){
+					GameUIScene.readyAdvanceMode();
+				}
+
+				// GameUIScene.setOthersReady();		
 				gameFunctions.mode_state++;
-				// connFunctions.sendReadyUp("GameUIScene");
 			}
 
 			break
 
 		case 15:
-			// WAIT FOR ALL PLAYERS TO READY UP
-
-			all_ready = connFunctions.checkReadyUp(check_side_only);
-			if(all_ready === true){
-				gameFunctions.mode_state++;
-				GameUIScene.resetReady();
-			}
+			//WAIT FOR PLAYERS TO READY UP
 			break;
 
 		case 16:
@@ -505,58 +431,32 @@ GameUIScene.advanceMode = () => {
 			gameFunctions.btn_sprite[0].updateText("end turn")
 			if(gameFunctions.params.player_side === gameFunctions.current_side){
 				gameFunctions.btn_sprite[0].showButton();				
-			}	
+			}else{
+				GameUIScene.readyAdvanceMode();
+			}		
 			
-			if(gameFunctions.params.player_side !== gameFunctions.current_side){
-				connFunctions.sendReadyUp("GameUIScene");			
-			}				
 			GameUIScene.checkAllCombat();
 			connFunctions.saveGame("end turn");
 			gameFunctions.mode_state++;
 			break;
 
 		case 17:
-			// WAIT FOR ALL PLAYERS TO READY UP
-
-			all_ready = connFunctions.checkReadyUp(check_side_only);
-			if(all_ready === true){
-				gameFunctions.mode_state++;
-				GameUIScene.resetReady();
-			}
+			//WAIT FOR PLAYERS TO READY UP
 			break;
 
 		case 18:
 			//activate end turn
 			GameScene.game_setup.sfxHandler("end_turn")
-			// connFunctions.sendReadyUp("GameUIScene");
-			connFunctions.sendReadyUp("GameUIScene");
+			GameUIScene.readyAdvanceMode();
 
 			GameUIScene.nextSide();
 			gameFunctions.mode_state++;			
 			break;
 
 		case 19:
-			//waiting for end_turn to be sent back
+			//WAIT FOR PLAYERS TO READY UP
+			break;			
 
-
-			all_ready = connFunctions.checkReadyUp(check_side_only);
-			if(all_ready === true){
-				gameFunctions.mode_state = 0;
-
-				GameUIScene.setAllWaitingHUD();
-				GameUIScene.resetReady();
-
-				// gameFunctions.params.forces.forEach((force) => {
-				// 	if(gameFunctions.params.player_side === gameFunctions.current_side){
-				// 		force.ready = false;
-				// 	}
-				// })	
-
-			}
-
-			break;
-
-			/**/
 	}
 }
 
@@ -863,24 +763,6 @@ GameUIScene.advanceSide = () => {
 		unit.fights = 0;
 		unit.shots = 0;
 	})
-
-
-	// let start_check = false;
-	// if(gameFunctions.current_side === -1){
-	// 	start_check = true;
-	// }
-	// if(start_check === false){
-		// if(gameFunctions.params.player_side === gameFunctions.current_side){
-			// gameFunctions.mode_state = -1
-			// GameUIScene.runAdvanceMode();
-		// }
-
-		// gameFunctions.params.forces.forEach((force) => {
-		// 	force.ready = false;
-		// })
-		// GameUIScene.setAllWaitingHUD();
-
-	// }
 
 	GameUIScene.checkButtonVisability();
 }

@@ -147,8 +147,10 @@ connFunctions.checkMessages = (socket) => {
 			switch(instance_type){
 				case "DEV":
 				case "DEV-ONLINE":			
-					console.log(data.message)
-					console.log(data)
+					if(data){
+						console.log(data.message)
+						console.log(data)
+					}
 					break;
 			}
 			// console.log(data)
@@ -338,42 +340,72 @@ connFunctions.updateRoomInfo = (data) => {
 // ##################################################################################
 // ##################################################################################
 
-connFunctions.sendReadyUp = (ui_scene) => {
-	if(GameScene.online === false){
-		connFunctions.readyUp({parameters: {player_id:gameFunctions.params.player_number}})
-	}else{
-		let data = {
-			functionGroup: "socketFunctions",  
-			function: "messageAll",
-			room_name: gameFunctions.params.room_name,
-			returnFunctionGroup: "connFunctions",
-			returnFunction: "readyUp",
-			returnParameters: {
-				player_id:gameFunctions.params.player_number,
-				ui_scene: ui_scene
-			},
-			message: "ready player "+gameFunctions.params.player_number
-		}
+connFunctions.sendReadyUp = (options) => {
 
-		connFunctions.messageServer(data)		
+	gameFunctions.params.forces[gameFunctions.params.player_number].ready = true;
+
+	let data = {
+		functionGroup: "socketFunctions",  
+		function: "updateRoom", //saveGame
+		message: "ready force",
+		type: "ready force",
+		options: options,
+		room_name: gameFunctions.params.room_name,
+		player_number: gameFunctions.params.player_number, 
+		player_side: gameFunctions.params.player_side,
 	}
+
+	connFunctions.messageServer(data)
+
+	// if(GameScene.online === false){
+	// 	connFunctions.readyUp({parameters: {player_id:gameFunctions.params.player_number}})
+	// }else{
+	// 	let data = {
+	// 		functionGroup: "socketFunctions",  
+	// 		function: "messageAll",
+	// 		room_name: gameFunctions.params.room_name,
+	// 		returnFunctionGroup: "connFunctions",
+	// 		returnFunction: "readyUp",
+	// 		returnParameters: {
+	// 			player_id:gameFunctions.params.player_number,
+	// 			ui_scene: ui_scene
+	// 		},
+	// 		message: "ready player "+gameFunctions.params.player_number
+	// 	}
+
+	// 	connFunctions.messageServer(data)		
+	// }
 }
 
 connFunctions.readyUp = (data) => {
-	gameFunctions.params.forces[data.parameters.player_id].ready = true;
+	gameFunctions.params.forces[data.parameters.player_number].ready = true;
 
-	let scene;
-	switch(data.parameters.ui_scene){
-		case "GameUIScene":
-			scene = GameUIScene
-			break;
-		case "ArmySetupUIScene":
-			scene = ArmySetupUIScene
-			break;			
-	}
+	//TRANSITION THE UI SCENE IF ONE HAS BEEN SENT
+	if(data.parameters.options){
 
-	if(scene){
-		scene.setForcesHUD(data.parameters.player_id, "ready", true, false)	
+		gameFunctions.params.forces.forEach((force) => {
+			force.ready = false;
+		})	
+
+		if(data.parameters.options.ui_scene){
+			let scene;
+			switch(data.parameters.options.ui_scene){
+				case "GameUIScene":
+					scene = GameUIScene
+					break;
+				case "ArmySetupUIScene":
+					scene = ArmySetupUIScene
+					break;			
+			}
+		
+			if(scene){
+				scene.setForcesHUD(data.parameters.player_number, "ready", true, false)	
+			}
+		}
+	
+		if(data.parameters.options.completion_function_group){
+			availableFunctions[data.parameters.options.completion_function_group][data.parameters.options.completion_function](); 
+		}
 	}
 }
 
@@ -393,7 +425,7 @@ connFunctions.checkReadyUp = (check_side_only=true) => {
 			player_count++;
 		}
 	})
-	if(ready_count === player_count){
+	if(ready_count >= player_count){
 		all_ready = true;
 	}	
 

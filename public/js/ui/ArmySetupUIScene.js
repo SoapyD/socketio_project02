@@ -343,7 +343,11 @@ ArmySetupUIScene.checkMode = () => {
             // ArmySetupUIScene.setForcesHUD(gameFunctions.params.player_number, "waiting", true, true)
             
             if(GameScene.online === true){
-                connFunctions.sendReadyUp(ArmySetupUIScene);
+                connFunctions.sendReadyUp({
+                    completion_function_group: "ArmySetupUIScene",
+                    completion_function: 'runAdvanceMode',                    
+                    ui_scene: "ArmySetupUIScene"
+                })
             }else{
                 GameScene.game_state++;
             }
@@ -351,16 +355,20 @@ ArmySetupUIScene.checkMode = () => {
             break;
             
         case 8:
-            let all_ready = connFunctions.checkReadyUp(false);
-            if(all_ready === true){
-                GameScene.game_state++;
-                ArmySetupUIScene.runAdvanceMode();
-            }
+            // WAIT FOR READY UP
             break;
         
         case 9:
             //waiting for next scene to load
+
+            GameScene.game_state++;
+            ArmySetupUIScene.runAdvanceMode();
             break;
+
+        case 10:
+            //waiting for next scene to load
+
+            break;            
     }
 
 
