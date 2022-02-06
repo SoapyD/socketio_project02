@@ -452,30 +452,34 @@ exports.updateRoom = async(network, data) => {
 
 					case "ready force":
 						room.forces[data.player_number].ready = true;
+						if(data.options.actions){
+							room.forces[data.player_number].actions = data.options.actions;
+						}
 						room.markModified('forces');	
 						let updated_room = await queriesUtil.saveRoom(room)
 
 						let readied = 0;
 						let total_side = 0;
+						let total_actions = 0;
 						updated_room.forces.forEach((force) => {
-							// if(force.side === data.player_side){
-								total_side++;
-								if(force.ready === true){
-									readied++;
-								}
-							// }
+							total_actions += force.actions;
+							total_side++;
+							if(force.ready === true){
+								readied++;
+							}
 						})
 						if(readied === total_side){
 							//END THE TURN
+							return_data.parameters.options = data.options;						
+							return_data.parameters.total_actions = total_actions;
 
 							//RESET ALL ROOMS BACK TO "UNREADY"
 							updated_room.forces.forEach((force) => {
 								force.ready = false;
+								force.actions = 0;
 							})
 							updated_room.markModified('forces');	
 							updated_room = await queriesUtil.saveRoom(updated_room)	
-							
-							return_data.parameters.options = data.options;						
 						}
 
 						network.io.in(data.room_name).emit("message_client", return_data)

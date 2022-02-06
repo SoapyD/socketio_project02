@@ -1381,7 +1381,7 @@ unselectHandler() {
 		
 		if (this.path.length > 1 && this.is_moving === false){
 			
-			GameScene.active_actions++;
+			// GameScene.active_actions++;
 			// if(unit.player === gameFunctions.params.player){
 			// 	GameScene.active_actions++;	
 			// }
@@ -1440,8 +1440,8 @@ unselectHandler() {
 								this.path_graphic.clear()
 								this.path = [];
 								this.is_moving = false;
-								GameScene.active_actions--;
 
+								GameScene.active_actions--;
 								if(GameScene.active_actions === 0){
 									GameUIScene.readyAdvanceMode();
 								}
@@ -1638,7 +1638,7 @@ unselectHandler() {
 				let angle = Phaser.Math.Angle.BetweenPoints(this.sprite, target);
 				// if(angle > -1){				
 
-					GameScene.active_actions++;
+					// GameScene.active_actions++;
 
 					await this.delay(2000 * i)
 				
@@ -1916,7 +1916,7 @@ unselectHandler() {
 		this.checkCombat()	
 		
 		this.fight_targets.forEach( async(target, i) => {
-			GameScene.active_actions++;
+			// GameScene.active_actions++;
 			
 			await this.delay(2000 * i)
 			let target_unit = gameFunctions.units[target];

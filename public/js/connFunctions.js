@@ -356,25 +356,6 @@ connFunctions.sendReadyUp = (options) => {
 	}
 
 	connFunctions.messageServer(data)
-
-	// if(GameScene.online === false){
-	// 	connFunctions.readyUp({parameters: {player_id:gameFunctions.params.player_number}})
-	// }else{
-	// 	let data = {
-	// 		functionGroup: "socketFunctions",  
-	// 		function: "messageAll",
-	// 		room_name: gameFunctions.params.room_name,
-	// 		returnFunctionGroup: "connFunctions",
-	// 		returnFunction: "readyUp",
-	// 		returnParameters: {
-	// 			player_id:gameFunctions.params.player_number,
-	// 			ui_scene: ui_scene
-	// 		},
-	// 		message: "ready player "+gameFunctions.params.player_number
-	// 	}
-
-	// 	connFunctions.messageServer(data)		
-	// }
 }
 
 connFunctions.readyUp = (data) => {
@@ -403,6 +384,10 @@ connFunctions.readyUp = (data) => {
 			}
 		}
 	
+		if(data.parameters.total_actions){
+			GameScene.active_actions = data.parameters.total_actions;
+		}
+
 		if(data.parameters.options.completion_function_group){
 			availableFunctions[data.parameters.options.completion_function_group][data.parameters.options.completion_function](); 
 		}

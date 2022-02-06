@@ -239,17 +239,23 @@ GameUIScene.runSelectMode = (options) => {
 
 GameUIScene.runAdvanceMode = () => {
 	gameFunctions.mode_state++;
-	if(gameFunctions.mode_state > 19){
+	if(gameFunctions.mode_state > 27){
 		gameFunctions.mode_state = 0;
 	}
 } 
 
-GameUIScene.readyAdvanceMode = () => {
+GameUIScene.readyAdvanceMode = (actions=-1) => {
 	gameFunctions.btn_sprite[0].hideButton();
-	connFunctions.sendReadyUp({
+
+	let options = {
 		completion_function_group: "GameUIScene",
-		completion_function: 'runAdvanceMode'
-	});
+		completion_function: 'runAdvanceMode'		
+	}
+	if(actions > -1){
+		options.actions = actions
+	}
+
+	connFunctions.sendReadyUp(options);
 }
 
 GameUIScene.advanceMode = () => {
@@ -258,9 +264,19 @@ GameUIScene.advanceMode = () => {
 	let all_ready = false;	
 	// let btn;
 	let activated = false;
+	let actions = 0;
 	switch(gameFunctions.mode_state){
 
+		// #     # ####### #     # ####### 
+		// ##   ## #     # #     # #       
+		// # # # # #     # #     # #       
+		// #  #  # #     # #     # #####   
+		// #     # #     #  #   #  #       
+		// #     # #     #   # #   #       
+		// #     # #######    #    ####### 
+
 		case 0:
+			//CREATE THE "MOVE" BUTTON
 			options.mode = "move"
 			GameUIScene.selectMode(options);
 			gameFunctions.btn_sprite[0].updateText("trigger move")
@@ -278,6 +294,26 @@ GameUIScene.advanceMode = () => {
 			break;
 
 		case 2:
+			//PASS THE TOTAL ACTIONS TO PLAY TO THE SERVER
+			actions = 0;
+			gameFunctions.units.forEach((unit) => {
+				if(unit.path.length > 0){
+					//unit.path.length > 0 &&
+					if(unit.player === gameFunctions.params.player_number){
+						actions++;
+					}
+				}
+			})	
+			GameUIScene.readyAdvanceMode(actions);
+			gameFunctions.mode_state++;			
+			break;
+
+		case 3:
+			//WAIT FOR PLAYERS TO READY UP SO TOTAL ACTIONS CAN BE PASSED BACK
+			break;
+
+		
+		case 4:
 			//activate movement
 			GameScene.game_setup.sfxHandler("button");
 			activated = GameUIScene.activateMovement();
@@ -294,11 +330,20 @@ GameUIScene.advanceMode = () => {
 			}
 			break;
 
-		case 3:
+		
+		case 5:
 			//WAIT FOR PLAYERS TO READY UP
 			break;
 
-		case 4:
+		//  #####  #     # ####### ####### ####### 
+		// #     # #     # #     # #     #    #    
+		// #       #     # #     # #     #    #    
+		//  #####  ####### #     # #     #    #    
+		// 	     # #     # #     # #     #    #    
+		// #     # #     # #     # #     #    #    
+		//  #####  #     # ####### #######    #   
+
+		case 6:
 			//setup shoot
 			options.mode = "shoot"
 			GameUIScene.selectMode(options);
@@ -315,11 +360,30 @@ GameUIScene.advanceMode = () => {
 			gameFunctions.mode_state++;
 			break;
 
-		case 5:
+		case 7:
 			//WAIT FOR PLAYERS TO READY UP
 			break;			
 
-		case 6:
+		case 8:
+			//PASS THE TOTAL ACTIONS TO PLAY TO THE SERVER
+			actions = 0;
+			gameFunctions.units.forEach((unit) => {
+				if(unit.targets.length > 0){
+					//unit.path.length > 0 &&
+					if(unit.player === gameFunctions.params.player_number){
+						actions += unit.targets.length;
+					}
+				}
+			})	
+			GameUIScene.readyAdvanceMode(actions);
+			gameFunctions.mode_state++;			
+			break;
+
+		case 9:
+			//WAIT FOR PLAYERS TO READY UP SO TOTAL ACTIONS CAN BE PASSED BACK
+			break;
+
+		case 10:
 			//activate shoot
 			GameScene.game_setup.sfxHandler("button");			
 			activated = GameUIScene.activateShooting();
@@ -335,11 +399,19 @@ GameUIScene.advanceMode = () => {
 
 			break;
 
-		case 7:
+		case 11:
 			//WAIT FOR PLAYERS TO READY UP
 			break;	
 
-		case 8:
+		//  #####  #     #    #    ######   #####  ####### 
+		// #     # #     #   # #   #     # #     # #       
+		// #       #     #  #   #  #     # #       #       
+		// #       ####### #     # ######  #  #### #####   
+		// #       #     # ####### #   #   #     # #       
+		// #     # #     # #     # #    #  #     # #       
+		//  #####  #     # #     # #     #  #####  ####### 
+
+		case 12:
 			//setup charge
 			options.mode = "charge"
 			GameUIScene.selectMode(options);
@@ -355,11 +427,30 @@ GameUIScene.advanceMode = () => {
 			gameFunctions.mode_state++;
 			break;
 
-		case 9:
+		case 13:
 			//WAIT FOR PLAYERS TO READY UP
 			break;	
 
-		case 10:
+		case 14:
+			//PASS THE TOTAL ACTIONS TO PLAY TO THE SERVER
+			actions = 0;
+			gameFunctions.units.forEach((unit) => {
+				if(unit.path.length > 0){
+					//unit.path.length > 0 &&
+					if(unit.player === gameFunctions.params.player_number){
+						actions++;
+					}
+				}
+			})	
+			GameUIScene.readyAdvanceMode(actions);
+			gameFunctions.mode_state++;			
+			break;
+
+		case 15:
+			//WAIT FOR PLAYERS TO READY UP SO TOTAL ACTIONS CAN BE PASSED BACK
+			break;
+
+		case 16:
 			//activate charge
 			GameScene.game_setup.sfxHandler("button");			
 			activated = GameUIScene.activateCharging();
@@ -376,11 +467,20 @@ GameUIScene.advanceMode = () => {
 			}
 			break;			
 
-		case 11:
+		case 17:
 			//WAIT FOR PLAYERS TO READY UP
 			break;	
 
-		case 12:
+		// ####### ###  #####  #     # ####### 
+		// #        #  #     # #     #    #    
+		// #        #  #       #     #    #    
+		// #####    #  #  #### #######    #    
+		// #        #  #     # #     #    #    
+		// #        #  #     # #     #    #    
+		// #       ###  #####  #     #    #    
+
+		
+		case 18:
 			//setup fight
 			options.mode = "fight"
 			GameUIScene.selectMode(options);
@@ -397,11 +497,30 @@ GameUIScene.advanceMode = () => {
 			gameFunctions.mode_state++;
 			break;
 
-		case 13:
+		case 19:
 			//WAIT FOR PLAYERS TO READY UP
 			break;				
 
-		case 14:
+		case 20:
+			//PASS THE TOTAL ACTIONS TO PLAY TO THE SERVER
+			actions = 0;
+			gameFunctions.units.forEach((unit) => {
+				if(unit.fight_targets.length > 0){
+					//unit.path.length > 0 &&
+					if(unit.player === gameFunctions.params.player_number){
+						actions += unit.fight_targets.length;
+					}
+				}
+			})	
+			GameUIScene.readyAdvanceMode(actions);
+			gameFunctions.mode_state++;			
+			break;
+
+		case 21:
+			//WAIT FOR PLAYERS TO READY UP SO TOTAL ACTIONS CAN BE PASSED BACK
+			break;
+
+		case 22:
 			//activate fight
 			GameScene.game_setup.sfxHandler("button");	
 			
@@ -420,11 +539,20 @@ GameUIScene.advanceMode = () => {
 
 			break
 
-		case 15:
+		case 23:
 			//WAIT FOR PLAYERS TO READY UP
 			break;
 
-		case 16:
+		// ####### #     # ######        ####### #     # ######  #     # 
+		// #       ##    # #     #          #    #     # #     # ##    # 
+		// #       # #   # #     #          #    #     # #     # # #   # 
+		// #####   #  #  # #     # #####    #    #     # ######  #  #  # 
+		// #       #   # # #     #          #    #     # #   #   #   # # 
+		// #       #    ## #     #          #    #     # #    #  #    ## 
+		// ####### #     # ######           #     #####  #     # #     # 
+
+		
+		case 24:
 			//setup end turn
 			options.mode = "end turn"
 			GameUIScene.selectMode(options);
@@ -440,11 +568,11 @@ GameUIScene.advanceMode = () => {
 			gameFunctions.mode_state++;
 			break;
 
-		case 17:
+		case 25:
 			//WAIT FOR PLAYERS TO READY UP
 			break;
 
-		case 18:
+		case 26:
 			//activate end turn
 			GameScene.game_setup.sfxHandler("end_turn")
 			GameUIScene.readyAdvanceMode();
@@ -453,10 +581,11 @@ GameUIScene.advanceMode = () => {
 			gameFunctions.mode_state++;			
 			break;
 
-		case 19:
+		case 27:
 			//WAIT FOR PLAYERS TO READY UP
 			break;			
 
+		/**/
 	}
 }
 

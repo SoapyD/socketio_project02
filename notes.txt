@@ -8,16 +8,14 @@ SBT GAME NOTES
 /////////////////////////////////////////////////////////////////////////////////////
 
 
--Need to display what rooms a user has created and provide a means of deleting them
-    -limit users to only having so many rooms open
-
 
 /////////////////////////////////////////
-SIDES AND ACTIONS
+MISC
 /////////////////////////////////////////
 
 -Add in a check for a player win so we know when the game ends
 
+-Make the combat radius the same colour as the team
 
 
 /////////////////////////////////////////
@@ -28,37 +26,16 @@ SETUP
 
 -Set a number of default armies and use author name to check for armies created by that user
 
-
-/////////////////////////////////////////
-READY UP
-/////////////////////////////////////////
-
--BUG -When playing on two instances (one chrome, one firefox), firefox ends up being slow and stuttering to the point where the 
-game breaks and some units are stil considered as being active
-    -P1 = chrome, P2 = firefox. P1 sets up movement and triggers it. The movement plays out fine for P1 but P2 slowly plays the
-    movement, then something happens that causes the units to leave "ghosts" in their movement tracks before the stop moving.
-    -The above units don't finish their movement and are still counted as "moving" and count towards the "active actions" count
-    -GameUIScene action timer check -> GameUIScene.runAdvanceMode -> GameUIScene.advanceMode -> GameUIScene.selectMode
-    -I think the bug is being caused by one player running action timer slightly faster than everyone else, just running select
-    mode before things finish for other players.
-    -Realised that "ready up" was being automatically set per user but should be setting when the setup actions have been completed
-    -Added the check to moving, fighting and shooting, which looks to have resolved the issue
+-Need to display what rooms a user has created and provide a means of deleting them
+    -limit users to only having so many rooms open
 
 
--Need to hide the "ready up" for players not in the current side
--Need to skip running "charge" and showing and running "fight" if there isn't any units that can do either
-
--DONE -changed things so the actions case statement is being checked in the update so it's easier to handle "ready up" functions
-
--DONE -move works
--DONE -shoot works
--DONE -charge works
--DONE -fight works
--End button doesn't work
 
 /////////////////////////////////////////
 SELECTION - PAUSED
 /////////////////////////////////////////
+
+-Show a message if the unit disconnects from the game
 
 -Create a means of selecting multiple units at the same times
     -DONE -Add in a "mouse selection class" to handle the mouse selection process
@@ -89,6 +66,8 @@ BUGS
     -This is down to a second player joining while the 1st player is still joining, which resets the unit list.
 
 -BUG -Small units with no fight stats should still be locked into combat?
+
+-BUG -Think tanks are catching people when they move out of combat range, so this needs turning off.
 
 -BUG -Bug trying to save multiple times a the same time for the same room. Consider having on the room creator be able to save things.
     -Caused by moving from a "current player" to "current side" check when saving
@@ -154,6 +133,37 @@ THINGS TO DO (EVENTUALLY)
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+
+
+/////////////////////////////////////////
+READY UP
+/////////////////////////////////////////
+
+-FIXED -When playing on two instances (one chrome, one firefox), firefox ends up being slow and stuttering to the point where the 
+game breaks and some units are stil considered as being active
+    -P1 = chrome, P2 = firefox. P1 sets up movement and triggers it. The movement plays out fine for P1 but P2 slowly plays the
+    movement, then something happens that causes the units to leave "ghosts" in their movement tracks before the stop moving.
+    -The above units don't finish their movement and are still counted as "moving" and count towards the "active actions" count
+    -GameUIScene action timer check -> GameUIScene.runAdvanceMode -> GameUIScene.advanceMode -> GameUIScene.selectMode
+    -I think the bug is being caused by one player running action timer slightly faster than everyone else, just running select
+    mode before things finish for other players.
+    -Realised that "ready up" was being automatically set per user but should be setting when the setup actions have been completed
+    -Added the check to moving, fighting and shooting, which looks to have resolved the issue
+-This was eventually fixed when i moved the ready-up check to the server as timing differences between the client instances make
+things impossible to keep track of accurately.
+
+-Need to hide the "ready up" for players not in the current side
+-Need to skip running "charge" and showing and running "fight" if there isn't any units that can do either
+
+-DONE -changed things so the actions case statement is being checked in the update so it's easier to handle "ready up" functions
+
+-DONE -move works
+-DONE -shoot works
+-DONE -charge works
+-DONE -fight works
+-DONE -End button doesn't work
+/////////////////////////////////////////
 
 
 -FIXED -Army selection screen doesn't trigger properly on firefox, selections are one click behind

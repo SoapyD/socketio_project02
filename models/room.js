@@ -58,6 +58,7 @@ const roomSchema = new mongoose.Schema({
 			ref: "Army"
 		}			
 		,ready: {type: Boolean, default: false}
+		,actions: {type: Number, default: 0}
 	}]
 	
 	,units: [{
