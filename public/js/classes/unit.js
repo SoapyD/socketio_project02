@@ -779,8 +779,8 @@ unselectHandler() {
 
 		this.fight_graphic.clear();
 		let radius_graphic = this.fight_graphic;
-		radius_graphic.lineStyle(2, 0x0000FF, 0.5);
-		radius_graphic.fillStyle(0x0000FF, 0.05);
+		radius_graphic.lineStyle(2, this.colour, 0.5);
+		radius_graphic.fillStyle(this.colour, 0.05);
 		let circle = new Phaser.Geom.Circle(this.sprite_ghost.x, this.sprite_ghost.y, (this.fight_range));
 		radius_graphic.fillCircleShape(circle).setDepth(this.depth_fight_radius);
 

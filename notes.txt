@@ -15,7 +15,7 @@ MISC
 
 -Add in a check for a player win so we know when the game ends
 
--Make the combat radius the same colour as the team
+
 
 
 /////////////////////////////////////////
@@ -56,22 +56,12 @@ BUGS
 -BUG -Desyncs occur if the window isn't visible.
     -Maybe add in a mechanism for numbering saves so when the window becomes active again, check the last save with the current value to see if things need updating.
 
--NEEDS MONITORING -A second shot didn't fire for some reason, which has stopped the game from progressing
-    -Possibly because they were in base to base contact with a unit that couldn't fight, then that unit was the target of the shot
-    -Wonder if this is related to the angle >= -1 check as active_actions are beings passed to all players, 
-    so the ticket message is being passed to everyone
-    -Added a check that'll print off the values used if the angle is -1
-
 -BUG -Reloads won't work sometimes because one of the armies loads in with only an army reference instead of the full army
     -This is down to a second player joining while the 1st player is still joining, which resets the unit list.
 
 -BUG -Small units with no fight stats should still be locked into combat?
 
 -BUG -Think tanks are catching people when they move out of combat range, so this needs turning off.
-
--BUG -Bug trying to save multiple times a the same time for the same room. Consider having on the room creator be able to save things.
-    -Caused by moving from a "current player" to "current side" check when saving
-    -Would need to check if this is the "first player" of a side, so only saves once
 
 -BUG -Clicking on a unit in the fight phase when they're not in combat gets rid of their fight radius for some reason
 
@@ -134,7 +124,18 @@ THINGS TO DO (EVENTUALLY)
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 
+-FIXED -A second shot didn't fire for some reason, which has stopped the game from progressing
+    -Possibly because they were in base to base contact with a unit that couldn't fight, then that unit was the target of the shot
+    -Wonder if this is related to the angle >= -1 check as active_actions are beings passed to all players, 
+    so the ticket message is being passed to everyone
+    -Added a check that'll print off the values used if the angle is -1
 
+-FIXED -Bug trying to save multiple times a the same time for the same room. Consider having on the room creator be able to save things.
+    -Caused by moving from a "current player" to "current side" check when saving
+    -Would need to check if this is the "first player" of a side, so only saves once
+    -I now rerun the function until it passes.
+
+-DONE -Make the combat radius the same colour as the team
 
 /////////////////////////////////////////
 READY UP
