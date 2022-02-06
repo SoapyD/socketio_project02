@@ -15,7 +15,7 @@ MISC
 
 -Add in a check for a player win so we know when the game ends
 
-
+-Need to move the "can't advance because coherency isn't met" check so that it's checked in the mode_state check in the GameUIScene again
 
 
 /////////////////////////////////////////
