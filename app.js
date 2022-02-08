@@ -24,11 +24,13 @@ switch(process.env.INSTANCE_TYPE){
 		// expressServer = app.listen(3000, () => {
 			expressServer = app.listen(process.env.PORT||80, process.env.IP, function(){				
 			console.log("dev server running")
+			setTimeout(utils.timer.checkTimer, process.env.TIMER_MS);
 		})	
 		break;
 	default:
 		expressServer = app.listen(process.env.PORT, process.env.IP, function(){
 			console.log("prod server running")
+			setTimeout(utils.timer.checkTimer, process.env.TIMER_MS);
 		})		
 		break;
 }

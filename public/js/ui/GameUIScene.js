@@ -222,20 +222,6 @@ GameUIScene.runSelectMode = (options) => {
 // ██  ██  ██ ██    ██ ██   ██ ██            ██   ██ ██   ██ ██  ██ ██ ██   ██ ██      ██      ██   ██ 
 // ██      ██  ██████  ██████  ███████       ██   ██ ██   ██ ██   ████ ██████  ███████ ███████ ██   ██ 
 
-// GameUIScene.resetReady = () => {
-// 	gameFunctions.params.forces.forEach((force) => {
-// 		force.ready = false;
-// 	})	
-// }
-
-// GameUIScene.setOthersReady = () => {
-// 	gameFunctions.params.forces.forEach((force) => {
-// 		if(gameFunctions.params.player_side !== gameFunctions.current_side){
-// 			force.ready = true;			
-// 		}	
-
-// 	})	
-// }
 
 GameUIScene.runAdvanceMode = () => {
 	gameFunctions.mode_state++;
@@ -245,17 +231,46 @@ GameUIScene.runAdvanceMode = () => {
 } 
 
 GameUIScene.readyAdvanceMode = (actions=-1) => {
-	gameFunctions.btn_sprite[0].hideButton();
 
-	let options = {
-		completion_function_group: "GameUIScene",
-		completion_function: 'runAdvanceMode'		
-	}
-	if(actions > -1){
-		options.actions = actions
-	}
+	let cohesion_check = true;
 
-	connFunctions.sendReadyUp(options);
+	switch(gameFunctions.mode){
+		case "move":
+		case "charge":
+			gameFunctions.units.forEach((unit) => {
+				if(gameFunctions.params.player_side === gameFunctions.current_side){
+					if(unit.cohesion_check === false && unit.cohesion > 0){
+						cohesion_check = false;		
+					}
+				}
+			})				
+		break;
+	}	
+
+
+	if(cohesion_check === true){
+		gameFunctions.btn_sprite[0].hideButton();
+	
+		let options = {
+			completion_function_group: "GameUIScene",
+			completion_function: 'runAdvanceMode'		
+		}
+		if(actions > -1){
+			options.actions = actions
+		}
+	
+		connFunctions.sendReadyUp(options);
+	}else{
+		let options = {
+			scene: GameScene.scene,
+			pos: {
+				x: GameScene.rectangle.x,
+				y: GameScene.rectangle.y
+			},
+			text: "Cannot move unless all unit coherency is met."
+		}
+		new popup(options)		
+	}
 }
 
 GameUIScene.advanceMode = () => {
@@ -598,6 +613,15 @@ GameUIScene.advanceMode = () => {
 // ██   ██ ██         ██    ██  ██  ██  ██   ██    ██    ██            ██   ██ ██         ██    ██ ██    ██ ██  ██ ██      ██ 
 // ██   ██  ██████    ██    ██   ████   ██   ██    ██    ███████       ██   ██  ██████    ██    ██  ██████  ██   ████ ███████ 
 
+// #     # ####### #     # ####### 
+// ##   ## #     # #     # #       
+// # # # # #     # #     # #       
+// #  #  # #     # #     # #####   
+// #     # #     #  #   #  #       
+// #     # #     #   # #   #       
+// #     # #######    #    ####### 
+
+
 GameUIScene.activateMovement = () => {
 	
 	let cohesion_check = true
@@ -656,6 +680,14 @@ GameUIScene.activateMovement = () => {
 	return activated;
 }
 
+//  #####  #     # ####### ####### ####### 
+// #     # #     # #     # #     #    #    
+// #       #     # #     # #     #    #    
+//  #####  ####### #     # #     #    #    
+//       # #     # #     # #     #    #    
+// #     # #     # #     # #     #    #    
+//  #####  #     # ####### #######    #  
+
 GameUIScene.activateShooting = () => {
 
 	let activated = -1;
@@ -694,6 +726,13 @@ GameUIScene.activateShooting = () => {
 	return activated;
 }
 
+//  #####  #     #    #    ######   #####  ####### 
+// #     # #     #   # #   #     # #     # #       
+// #       #     #  #   #  #     # #       #       
+// #       ####### #     # ######  #  #### #####   
+// #       #     # ####### #   #   #     # #       
+// #     # #     # #     # #    #  #     # #       
+//  #####  #     # #     # #     #  #####  ####### 
 
 GameUIScene.activateCharging = () => {
 	
@@ -772,6 +811,13 @@ GameUIScene.activateCharging = () => {
 	return activated;
 }
 
+// ####### ###  #####  #     # ####### 
+// #        #  #     # #     #    #    
+// #        #  #       #     #    #    
+// #####    #  #  #### #######    #    
+// #        #  #     # #     #    #    
+// #        #  #     # #     #    #    
+// #       ###  #####  #     #    #  
 
 GameUIScene.activateFighting = () => {
 

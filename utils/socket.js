@@ -107,7 +107,7 @@ exports.createRoom = async(network, data)  => {
 
             let return_data = {
 				functionGroup: "connFunctions",
-				function: "printMessage",
+				function: "printError",
 				parameters: {
 					user_name: "SERVER",
 					message: ""
@@ -126,8 +126,7 @@ exports.createRoom = async(network, data)  => {
             else{
                 return_data.parameters.message = 'Creation failed, please choose another room name and try again';							
             }
-
-            // network.io.to(network.socket.id).emit("message_client", return_data)        
+        
 			network.io.to(network.socket.id).emit("message_client", return_data)
 
         }
@@ -197,7 +196,7 @@ exports.joinRoom = async(network, data)  => {
 
         let return_data = {
 			functionGroup: "connFunctions",
-			function: "printMessage",
+			function: "printError",
 			parameters: {
 				user_name: "SERVER",
 				message: ""

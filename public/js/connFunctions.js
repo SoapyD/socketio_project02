@@ -128,6 +128,22 @@ connFunctions.checkMessages = (socket) => {
 		messages.insertAdjacentHTML("beforeend", "<li>"+data.parameters.user_name+" - '"+data.parameters.message+"'</li>");	
 	}
 
+	connFunctions.printError = (data) => {
+
+		let options = {
+			scene: gameFunctions.current_scene,
+			pos: {
+				x: gameFunctions.config.width / 2,
+				y: gameFunctions.config.height / 2
+			},
+			font: "32px Arial",
+			text: data.parameters.message
+		}
+		new popup(options)			
+
+	}
+
+
 	// ##################################################################################
 	// ##################################################################################
 	// ##################################################################################

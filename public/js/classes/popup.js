@@ -10,6 +10,10 @@ const popup = class {
 			strokeThickness: 2
 		}
 
+		if(options.font){
+			text_style.font = options.font
+		}
+
 		this.text = options.scene.add.text(options.pos.x, options.pos.y, options.text, text_style).setDepth(100);
 		this.text.x -= this.text.width / 2;
 

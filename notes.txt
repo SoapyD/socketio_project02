@@ -14,8 +14,11 @@ MISC
 /////////////////////////////////////////
 
 -Add in a check for a player win so we know when the game ends
+-Check to see if the army being created it totalling up correctly
+-Make sure that an army can't be saved if the total cost is above what was selected
 
--Need to move the "can't advance because coherency isn't met" check so that it's checked in the mode_state check in the GameUIScene again
+-Make sure units in combat can't be selected as targets for shooting. Also need to make sure that bullets don't die on units in combat
+-Small units with no fight stats should still be locked into combat to stop them from easily moving away or shooting
 
 
 /////////////////////////////////////////
@@ -25,9 +28,6 @@ SETUP
 -Show only armies created by an author to show on their armies page.
 
 -Set a number of default armies and use author name to check for armies created by that user
-
--Need to display what rooms a user has created and provide a means of deleting them
-    -limit users to only having so many rooms open
 
 
 
@@ -51,6 +51,7 @@ SELECTION - PAUSED
 BUGS
 /////////////////////////////////////////
 
+
 -BUG -When unit can't move over a space they're not allowed to go, the ghost still generate there and the "allowed" sound plays.
 
 -BUG -Desyncs occur if the window isn't visible.
@@ -58,8 +59,6 @@ BUGS
 
 -BUG -Reloads won't work sometimes because one of the armies loads in with only an army reference instead of the full army
     -This is down to a second player joining while the 1st player is still joining, which resets the unit list.
-
--BUG -Small units with no fight stats should still be locked into combat?
 
 -BUG -Think tanks are catching people when they move out of combat range, so this needs turning off.
 
@@ -69,8 +68,6 @@ BUGS
 /////////////////////////////////////////
 THINGS TO DO (EVENTUALLY)
 /////////////////////////////////////////
-
--Once a game is complete or a room hasn't been used in a set period, the room is removed from the server
 
 -Generate a list of rooms belonging to the player / that they're in as well as a global room list
 
@@ -123,6 +120,17 @@ THINGS TO DO (EVENTUALLY)
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+-CANCELLED -Need to display what rooms a user has created and provide a means of deleting them
+    -limit users to only having so many rooms open
+    -Decided to put an hour limit of rooms updated as it's currenly easier to manage
+
+-FIXED -Message to say a room already exists etc isn't being sent back to user.
+    -data wasn't being displayed as the mssage box was hidden. Changed it so a message error popup appears instead
+
+-DONE -Once a game is complete or a room hasn't been used in a set period, the room is removed from the server
+
+-DONE -Need to move the "can't advance because coherency isn't met" check so that it's checked in the mode_state check in the GameUIScene again
 
 -FIXED -A second shot didn't fire for some reason, which has stopped the game from progressing
     -Possibly because they were in base to base contact with a unit that couldn't fight, then that unit was the target of the shot
