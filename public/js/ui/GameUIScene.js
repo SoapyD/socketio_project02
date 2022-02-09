@@ -251,15 +251,23 @@ GameUIScene.readyAdvanceMode = (actions=-1) => {
 	if(cohesion_check === true){
 		gameFunctions.btn_sprite[0].hideButton();
 	
-		let options = {
-			completion_function_group: "GameUIScene",
-			completion_function: 'runAdvanceMode'		
-		}
-		if(actions > -1){
-			options.actions = actions
-		}
+
+		if(GameScene.online === false){
+			if(actions>-1){
+				GameScene.active_actions = actions;
+			}
+			GameUIScene.runAdvanceMode();
+		}else{		
+			let options = {
+				completion_function_group: "GameUIScene",
+				completion_function: 'runAdvanceMode'		
+			}
+			if(actions > -1){
+				options.actions = actions
+			}
 	
-		connFunctions.sendReadyUp(options);
+			connFunctions.sendReadyUp(options);
+		}
 	}else{
 		let options = {
 			scene: GameScene.scene,
@@ -590,10 +598,10 @@ GameUIScene.advanceMode = () => {
 		case 26:
 			//activate end turn
 			GameScene.game_setup.sfxHandler("end_turn")
+			gameFunctions.mode_state++;			
 			GameUIScene.readyAdvanceMode();
 
 			GameUIScene.nextSide();
-			gameFunctions.mode_state++;			
 			break;
 
 		case 27:
@@ -918,10 +926,16 @@ GameUIScene.advanceSide = () => {
 
 	// CHANGE THE PARAMS SIDE IF THIS IS A LOCAL GAME
 	if(GameScene.online === false && gameFunctions.current_side !== -1){
-		gameFunctions.params.player_side += 1
-		if(gameFunctions.params.player_side >= sides){
-			gameFunctions.params.player_side = 0
-		}		
+		// gameFunctions.params.player_side += 1
+		// if(gameFunctions.params.player_side >= sides){
+		// 	gameFunctions.params.player_side = 0
+		// }	
+		GameScene.offline_force++;
+		if(GameScene.offline_force >= gameFunctions.params.forces.length){
+			GameScene.offline_force = 0;
+		}	
+		gameFunctions.params.player_number = GameScene.offline_force;
+		gameFunctions.params.player_side = gameFunctions.params.forces[GameScene.offline_force].side;
 	}	
 
 	gameFunctions.current_side += 1

@@ -33,6 +33,7 @@ const game_setup = class {
 		this.scene_container.master_sfx_volume = 0.3;
 		
 		this.scene_container.game_state = 0;
+		this.scene_container.offline_force = 0;
 
 		this.scene_container.active_actions = 0;
 		this.scene_container.bullets = [];
