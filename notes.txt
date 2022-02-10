@@ -14,10 +14,8 @@ MISC
 /////////////////////////////////////////
 
 -Add in a check for a player win so we know when the game ends
--Check to see if the army being created it totalling up correctly
--Make sure that an army can't be saved if the total cost is above what was selected
 -Small units with no fight stats should still be locked into combat to stop them from easily moving away or shooting
-
+-Add in check that, if an army cost is changed, it'll take you to the army builder to edit the army is it's over
 
 /////////////////////////////////////////
 SETUP
@@ -48,8 +46,6 @@ SELECTION - PAUSED
 /////////////////////////////////////////
 BUGS
 /////////////////////////////////////////
-
--BUG -In offline mode, if a unit shoots it atuomatically skips the charge function. Need to double check this doesn't happen online
 
 -BUG -When unit can't move over a space they're not allowed to go, the ghost still generate there and the "allowed" sound plays.
 
@@ -119,6 +115,11 @@ THINGS TO DO (EVENTUALLY)
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+-FIXED -In offline mode, if a unit shoots it atuomatically skips the charge function. Need to double check this doesn't happen online
+
+-DONE -Check to see if the army being created it totalling up correctly
+-DONE -Make sure that an army can't be saved if the total cost is above what was selected
 
 -DONE -Make sure units in combat can't be selected as targets for shooting. Also need to make sure that bullets don't die on units in combat
 

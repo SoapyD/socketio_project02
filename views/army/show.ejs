@@ -19,7 +19,7 @@
 
 				<div class="caption-full">
 
-					<h4>
+					<h3>
                         <a href=
                         <% if(1===1){ //if(user.id === report.owner) { %>
                             "/army/<%= army._id %>/edit"
@@ -27,8 +27,9 @@
                             "/army/<%= army._id %>"
                         <% } %>
                         ><%= army.name %></a>
-					</h4>				
-					
+					</h3>				
+                    
+                    <h4>Points: <span class="army-cost">0</span>/<%= army.cost %></h4>
 			</div>
 		</div>
 	</div>
@@ -44,7 +45,7 @@
                 <% //} %>	
 
                 <form action="/army/<%= army._id %>/copy?_method=PUT" method="POST" class="left"
-                    onsubmit="return confirm('Are you sure you want to copy this army?');">
+                    onsubmit="return on_submit(event)">
 					<button class="btn btn-primary left-margin-5">
 						Copy
 					</button>
@@ -84,7 +85,7 @@
     <% } %>">
 
     <form action="/army/<%= army._id %>?_method=PUT" method="POST"
-        onsubmit="return confirm('Are you sure you want to save changes to this army?');">
+        onsubmit="on_submit(event)">
 
         <% //if(user.id === report.owner) { %> 
             <button class="btn btn-primary add-squad" type="button">
@@ -209,7 +210,7 @@ let upgrade_data;
                         <div class="col-md-2 no-padding">
                             <div class="form-group">     
                                 <p>Squad Cost:</p>
-                                <input class="form-control" type="text" name="[params][squads][`+number+`][cost]"  readonly="readonly">  
+                                <input class="form-control squad-cost" type="text" name="[params][squads][`+number+`][cost]"  readonly="readonly">  
                             </div>                         
                         </div>                            
                         
@@ -355,6 +356,42 @@ let upgrade_data;
 // #     # #       #     # #     #    #    #       #     # 
 //  #####  #       ######  #     #    #    #######  #####  
 
+    update_army_cost = () => {
+            let cost_elements = $(document).find('.squad-cost')
+            let total_army_cost = 0
+            for(let i=0;i<cost_elements.length;i++){
+                let element = cost_elements[i]
+                total_army_cost += Number(element.value)
+            }
+            // console.log(total_army_cost)
+
+            $(document).find('.army-cost')[0].textContent = total_army_cost;
+
+            return total_army_cost;
+        }
+
+    on_submit = (e) => {
+
+        let army_cost = update_army_cost();
+        let allow_submit = true;
+        if(army_cost > <%= army.cost %>){
+            allow_submit = false;
+        }
+
+        if(allow_submit === false){
+            alert("Reduce army cost")
+        }
+        else{
+            allow_submit = confirm('Are you sure you want to save this army?');
+        }
+
+        if(allow_submit === false){
+            e.preventDefault()
+        }
+
+        return allow_submit;
+    }
+
     update_squad_size = (markup_element) => {
         let selected = markup_element.find("[name*='[squad]'] option:selected").val();
         let squad = get_squad(selected)
@@ -389,7 +426,9 @@ let upgrade_data;
                 }
             })
             
-            markup_element.find("[name*='[cost]']").val(total_cost);         
+            markup_element.find("[name*='[cost]']").val(total_cost);
+            
+            update_army_cost();
         }
     }
 
