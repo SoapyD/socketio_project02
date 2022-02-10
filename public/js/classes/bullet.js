@@ -59,42 +59,44 @@ const bullet = class {
 	checkHit(bullet, unit) {
 		
 		//run kill function on bullet
-		bullet.parent.kill();
+		if(unit.parent.in_combat === false){
 
-		//DEAL DAMAGE IF IT'S NOT A BLAST WEAPON
-		if(bullet.parent.blast_radius === 1){
-			if(bullet.parent.player !== unit.parent.player){
+			bullet.parent.kill();
 
-				let options = {
-					damage: bullet.parent.damage,
-					ap: bullet.parent.unit.shoot_ap,
-					bonus: bullet.parent.unit.shooting_bonus,
-					random_roll: gameFunctions.getRandomInt(20),
-					attacker_id: bullet.parent.unit.id,
-					defender_id: unit.parent.id
-				}				
-				
-				
-				if(GameScene.online === false){
-					unit.parent.wound(options);
-				}else{
-					//ONLY SEND THE WOUND MESSAGE IF THIS IS THE ATTACKING PLAYER
-					if(gameFunctions.params.player_number === bullet.parent.unit.player){
-						let data = {
-							functionGroup: "socketFunctions",  
-							function: "messageAll",
-							room_name: gameFunctions.params.room_name,
-							returnFunctionGroup: "connFunctions",
-							returnFunction: "woundUnit",
-							returnParameters: options,
-							message: "Wound Unit"
-						}				
-						connFunctions.messageServer(data)
+			//DEAL DAMAGE IF IT'S NOT A BLAST WEAPON
+			if(bullet.parent.blast_radius === 1){
+				if(bullet.parent.player !== unit.parent.player){
+
+					let options = {
+						damage: bullet.parent.damage,
+						ap: bullet.parent.unit.shoot_ap,
+						bonus: bullet.parent.unit.shooting_bonus,
+						random_roll: gameFunctions.getRandomInt(20),
+						attacker_id: bullet.parent.unit.id,
+						defender_id: unit.parent.id
+					}				
+					
+					
+					if(GameScene.online === false){
+						unit.parent.wound(options);
+					}else{
+						//ONLY SEND THE WOUND MESSAGE IF THIS IS THE ATTACKING PLAYER
+						if(gameFunctions.params.player_number === bullet.parent.unit.player){
+							let data = {
+								functionGroup: "socketFunctions",  
+								function: "messageAll",
+								room_name: gameFunctions.params.room_name,
+								returnFunctionGroup: "connFunctions",
+								returnFunction: "woundUnit",
+								returnParameters: options,
+								message: "Wound Unit"
+							}				
+							connFunctions.messageServer(data)
+						}
 					}
 				}
 			}
 		}
-
 	}
 	
 	kill(){
@@ -106,7 +108,7 @@ const bullet = class {
 				let val = Math.pow(this.sprite.x - unit.sprite.x, 2) + Math.pow(this.sprite.y - unit.sprite.y, 2)
 				let dist = Math.round(Math.sqrt(val),0)
 				// console.log("WOUNDING2",dist)
-				if(dist <= (this.blast_radius / 2) * gameFunctions.tile_size){
+				if(unit.in_combat === false && dist <= (this.blast_radius / 2) * gameFunctions.tile_size){
 					
 					let options = {
 						damage: this.damage,

@@ -290,6 +290,7 @@ unselectHandler() {
 		this.checkCombat()
 		if(this.in_combat === false){
 			this.sprite_action.visible = false;
+			this.sprite.body.enable = false;
 		}		
 	}
 	
@@ -1573,7 +1574,8 @@ unselectHandler() {
 				if(add_dest === true){
 					gameFunctions.units.forEach((unit) => {
 	
-						if(unit.alive === true && unit.id !== this.id && unit.side !== this.side){
+						if(unit.alive === true && unit.id !== this.id 
+							&& unit.side !== this.side && unit.in_combat === false){
 							let check = unit.checkSpriteandPos(cell)
 							if(check === true){
 								add_dest = false;
@@ -1898,6 +1900,9 @@ unselectHandler() {
 					if(unit.fight_damage > 0){
 						this.in_combat = true;
 						unit.in_combat = true;
+
+						this.sprite.body.enable = false;
+						unit.sprite.body.enable = false;						
 
 						this.sprite_action.visible = true
 						unit.sprite_action.visible = true

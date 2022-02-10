@@ -256,6 +256,8 @@ GameUIScene.readyAdvanceMode = (actions=-1) => {
 			if(actions>-1){
 				GameScene.active_actions = actions;
 			}
+			// else{	
+			// }
 			GameUIScene.runAdvanceMode();
 		}else{		
 			let options = {
@@ -701,12 +703,13 @@ GameUIScene.activateShooting = () => {
 	let activated = -1;
 	gameFunctions.units.forEach((unit) => {
 		
-		if(GameScene.online === false){
-			unit.shoot();
-		}else{
+		if(unit.targets.length > 0){
+			if(unit.player === gameFunctions.params.player_number){
 
-			if(unit.targets.length > 0){
-				if(unit.player === gameFunctions.params.player_number){
+				if(GameScene.online === false){
+					unit.shoot();
+				}else{
+
 					let data = {
 						functionGroup: "socketFunctions",  
 						function: "messageAll",
@@ -725,10 +728,9 @@ GameUIScene.activateShooting = () => {
 					connFunctions.messageServer(data)
 				}
 				
-				activated = 1
 			}
-			
 		}
+		activated = 1
 	})	
 
 	return activated;
@@ -1387,6 +1389,7 @@ GameUIScene.checkAllCombat = () => {
 	// RESET ALL COMBAT STATUS'
 	gameFunctions.units.forEach((unit) => {
 		unit.in_combat = false;
+		unit.sprite.body.enable = false;
 		unit.sprite_action.visible = false;
 	})
 
