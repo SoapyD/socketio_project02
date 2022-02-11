@@ -125,26 +125,32 @@ exports.create = async(req,res) => {
 //  #####  #       ######  #     #    #    ####### 
 
 exports.update = async(req,res) => {
+
+	try{
+		let id = req.params.id;
 	
-	let id = req.params.id;
-
-	let item = await utils.queries.findData({
-		model: "Army"
-		,search_type: "findOne"
-		,params: [
-			{_id: id}
-		]
-	})
-
-	let options = {
-		model: "Army",
-		params: []
+		let item = await utils.queries.findData({
+			model: "Army"
+			,search_type: "findOne"
+			,params: [
+				{_id: id}
+			]
+		})
+	
+		let options = {
+			model: "Army",
+			params: []
+		}
+		options.params.push(req.body.params)
+	
+		let updated = await utils.queries.updateData(item[0], options)
+	
+		req.flash("success", "Army Updated"); 
+		res.redirect("/army/" +req.params.id)	
+	}catch(err){
+		req.flash("error", "There was an error trying to save your army list"); 
+		res.redirect("/army/" +req.params.id)
 	}
-	options.params.push(req.body.params)
-
-	let updated = await utils.queries.updateData(item[0], options)
-
-	res.redirect("/army/" +req.params.id)	
 };
 
 // ######  ####### #       ####### ####### ####### 

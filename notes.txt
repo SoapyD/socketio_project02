@@ -17,6 +17,12 @@ MISC
 -Small units with no fight stats should still be locked into combat to stop them from easily moving away or shooting
 -Add in check that, if an army cost is changed, it'll take you to the army builder to edit the army is it's over
 
+-Need to add a check on the server when armies are being saved to make sure the point costs are correct
+
+-Need to add in error handlers to the army builder controller
+
+-Make drawn combat radius work in the same way coherancy works, so it doesn't have to overlap others to count, just touch them
+
 /////////////////////////////////////////
 SETUP
 /////////////////////////////////////////
@@ -47,7 +53,9 @@ SELECTION - PAUSED
 BUGS
 /////////////////////////////////////////
 
--BUG -When unit can't move over a space they're not allowed to go, the ghost still generate there and the "allowed" sound plays.
+-BUG -When units are hit when leaving combat, they're leaving their ghost behind
+
+-BUG -Single player shooting doesn't cause any damage
 
 -BUG -Desyncs occur if the window isn't visible.
     -Maybe add in a mechanism for numbering saves so when the window becomes active again, check the last save with the current value to see if things need updating.
@@ -55,9 +63,6 @@ BUGS
 -BUG -Reloads won't work sometimes because one of the armies loads in with only an army reference instead of the full army
     -This is down to a second player joining while the 1st player is still joining, which resets the unit list.
 
--BUG -Think tanks are catching people when they move out of combat range, so this needs turning off.
-
--BUG -Clicking on a unit in the fight phase when they're not in combat gets rid of their fight radius for some reason
 
 
 /////////////////////////////////////////
@@ -115,6 +120,16 @@ THINGS TO DO (EVENTUALLY)
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+-FIXED -Think tanks are catching people when they move out of combat range, so this needs turning off.
+
+-FIXED -The army being saved correctly isn't generating a popup
+
+-FIXED -When unit can't move over a space they're not allowed to go, the ghost still generate there and the "allowed" sound plays.
+    -Think this is an old bug that's now resolved
+
+-FIXED -Clicking on a unit in the fight phase when they're not in combat gets rid of their fight radius for some reason
+    -The fight radius was being reset without it being drawn again afterwards
 
 -FIXED -In offline mode, if a unit shoots it atuomatically skips the charge function. Need to double check this doesn't happen online
 

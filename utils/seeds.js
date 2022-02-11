@@ -265,7 +265,7 @@ exports.createMelee = async() => {
                 damage: 0,
                 ap: 0,
                 max_targets : 0,
-                range: 0
+                range: range * 1
             },
             {
                 name: "power fist",

@@ -729,8 +729,8 @@ GameUIScene.activateShooting = () => {
 				}
 				
 			}
+			activated = 1
 		}
-		activated = 1
 	})	
 
 	return activated;
