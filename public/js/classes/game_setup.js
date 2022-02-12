@@ -57,19 +57,12 @@ const game_setup = class {
 		
 		this.scene_container.multi_select_pause = false;	
 
-		// gameFunctions.units = []
 
 		let max_sides = 6;
 		this.scene_container.unit_collisions = []
 		for(let i=0; i<max_sides; i++){
 			this.scene_container.unit_collisions.push(this.scene.add.group());
 		}
-
-		// this.scene_container.fight_collisions = []
-		// for(let i=0; i<max_sides; i++){
-		// 	this.scene_container.fight_collisions.push(this.scene.add.group());
-		// }
-
 
 		// ██       ██████   █████  ██████         █████  ███████ ███████ ███████ ████████ ███████ 
 		// ██      ██    ██ ██   ██ ██   ██       ██   ██ ██      ██      ██         ██    ██      
@@ -303,7 +296,7 @@ const game_setup = class {
     
         // acceptable_tiles.push(1);
 		this.scene_container.pathfinder = new pathfinder(grid, acceptable_tiles);	
-		this.scene_container.collisions = new collisions({scene: this.scene});		
+		this.scene_container.u_collisions = new collisions({scene: this.scene});		
     }
     
 	getTileID = function(x,y){
@@ -725,6 +718,7 @@ const game_setup = class {
 		let bullets = [];
 		if(this.scene_container.bullets){
 			this.scene_container.bullets.forEach((bullet) => {
+
 				bullet.checkRange();
 				if(bullet.delete === false){
 					bullets.push(bullet)
@@ -758,7 +752,7 @@ const game_setup = class {
 					y: unit.sprite.y,
 					r: unit.sprite.width / 2
 				});
-				let clash = GameScene.collisions.circleCircle(click_circle, unit_circle);
+				let clash = GameScene.u_collisions.circleCircle(click_circle, unit_circle);
 
 				if(clash === true){
 					touching_unit = true;

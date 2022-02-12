@@ -14,14 +14,14 @@ MISC
 /////////////////////////////////////////
 
 -Add in a check for a player win so we know when the game ends
--Small units with no fight stats should still be locked into combat to stop them from easily moving away or shooting
--Add in check that, if an army cost is changed, it'll take you to the army builder to edit the army is it's over
 
--Need to add a check on the server when armies are being saved to make sure the point costs are correct
+-Small units with no fight stats should still be locked into combat to stop them from easily moving away or shooting
 
 -Need to add in error handlers to the army builder controller
 
--Make drawn combat radius work in the same way coherancy works, so it doesn't have to overlap others to count, just touch them
+-Need an exception for vehicles so they can shoot and be shot at even if in combat
+
+-Show a message if the unit disconnects from the game
 
 /////////////////////////////////////////
 SETUP
@@ -31,13 +31,15 @@ SETUP
 
 -Set a number of default armies and use author name to check for armies created by that user
 
+-Add in check that, if an army cost is changed, it'll take you to the army builder to edit the army is it's over
+
+-Need to add a check on the server when armies are being saved to make sure the point costs are correct
+
 
 
 /////////////////////////////////////////
 SELECTION - PAUSED
 /////////////////////////////////////////
-
--Show a message if the unit disconnects from the game
 
 -Create a means of selecting multiple units at the same times
     -DONE -Add in a "mouse selection class" to handle the mouse selection process
@@ -53,16 +55,12 @@ SELECTION - PAUSED
 BUGS
 /////////////////////////////////////////
 
--BUG -When units are hit when leaving combat, they're leaving their ghost behind
-
--BUG -Single player shooting doesn't cause any damage
-
 -BUG -Desyncs occur if the window isn't visible.
     -Maybe add in a mechanism for numbering saves so when the window becomes active again, check the last save with the current value to see if things need updating.
 
 -BUG -Reloads won't work sometimes because one of the armies loads in with only an army reference instead of the full army
     -This is down to a second player joining while the 1st player is still joining, which resets the unit list.
-
+    -Think this may be avoided by only sending unit data back to a single user if current unit data exists.
 
 
 /////////////////////////////////////////
@@ -120,6 +118,18 @@ THINGS TO DO (EVENTUALLY)
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+-FIXED -Single player shooting doesn't cause any damage
+    -i added in script that turned off the body when in combat but didn't properly turn it back on again
+    - Also didn't check at one point to see if the unit was in combat so just turned it off for everyone every time
+
+-FIXED -When units are hit when leaving combat, they're leaving their ghost behind
+    -This is caused error handler in unit.move() when the path is reached.
+    -This is also the reason why move actions aren't working once the bug occurs as "_is moving" isn't reset so prevents more movement from happening in future
+    -It was the fact I was removing actions and advancing the game ui mode in the fight action. Needed to include a clause that said if this was an opportunity attack, not to count the fight action
+
+
+-DONE -Make drawn combat radius work in the same way coherancy works, so it doesn't have to overlap others to count, just touch them
 
 -FIXED -Think tanks are catching people when they move out of combat range, so this needs turning off.
 

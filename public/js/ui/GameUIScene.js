@@ -80,10 +80,15 @@ var GameUIScene = new Phaser.Class({
 		console_text += 'Mode: '+gameFunctions.mode_state+'\r'
 		console_text += 'Actions: '+GameScene.active_actions+'\r\r'
 
-		console_text += 'Forces:\r'
-		gameFunctions.params.forces.forEach((force, id) => {
-			console_text += id+') | Side: '+force.side+' | Ready: '+force.ready+'\r'		
-		})
+		// console_text += 'Forces:\r'
+		// gameFunctions.params.forces.forEach((force, id) => {
+		// 	console_text += id+') | Side: '+force.side+' | Ready: '+force.ready+'\r'		
+		// })
+
+		console_text += 'Ready:\r'
+		gameFunctions.units.forEach((unit, id) => {
+			console_text += id+') | ready: '+unit.sprite.body.enable+'\r'
+		})		
 
 		GameUIScene.debug_console.updateText(console_text)
 
@@ -353,6 +358,7 @@ GameUIScene.advanceMode = () => {
 
 				gameFunctions.mode_state++;
 			}
+			// console.log("move: ",activated)
 			break;
 
 		
@@ -371,6 +377,7 @@ GameUIScene.advanceMode = () => {
 		case 6:
 			//setup shoot
 			options.mode = "shoot"
+
 			GameUIScene.selectMode(options);
 			gameFunctions.btn_sprite[0].updateText("trigger shoot")
 			if(gameFunctions.params.player_side === gameFunctions.current_side){
@@ -378,10 +385,12 @@ GameUIScene.advanceMode = () => {
 			}else{
 				GameUIScene.readyAdvanceMode();
 			}		
+			
+			//THIS IS CAUSING BODY RESETS
 			GameUIScene.checkAllCombat();
+			
 			connFunctions.saveGame("shoot");
 
-			// GameUIScene.setOthersReady();
 			gameFunctions.mode_state++;
 			break;
 
@@ -447,7 +456,6 @@ GameUIScene.advanceMode = () => {
 				GameUIScene.readyAdvanceMode();
 			}		
 
-			// GameUIScene.setOthersReady();		
 			connFunctions.saveGame("charge");			
 			gameFunctions.mode_state++;
 			break;
@@ -490,6 +498,7 @@ GameUIScene.advanceMode = () => {
 				
 				gameFunctions.mode_state++;
 			}
+			// console.log("charge: ",activated)
 			break;			
 
 		case 17:
@@ -1389,7 +1398,7 @@ GameUIScene.checkAllCombat = () => {
 	// RESET ALL COMBAT STATUS'
 	gameFunctions.units.forEach((unit) => {
 		unit.in_combat = false;
-		unit.sprite.body.enable = false;
+		unit.sprite.body.enable = true;
 		unit.sprite_action.visible = false;
 	})
 

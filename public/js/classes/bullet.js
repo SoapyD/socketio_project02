@@ -44,6 +44,7 @@ const bullet = class {
 		options.scene.physics.velocityFromAngle(Phaser.Math.RadToDeg(options.angle), this.speed, this.sprite.body.velocity);	
 		
 		
+		console.log(GameScene.unit_collisions[0])		
 		GameScene.unit_collisions.forEach((collider, i) => {
 			if(i !== this.side){
 				options.scene.physics.add.collider(this.sprite, GameScene.unit_collisions[i], this.checkHit)
@@ -180,7 +181,7 @@ const bullet = class {
 
 		if (current_range >= this.range && this.delete === false){
 			// console.log("THIS IS A RANGE KILL!!!!!!!!")
-			this.kill();
+			this.kill(); 
 		}
 		
 		let gridX = Math.floor(this.sprite.x/gameFunctions.tile_size);

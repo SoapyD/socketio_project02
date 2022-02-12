@@ -48,7 +48,7 @@ const unit = class {
 		this.targets = [];
 		
 		this.fight_name = options.fight_name;
-		this.fight_range = options.fight_range;
+		this.fight_range = options.fight_range ; //* (options.size + 1);
 		this.fight_ap = options.fight_ap;
 		this.fight_damage = options.fight_damage;
 		this.in_combat = false;
@@ -96,6 +96,8 @@ const unit = class {
 		this.sprite.setDepth(this.depth_sprite);
 		this.sprite.angle = options.angle;
 		this.sprite.parent = this
+
+		// this.sprite.enableBody(true, this.sprite.x, this.sprite.y, true, true);
 		GameScene.unit_collisions[this.side].add(this.sprite)
 		// this.sprite.on('pointerup', this.selectHander)
 		
@@ -290,7 +292,7 @@ unselectHandler() {
 		this.checkCombat()
 		if(this.in_combat === false){
 			this.sprite_action.visible = false;
-			this.sprite.body.enable = false;
+			this.sprite.body.enable = true;
 		}		
 	}
 	
@@ -776,6 +778,7 @@ unselectHandler() {
 	
 	drawFightRadius(){
 
+		
 		this.fight_graphic.clear();
 		let radius_graphic = this.fight_graphic;
 		radius_graphic.lineStyle(2, this.colour, 0.5);
@@ -784,6 +787,7 @@ unselectHandler() {
 		radius_graphic.fillCircleShape(circle).setDepth(this.depth_fight_radius);
 
 		radius_graphic.strokePath();		
+		/**/
 	}	
 
 
@@ -1418,6 +1422,7 @@ unselectHandler() {
 						this.in_combat = this.checkCombat();
 						
 
+						
 						if(this.in_combat === false && old_status === true){
 
 							if(this.in_combat_with){
@@ -1425,13 +1430,14 @@ unselectHandler() {
 									//allow allow that unit to strike if it has any combat damage to give
 									if(unit.fight_damage > 0){
 										unit.fight_targets.push(this.sprite.parent.id)
-										unit.fight();
+										unit.fight(true);
 									}
 								})
 								
 								this.in_combat_with = [];
 							}
 						}
+						/**/
 					
 						
 						
@@ -1461,12 +1467,12 @@ unselectHandler() {
 							}
 						}
 						catch (error){
-							// console.log("ERROR FINISHING PATH")
-							// console.log(error)
-							// console.log(end_path)
-							// console.log(this.path)
-							// console.log(this.path.length - 1)
-							// console.log("//////////////////////////////")
+							console.log("ERROR FINISHING PATH")
+							console.log(error)
+							console.log(end_path)
+							console.log(this.path)
+							console.log(this.path.length - 1)
+							console.log("//////////////////////////////")
 						}
 					}.bind(this)			
 				}
@@ -1715,7 +1721,7 @@ unselectHandler() {
 					y: pointer.y,
 					r: 1
 				});
-				clash = GameScene.collisions.circleCircle(click_circle, unit_circle);	
+				clash = GameScene.u_collisions.circleCircle(click_circle, unit_circle);	
 
 				if(clash === true){			
 					//IF IT DOES, CHECK TO SEE THEY'RE IN RANGE OF THE FIGHT RADIUS
@@ -1726,7 +1732,7 @@ unselectHandler() {
 						r: this.fight_range
 					});
 					
-					clash = GameScene.collisions.circleCircle(fight_circle, unit_circle);
+					clash = GameScene.u_collisions.circleCircle(fight_circle, unit_circle);
 
 					if(clash === false){
 						click_check = 0;
@@ -1845,7 +1851,7 @@ unselectHandler() {
 							y: this.ghost_sprite.y,
 							r: this.fight_range
 						});
-						clash = GameScene.collisions.circleCircle(fight_circle, unit_circle);						
+						clash = GameScene.u_collisions.circleCircle(fight_circle, unit_circle);						
 						
 					}
 				}else{
@@ -1856,25 +1862,10 @@ unselectHandler() {
 						y: this.sprite.y,
 						r: this.fight_range
 					});
-					// clash = GameScene.collisions.circleRect(fight_circle, rectangle);
-					clash = GameScene.collisions.circleCircle(fight_circle, unit_circle);					
+					clash = GameScene.u_collisions.circleCircle(fight_circle, unit_circle);					
 				}
 
-				if(clash === true){
-					
-					// let graphic1 = this.scene.add.graphics().setDepth(100);
-					// graphic1.lineStyle(2, 0x0000FF, 0.5);
-					// graphic1.fillStyle(0x0000FF, 0.05);
-					// let circle1 = new Phaser.Geom.Circle(unit_circle.x, unit_circle.y, unit_circle.r);
-					// graphic1.fillCircleShape(circle1).setDepth(100);
-					// graphic1.strokePath();	
-
-					// let graphic2 = this.scene.add.graphics().setDepth(100);
-					// graphic2.lineStyle(2, 0x0000FF, 0.5);
-					// graphic2.fillStyle(0x0000FF, 0.05);
-					// let circle2 = new Phaser.Geom.Circle(fight_circle.x, fight_circle.y, fight_circle.r);
-					// graphic2.fillCircleShape(circle2).setDepth(100);
-					// graphic2.strokePath()					
+				if(clash === true){				
 
 					const found = this.in_combat_with.some(el => el.id === unit.id);
 					// if (!found) arr.push({ id, username: name });
@@ -1905,8 +1896,9 @@ unselectHandler() {
 	/**/	
 	
 	
-	fight(){
-		// this.fought = true;
+	fight(opportunity=false){
+
+		
 		this.checkCombat()	
 		
 		this.fight_targets.forEach( async(target, i) => {
@@ -1932,6 +1924,7 @@ unselectHandler() {
 			new particle(options)		
 
 
+			
 			let roll = gameFunctions.getRandomInt(20);
 			options = {
 				damage: this.fight_damage,
@@ -1942,6 +1935,7 @@ unselectHandler() {
 				attacker_id: this.id,
 				defender_id: target
 			}			
+			
 			
 			if(GameScene.online === false){
 				let unit = gameFunctions.units[options.defender_id]			
@@ -1961,11 +1955,15 @@ unselectHandler() {
 					connFunctions.messageServer(data)
 				}
 			}		
-
-			GameScene.active_actions--;	
-			if(GameScene.active_actions === 0){
-				GameUIScene.readyAdvanceMode();		
+			
+			if(opportunity === false){
+				GameScene.active_actions--;	
+				if(GameScene.active_actions === 0){
+					GameUIScene.readyAdvanceMode();		
+				}
 			}
+
+			
 
 		})
 		
@@ -1973,6 +1971,8 @@ unselectHandler() {
 			this.fought = true;
 		}		
 		this.fight_targets = [];
+
+		
 	}
 	
 }
