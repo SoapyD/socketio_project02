@@ -310,15 +310,11 @@ exports.joinRoom = async(network, data)  => {
 				,users: saved_room.users
 				,forces: saved_room.forces								
 			}
-			network.socket.to(data.room_name).emit('message_client', return_data);
 
-			// saved_room.sockets.forEach((socket)=> {
-			// 	if(socket !== network.socket.id){
-			// 		return_data.function = "updateRoomInfo";
-			// 		return_data.message = "Update Room Info";
-			// 		network.io.to(socket).emit('message_client', return_data);
-			// 	}	
-			// })
+			if(has_saved_data === false){
+				network.socket.to(data.room_name).emit('message_client', return_data);
+			}
+			// network.io.to(network.socket.id).emit("message_client", return_data) 
 		}
 		
 		
@@ -467,6 +463,7 @@ exports.updateRoom = async(network, data) => {
 								readied++;
 							}
 						})
+						// console.log(data)
 						if(readied === total_side){
 							//END THE TURN
 							return_data.parameters.options = data.options;						
@@ -478,10 +475,12 @@ exports.updateRoom = async(network, data) => {
 								force.actions = 0;
 							})
 							updated_room.markModified('forces');	
-							updated_room = await queriesUtil.saveRoom(updated_room)	
+							updated_room = await queriesUtil.saveRoom(updated_room)
+
+							// console.log("ready up sent | force0: ",updated_room.forces[0].ready,' | force1: ',updated_room.forces[1].ready)
+							network.io.in(data.room_name).emit("message_client", return_data)
 						}
 
-						network.io.in(data.room_name).emit("message_client", return_data)
 					break;
 					
 					case "end turn":

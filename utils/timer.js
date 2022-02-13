@@ -19,7 +19,7 @@ exports.checkRooms = async() => {
     var cutoff = new Date();
     // cutoff.setDate(cutoff.getDate()-5);
     // cutoff.setMinutes(cutoff.getMinutes() - 5);
-    cutoff.setHours(cutoff.getHours() - 1);
+    cutoff.setHours(cutoff.getHours() - 2);
 
 	let rooms = await queriesUtil.findData({
 		model: "Room"

@@ -85,10 +85,10 @@ var GameUIScene = new Phaser.Class({
 		// 	console_text += id+') | Side: '+force.side+' | Ready: '+force.ready+'\r'		
 		// })
 
-		console_text += 'Ready:\r'
-		gameFunctions.units.forEach((unit, id) => {
-			console_text += id+') | ready: '+unit.sprite.body.enable+'\r'
-		})		
+		// console_text += 'Ready:\r'
+		// gameFunctions.units.forEach((unit, id) => {
+		// 	console_text += id+') | ready: '+unit.sprite.body.enable+'\r'
+		// })		
 
 		GameUIScene.debug_console.updateText(console_text)
 
@@ -235,6 +235,55 @@ GameUIScene.runAdvanceMode = () => {
 	}
 } 
 
+GameUIScene.checkGameEnd = () => {
+
+	// let force_check = [];
+	let max_sides = 0;
+	gameFunctions.params.forces.forEach((force) => {
+		// let info = {
+		// 	player: force.player_number,
+		// 	side: force.side,
+		// 	live_units: 0			
+		// }
+		// force_check.push(info)
+		if(force.side > max_sides){
+			max_sides = force.side
+		}
+	})
+
+	let sides = [];
+	for(i=0;i<=max_sides;i++){
+		sides.push(0)
+	}
+
+	//loop through units and count live units per force / side
+	gameFunctions.units.forEach((unit) => {
+		// let force = force_check[unit.player]
+		if(unit.alive === true){
+			// force.live_units++;
+			sides[unit.side] += 1;  
+		}
+	})
+
+	//
+	sides.forEach((side) => {
+		if(side === 0){
+			let options = {
+				scene: gameFunctions.current_scene,
+				pos: {
+					x: gameFunctions.config.width / 2,
+					y: gameFunctions.config.height / 2
+				},
+				text: "side "+side+" is defeated!"
+			}
+			new popup(options)	
+		}
+	})
+
+
+
+}
+
 GameUIScene.readyAdvanceMode = (actions=-1) => {
 
 	let cohesion_check = true;
@@ -267,7 +316,8 @@ GameUIScene.readyAdvanceMode = (actions=-1) => {
 		}else{		
 			let options = {
 				completion_function_group: "GameUIScene",
-				completion_function: 'runAdvanceMode'		
+				completion_function: 'runAdvanceMode',
+				current_mode: gameFunctions.mode_state		
 			}
 			if(actions > -1){
 				options.actions = actions

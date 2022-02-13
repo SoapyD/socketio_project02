@@ -7,21 +7,29 @@ SBT GAME NOTES
 /////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////
 
+/////////////////////////////////////////
+END GAME
+/////////////////////////////////////////
+
+-If a force doesn't have any units left, get rid of their buttons and auto-pass any ready-up check
+
+-Also add in a maximum number of turns that will trip the end game sequence
+
+-Prevent all in-game actions from being played when the game ends
+
+-Play a tune to show the game has ended,
+
+-Add in a final UI screen to show the details of who wins, point scores etc.
 
 
 /////////////////////////////////////////
 MISC
 /////////////////////////////////////////
 
--Add in a check for a player win so we know when the game ends
+-Need to check if a user has the right to join a room before they do. Currently causing an error on line 141 of queries when they try
 
--Small units with no fight stats should still be locked into combat to stop them from easily moving away or shooting
+-Need to remove colliders once they're no longer needed
 
--Need to add in error handlers to the army builder controller
-
--Need an exception for vehicles so they can shoot and be shot at even if in combat
-
--Show a message if the unit disconnects from the game
 
 /////////////////////////////////////////
 SETUP
@@ -38,34 +46,24 @@ SETUP
 
 
 /////////////////////////////////////////
-SELECTION - PAUSED
-/////////////////////////////////////////
-
--Create a means of selecting multiple units at the same times
-    -DONE -Add in a "mouse selection class" to handle the mouse selection process
-    -DONE -Change the selected_unit code so it can handle an array of selected units instead of just one
-    -DONE -Handle the differences if multiple units are selected at once
-    -Movement currently can't be calculated at once
-        -This is because there's only one instance of path finding which gets reset if more than one function is run
-
-
-
-
-/////////////////////////////////////////
 BUGS
 /////////////////////////////////////////
 
 -BUG -Desyncs occur if the window isn't visible.
     -Maybe add in a mechanism for numbering saves so when the window becomes active again, check the last save with the current value to see if things need updating.
 
--BUG -Reloads won't work sometimes because one of the armies loads in with only an army reference instead of the full army
-    -This is down to a second player joining while the 1st player is still joining, which resets the unit list.
-    -Think this may be avoided by only sending unit data back to a single user if current unit data exists.
+-SMALL BUG -The charge button appears too early if only one unit shoots. Appears normally elsewise, not sure why. Game looks to work normally however
+
+
 
 
 /////////////////////////////////////////
 THINGS TO DO (EVENTUALLY)
 /////////////////////////////////////////
+
+-Need an exception for vehicles so they can shoot and be shot at even if in combat
+
+-Show a message if the unit disconnects from the game
 
 -Generate a list of rooms belonging to the player / that they're in as well as a global room list
 
@@ -86,8 +84,16 @@ THINGS TO DO (EVENTUALLY)
     -agile - leave/pass combat zones without incurring damage
 
 
+/////////////////////////////////////////
+SELECTION - PAUSED
+/////////////////////////////////////////
 
-
+-Create a means of selecting multiple units at the same times
+    -DONE -Add in a "mouse selection class" to handle the mouse selection process
+    -DONE -Change the selected_unit code so it can handle an array of selected units instead of just one
+    -DONE -Handle the differences if multiple units are selected at once
+    -Movement currently can't be calculated at once
+        -This is because there's only one instance of path finding which gets reset if more than one function is run
 
 
 
@@ -118,6 +124,16 @@ THINGS TO DO (EVENTUALLY)
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+-DONE -Add in a check for a player win so we know when the game ends
+
+-DONE -Need to add in error handlers to the army builder controller
+
+-DONE -Small units with no fight stats should still be locked into combat to stop them from easily moving away or shooting
+
+-FIXED -Reloads won't work sometimes because one of the armies loads in with only an army reference instead of the full army
+    -This is down to a second player joining while the 1st player is still joining, which resets the unit list.
+    -Think this may be avoided by only sending unit data back to a single user if current unit data exists.
 
 -FIXED -Single player shooting doesn't cause any damage
     -i added in script that turned off the body when in combat but didn't properly turn it back on again

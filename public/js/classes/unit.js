@@ -495,6 +495,8 @@ unselectHandler() {
 			graphic.destroy();
 		})
 		this.delete = true;
+
+		GameUIScene.checkGameEnd();
 	}		
 	
 // ######  ######     #    #     # 

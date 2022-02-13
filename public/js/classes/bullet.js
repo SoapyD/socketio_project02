@@ -42,9 +42,7 @@ const bullet = class {
 		this.sprite.enableBody(true, options.unit.sprite.x, options.unit.sprite.y, true, true);
 
 		options.scene.physics.velocityFromAngle(Phaser.Math.RadToDeg(options.angle), this.speed, this.sprite.body.velocity);	
-		
-		
-		console.log(GameScene.unit_collisions[0])		
+			
 		GameScene.unit_collisions.forEach((collider, i) => {
 			if(i !== this.side){
 				options.scene.physics.add.collider(this.sprite, GameScene.unit_collisions[i], this.checkHit)
