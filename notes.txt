@@ -23,6 +23,18 @@ END GAME
 
 
 /////////////////////////////////////////
+UNIT MAKER
+/////////////////////////////////////////
+
+-CRUD for units
+-CRUD for shooting weapons
+-CRUD for melee weapons
+-CRUD for armour
+-CRUD for upgrades
+-CRUD for squads
+
+
+/////////////////////////////////////////
 MISC
 /////////////////////////////////////////
 
@@ -82,6 +94,10 @@ THINGS TO DO (EVENTUALLY)
     -Shields - Passive ability, reduce the damage of bullets when the pass through them. Can't be stacked
     -Jump packs - jump over terrain
     -agile - leave/pass combat zones without incurring damage
+
+-Weapon Types
+    -Flamer: template that hits all units underneath it
+    -cloud: leaves a area of affect that disappears after x turns
 
 
 /////////////////////////////////////////
