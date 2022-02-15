@@ -947,30 +947,35 @@ unselectHandler() {
 		let checking_tile = false
 		for(this.check_tiles_position; this.check_tiles_position<this.check_tiles.length;this.check_tiles_position++){
 
-			let check_tile = this.check_tiles[this.check_tiles_position]
-			let check_x = (check_tile.pointer.x / GameScene.map.tileWidth) + this.sprite_offset
-			let check_y = (check_tile.pointer.y / GameScene.map.tileHeight) + this.sprite_offset
-				
-			let found = this.live_tiles.some(i => i.x === check_x && i.y === check_y);
-
-			//NO NEED TO CHECK POSITIONS THAT AREN'T CLOSE ENOUGH TO REACH
-			let distance = gameFunctions.twoPointDistance({x: this.sprite.x / gameFunctions.tile_size, y: this.sprite.y / gameFunctions.tile_size}, {x: check_x,y: check_y});
-
-			let cell = GameScene.grid[check_y - this.sprite_offset][check_x - this.sprite_offset];
-			let acceptable_tile = false
-			if(GameScene.acceptable_tiles.includes(cell)){
-				acceptable_tile = true;
-			}			
-
-			if(found === false && distance <= this.movement && acceptable_tile === true){
-				checking_tile = true;
-				// console.log('before: ',this.check_tiles_position)
-				this.runDrawLiveTiles();
-
-				this.tiles_checked++;
-				break;
-			}else{
-				// console.log("found")
+			try{
+				let check_tile = this.check_tiles[this.check_tiles_position]
+				let check_x = (check_tile.pointer.x / GameScene.map.tileWidth) + this.sprite_offset
+				let check_y = (check_tile.pointer.y / GameScene.map.tileHeight) + this.sprite_offset
+					
+				let found = this.live_tiles.some(i => i.x === check_x && i.y === check_y);
+	
+				//NO NEED TO CHECK POSITIONS THAT AREN'T CLOSE ENOUGH TO REACH
+				let distance = gameFunctions.twoPointDistance({x: this.sprite.x / gameFunctions.tile_size, y: this.sprite.y / gameFunctions.tile_size}, {x: check_x,y: check_y});
+	
+				let cell = GameScene.grid[check_y - this.sprite_offset][check_x - this.sprite_offset];
+				let acceptable_tile = false
+				if(GameScene.acceptable_tiles.includes(cell)){
+					acceptable_tile = true;
+				}			
+	
+				if(found === false && distance <= this.movement && acceptable_tile === true){
+					checking_tile = true;
+					// console.log('before: ',this.check_tiles_position)
+					this.runDrawLiveTiles();
+	
+					this.tiles_checked++;
+					break;
+				}else{
+					// console.log("found")
+				}
+			}catch(error){
+				console.log("error in saveDrawLiveTiles method")
+				console.log(error)
 			}
 		}
 
