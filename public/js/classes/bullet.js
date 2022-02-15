@@ -42,10 +42,12 @@ const bullet = class {
 		this.sprite.enableBody(true, options.unit.sprite.x, options.unit.sprite.y, true, true);
 
 		options.scene.physics.velocityFromAngle(Phaser.Math.RadToDeg(options.angle), this.speed, this.sprite.body.velocity);	
-			
+		
+		this.colliders = [];
+
 		GameScene.unit_collisions.forEach((collider, i) => {
 			if(i !== this.side){
-				options.scene.physics.add.collider(this.sprite, GameScene.unit_collisions[i], this.checkHit)
+				this.colliders.push(options.scene.physics.add.collider(this.sprite, GameScene.unit_collisions[i], this.checkHit))
 			}
 		})
 
@@ -159,7 +161,10 @@ const bullet = class {
 			}
 		}
 		new particle(options)	
-		
+
+		this.colliders.forEach((collider) => {
+			options.scene.physics.world.removeCollider(collider);
+		})
 		
 		this.sprite.destroy();
 		GameScene.active_actions--;
