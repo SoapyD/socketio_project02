@@ -208,6 +208,7 @@ selectUnit(single_unit=false) {
 		if(single_unit === true){
 			GameScene.selected_unit = []
 			if(gameFunctions.mode === 'move' || gameFunctions.mode === 'charge'){
+				this.cohesionCheck();
 				this.setupDrawLiveTiles();
 			}			
 		}
@@ -1889,7 +1890,9 @@ unselectHandler() {
 						unit.in_combat = true;
 
 						this.sprite.body.enable = false;
-						unit.sprite.body.enable = false;						
+						if(unit.sprite.body){
+							unit.sprite.body.enable = false;						
+						}
 
 						this.sprite_action.visible = true
 						unit.sprite_action.visible = true

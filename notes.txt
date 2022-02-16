@@ -40,6 +40,8 @@ MISC
 
 -Need to check if a user has the right to join a room before they do. Currently causing an error on line 141 of queries when they try
 
+-Add an addition to the cohesion check that if it's not met all the units are punished with reduced stats. Represents the disarray of disordered combat.
+    -May be able to put in a check that this only applies to those units in the squad that have the lowest number of cohension connections
 
 /////////////////////////////////////////
 SETUP

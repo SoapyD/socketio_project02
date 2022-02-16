@@ -1448,7 +1448,9 @@ GameUIScene.checkAllCombat = () => {
 	// RESET ALL COMBAT STATUS'
 	gameFunctions.units.forEach((unit) => {
 		unit.in_combat = false;
-		unit.sprite.body.enable = true;
+		if(unit.sprite.body){
+			unit.sprite.body.enable = true; //
+		}
 		unit.sprite_action.visible = false;
 	})
 
