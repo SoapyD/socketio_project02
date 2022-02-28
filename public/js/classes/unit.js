@@ -406,6 +406,10 @@ unselectHandler() {
 	
 		let hit_chance = this.armour - (options.ap + options.bonus);
 		// let random_roll = this.getRandomInt(20);
+
+		if(gameFunctions.units[options.attacker_id].cohesion_check === false){
+			options.random_roll = Math.round(options.random_roll / 2,0);
+		}
 		
 		let result = ""
 		if(options.random_roll >= hit_chance){
@@ -425,6 +429,11 @@ unselectHandler() {
 		let print_text = "";
 		let target;
 		switch(result){
+			case "critical success":
+				options.damage *= 2;
+				print_text = "crit success!\n-"+options.damage;
+				target = this;	
+			break;
 			case "pass":
 				print_text = "-"+options.damage;
 				target = this;
@@ -433,12 +442,6 @@ unselectHandler() {
 				print_text = "miss";
 				options.damage = 0;
 				target = this;
-			break;
-			case "critical success":
-				options.damage *= 2;
-				print_text = "crit success!\n-"+options.damage;
-				target = this;
-				
 			break;
 			case "critical fail":
 				options.damage = 0;

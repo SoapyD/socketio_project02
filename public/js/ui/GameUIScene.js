@@ -288,18 +288,18 @@ GameUIScene.readyAdvanceMode = (actions=-1) => {
 
 	let cohesion_check = true;
 
-	switch(gameFunctions.mode){
-		case "move":
-		case "charge":
-			gameFunctions.units.forEach((unit) => {
-				if(gameFunctions.params.player_side === gameFunctions.current_side){
-					if(unit.cohesion_check === false && unit.cohesion > 0){
-						cohesion_check = false;		
-					}
-				}
-			})				
-		break;
-	}	
+	// switch(gameFunctions.mode){
+	// 	case "move":
+	// 	case "charge":
+	// 		gameFunctions.units.forEach((unit) => {
+	// 			if(gameFunctions.params.player_side === gameFunctions.current_side){
+	// 				if(unit.cohesion_check === false && unit.cohesion > 0){
+	// 					cohesion_check = false;		
+	// 				}
+	// 			}
+	// 		})				
+	// 	break;
+	// }	
 
 
 	if(cohesion_check === true){
@@ -694,11 +694,11 @@ GameUIScene.advanceMode = () => {
 GameUIScene.activateMovement = () => {
 	
 	let cohesion_check = true
-	gameFunctions.units.forEach((unit) => {
-		if(unit.cohesion_check === false && unit.cohesion > 0){
-			cohesion_check = false;		
-		}
-	})		
+	// gameFunctions.units.forEach((unit) => {
+	// 	if(unit.cohesion_check === false && unit.cohesion > 0){
+	// 		cohesion_check = false;		
+	// 	}
+	// })		
 	
 	let activated = 0;
 	if(cohesion_check === true){
@@ -811,11 +811,11 @@ GameUIScene.activateCharging = () => {
 	//ALSO CHECK ALL CHARGING UNITS ARE NEXT TO AN ENEMY UNITS
 	let in_combat = false;
 	
-	gameFunctions.units.forEach((unit) => {
-		if(unit.cohesion_check === false && unit.cohesion > 0){
-			cohesion_check = false;
-		}
-	})
+	// gameFunctions.units.forEach((unit) => {
+	// 	if(unit.cohesion_check === false && unit.cohesion > 0){
+	// 		cohesion_check = false;
+	// 	}
+	// })
 	
 	let activated = 0;
 	if(cohesion_check === true){ // && in_combat === true){
