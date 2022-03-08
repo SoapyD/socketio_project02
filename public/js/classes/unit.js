@@ -180,79 +180,112 @@ const unit = class {
 // #     # #       #       #       #     #    #    #     # #    #  #     # 
 //  #####  ####### ####### #######  #####     #    ####### #     #  #####  	
 
-selectUnit(single_unit=false) {
+selectUnit(single_unit=false) { //
 
-	let skip = false
-	if(GameScene.online === true){
-		if(this.player !== gameFunctions.params.player_number){
-			skip = true;
+	try{
+
+		let skip = false
+		if(GameScene.online === true){
+			if(this.player !== gameFunctions.params.player_number){
+				skip = true;
+			}
 		}
-	}
 
-	if (this.side === gameFunctions.current_side && skip === false){
-		//TURN OLD SELECTED PLAYER MARKER, WHITE
+		if (this.side === gameFunctions.current_side && skip === false){
+			//TURN OLD SELECTED PLAYER MARKER, WHITE
 
-		if(GameScene.selected_unit){
+			if(GameScene.selected_unit){
 
+				GameScene.selected_unit.forEach((selected_unit) => {
+					selected_unit.resetColours();
+					if(gameFunctions.mode === "fight"){
+						selected_unit.resetFightRadius();
+					}
+					if(single_unit === true){
+						selected_unit.unselectHandler();
+					}
+				})
+			}
+
+			if(single_unit === true){
+				GameScene.selected_unit = []
+				if(gameFunctions.mode === 'move' || gameFunctions.mode === 'charge'){
+					this.cohesionCheck();
+					this.setupDrawLiveTiles();
+				}			
+			}
+			GameScene.selected_unit.push(this);
+			
 			GameScene.selected_unit.forEach((selected_unit) => {
-				selected_unit.resetColours();
-				if(gameFunctions.mode === "fight"){
-					selected_unit.resetFightRadius();
-				}
-				if(single_unit === true){
-					selected_unit.unselectHandler();
-				}
-			})
+				selected_unit.drawFlash(false)
+			})		
+			
+			//RESET GHOST & COHESION IF THE GHOST SPRITE ISN'T SELECTED
+			if(!this.is_ghost){
+				this.resetGhost();
+			}
+			
+			// if(gameFunctions.mode === "fight"){
+			// 	this.drawFightRadius()
+			// }
 		}
 
-		if(single_unit === true){
-			GameScene.selected_unit = []
-			if(gameFunctions.mode === 'move' || gameFunctions.mode === 'charge'){
-				this.cohesionCheck();
-				this.setupDrawLiveTiles();
-			}			
+	}catch(e){
+
+		let options = {
+			"class": "unit",
+			"function": "selectUnit",
+			"e": e
 		}
-		GameScene.selected_unit.push(this);
-		
-		GameScene.selected_unit.forEach((selected_unit) => {
-			selected_unit.drawFlash(false)
-		})		
-		
-		//RESET GHOST & COHESION IF THE GHOST SPRITE ISN'T SELECTED
-		if(!this.is_ghost){
-			this.resetGhost();
-		}
-		
-		// if(gameFunctions.mode === "fight"){
-		// 	this.drawFightRadius()
-		// }
+		errorHandler.log(options)
 	}
+
 }
 
 
 //THIS CODE IS RUN IF THE UNIT IS SELECTED DIRECTLY INSTEAD OF SELECTED EN-MASSE
 selectHander (pointer) {
 
-	if (pointer.leftButtonReleased())
-	{
-		this.parent.selectUnit(true);
-		GameScene.sfx['select'].play();		
-		GameScene.left_click = false;
-	}
+	try{	
+		if (pointer.leftButtonReleased())
+		{
+			this.parent.selectUnit(true);
+			GameScene.sfx['select'].play();		
+			GameScene.left_click = false;
+		}
+	}catch(e){
+
+		let options = {
+			"class": "unit",
+			"function": "selectHander",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
 }
 
 
 unselectHandler() {
 	
-	// GameScene.selected_unit.drawFlash(true)
-	// GameScene.selected_unit = undefined;
-	this.drawFlash(true)
-	
-	if(gameFunctions.mode === "move" || gameFunctions.mode === "charge"){
-		if(this.cohesion > 0){
-			this.cohesionCheck();	
+	try{		
+		// GameScene.selected_unit.drawFlash(true)
+		// GameScene.selected_unit = undefined;
+		this.drawFlash(true)
+		
+		if(gameFunctions.mode === "move" || gameFunctions.mode === "charge"){
+			if(this.cohesion > 0){
+				this.cohesionCheck();	
+			}
 		}
-	}
+	}catch(e){
+
+		let options = {
+			"class": "unit",
+			"function": "unselectHandler",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
 }
 
 
@@ -266,7 +299,8 @@ unselectHandler() {
 // #    #  #       #     # #          #    #     # 
 // #     # #######  #####  #######    #     #####  	
 	
-	resetColours(){
+resetColours(){
+	try{	
 		if(this.path.length > 0){
 			let colours = {
 				line_colour: 0x808080,
@@ -281,10 +315,19 @@ unselectHandler() {
 			}
 			this.drawPath(colours)
 		}
-		
-	}
-	
-	resetLocks() {
+	}catch(e){
+
+		let options = {
+			"class": "unit",
+			"function": "resetColours",
+			"e": e
+		}
+		errorHandler.log(options)
+	}	
+}
+
+resetLocks() {
+	try{	
 		this.moved = false;
 		this.shot = false;
 		this.fought = false;		
@@ -295,13 +338,33 @@ unselectHandler() {
 			this.sprite_action.visible = false;
 			this.sprite.body.enable = true;
 		}		
-	}
-	
-	resetCohesionGraphic() {
+	}catch(e){
+
+		let options = {
+			"class": "unit",
+			"function": "resetLocks",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
+}
+
+resetCohesionGraphic() {
+	try{	
 		this.cohesion_graphic.clear()
-	}
-	
-	resetActions() {
+	}catch(e){
+
+		let options = {
+			"class": "unit",
+			"function": "resetCohesionGraphic",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
+}
+
+resetActions() {
+	try{	
 		this.path = [];
 		this.targets = [];
 		this.fight_targets = [];	
@@ -323,10 +386,19 @@ unselectHandler() {
 		this.blast_graphics.forEach((graphic) => {
 			graphic.clear();
 		})
-	}
-	
-	resetMove() {
-		
+	}catch(e){
+
+		let options = {
+			"class": "unit",
+			"function": "resetActions",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
+}
+
+resetMove() {
+	try{	
 		this.path = [];
 		this.path_graphic.clear();		
 		this.resetGhost();
@@ -345,14 +417,33 @@ unselectHandler() {
 				/**/
 			}
 		})
-		
-	}
-	
-	resetFightRadius() {
+	}catch(e){
+
+		let options = {
+			"class": "unit",
+			"function": "resetMove",
+			"e": e
+		}
+		errorHandler.log(options)
+	}	
+}
+
+resetFightRadius() {
+	try{	
 		this.fight_graphic.clear();	
-	}
-	
-	resetGhost() {
+	}catch(e){
+
+		let options = {
+			"class": "unit",
+			"function": "resetFightRadius",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
+}
+
+resetGhost() {
+	try{	
 		if(this.sprite_ghost){
 			this.sprite_ghost.x = this.sprite.x;
 			this.sprite_ghost.y = this.sprite.y;
@@ -368,9 +459,19 @@ unselectHandler() {
 				this.cohesionCheck();	
 			}
 		}
-	}
-	
-	removeTarget() {
+	}catch(e){
+
+		let options = {
+			"class": "unit",
+			"function": "resetGhost",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
+}
+
+removeTarget() {
+	try{	
 		this.targets.pop();
 		this.blast_graphics.forEach((graphic) => {
 			graphic.clear();
@@ -378,32 +479,62 @@ unselectHandler() {
 		this.drawTarget(this.targets, this.blast_radius);
 		// this.drawInfo(this.sprite);
 		this.updateElements(this.sprite);
-	}
-	
-	removeFightTarget() {
+	}catch(e){
+
+		let options = {
+			"class": "unit",
+			"function": "removeTarget",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
+}
+
+removeFightTarget() {
+	try{	
 		this.fight_targets.pop();	
 		this.drawTarget(this.fight_targets, 0);
 		// this.drawInfo(this.sprite);
 		this.updateElements(this.sprite);
-	}	
-	
-	resetDrawInfo(){
+	}catch(e){
+
+		let options = {
+			"class": "unit",
+			"function": "removeFightTarget",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
+}	
+
+resetDrawInfo(){
+	try{	
 		this.text.setText("");
 		this.text_graphic.clear();
-	}	
-	
-	
+	}catch(e){
+
+		let options = {
+			"class": "unit",
+			"function": "resetDrawInfo",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
+}	
+
+
 	
 
 
-	// ██     ██  ██████  ██    ██ ███    ██ ██████  ██ ███    ██  ██████  
-	// ██     ██ ██    ██ ██    ██ ████   ██ ██   ██ ██ ████   ██ ██       
-	// ██  █  ██ ██    ██ ██    ██ ██ ██  ██ ██   ██ ██ ██ ██  ██ ██   ███ 
-	// ██ ███ ██ ██    ██ ██    ██ ██  ██ ██ ██   ██ ██ ██  ██ ██ ██    ██ 
-	//  ███ ███   ██████   ██████  ██   ████ ██████  ██ ██   ████  ██████ 
+// ██     ██  ██████  ██    ██ ███    ██ ██████  ██ ███    ██  ██████  
+// ██     ██ ██    ██ ██    ██ ████   ██ ██   ██ ██ ████   ██ ██       
+// ██  █  ██ ██    ██ ██    ██ ██ ██  ██ ██   ██ ██ ██ ██  ██ ██   ███ 
+// ██ ███ ██ ██    ██ ██    ██ ██  ██ ██ ██   ██ ██ ██  ██ ██ ██    ██ 
+//  ███ ███   ██████   ██████  ██   ████ ██████  ██ ██   ████  ██████ 
 
-	wound(options){
-	
+wound(options){
+
+	try{	
 		let hit_chance = this.armour - (options.ap + options.bonus);
 		// let random_roll = this.getRandomInt(20);
 
@@ -475,9 +606,19 @@ unselectHandler() {
 			GameUIScene.updatePointsHUD();
 			target.kill();
 		}
-	}	
-	
-	kill(){	
+	}catch(e){
+
+		let options = {
+			"class": "unit",
+			"function": "wound",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
+}	
+
+kill(){	
+	try{	
 		this.alive = false;
 
 		GameScene.sfx[this.death_sfx].play();
@@ -501,7 +642,16 @@ unselectHandler() {
 		this.delete = true;
 
 		GameUIScene.checkGameEnd();
+	}catch(e){
+
+		let options = {
+			"class": "unit",
+			"function": "kill",
+			"e": e
+		}
+		errorHandler.log(options)
 	}		
+}		
 	
 // ######  ######     #    #     # 
 // #     # #     #   # #   #  #  # 
@@ -511,8 +661,9 @@ unselectHandler() {
 // #     # #    #  #     # #  #  # 
 // ######  #     # #     #  ## ##  	
 	
-	drawTint(){
+drawTint(){
 
+	try{	
 		let colour = GameScene.game_setup.getSideColour(this.side);
 		this.colour = colour.colour
 		this.colour_gray = colour.colour_gray;
@@ -528,10 +679,19 @@ unselectHandler() {
 		if(this.sprite_ghost){
 			this.sprite_ghost.setTint(this.colour)					
 		}
+	}catch(e){
 
+		let options = {
+			"class": "unit",
+			"function": "drawTint",
+			"e": e
+		}
+		errorHandler.log(options)
 	}
+}
 
-	drawFlash(active=true, gray_out=false){
+drawFlash(active=true, gray_out=false){
+	try{	
 		if(active === true && this.player === gameFunctions.params.player_number){
 			this.flash_tween = this.scene.tweens.addCounter({
 				targets: this, 
@@ -542,9 +702,9 @@ unselectHandler() {
 				onUpdate: function (tween) {
 					if(this.sprite_ghost){
 						const value = Math.floor(tween.getValue());
-	
+
 						let colour_info = this.sprite_ghost.parent.colour_info
-	
+
 						this.sprite_ghost.setTint(Phaser.Display.Color.GetColor(
 							colour_info.r + (value * colour_info.r_itt), 
 							colour_info.g + (value * colour_info.g_itt), 
@@ -565,29 +725,58 @@ unselectHandler() {
 				}
 			}
 		}
-	}
-	
-	
-	updateElements(sprite){
+	}catch(e){
+
+		let options = {
+			"class": "unit",
+			"function": "drawFlash",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
+}
+
+
+updateElements(sprite){
+	try{	
 		this.updateUnitElements(sprite);
 		this.drawInfo(sprite);
 		this.drawHealth(sprite);
 		this.drawFightRadius();
-	}
-	
-	updateUnitElements(sprite){
+	}catch(e){
+
+		let options = {
+			"class": "unit",
+			"function": "updateElements",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
+}
+
+updateUnitElements(sprite){
+	try{	
 		this.drawHealth(sprite);
 		this.sprite_symbol.x = sprite.x + (this.sprite.displayWidth / 2) - (this.sprite_symbol.displayWidth / 2)
 		this.sprite_symbol.y = sprite.y - (this.sprite.displayHeight / 2) + (this.sprite_symbol.displayHeight / 2)
 
 		this.sprite_action.x = sprite.x //+ (this.sprite.displayWidth / 2)
 		this.sprite_action.y = sprite.y //+ (this.sprite.displayHeight / 2)
+	}catch(e){
 
-	}	
-	
-	
-	drawInfo(sprite)
-	{
+		let options = {
+			"class": "unit",
+			"function": "updateUnitElements",
+			"e": e
+		}
+		errorHandler.log(options)
+	}
+}	
+
+
+drawInfo(sprite)
+{
+	try{	
 		let string = ""
 		switch(gameFunctions.mode){
 			case "shoot":
@@ -608,12 +797,20 @@ unselectHandler() {
 			this.text_graphic.fillStyle(0xFFFFFF).setDepth(this.depth_text_box);
 			this.text_graphic.fillRect(this.text.x, this.text.y, this.text.width, this.text.height);
 		}
+	}catch(e){
 
+		let options = {
+			"class": "unit",
+			"function": "drawInfo",
+			"e": e
+		}
+		errorHandler.log(options)
 	}
-	
+}
 
-	drawBacking(sprite, width){
 
+drawBacking(sprite, width){
+	try{
 		let radius_graphic = this.bar_back_graphic;
 		this.bar_back_graphic.clear();
 
@@ -622,12 +819,22 @@ unselectHandler() {
 		let circle = new Phaser.Geom.Circle(sprite.x, sprite.y, (width / 2)+5);
 		radius_graphic.fillCircleShape(circle).setDepth(this.depth_health - 0.5);
 
-		radius_graphic.strokePath();		
-	}	
+		radius_graphic.strokePath();	
+	}catch(e){
 
-    drawHealth(sprite)
-    {
-        this.bar_graphic.clear();
+		let options = {
+			"class": "unit",
+			"function": "drawBacking",
+			"e": e
+		}
+		errorHandler.log(options)
+	}			
+}	
+
+drawHealth(sprite)
+{
+	try{	
+		this.bar_graphic.clear();
 
 		let width = gameFunctions.tile_size * (this.size * 3)
 		if(width === 0){
@@ -651,16 +858,16 @@ unselectHandler() {
 		let angle = (270 / this.max_health) * this.health;
 		
 		let fill_colour = 0x2ECC40; //green
-        if (this.health < this.max_health / 2) 
-        {
+		if (this.health < this.max_health / 2) 
+		{
 
-            fill_colour = 0xffdb00; //yellow
-        }
+			fill_colour = 0xffdb00; //yellow
+		}
 		if (this.health < this.max_health / 4)
-        {
-            fill_colour = 0xff0000; //red
-        }
-	
+		{
+			fill_colour = 0xff0000; //red
+		}
+
 		
 		// arc (x, y, radius, startAngle, endAngle, anticlockwise)
 		this.drawBacking(sprite, width);
@@ -668,11 +875,21 @@ unselectHandler() {
 		this.bar_graphic.lineStyle(7, fill_colour, 0.75);
 		this.bar_graphic.arc(pos.x, pos.y, width / 2, Phaser.Math.DegToRad(angle), Phaser.Math.DegToRad(0), true) //.setStartAngle(90);
 		this.bar_graphic.strokePath();
-    }
-	
-	//CALLED AS PART OF CALLBACK IN "FINDPATH"
-	drawPath(colours) {
-		
+	}catch(e){
+
+		let options = {
+			"class": "unit",
+			"function": "drawHealth",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
+}
+
+//CALLED AS PART OF CALLBACK IN "FINDPATH"
+drawPath(colours) {
+
+	try{	
 		//UPDATE THE POSITIONAL DATA AND ANGLE OF THE SPRITE GHOST
 		if(this.path.length > 1){
 			let pos = this.path[this.path.length - 1];
@@ -708,7 +925,7 @@ unselectHandler() {
 			this.path_graphic.beginPath();
 
 			this.path.forEach((pos, i) => {
-	
+
 				if (i !== 0){
 					this.path_graphic.lineTo(pos.x * gameFunctions.tile_size, pos.y * gameFunctions.tile_size);
 				}
@@ -720,7 +937,7 @@ unselectHandler() {
 			})				
 			
 			this.path_graphic.strokePath();				
-	
+
 			this.sprite.setTint(0x808080) //turn unit grey if it has a ghost path
 			this.sprite.alpha = 0 //.25;
 			
@@ -732,13 +949,22 @@ unselectHandler() {
 		this.cohesion_graphic.fillCircleShape(circle);
 
 		this.cohesion_graphic.strokePath();		
-		
-	}		
-	
-	
-	//CALLED AS PART OF CALLBACK IN "FINDPATH"
-	drawTarget(targets, blast_radius) {	
-		
+	}catch(e){
+
+		let options = {
+			"class": "unit",
+			"function": "drawPath",
+			"e": e
+		}
+		errorHandler.log(options)
+	}	
+}		
+
+
+//CALLED AS PART OF CALLBACK IN "FINDPATH"
+drawTarget(targets, blast_radius) {	
+
+	try{	
 		if (targets){
 			
 			//RESET THE DRAW GRAPHICS
@@ -779,12 +1005,21 @@ unselectHandler() {
 
 			this.path_graphic.strokePath();		
 		}
-	}		
-	
-	
-	drawFightRadius(){
+	}catch(e){
 
-		
+		let options = {
+			"class": "unit",
+			"function": "drawTarget",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
+}		
+
+
+drawFightRadius(){
+
+	try{	
 		this.fight_graphic.clear();
 		let radius_graphic = this.fight_graphic;
 		radius_graphic.lineStyle(2, this.colour, 0.5);
@@ -794,7 +1029,16 @@ unselectHandler() {
 
 		radius_graphic.strokePath();		
 		/**/
-	}	
+	}catch(e){
+
+		let options = {
+			"class": "unit",
+			"function": "drawFightRadius",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
+}	
 
 
 	// ██████  ██████   █████  ██     ██       ██      ██ ██    ██ ███████       ████████ ██ ██      ███████ ███████ 
@@ -803,21 +1047,22 @@ unselectHandler() {
 	// ██   ██ ██   ██ ██   ██ ██ ███ ██       ██      ██  ██  ██  ██               ██    ██ ██      ██           ██ 
 	// ██████  ██   ██ ██   ██  ███ ███        ███████ ██   ████   ███████          ██    ██ ███████ ███████ ███████ 
 
-	getSpiralMatrix = (n, x_start, y_start) => {
-        const results = [];
-        // for(let i=0;i<n;i++){
-        // 	results.push([])
-        // }
+getSpiralMatrix = (n, x_start, y_start) => {
+	try{	
+		const results = [];
+		// for(let i=0;i<n;i++){
+		// 	results.push([])
+		// }
 
-        let counter = 1;
-        let startRow = 0;
-        let endRow = n - 1;
-        let startColumn = 0;
-        let endColumn = n - 1;
+		let counter = 1;
+		let startRow = 0;
+		let endRow = n - 1;
+		let startColumn = 0;
+		let endColumn = n - 1;
 
-        while(startColumn <= endColumn && startRow <= endRow){
+		while(startColumn <= endColumn && startRow <= endRow){
 			//COUNT TOP ROW FROM LEFT TO RIGHT
-        	for(let i= startColumn; i <= endColumn; i++){
+			for(let i= startColumn; i <= endColumn; i++){
 				// results[startRow][i] = counter;
 				results.push({
 					id: counter,
@@ -826,12 +1071,12 @@ unselectHandler() {
 					y: (y_start + startRow) * GameScene.map.tileHeight
 					}
 				})
-        		counter++;
-        	}
-        	startRow++;
+				counter++;
+			}
+			startRow++;
 
 			//COUNT RIGHT COLUMN FROM TOP TO BOTTOM
-        	for(let i=startRow; i<= endRow; i++){
+			for(let i=startRow; i<= endRow; i++){
 				// results[i][endColumn] = counter;
 				results.push({
 					id: counter,
@@ -840,12 +1085,12 @@ unselectHandler() {
 					y: (y_start + i) * GameScene.map.tileHeight
 					}
 				})				
-        		counter++;
-        	}
-        	endColumn--;
+				counter++;
+			}
+			endColumn--;
 			
 			//BOTTOM ROW
-        	for(let i=endColumn; i>= startColumn; i--){
+			for(let i=endColumn; i>= startColumn; i--){
 				// results[endRow][i] = counter;
 				results.push({
 					id: counter,
@@ -854,11 +1099,11 @@ unselectHandler() {
 					y: (y_start + endRow) * GameScene.map.tileHeight
 					}
 				})						
-        		counter++;
-        	}
-        	endRow--;
+				counter++;
+			}
+			endRow--;
 
-        	for(let i=endRow; i>=startRow; i--){
+			for(let i=endRow; i>=startRow; i--){
 				// results[i][startColumn] = counter;
 				results.push({
 					id: counter,
@@ -867,17 +1112,26 @@ unselectHandler() {
 					y: (y_start + i) * GameScene.map.tileHeight
 					}
 				})					
-        		counter++;
-        	}
-        	startColumn++;			
+				counter++;
+			}
+			startColumn++;			
 		}
 		
 		return results;
-    }
-			
+	}catch(e){
 
-	setupDrawLiveTiles() {
+		let options = {
+			"class": "unit",
+			"function": "getSpiralMatrix",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
+}
+		
 
+setupDrawLiveTiles() {
+	try{
 		this.live_tiles = [];
 		this.check_tiles = [];
 		this.check_tiles_position = 0;
@@ -910,20 +1164,39 @@ unselectHandler() {
 
 		this.tiles_checked = 0;
 		this.runDrawLiveTiles()
-	}
+	}catch(e){
 
-	runDrawLiveTiles() {
+		let options = {
+			"class": "unit",
+			"function": "setupDrawLiveTiles",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
+}
+
+runDrawLiveTiles() {
+	try{	
 		// console.log('during: ',this.check_tiles_position)
 		this.generatePath(this.check_tiles[this.check_tiles_position], "saveDrawLiveTiles", "saveDrawLiveTiles")
-	}
-	
-	saveDrawLiveTiles(process) {
-		
+	}catch(e){
+
+		let options = {
+			"class": "unit",
+			"function": "runDrawLiveTiles",
+			"e": e
+		}
+		errorHandler.log(options)
+	}	
+}
+
+saveDrawLiveTiles(process) {
+	try{	
 		//only use process data if it exists
 		if(process){
 			if(process.path_found === true){
 				// console.log("path found")
-	
+
 				//ADD THE PATH ELEMENTS TO THE LIVE TILES LIST
 				if(process.path){
 					if(process.path.length){
@@ -934,10 +1207,10 @@ unselectHandler() {
 								this.live_tiles.push(pos);
 							}
 						})
-	
+
 					}
 				}
-	
+
 			}else{
 				// console.log("no path")
 				//no path found
@@ -957,21 +1230,21 @@ unselectHandler() {
 				let check_y = (check_tile.pointer.y / GameScene.map.tileHeight) + this.sprite_offset
 					
 				let found = this.live_tiles.some(i => i.x === check_x && i.y === check_y);
-	
+
 				//NO NEED TO CHECK POSITIONS THAT AREN'T CLOSE ENOUGH TO REACH
 				let distance = gameFunctions.twoPointDistance({x: this.sprite.x / gameFunctions.tile_size, y: this.sprite.y / gameFunctions.tile_size}, {x: check_x,y: check_y});
-	
+
 				let cell = GameScene.grid[check_y - this.sprite_offset][check_x - this.sprite_offset];
 				let acceptable_tile = false
 				if(GameScene.acceptable_tiles.includes(cell)){
 					acceptable_tile = true;
 				}			
-	
+
 				if(found === false && distance <= this.movement && acceptable_tile === true){
 					checking_tile = true;
 					// console.log('before: ',this.check_tiles_position)
 					this.runDrawLiveTiles();
-	
+
 					this.tiles_checked++;
 					break;
 				}else{
@@ -1020,7 +1293,16 @@ unselectHandler() {
 		// if(checking_tile === false){
 		// 	console.log("tiles checked:",this.tiles_checked)
 		// }
-	}
+	}catch(e){
+
+		let options = {
+			"class": "unit",
+			"function": "saveDrawLiveTiles",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
+}
 
 
 	
@@ -1033,16 +1315,37 @@ unselectHandler() {
 // #       #     # #    ## #     #    #     #  #     # #    ## #     # 
 // #        #####  #     #  #####     #    ### ####### #     #  #####  	
 
-	
-	getRandomInt(max) {
-  		return Math.floor(Math.random() * max) + 1;
-	}
-	
-	async delay(ms) {
-		return new Promise(resolve => setTimeout(resolve, ms));
+
+getRandomInt(max) {
+	try{	
+		return Math.floor(Math.random() * max) + 1;
+	}catch(e){
+
+		let options = {
+			"class": "unit",
+			"function": "getRandomInt",
+			"e": e
+		}
+		errorHandler.log(options)
 	}		
-	
-	checkSpriteOverlap(spriteA, spriteB, adjacent=false){
+}
+
+async delay(ms) {
+	try{	
+		return new Promise(resolve => setTimeout(resolve, ms));
+	}catch(e){
+
+		let options = {
+			"class": "unit",
+			"function": "delay",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
+}		
+
+checkSpriteOverlap(spriteA, spriteB, adjacent=false){
+	try{	
 		var boundsA = spriteA.getBounds();
 		var boundsB = spriteB.getBounds();
 
@@ -1062,9 +1365,19 @@ unselectHandler() {
 		}
 
 		return check;
-	}
-	
-	checkSpriteandPos(pointer){
+	}catch(e){
+
+		let options = {
+			"class": "unit",
+			"function": "checkSpriteOverlap",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
+}
+
+checkSpriteandPos(pointer){
+	try{	
 		var bounds = this.sprite.getBounds();
 
 		
@@ -1079,10 +1392,19 @@ unselectHandler() {
 		// }
 
 		return check;
-	}
-	
-	checkAngle(start_pos, end_pos) {
+	}catch(e){
 
+		let options = {
+			"class": "unit",
+			"function": "checkSpriteandPos",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
+}
+
+checkAngle(start_pos, end_pos) {
+	try{
 		let angle = 0
 		if(start_pos.x < end_pos.x){
 			angle = 0;
@@ -1098,7 +1420,16 @@ unselectHandler() {
 		}		
 		
 		return angle;
-	}	
+	}catch(e){
+
+		let options = {
+			"class": "unit",
+			"function": "checkAngle",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
+}	
 	
 	
 // #     # ####### #     # ####### 
@@ -1108,8 +1439,9 @@ unselectHandler() {
 // #     # #     #  #   #  #       
 // #     # #     #   # #   #       
 // #     # #######    #    ####### 	
-	
-	generatePath(options, callback, fail_callback) {
+
+generatePath(options, callback, fail_callback) {
+	try{	
 		let scene = this.scene;
 		let pointer = options.pointer;
 
@@ -1121,7 +1453,7 @@ unselectHandler() {
 		// console.log(toX,toY)
 		
 		if(toX < GameScene.map.width && toY < GameScene.map.height
-		  && toX >= 0 && toY >= 0){
+			&& toX >= 0 && toY >= 0){
 
 			var fromX = Math.floor(this.sprite.x/gameFunctions.tile_size);
 			var fromY = Math.floor(this.sprite.y/gameFunctions.tile_size);		
@@ -1146,20 +1478,38 @@ unselectHandler() {
 				this[callback]()
 			}
 		}
-	}
-	
-	findPath(options) {
+	}catch(e){
 
+		let options = {
+			"class": "unit",
+			"function": "generatePath",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
+}
+
+findPath(options) {
+	try{
 		this.generatePath(options,  "usePath");
-	}
+	}catch(e){
 
-	usePath(process){
+		let options = {
+			"class": "unit",
+			"function": "findPath",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
+}
 
+usePath(process){
+	try{
 		// console.log(process)
 		if(process){
 
 			if(process.path && process.pointer){
-	
+
 				let path = process.path
 				let pointer = process.pointer
 				
@@ -1188,16 +1538,16 @@ unselectHandler() {
 								
 								this.sprite_ghost.x = pos.x * gameFunctions.tile_size;
 								this.sprite_ghost.y = pos.y * gameFunctions.tile_size;
-	
+
 								let temp_check = false
-	
+
 								temp_check = this.checkSpriteOverlap(unit.sprite_ghost, this.sprite_ghost)
 								if(temp_check === true){
 									check = temp_check
 								}
 								
 							}
-	
+
 						})
 						
 						// 
@@ -1212,7 +1562,7 @@ unselectHandler() {
 					if(this.path.length >= last_path_pos + 1){
 						this.path = this.path.slice(0,last_path_pos + 1)
 					}
-	
+
 					
 					//SKIP IF IN CHARGE MODE AND UNIT HAD ALREADY SHOT
 					if(this.shot === true && gameFunctions.mode === "charge"){
@@ -1251,7 +1601,7 @@ unselectHandler() {
 							GameScene.sfx['action'].play();
 						}
 						else{
-	
+
 							let colours = {
 								line_colour: 0x00cccc,
 								fill_colour: 0x2ECC40,
@@ -1260,7 +1610,7 @@ unselectHandler() {
 								fill_alpha: 0.15,
 								width: 5
 							}
-	
+
 							this.drawPath(colours)
 							
 							GameScene.sfx['action'].play();
@@ -1270,11 +1620,20 @@ unselectHandler() {
 				}
 			}
 		}
-	}
-	
-	
-	cohesionCheck2() {
-		
+	}catch(e){
+
+		let options = {
+			"class": "unit",
+			"function": "usePath",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
+}
+
+
+cohesionCheck2() {
+	try{	
 		//GET THE UNITS IN THE SQUAD
 		let open = [];
 		gameFunctions.units.forEach((unit) => {
@@ -1329,10 +1688,19 @@ unselectHandler() {
 				
 			
 		}
-	}
-	
-	cohesionCheck() {
-		
+	}catch(e){
+
+		let options = {
+			"class": "unit",
+			"function": "cohesionCheck2",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
+}
+
+cohesionCheck() {
+	try{	
 		let units_check = 0;
 		gameFunctions.units.forEach((unit) => {
 			if(unit.alive === true && unit.player === this.player && unit.squad === this.squad) //unit.id !== this.id && 
@@ -1380,12 +1748,21 @@ unselectHandler() {
 		if(units_check === 1){
 			this.cohesion_check = true
 		}
-		
-	}
+	}catch(e){
 
-	
-	move(endFunction="move") {
-		
+		let options = {
+			"class": "unit",
+			"function": "cohesionCheck",
+			"e": e
+		}
+		errorHandler.log(options)
+	}	
+}
+
+
+move(endFunction="move") {
+
+	try{	
 		// this.cohesion_graphic.clear()
 		this.resetCohesionGraphic();
 		this.sprite.setTint(this.colour)
@@ -1470,7 +1847,7 @@ unselectHandler() {
 											this.moved = true;
 											this.combat_check = this.checkCombat();
 											GameScene.sfx["end_path"].play();
-											 
+												
 											break;
 										default:
 									}
@@ -1497,7 +1874,16 @@ unselectHandler() {
 			});
 			
 		}
-	}
+	}catch(e){
+
+		let options = {
+			"class": "unit",
+			"function": "move",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
+}
 	
 	
 //  #####  #     # ####### ####### ####### 
@@ -1508,8 +1894,9 @@ unselectHandler() {
 // #     # #     # #     # #     #    #    
 //  #####  #     # ####### #######    #   	
 	
-	findTarget (options) {
-		
+findTarget (options) {
+	
+	try{	
 		let scene = this.scene;
 		let pointer = options.pointer;		
 		
@@ -1644,12 +2031,20 @@ unselectHandler() {
 			// this.drawInfo(this.sprite)
 			this.updateElements(this.sprite)
 		}
-		
-	}
+	}catch(e){
+
+		let options = {
+			"class": "unit",
+			"function": "findTarget",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
+}
 	
 	
-	shoot() {
-		
+shoot() {
+	try{		
 		if(this.targets){
 
 			this.targets.forEach( async(target, i) => {
@@ -1698,8 +2093,16 @@ unselectHandler() {
 			
 			this.targets = [];
 		}		
-		
-	}
+	}catch(e){
+
+		let options = {
+			"class": "unit",
+			"function": "shoot",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
+}
 	
 	
 // ####### ###  #####  #     # ####### 
@@ -1710,7 +2113,9 @@ unselectHandler() {
 // #        #  #     # #     #    #    
 // #       ###  #####  #     #    #    		
 	
-	checkClickPosition (pointer) {
+checkClickPosition (pointer) {
+
+	try{	
 		let click_check = -1;
 
 		let click_circle;
@@ -1756,12 +2161,21 @@ unselectHandler() {
 		})
 
 		return click_check;		
+	}catch(e){
+
+		let options = {
+			"class": "unit",
+			"function": "checkClickPosition",
+			"e": e
+		}
+		errorHandler.log(options)
 	}
+}
 
 	
-	findFightTarget (options) {
+findFightTarget (options) {
 
-		
+	try{		
 		// let scene = this.scene;
 		let pointer = options.pointer;		
 		let skip = false
@@ -1831,12 +2245,21 @@ unselectHandler() {
 			
 			this.updateElements(this.sprite)
 		}
+	}catch(e){
+
+		let options = {
+			"class": "unit",
+			"function": "findFightTarget",
+			"e": e
+		}
+		errorHandler.log(options)
+	}
 		
-	}	
+}	
 
 	
-	checkCombat() {
-		
+checkCombat() {
+	try{		
 		let in_combat_range = false
 
 		let fight_circle;
@@ -1905,13 +2328,22 @@ unselectHandler() {
 		})
 
 		return in_combat_range;
+	}catch(e){
+
+		let options = {
+			"class": "unit",
+			"function": "checkCombat",
+			"e": e
+		}
+		errorHandler.log(options)
 	}
+}
 	/**/	
 	
 	
-	fight(opportunity=false){
+fight(opportunity=false){
 
-		
+	try{		
 		this.checkCombat()	
 		
 		this.fight_targets.forEach( async(target, i) => {
@@ -1984,9 +2416,17 @@ unselectHandler() {
 			this.fought = true;
 		}		
 		this.fight_targets = [];
+	}catch(e){
 
-		
+		let options = {
+			"class": "unit",
+			"function": "fight",
+			"e": e
+		}
+		errorHandler.log(options)
 	}
+		
+}
 	
 }
 

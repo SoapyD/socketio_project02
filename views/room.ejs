@@ -91,6 +91,8 @@
 </script>
 
 
+<script src="/js/classes/error_handler.js"></script>
+
 <script src="/js/classes/loading_Screen.js"></script>
 <script src="/js/classes/game_setup.js"></script>
 <script src="/js/classes/mouse_selection.js"></script>
@@ -127,6 +129,9 @@
 <script>
 
 <% if(typeof room !== 'undefined') { %>
+
+        const errorHandler = new error_handler({});	
+
         let room_data = <%- JSON.stringify(room) %>
         let army_data = <%- JSON.stringify(armies) %>  
         // console.log(room_data)

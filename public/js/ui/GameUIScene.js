@@ -109,33 +109,42 @@ var GameUIScene = new Phaser.Class({
 // ███████  ██████  ██   ██ ██████        ██████   ██████     ██       ██     ██████  ██   ████ ███████ 
 
 GameUIScene.loadSingleButton = (scene) => {
-	let callbackParams;
-	let options;
-	
-	options = {
-		scene: scene, 
-		x: gameFunctions.config.width,
-		y: 25,
-		height: 50,
-		width: 250,
-		label:  "+",
-		clickAction: GameUIScene.readyAdvanceMode,
-		callbackParams: callbackParams,
-		array: gameFunctions.btn_sprite
+	try{	
+		let callbackParams;
+		let options;
+		
+		options = {
+			scene: scene, 
+			x: gameFunctions.config.width,
+			y: 25,
+			height: 50,
+			width: 250,
+			label:  "+",
+			clickAction: GameUIScene.readyAdvanceMode,
+			callbackParams: callbackParams,
+			array: gameFunctions.btn_sprite
+		}
+		
+		gameFunctions.btn_sprite.push(new button(options))
+
+
+		// GameUIScene.resetReady();
+
+		if(gameFunctions.units_preload.length === 0){
+			GameUIScene.advanceSide()
+		}
+		else{
+			GameUIScene.checkButtonVisability();
+		}
+	}catch(e){
+
+		let options = {
+			"class": "GameUIScene",
+			"function": "loadSingleButton",
+			"e": e
+		}
+		errorHandler.log(options)
 	}
-	
-	gameFunctions.btn_sprite.push(new button(options))
-
-
-	// GameUIScene.resetReady();
-
-	if(gameFunctions.units_preload.length === 0){
-		GameUIScene.advanceSide()
-	}
-	else{
-		GameUIScene.checkButtonVisability();
-	}
-
 }
 
 
@@ -147,77 +156,96 @@ GameUIScene.loadSingleButton = (scene) => {
 // ███████ ███████ ███████ ███████  ██████    ██          ██      ██  ██████  ██████  ███████                                                                                                                            
 
 GameUIScene.selectMode = (options) => {
-	
-	// GameScene.sfx['button'].play();
-	if(GameScene.online === false){
-		GameUIScene.runSelectMode(options);
-	}else{
 
-		let data = {
-			functionGroup: "socketFunctions",  
-			function: "messageAll",
-			room_name: gameFunctions.params.room_name,
-			returnFunctionGroup: "GameUIScene",
-			returnFunction: "runSelectMode", //selectMode
-			message: "select mode",
-			returnParameters: {
-				options: options
+	try{	
+		// GameScene.sfx['button'].play();
+		if(GameScene.online === false){
+			GameUIScene.runSelectMode(options);
+		}else{
+
+			let data = {
+				functionGroup: "socketFunctions",  
+				function: "messageAll",
+				room_name: gameFunctions.params.room_name,
+				returnFunctionGroup: "GameUIScene",
+				returnFunction: "runSelectMode", //selectMode
+				message: "select mode",
+				returnParameters: {
+					options: options
+				}
 			}
-		}
-		connFunctions.messageServer(data)
-	}	
+			connFunctions.messageServer(data)
+		}	
+	}catch(e){
 
+		let options = {
+			"class": "GameUIScene",
+			"function": "selectMode",
+			"e": e
+		}
+		errorHandler.log(options)
+	}
 }
 
 // GameScene.selectMode = (options) => {
-GameUIScene.runSelectMode = (options) => {	
-	if(options.parameters){
-		options = options.parameters.options
-	}
-	// console.log("returned",options)	
-	
-	if(options.mode){
-		gameFunctions.mode = options.mode	
-
-		GameScene.resetTempSprites();
-		GameUIScene.setAllWaitingHUD();
-
-		GameScene.selected_unit = [];
+GameUIScene.runSelectMode = (options) => {
+	try{		
+		if(options.parameters){
+			options = options.parameters.options
+		}
+		// console.log("returned",options)	
 		
-		//RESET ALL PLAYER ACTIONS
-		if(gameFunctions.units){
-			gameFunctions.units.forEach((unit) => {
-				if(unit.alive === true && unit.side === gameFunctions.current_side){
-					unit.resetActions();
-					
-					unit.drawFlash(false)
-					unit.drawFlash(true)
+		if(options.mode){
+			gameFunctions.mode = options.mode	
 
-					switch(options.mode){
-						case "shoot":
-							if (unit.in_combat === true){
-								unit.drawFlash(false, true)
-							}
-							break;
-							case "charge":
-								if (unit.shot === true){
+			GameScene.resetTempSprites();
+			GameUIScene.setAllWaitingHUD();
+
+			GameScene.selected_unit = [];
+			
+			//RESET ALL PLAYER ACTIONS
+			if(gameFunctions.units){
+				gameFunctions.units.forEach((unit) => {
+					if(unit.alive === true && unit.side === gameFunctions.current_side){
+						unit.resetActions();
+						
+						unit.drawFlash(false)
+						unit.drawFlash(true)
+
+						switch(options.mode){
+							case "shoot":
+								if (unit.in_combat === true){
 									unit.drawFlash(false, true)
 								}
-							break;	
-							case "fight":
-								if (unit.fight_damage === 0){
-									unit.drawFlash(false, true)
-								}
-							break;														
+								break;
+								case "charge":
+									if (unit.shot === true){
+										unit.drawFlash(false, true)
+									}
+								break;	
+								case "fight":
+									if (unit.fight_damage === 0){
+										unit.drawFlash(false, true)
+									}
+								break;														
+						}
+
+					}else{
+						unit.drawFlash(false)//, true)
 					}
 
-				}else{
-					unit.drawFlash(false)//, true)
-				}
-
-			})
+				})
+			}
 		}
-	}	
+	}catch(e){
+
+		let options = {
+			"class": "GameUIScene",
+			"function": "runSelectMode",
+			"e": e
+		}
+		errorHandler.log(options)
+	}			
 }
 
 
@@ -229,448 +257,485 @@ GameUIScene.runSelectMode = (options) => {
 
 
 GameUIScene.runAdvanceMode = () => {
-	gameFunctions.mode_state++;
-	if(gameFunctions.mode_state > 27){
-		gameFunctions.mode_state = 0;
-	}
+	try{	
+		gameFunctions.mode_state++;
+		if(gameFunctions.mode_state > 27){
+			gameFunctions.mode_state = 0;
+		}
+	}catch(e){
+
+		let options = {
+			"class": "GameUIScene",
+			"function": "runAdvanceMode",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
 } 
 
 GameUIScene.checkGameEnd = () => {
 
-	// let force_check = [];
-	let max_sides = 0;
-	gameFunctions.params.forces.forEach((force) => {
-		// let info = {
-		// 	player: force.player_number,
-		// 	side: force.side,
-		// 	live_units: 0			
-		// }
-		// force_check.push(info)
-		if(force.side > max_sides){
-			max_sides = force.side
-		}
-	})
-
-	let sides = [];
-	for(i=0;i<=max_sides;i++){
-		sides.push(0)
-	}
-
-	//loop through units and count live units per force / side
-	gameFunctions.units.forEach((unit) => {
-		// let force = force_check[unit.player]
-		if(unit.alive === true){
-			// force.live_units++;
-			sides[unit.side] += 1;  
-		}
-	})
-
-	//
-	sides.forEach((side) => {
-		if(side === 0){
-			let options = {
-				scene: gameFunctions.current_scene,
-				pos: {
-					x: gameFunctions.config.width / 2,
-					y: gameFunctions.config.height / 2
-				},
-				text: "side "+side+" is defeated!"
+	try{	
+		// let force_check = [];
+		let max_sides = 0;
+		gameFunctions.params.forces.forEach((force) => {
+			// let info = {
+			// 	player: force.player_number,
+			// 	side: force.side,
+			// 	live_units: 0			
+			// }
+			// force_check.push(info)
+			if(force.side > max_sides){
+				max_sides = force.side
 			}
-			new popup(options)	
+		})
+
+		let sides = [];
+		for(i=0;i<=max_sides;i++){
+			sides.push(0)
 		}
-	})
 
+		//loop through units and count live units per force / side
+		gameFunctions.units.forEach((unit) => {
+			// let force = force_check[unit.player]
+			if(unit.alive === true){
+				// force.live_units++;
+				sides[unit.side] += 1;  
+			}
+		})
 
+		//
+		sides.forEach((side) => {
+			if(side === 0){
+				let options = {
+					scene: gameFunctions.current_scene,
+					pos: {
+						x: gameFunctions.config.width / 2,
+						y: gameFunctions.config.height / 2
+					},
+					text: "side "+side+" is defeated!"
+				}
+				new popup(options)	
+			}
+		})
+	}catch(e){
 
+		let options = {
+			"class": "GameUIScene",
+			"function": "checkGameEnd",
+			"e": e
+		}
+		errorHandler.log(options)
+	}
 }
 
 GameUIScene.readyAdvanceMode = (actions=-1) => {
 
-	let cohesion_check = true;
+	try{	
+		let cohesion_check = true;
 
-	// switch(gameFunctions.mode){
-	// 	case "move":
-	// 	case "charge":
-	// 		gameFunctions.units.forEach((unit) => {
-	// 			if(gameFunctions.params.player_side === gameFunctions.current_side){
-	// 				if(unit.cohesion_check === false && unit.cohesion > 0){
-	// 					cohesion_check = false;		
-	// 				}
-	// 			}
-	// 		})				
-	// 	break;
-	// }	
+		// switch(gameFunctions.mode){
+		// 	case "move":
+		// 	case "charge":
+		// 		gameFunctions.units.forEach((unit) => {
+		// 			if(gameFunctions.params.player_side === gameFunctions.current_side){
+		// 				if(unit.cohesion_check === false && unit.cohesion > 0){
+		// 					cohesion_check = false;		
+		// 				}
+		// 			}
+		// 		})				
+		// 	break;
+		// }	
 
 
-	if(cohesion_check === true){
-		gameFunctions.btn_sprite[0].hideButton();
-	
+		if(cohesion_check === true){
+			gameFunctions.btn_sprite[0].hideButton();
+		
 
-		if(GameScene.online === false){
-			if(actions>-1){
-				GameScene.active_actions = actions;
+			if(GameScene.online === false){
+				if(actions>-1){
+					GameScene.active_actions = actions;
+				}
+				// else{	
+				// }
+				GameUIScene.runAdvanceMode();
+			}else{		
+				let options = {
+					completion_function_group: "GameUIScene",
+					completion_function: 'runAdvanceMode',
+					current_mode: gameFunctions.mode_state		
+				}
+				if(actions > -1){
+					options.actions = actions
+				}
+		
+				connFunctions.sendReadyUp(options);
 			}
-			// else{	
-			// }
-			GameUIScene.runAdvanceMode();
-		}else{		
+		}else{
 			let options = {
-				completion_function_group: "GameUIScene",
-				completion_function: 'runAdvanceMode',
-				current_mode: gameFunctions.mode_state		
+				scene: GameScene.scene,
+				pos: {
+					x: GameScene.rectangle.x,
+					y: GameScene.rectangle.y
+				},
+				text: "Cannot move unless all unit coherency is met."
 			}
-			if(actions > -1){
-				options.actions = actions
-			}
-	
-			connFunctions.sendReadyUp(options);
+			new popup(options)		
 		}
-	}else{
+	}catch(e){
+
 		let options = {
-			scene: GameScene.scene,
-			pos: {
-				x: GameScene.rectangle.x,
-				y: GameScene.rectangle.y
-			},
-			text: "Cannot move unless all unit coherency is met."
+			"class": "GameUIScene",
+			"function": "readyAdvanceMode",
+			"e": e
 		}
-		new popup(options)		
-	}
+		errorHandler.log(options)
+	}		
 }
 
 GameUIScene.advanceMode = () => {
-	let options = {}
-	let check_side_only = false;
-	let all_ready = false;	
-	// let btn;
-	let activated = false;
-	let actions = 0;
-	switch(gameFunctions.mode_state){
+	try{	
+		let options = {}
+		let check_side_only = false;
+		let all_ready = false;	
+		// let btn;
+		let activated = false;
+		let actions = 0;
+		switch(gameFunctions.mode_state){
 
-		// #     # ####### #     # ####### 
-		// ##   ## #     # #     # #       
-		// # # # # #     # #     # #       
-		// #  #  # #     # #     # #####   
-		// #     # #     #  #   #  #       
-		// #     # #     #   # #   #       
-		// #     # #######    #    ####### 
+			// #     # ####### #     # ####### 
+			// ##   ## #     # #     # #       
+			// # # # # #     # #     # #       
+			// #  #  # #     # #     # #####   
+			// #     # #     #  #   #  #       
+			// #     # #     #   # #   #       
+			// #     # #######    #    ####### 
 
-		case 0:
-			//CREATE THE "MOVE" BUTTON
-			options.mode = "move"
-			GameUIScene.selectMode(options);
-			gameFunctions.btn_sprite[0].updateText("trigger move")
-			if(gameFunctions.params.player_side === gameFunctions.current_side){
-				gameFunctions.btn_sprite[0].showButton();				
-			}
-			else{
-				GameUIScene.readyAdvanceMode();
-			}
-			gameFunctions.mode_state++;	
-			break;
-
-		case 1:
-			//WAIT FOR PLAYERS TO READY UP
-			break;
-
-		case 2:
-			//PASS THE TOTAL ACTIONS TO PLAY TO THE SERVER
-			actions = 0;
-			gameFunctions.units.forEach((unit) => {
-				if(unit.path.length > 0){
-					//unit.path.length > 0 &&
-					if(unit.player === gameFunctions.params.player_number){
-						actions++;
-					}
+			case 0:
+				//CREATE THE "MOVE" BUTTON
+				options.mode = "move"
+				GameUIScene.selectMode(options);
+				gameFunctions.btn_sprite[0].updateText("trigger move")
+				if(gameFunctions.params.player_side === gameFunctions.current_side){
+					gameFunctions.btn_sprite[0].showButton();				
 				}
-			})	
-			GameUIScene.readyAdvanceMode(actions);
-			gameFunctions.mode_state++;			
-			break;
-
-		case 3:
-			//WAIT FOR PLAYERS TO READY UP SO TOTAL ACTIONS CAN BE PASSED BACK
-			break;
-
-		
-		case 4:
-			//activate movement
-			GameScene.game_setup.sfxHandler("button");
-			activated = GameUIScene.activateMovement();
-
-			if(activated !== 0){
-				GameScene.resetTempSprites();
-				gameFunctions.btn_sprite[0].hideButton()
-
-				if(activated === -1){
+				else{
 					GameUIScene.readyAdvanceMode();
 				}
+				gameFunctions.mode_state++;	
+				break;
 
-				gameFunctions.mode_state++;
-			}
-			// console.log("move: ",activated)
-			break;
+			case 1:
+				//WAIT FOR PLAYERS TO READY UP
+				break;
 
-		
-		case 5:
-			//WAIT FOR PLAYERS TO READY UP
-			break;
-
-		//  #####  #     # ####### ####### ####### 
-		// #     # #     # #     # #     #    #    
-		// #       #     # #     # #     #    #    
-		//  #####  ####### #     # #     #    #    
-		// 	     # #     # #     # #     #    #    
-		// #     # #     # #     # #     #    #    
-		//  #####  #     # ####### #######    #   
-
-		case 6:
-			//setup shoot
-			options.mode = "shoot"
-
-			GameUIScene.selectMode(options);
-			gameFunctions.btn_sprite[0].updateText("trigger shoot")
-			if(gameFunctions.params.player_side === gameFunctions.current_side){
-				gameFunctions.btn_sprite[0].showButton();				
-			}else{
-				GameUIScene.readyAdvanceMode();
-			}		
-			
-			//THIS IS CAUSING BODY RESETS
-			GameUIScene.checkAllCombat();
-			
-			connFunctions.saveGame("shoot");
-
-			gameFunctions.mode_state++;
-			break;
-
-		case 7:
-			//WAIT FOR PLAYERS TO READY UP
-			break;			
-
-		case 8:
-			//PASS THE TOTAL ACTIONS TO PLAY TO THE SERVER
-			actions = 0;
-			gameFunctions.units.forEach((unit) => {
-				if(unit.targets.length > 0){
-					//unit.path.length > 0 &&
-					if(unit.player === gameFunctions.params.player_number){
-						actions += unit.targets.length;
+			case 2:
+				//PASS THE TOTAL ACTIONS TO PLAY TO THE SERVER
+				actions = 0;
+				gameFunctions.units.forEach((unit) => {
+					if(unit.path.length > 0){
+						//unit.path.length > 0 &&
+						if(unit.player === gameFunctions.params.player_number){
+							actions++;
+						}
 					}
-				}
-			})	
-			GameUIScene.readyAdvanceMode(actions);
-			gameFunctions.mode_state++;			
-			break;
+				})	
+				GameUIScene.readyAdvanceMode(actions);
+				gameFunctions.mode_state++;			
+				break;
 
-		case 9:
-			//WAIT FOR PLAYERS TO READY UP SO TOTAL ACTIONS CAN BE PASSED BACK
-			break;
+			case 3:
+				//WAIT FOR PLAYERS TO READY UP SO TOTAL ACTIONS CAN BE PASSED BACK
+				break;
 
-		case 10:
-			//activate shoot
-			GameScene.game_setup.sfxHandler("button");			
-			activated = GameUIScene.activateShooting();
 			
-			if(activated !== 0){
-				gameFunctions.btn_sprite[0].hideButton()
-				gameFunctions.mode_state++;
+			case 4:
+				//activate movement
+				GameScene.game_setup.sfxHandler("button");
+				activated = GameUIScene.activateMovement();
 
-				if(activated === -1){
-					GameUIScene.readyAdvanceMode();	
-				}				
-			}
+				if(activated !== 0){
+					GameScene.resetTempSprites();
+					gameFunctions.btn_sprite[0].hideButton()
 
-			break;
-
-		case 11:
-			//WAIT FOR PLAYERS TO READY UP
-			break;	
-
-		//  #####  #     #    #    ######   #####  ####### 
-		// #     # #     #   # #   #     # #     # #       
-		// #       #     #  #   #  #     # #       #       
-		// #       ####### #     # ######  #  #### #####   
-		// #       #     # ####### #   #   #     # #       
-		// #     # #     # #     # #    #  #     # #       
-		//  #####  #     # #     # #     #  #####  ####### 
-
-		case 12:
-			//setup charge
-			options.mode = "charge"
-			GameUIScene.selectMode(options);
-			gameFunctions.btn_sprite[0].updateText("trigger charge")
-			if(gameFunctions.params.player_side === gameFunctions.current_side){
-				gameFunctions.btn_sprite[0].showButton();
-			}else{
-				GameUIScene.readyAdvanceMode();
-			}		
-
-			connFunctions.saveGame("charge");			
-			gameFunctions.mode_state++;
-			break;
-
-		case 13:
-			//WAIT FOR PLAYERS TO READY UP
-			break;	
-
-		case 14:
-			//PASS THE TOTAL ACTIONS TO PLAY TO THE SERVER
-			actions = 0;
-			gameFunctions.units.forEach((unit) => {
-				if(unit.path.length > 0){
-					//unit.path.length > 0 &&
-					if(unit.player === gameFunctions.params.player_number){
-						actions++;
+					if(activated === -1){
+						GameUIScene.readyAdvanceMode();
 					}
+
+					gameFunctions.mode_state++;
 				}
-			})	
-			GameUIScene.readyAdvanceMode(actions);
-			gameFunctions.mode_state++;			
-			break;
+				// console.log("move: ",activated)
+				break;
 
-		case 15:
-			//WAIT FOR PLAYERS TO READY UP SO TOTAL ACTIONS CAN BE PASSED BACK
-			break;
-
-		case 16:
-			//activate charge
-			GameScene.game_setup.sfxHandler("button");			
-			activated = GameUIScene.activateCharging();
 			
-			if(activated !== 0){
-				GameScene.resetTempSprites();
-				gameFunctions.btn_sprite[0].hideButton()
+			case 5:
+				//WAIT FOR PLAYERS TO READY UP
+				break;
 
-				if(activated === -1){
-					GameUIScene.readyAdvanceMode();	
-				}
+			//  #####  #     # ####### ####### ####### 
+			// #     # #     # #     # #     #    #    
+			// #       #     # #     # #     #    #    
+			//  #####  ####### #     # #     #    #    
+			// 	     # #     # #     # #     #    #    
+			// #     # #     # #     # #     #    #    
+			//  #####  #     # ####### #######    #   
+
+			case 6:
+				//setup shoot
+				options.mode = "shoot"
+
+				GameUIScene.selectMode(options);
+				gameFunctions.btn_sprite[0].updateText("trigger shoot")
+				if(gameFunctions.params.player_side === gameFunctions.current_side){
+					gameFunctions.btn_sprite[0].showButton();				
+				}else{
+					GameUIScene.readyAdvanceMode();
+				}		
 				
+				//THIS IS CAUSING BODY RESETS
+				GameUIScene.checkAllCombat();
+				
+				connFunctions.saveGame("shoot");
+
 				gameFunctions.mode_state++;
-			}
-			// console.log("charge: ",activated)
-			break;			
+				break;
 
-		case 17:
-			//WAIT FOR PLAYERS TO READY UP
-			break;	
+			case 7:
+				//WAIT FOR PLAYERS TO READY UP
+				break;			
 
-		// ####### ###  #####  #     # ####### 
-		// #        #  #     # #     #    #    
-		// #        #  #       #     #    #    
-		// #####    #  #  #### #######    #    
-		// #        #  #     # #     #    #    
-		// #        #  #     # #     #    #    
-		// #       ###  #####  #     #    #    
-
-		
-		case 18:
-			//setup fight
-			options.mode = "fight"
-			GameUIScene.selectMode(options);
-			gameFunctions.btn_sprite[0].updateText("trigger fight")
-			if(gameFunctions.params.player_side === gameFunctions.current_side){
-				gameFunctions.btn_sprite[0].showButton();				
-			}else{
-				GameUIScene.readyAdvanceMode();
-			}	
-			
-			// GameUIScene.setOthersReady();			
-			GameUIScene.checkAllCombat();
-			connFunctions.saveGame("fight");
-			gameFunctions.mode_state++;
-			break;
-
-		case 19:
-			//WAIT FOR PLAYERS TO READY UP
-			break;				
-
-		case 20:
-			//PASS THE TOTAL ACTIONS TO PLAY TO THE SERVER
-			actions = 0;
-			gameFunctions.units.forEach((unit) => {
-				if(unit.fight_targets.length > 0){
-					//unit.path.length > 0 &&
-					if(unit.player === gameFunctions.params.player_number){
-						actions += unit.fight_targets.length;
+			case 8:
+				//PASS THE TOTAL ACTIONS TO PLAY TO THE SERVER
+				actions = 0;
+				gameFunctions.units.forEach((unit) => {
+					if(unit.targets.length > 0){
+						//unit.path.length > 0 &&
+						if(unit.player === gameFunctions.params.player_number){
+							actions += unit.targets.length;
+						}
 					}
+				})	
+				GameUIScene.readyAdvanceMode(actions);
+				gameFunctions.mode_state++;			
+				break;
+
+			case 9:
+				//WAIT FOR PLAYERS TO READY UP SO TOTAL ACTIONS CAN BE PASSED BACK
+				break;
+
+			case 10:
+				//activate shoot
+				GameScene.game_setup.sfxHandler("button");			
+				activated = GameUIScene.activateShooting();
+				
+				if(activated !== 0){
+					gameFunctions.btn_sprite[0].hideButton()
+					gameFunctions.mode_state++;
+
+					if(activated === -1){
+						GameUIScene.readyAdvanceMode();	
+					}				
 				}
-			})	
-			GameUIScene.readyAdvanceMode(actions);
-			gameFunctions.mode_state++;			
-			break;
 
-		case 21:
-			//WAIT FOR PLAYERS TO READY UP SO TOTAL ACTIONS CAN BE PASSED BACK
-			break;
+				break;
 
-		case 22:
-			//activate fight
-			GameScene.game_setup.sfxHandler("button");	
-			
-			activated = GameUIScene.activateFighting();
+			case 11:
+				//WAIT FOR PLAYERS TO READY UP
+				break;	
 
-			if(activated !== 0){
-				gameFunctions.btn_sprite[0].hideButton()
+			//  #####  #     #    #    ######   #####  ####### 
+			// #     # #     #   # #   #     # #     # #       
+			// #       #     #  #   #  #     # #       #       
+			// #       ####### #     # ######  #  #### #####   
+			// #       #     # ####### #   #   #     # #       
+			// #     # #     # #     # #    #  #     # #       
+			//  #####  #     # #     # #     #  #####  ####### 
 
-				if(activated === -1){
+			case 12:
+				//setup charge
+				options.mode = "charge"
+				GameUIScene.selectMode(options);
+				gameFunctions.btn_sprite[0].updateText("trigger charge")
+				if(gameFunctions.params.player_side === gameFunctions.current_side){
+					gameFunctions.btn_sprite[0].showButton();
+				}else{
 					GameUIScene.readyAdvanceMode();
+				}		
+
+				connFunctions.saveGame("charge");			
+				gameFunctions.mode_state++;
+				break;
+
+			case 13:
+				//WAIT FOR PLAYERS TO READY UP
+				break;	
+
+			case 14:
+				//PASS THE TOTAL ACTIONS TO PLAY TO THE SERVER
+				actions = 0;
+				gameFunctions.units.forEach((unit) => {
+					if(unit.path.length > 0){
+						//unit.path.length > 0 &&
+						if(unit.player === gameFunctions.params.player_number){
+							actions++;
+						}
+					}
+				})	
+				GameUIScene.readyAdvanceMode(actions);
+				gameFunctions.mode_state++;			
+				break;
+
+			case 15:
+				//WAIT FOR PLAYERS TO READY UP SO TOTAL ACTIONS CAN BE PASSED BACK
+				break;
+
+			case 16:
+				//activate charge
+				GameScene.game_setup.sfxHandler("button");			
+				activated = GameUIScene.activateCharging();
+				
+				if(activated !== 0){
+					GameScene.resetTempSprites();
+					gameFunctions.btn_sprite[0].hideButton()
+
+					if(activated === -1){
+						GameUIScene.readyAdvanceMode();	
+					}
+					
+					gameFunctions.mode_state++;
+				}
+				// console.log("charge: ",activated)
+				break;			
+
+			case 17:
+				//WAIT FOR PLAYERS TO READY UP
+				break;	
+
+			// ####### ###  #####  #     # ####### 
+			// #        #  #     # #     #    #    
+			// #        #  #       #     #    #    
+			// #####    #  #  #### #######    #    
+			// #        #  #     # #     #    #    
+			// #        #  #     # #     #    #    
+			// #       ###  #####  #     #    #    
+
+			
+			case 18:
+				//setup fight
+				options.mode = "fight"
+				GameUIScene.selectMode(options);
+				gameFunctions.btn_sprite[0].updateText("trigger fight")
+				if(gameFunctions.params.player_side === gameFunctions.current_side){
+					gameFunctions.btn_sprite[0].showButton();				
+				}else{
+					GameUIScene.readyAdvanceMode();
+				}	
+				
+				// GameUIScene.setOthersReady();			
+				GameUIScene.checkAllCombat();
+				connFunctions.saveGame("fight");
+				gameFunctions.mode_state++;
+				break;
+
+			case 19:
+				//WAIT FOR PLAYERS TO READY UP
+				break;				
+
+			case 20:
+				//PASS THE TOTAL ACTIONS TO PLAY TO THE SERVER
+				actions = 0;
+				gameFunctions.units.forEach((unit) => {
+					if(unit.fight_targets.length > 0){
+						//unit.path.length > 0 &&
+						if(unit.player === gameFunctions.params.player_number){
+							actions += unit.fight_targets.length;
+						}
+					}
+				})	
+				GameUIScene.readyAdvanceMode(actions);
+				gameFunctions.mode_state++;			
+				break;
+
+			case 21:
+				//WAIT FOR PLAYERS TO READY UP SO TOTAL ACTIONS CAN BE PASSED BACK
+				break;
+
+			case 22:
+				//activate fight
+				GameScene.game_setup.sfxHandler("button");	
+				
+				activated = GameUIScene.activateFighting();
+
+				if(activated !== 0){
+					gameFunctions.btn_sprite[0].hideButton()
+
+					if(activated === -1){
+						GameUIScene.readyAdvanceMode();
+					}
+
+					// GameUIScene.setOthersReady();		
+					gameFunctions.mode_state++;
 				}
 
-				// GameUIScene.setOthersReady();		
-				gameFunctions.mode_state++;
-			}
+				break
 
-			break
+			case 23:
+				//WAIT FOR PLAYERS TO READY UP
+				break;
 
-		case 23:
-			//WAIT FOR PLAYERS TO READY UP
-			break;
+			// ####### #     # ######        ####### #     # ######  #     # 
+			// #       ##    # #     #          #    #     # #     # ##    # 
+			// #       # #   # #     #          #    #     # #     # # #   # 
+			// #####   #  #  # #     # #####    #    #     # ######  #  #  # 
+			// #       #   # # #     #          #    #     # #   #   #   # # 
+			// #       #    ## #     #          #    #     # #    #  #    ## 
+			// ####### #     # ######           #     #####  #     # #     # 
 
-		// ####### #     # ######        ####### #     # ######  #     # 
-		// #       ##    # #     #          #    #     # #     # ##    # 
-		// #       # #   # #     #          #    #     # #     # # #   # 
-		// #####   #  #  # #     # #####    #    #     # ######  #  #  # 
-		// #       #   # # #     #          #    #     # #   #   #   # # 
-		// #       #    ## #     #          #    #     # #    #  #    ## 
-		// ####### #     # ######           #     #####  #     # #     # 
-
-		
-		case 24:
-			//setup end turn
-			options.mode = "end turn"
-			GameUIScene.selectMode(options);
-			gameFunctions.btn_sprite[0].updateText("end turn")
-			if(gameFunctions.params.player_side === gameFunctions.current_side){
-				gameFunctions.btn_sprite[0].showButton();				
-			}else{
-				GameUIScene.readyAdvanceMode();
-			}		
 			
-			GameUIScene.checkAllCombat();
-			connFunctions.saveGame("end turn");
-			gameFunctions.mode_state++;
-			break;
+			case 24:
+				//setup end turn
+				options.mode = "end turn"
+				GameUIScene.selectMode(options);
+				gameFunctions.btn_sprite[0].updateText("end turn")
+				if(gameFunctions.params.player_side === gameFunctions.current_side){
+					gameFunctions.btn_sprite[0].showButton();				
+				}else{
+					GameUIScene.readyAdvanceMode();
+				}		
+				
+				GameUIScene.checkAllCombat();
+				connFunctions.saveGame("end turn");
+				gameFunctions.mode_state++;
+				break;
 
-		case 25:
-			//WAIT FOR PLAYERS TO READY UP
-			break;
+			case 25:
+				//WAIT FOR PLAYERS TO READY UP
+				break;
 
-		case 26:
-			//activate end turn
-			GameScene.game_setup.sfxHandler("end_turn")
-			gameFunctions.mode_state++;			
-			GameUIScene.readyAdvanceMode();
+			case 26:
+				//activate end turn
+				GameScene.game_setup.sfxHandler("end_turn")
+				gameFunctions.mode_state++;			
+				GameUIScene.readyAdvanceMode();
 
-			GameUIScene.nextSide();
-			break;
+				GameUIScene.nextSide();
+				break;
 
-		case 27:
-			//WAIT FOR PLAYERS TO READY UP
-			break;			
+			case 27:
+				//WAIT FOR PLAYERS TO READY UP
+				break;			
 
-		/**/
-	}
+			/**/
+		}
+	}catch(e){
+
+		let options = {
+			"class": "GameUIScene",
+			"function": "advanceMode",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
 }
 
 
@@ -693,60 +758,70 @@ GameUIScene.advanceMode = () => {
 
 GameUIScene.activateMovement = () => {
 	
-	let cohesion_check = true
-	// gameFunctions.units.forEach((unit) => {
-	// 	if(unit.cohesion_check === false && unit.cohesion > 0){
-	// 		cohesion_check = false;		
-	// 	}
-	// })		
-	
-	let activated = 0;
-	if(cohesion_check === true){
-		activated = -1;
-		gameFunctions.units.forEach((unit) => {
-			if(unit.path.length > 0){
-				//unit.path.length > 0 &&
-				if(unit.player === gameFunctions.params.player_number){
-					if(GameScene.online === false){
-						unit.move();
-					}else{
-						let data = {
-							functionGroup: "socketFunctions",  
-							function: "messageAll",
-							room_name: gameFunctions.params.room_name,
-							returnFunctionGroup: "connFunctions",
-							returnFunction: "runUnitFunction",
-							returnParameters: {
-								id: unit.id, 
-								path: unit.path,
-								function: "move"
-							},
-							message: "move units"
-						}
-	
-						connFunctions.messageServer(data)
-					}
-				}
-
-				activated = 1;
-			}
-		})
+	try{	
+		let cohesion_check = true
+		// gameFunctions.units.forEach((unit) => {
+		// 	if(unit.cohesion_check === false && unit.cohesion > 0){
+		// 		cohesion_check = false;		
+		// 	}
+		// })		
 		
-	}else{
-		let options = {
-			scene: GameScene.scene,
-			pos: {
-				x: GameScene.rectangle.x,
-				y: GameScene.rectangle.y
-			},
-			text: "Cannot move unless all unit coherency is met."
+		let activated = 0;
+		if(cohesion_check === true){
+			activated = -1;
+			gameFunctions.units.forEach((unit) => {
+				if(unit.path.length > 0){
+					//unit.path.length > 0 &&
+					if(unit.player === gameFunctions.params.player_number){
+						if(GameScene.online === false){
+							unit.move();
+						}else{
+							let data = {
+								functionGroup: "socketFunctions",  
+								function: "messageAll",
+								room_name: gameFunctions.params.room_name,
+								returnFunctionGroup: "connFunctions",
+								returnFunction: "runUnitFunction",
+								returnParameters: {
+									id: unit.id, 
+									path: unit.path,
+									function: "move"
+								},
+								message: "move units"
+							}
+		
+							connFunctions.messageServer(data)
+						}
+					}
+
+					activated = 1;
+				}
+			})
+			
+		}else{
+			let options = {
+				scene: GameScene.scene,
+				pos: {
+					x: GameScene.rectangle.x,
+					y: GameScene.rectangle.y
+				},
+				text: "Cannot move unless all unit coherency is met."
+			}
+			new popup(options)
+			activated = false;
 		}
-		new popup(options)
-		activated = false;
-	}
-	
-	
-	return activated;
+		
+		
+		return activated;
+	}catch(e){
+
+		let options = {
+			"class": "GameUIScene",
+			"function": "activateMovement",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
 }
 
 //  #####  #     # ####### ####### ####### 
@@ -759,40 +834,50 @@ GameUIScene.activateMovement = () => {
 
 GameUIScene.activateShooting = () => {
 
-	let activated = -1;
-	gameFunctions.units.forEach((unit) => {
+	try{	
+		let activated = -1;
+		gameFunctions.units.forEach((unit) => {
+			
+			if(unit.targets.length > 0){
+				if(unit.player === gameFunctions.params.player_number){
+
+					if(GameScene.online === false){
+						unit.shoot();
+					}else{
+
+						let data = {
+							functionGroup: "socketFunctions",  
+							function: "messageAll",
+							room_name: gameFunctions.params.room_name,
+							returnFunctionGroup: "connFunctions",
+							returnFunction: "runUnitFunction",
+							returnParameters: {
+								id: unit.id, 
+								targets: unit.targets,
+								function: "shoot"
+							},
+							message: "shoot units"
+						}
 		
-		if(unit.targets.length > 0){
-			if(unit.player === gameFunctions.params.player_number){
-
-				if(GameScene.online === false){
-					unit.shoot();
-				}else{
-
-					let data = {
-						functionGroup: "socketFunctions",  
-						function: "messageAll",
-						room_name: gameFunctions.params.room_name,
-						returnFunctionGroup: "connFunctions",
-						returnFunction: "runUnitFunction",
-						returnParameters: {
-							id: unit.id, 
-							targets: unit.targets,
-							function: "shoot"
-						},
-						message: "shoot units"
+						// console.log(data)
+						connFunctions.messageServer(data)
 					}
-	
-					// console.log(data)
-					connFunctions.messageServer(data)
+					
 				}
-				
+				activated = 1
 			}
-			activated = 1
-		}
-	})	
+		})	
 
-	return activated;
+		return activated;
+	}catch(e){
+
+		let options = {
+			"class": "GameUIScene",
+			"function": "activateShooting",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
 }
 
 //  #####  #     #    #    ######   #####  ####### 
@@ -805,79 +890,88 @@ GameUIScene.activateShooting = () => {
 
 GameUIScene.activateCharging = () => {
 	
-	
-	//CHECK COHESION FOR UNITS THAT'RE CHARGING
-	let cohesion_check = true
-	//ALSO CHECK ALL CHARGING UNITS ARE NEXT TO AN ENEMY UNITS
-	let in_combat = false;
-	
-	// gameFunctions.units.forEach((unit) => {
-	// 	if(unit.cohesion_check === false && unit.cohesion > 0){
-	// 		cohesion_check = false;
-	// 	}
-	// })
-	
-	let activated = 0;
-	if(cohesion_check === true){ // && in_combat === true){
-		activated = -1;
+	try{	
+		//CHECK COHESION FOR UNITS THAT'RE CHARGING
+		let cohesion_check = true
+		//ALSO CHECK ALL CHARGING UNITS ARE NEXT TO AN ENEMY UNITS
+		let in_combat = false;
+		
+		// gameFunctions.units.forEach((unit) => {
+		// 	if(unit.cohesion_check === false && unit.cohesion > 0){
+		// 		cohesion_check = false;
+		// 	}
+		// })
+		
+		let activated = 0;
+		if(cohesion_check === true){ // && in_combat === true){
+			activated = -1;
 
-		gameFunctions.units.forEach((unit) => {
-			
-			if(unit.path.length > 0){
-				if(unit.player === gameFunctions.params.player_number){
-					if(GameScene.online === false){
-						
-						if(unit.path.length > 0){
-							unit.move("checkCombat");
-						}
-						
-					}else{
-					
-						if(unit.path.length > 0){
-	
-							let data = {
-								functionGroup: "socketFunctions",  
-								function: "messageAll",
-								room_name: gameFunctions.params.room_name,
-								returnFunctionGroup: "connFunctions",
-								returnFunction: "runUnitFunction",
-								returnParameters: {
-									id: unit.id, 
-									path: unit.path,
-									function: "move",
-									function_parameter: "checkCombat" 
-								},
-								message: "charge units"
+			gameFunctions.units.forEach((unit) => {
+				
+				if(unit.path.length > 0){
+					if(unit.player === gameFunctions.params.player_number){
+						if(GameScene.online === false){
+							
+							if(unit.path.length > 0){
+								unit.move("checkCombat");
 							}
-	
-							connFunctions.messageServer(data)
-	
+							
+						}else{
+						
+							if(unit.path.length > 0){
+		
+								let data = {
+									functionGroup: "socketFunctions",  
+									function: "messageAll",
+									room_name: gameFunctions.params.room_name,
+									returnFunctionGroup: "connFunctions",
+									returnFunction: "runUnitFunction",
+									returnParameters: {
+										id: unit.id, 
+										path: unit.path,
+										function: "move",
+										function_parameter: "checkCombat" 
+									},
+									message: "charge units"
+								}
+		
+								connFunctions.messageServer(data)
+		
+							}
 						}
 					}
+					
+					// if(unit.path.length > 1){
+					// 	GameScene.active_actions++;	
+					// }
+					activated = 1;
 				}
-				
-				// if(unit.path.length > 1){
-				// 	GameScene.active_actions++;	
-				// }
-				activated = 1;
+			})
+			
+		}else{
+			let options = {
+				scene: GameScene.scene,
+				pos: {
+					x: GameScene.rectangle.x,
+					y: GameScene.rectangle.y
+				},
+				text: "Cannot charge unless all unit coherency is met."
 			}
-		})
-		
-	}else{
-		let options = {
-			scene: GameScene.scene,
-			pos: {
-				x: GameScene.rectangle.x,
-				y: GameScene.rectangle.y
-			},
-			text: "Cannot charge unless all unit coherency is met."
+			new popup(options)
 		}
-		new popup(options)
-	}
-	
-	//TRIGGER COMBAT WHEN UNITS HAVE MOVED
-	
-	return activated;
+		
+		//TRIGGER COMBAT WHEN UNITS HAVE MOVED
+		
+		return activated;
+	}catch(e){
+
+		let options = {
+			"class": "GameUIScene",
+			"function": "activateCharging",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
 }
 
 // ####### ###  #####  #     # ####### 
@@ -890,45 +984,54 @@ GameUIScene.activateCharging = () => {
 
 GameUIScene.activateFighting = () => {
 
+	try{
+		let activated = -1;
+		
+		gameFunctions.units.forEach((unit) => {
 
-	let activated = -1;
-	
-	gameFunctions.units.forEach((unit) => {
-
-		if(unit.fight_targets.length > 0){
-			if(unit.player === gameFunctions.params.player_number){
-				if(GameScene.online === false){
-	
-					unit.fight()
-					
-				}else{
-	
-					let data = {
-						functionGroup: "socketFunctions",  
-						function: "messageAll",
-						room_name: gameFunctions.params.room_name,
-						returnFunctionGroup: "connFunctions",
-						returnFunction: "runUnitFunction",
-						returnParameters: {
-							id: unit.id, 
-							fight_targets: unit.fight_targets,
-							function: "fight"
-						},
-						message: "fight units"
+			if(unit.fight_targets.length > 0){
+				if(unit.player === gameFunctions.params.player_number){
+					if(GameScene.online === false){
+		
+						unit.fight()
+						
+					}else{
+		
+						let data = {
+							functionGroup: "socketFunctions",  
+							function: "messageAll",
+							room_name: gameFunctions.params.room_name,
+							returnFunctionGroup: "connFunctions",
+							returnFunction: "runUnitFunction",
+							returnParameters: {
+								id: unit.id, 
+								fight_targets: unit.fight_targets,
+								function: "fight"
+							},
+							message: "fight units"
+						}
+		
+						connFunctions.messageServer(data)
 					}
-	
-					connFunctions.messageServer(data)
 				}
+
+				activated = 1;
 			}
 
-			activated = 1;
+		})
+		
+		//TRIGGER COMBAT WHEN UNITS HAVE MOVED
+
+		return activated
+	}catch(e){
+
+		let options = {
+			"class": "GameUIScene",
+			"function": "selectUnit",
+			"e": e
 		}
-
-	})
-	
-	//TRIGGER COMBAT WHEN UNITS HAVE MOVED
-
-	return activated
+		errorHandler.log(options)
+	}		
 }
 
 
@@ -941,94 +1044,113 @@ GameUIScene.activateFighting = () => {
 // #     # ####### #     #    #           #####  ### ######  ####### 
 
 GameUIScene.nextSide = () => {
-	
-	gameFunctions.mode = ""
-	gameFunctions.units.forEach((unit) => {
-		if(unit.alive === true && unit.player === gameFunctions.params.player_number){ //unit.side === gameFunctions.current_side){
-			unit.resetActions();
-			unit.resetLocks();
+	try{	
+		gameFunctions.mode = ""
+		gameFunctions.units.forEach((unit) => {
+			if(unit.alive === true && unit.player === gameFunctions.params.player_number){ //unit.side === gameFunctions.current_side){
+				unit.resetActions();
+				unit.resetLocks();
+			}
+		})
+		// GameScene.sfx["end_turn"].play();
+		GameScene.game_setup.sfxHandler("end_turn")
+		
+		GameUIScene.advanceSide()
+
+		// if(GameScene.online === false){
+		// 	GameUIScene.advanceSide()
+		// }else{
+
+		// 	let data = {
+		// 		functionGroup: "socketFunctions",  
+		// 		function: "updateRoom",
+		// 		type: "end turn",
+		// 		room_name: gameFunctions.params.room_name,
+		// 		player_number: gameFunctions.params.player_number,
+		// 		player_side: gameFunctions.params.player_side
+		// 		// params: {
+		// 		// }
+		// 	}
+
+		// 	connFunctions.messageServer(data)		
+		// }
+	}catch(e){
+
+		let options = {
+			"class": "GameUIScene",
+			"function": "nextSide",
+			"e": e
 		}
-	})
-	// GameScene.sfx["end_turn"].play();
-	GameScene.game_setup.sfxHandler("end_turn")
-	
-	GameUIScene.advanceSide()
-
-	// if(GameScene.online === false){
-	// 	GameUIScene.advanceSide()
-	// }else{
-
-	// 	let data = {
-	// 		functionGroup: "socketFunctions",  
-	// 		function: "updateRoom",
-	// 		type: "end turn",
-	// 		room_name: gameFunctions.params.room_name,
-	// 		player_number: gameFunctions.params.player_number,
-	// 		player_side: gameFunctions.params.player_side
-	// 		// params: {
-	// 		// }
-	// 	}
-
-	// 	connFunctions.messageServer(data)		
-	// }
+		errorHandler.log(options)
+	}		
 }
 
 GameUIScene.advanceSide = () => {
 
-	let sides_array = []
-	gameFunctions.params.forces.forEach((force) => {
-		if(!sides_array.includes(force.side)){
-			sides_array.push(force.side)
-		}
-	})
-	//gameFunctions.params.max_sides
-	let sides = sides_array.length;
+	try{	
+		let sides_array = []
+		gameFunctions.params.forces.forEach((force) => {
+			if(!sides_array.includes(force.side)){
+				sides_array.push(force.side)
+			}
+		})
+		//gameFunctions.params.max_sides
+		let sides = sides_array.length;
 
 
-	// CHANGE THE PARAMS SIDE IF THIS IS A LOCAL GAME
-	if(GameScene.online === false && gameFunctions.current_side !== -1){
-		// gameFunctions.params.player_side += 1
-		// if(gameFunctions.params.player_side >= sides){
-		// 	gameFunctions.params.player_side = 0
-		// }	
-		GameScene.offline_force++;
-		if(GameScene.offline_force >= gameFunctions.params.forces.length){
-			GameScene.offline_force = 0;
+		// CHANGE THE PARAMS SIDE IF THIS IS A LOCAL GAME
+		if(GameScene.online === false && gameFunctions.current_side !== -1){
+			// gameFunctions.params.player_side += 1
+			// if(gameFunctions.params.player_side >= sides){
+			// 	gameFunctions.params.player_side = 0
+			// }	
+			GameScene.offline_force++;
+			if(GameScene.offline_force >= gameFunctions.params.forces.length){
+				GameScene.offline_force = 0;
+			}	
+			gameFunctions.params.player_number = GameScene.offline_force;
+			gameFunctions.params.player_side = gameFunctions.params.forces[GameScene.offline_force].side;
 		}	
-		gameFunctions.params.player_number = GameScene.offline_force;
-		gameFunctions.params.player_side = gameFunctions.params.forces[GameScene.offline_force].side;
-	}	
 
-	gameFunctions.current_side += 1
-	if(gameFunctions.current_side >= sides){
-		gameFunctions.current_side = 0
+		gameFunctions.current_side += 1
+		if(gameFunctions.current_side >= sides){
+			gameFunctions.current_side = 0
 
-		gameFunctions.params.turn_number++;
-		GameUIScene.hud_item.setText("c_Turn",gameFunctions.params.turn_number)	
-	}
-	
+			gameFunctions.params.turn_number++;
+			GameUIScene.hud_item.setText("c_Turn",gameFunctions.params.turn_number)	
+		}
+		
 
-	gameFunctions.units.forEach((unit) => {
-		unit.moves = 0;
-		unit.fights = 0;
-		unit.shots = 0;
-	})
+		gameFunctions.units.forEach((unit) => {
+			unit.moves = 0;
+			unit.fights = 0;
+			unit.shots = 0;
+		})
 
-	GameUIScene.checkButtonVisability();
+		GameUIScene.checkButtonVisability();
+	}catch(e){
+
+		let options = {
+			"class": "GameUIScene",
+			"function": "selectUnit",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
 }
 
 
 
-		//  #####  ####### ####### #     # ######        #     # #     # ######  
-		// #     # #          #    #     # #     #       #     # #     # #     # 
-		// #       #          #    #     # #     #       #     # #     # #     # 
-		//  #####  #####      #    #     # ######  ##### ####### #     # #     # 
-		// 	     # #          #    #     # #             #     # #     # #     # 
-		// #     # #          #    #     # #             #     # #     # #     # 
-		//  #####  #######    #     #####  #             #     #  #####  ######  
+//  #####  ####### ####### #     # ######        #     # #     # ######  
+// #     # #          #    #     # #     #       #     # #     # #     # 
+// #       #          #    #     # #     #       #     # #     # #     # 
+//  #####  #####      #    #     # ######  ##### ####### #     # #     # 
+// 	     # #          #    #     # #             #     # #     # #     # 
+// #     # #          #    #     # #             #     # #     # #     # 
+//  #####  #######    #     #####  #             #     #  #####  ######  
 
-	GameUIScene.setupHUD = () => {
-
+GameUIScene.setupHUD = () => {
+	try{
 		let hud_width = 240;
 
 		//SETUP HUD ITEM THAT DISPLAYS THE CURRENT TURN NUMBER
@@ -1346,10 +1468,20 @@ GameUIScene.advanceSide = () => {
 
 			GameUIScene.setAllWaitingHUD();
 		}
-	}
+	}catch(e){
+
+		let options = {
+			"class": "GameUIScene",
+			"function": "setupHUD",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
+}
 
 
-	GameUIScene.setUnitHUD = (unit) => {
+GameUIScene.setUnitHUD = (unit) => {
+	try{	
 		let element = GameUIScene.hud_unit
 		element.setVisible(true);
 
@@ -1369,16 +1501,35 @@ GameUIScene.advanceSide = () => {
 		element.setText("f_mel_d",unit.fight_damage)
 		element.setText("f_mel_ap",unit.fight_ap)
 		element.setText("f_mel_r",unit.fight_max_targets+'x'+unit.fight_range)		
-	
-	}
+	}catch(e){
 
-	GameUIScene.hideUnitHUD = () => {
+		let options = {
+			"class": "GameUIScene",
+			"function": "setUnitHUD",
+			"e": e
+		}
+		errorHandler.log(options)
+	}	
+}
+
+GameUIScene.hideUnitHUD = () => {
+	try{	
 		let element = GameUIScene.hud_unit
 		element.setVisible(false);
-	}
+	}catch(e){
+
+		let options = {
+			"class": "GameUIScene",
+			"function": "hideUnitHUD",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
+}
 
 
-	GameUIScene.setChanceHUD = (selected_unit, target_unit) => {
+GameUIScene.setChanceHUD = (selected_unit, target_unit) => {
+	try{	
 		let element = GameUIScene.hud_chance
 		element.setVisible(true);
 
@@ -1390,23 +1541,53 @@ GameUIScene.advanceSide = () => {
 
 		element.setText("f_mel_chance",mel_chance)
 		element.setText("f_gun_chance",gun_chance)
-	}
+	}catch(e){
 
-	GameUIScene.hideChanceHUD = () => {
+		let options = {
+			"class": "GameUIScene",
+			"function": "setChanceHUD",
+			"e": e
+		}
+		errorHandler.log(options)
+	}
+}
+
+GameUIScene.hideChanceHUD = () => {
+	try{	
 		let element = GameUIScene.hud_chance
 		element.setVisible(false);
-	}
+	}catch(e){
 
-	GameUIScene.setForcesHUD = (i, text, is_visible, is_gray) => {
+		let options = {
+			"class": "GameUIScene",
+			"function": "hideChanceHUD",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
+}
+
+GameUIScene.setForcesHUD = (i, text, is_visible, is_gray) => {
+	try{	
 		if(GameUIScene.forces_hud){
 			let element = GameUIScene.forces_hud[i]["footer"]
 			element.setText(i,text)
 			element.setVisible(is_visible);
 			element.setGray(is_gray)
 		}
-	}
+	}catch(e){
 
-	GameUIScene.setAllWaitingHUD = () => {
+		let options = {
+			"class": "GameUIScene",
+			"function": "setForcesHUD",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
+}
+
+GameUIScene.setAllWaitingHUD = () => {
+	try{	
 		gameFunctions.params.forces.forEach((force, i) => {
 			if(force.side === gameFunctions.current_side){
 				GameUIScene.setForcesHUD(i, "unready", true, true)
@@ -1414,9 +1595,19 @@ GameUIScene.advanceSide = () => {
 				GameUIScene.setForcesHUD(i, "unready", false, true)
 			}
 		})
-	}
+	}catch(e){
 
-	GameUIScene.updatePointsHUD = () => {
+		let options = {
+			"class": "GameUIScene",
+			"function": "setAllWaitingHUD",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
+}
+
+GameUIScene.updatePointsHUD = () => {
+	try{	
 		//FOREACH FORCE
 		gameFunctions.params.forces.forEach((force, i) => {
 			//LOOP THROUGH EACH UNIT AND SAY WHO KILLED THEM
@@ -1434,7 +1625,16 @@ GameUIScene.advanceSide = () => {
 			let element = GameUIScene.forces_hud[i]["body"]
 			element.setText(i,"points: "+points)
 		})
-	}
+	}catch(e){
+
+		let options = {
+			"class": "GameUIScene",
+			"function": "updatePointsHUD",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
+}
 
 
 
@@ -1445,32 +1645,52 @@ GameUIScene.advanceSide = () => {
 // ██       ██████  ██   ████  ██████    ██    ██  ██████  ██   ████ ███████ 
 
 GameUIScene.checkAllCombat = () => {
-	// RESET ALL COMBAT STATUS'
-	gameFunctions.units.forEach((unit) => {
-		unit.in_combat = false;
-		if(unit.sprite.body){
-			unit.sprite.body.enable = true; //
-		}
-		unit.sprite_action.visible = false;
-	})
+	try{	
+		// RESET ALL COMBAT STATUS'
+		gameFunctions.units.forEach((unit) => {
+			unit.in_combat = false;
+			if(unit.sprite.body){
+				unit.sprite.body.enable = true; //
+			}
+			unit.sprite_action.visible = false;
+		})
 
-	//RERUN COMBAT CHECKS
-	gameFunctions.units.forEach((unit) => {
-		unit.checkCombat()
-	})	
+		//RERUN COMBAT CHECKS
+		gameFunctions.units.forEach((unit) => {
+			unit.checkCombat()
+		})
+	}catch(e){
+
+		let options = {
+			"class": "GameUIScene",
+			"function": "checkAllCombat",
+			"e": e
+		}
+		errorHandler.log(options)
+	}			
 }
 
 
 GameUIScene.checkButtonVisability = () => {
-	if(GameScene.online === true){
-		if(gameFunctions.params.player_side === gameFunctions.current_side){
-			// if(start_check === true){
-				gameFunctions.showButtons()	
-			// }
-		}else{
-			gameFunctions.hideButtons()
+	try{	
+		if(GameScene.online === true){
+			if(gameFunctions.params.player_side === gameFunctions.current_side){
+				// if(start_check === true){
+					gameFunctions.showButtons()	
+				// }
+			}else{
+				gameFunctions.hideButtons()
+			}
 		}
-	}
+	}catch(e){
+
+		let options = {
+			"class": "GameUIScene",
+			"function": "checkButtonVisability",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
 }
 
 
