@@ -1,4 +1,5 @@
 
+errorHandler = new error_handler();
 gameFunctions = []
 gameFunctions.btn_sprite = [];
 gameFunctions.units = [];

@@ -31,16 +31,16 @@ const error_handler = class {
             }
 
             console.log(error_message)
-            //set the e value
-            options.e = options.e.stack;
 
-            let data = {
-                functionGroup: "socketFunctions",  
-                function: "logClientError",
-                message: "log error",
-                options: options 
-            }				
-            connFunctions.messageServer(data)
+            const utils = require("../utils");
+
+            utils.queries.createData({
+                model: "Error"
+                ,params: [
+                    options
+                ]
+            })
+
 
         }catch(e){
             console.log("error handler has errored")
@@ -49,3 +49,6 @@ const error_handler = class {
 
     }
 }
+
+
+module.exports = error_handler

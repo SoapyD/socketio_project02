@@ -12,4 +12,6 @@ models.Army = require("./army");
 models.Squad = require("./squad");
 models.Upgrade = require("./upgrade");
 
+models.Error = require("./error");
+
 module.exports = models

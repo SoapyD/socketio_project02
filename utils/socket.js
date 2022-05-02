@@ -20,12 +20,18 @@ exports.checkMessages = (io,namespace) => {
             }
 
             try{
+				// if(i==0){	
+				// }
                 availableFunctions[data.functionGroup][data.function](network,data);
             }
-            catch(err){
-                console.log("Error running socket method")
-                console.log(err)
-            }
+			catch(e){
+				let options = {
+					"class": "socket",
+					"function": "message_server",
+					"e": e
+				}
+				errorHandler.log(options)
+			}			
         })
 
 
@@ -33,17 +39,27 @@ exports.checkMessages = (io,namespace) => {
         //ALLOWS ME TO TELL IF A CLIENT IS ALREADY IN THE ROOM OR WAS ONCE IN THE ROOM AND CAN REJOIN
 		socket.on('disconnect', async() => {
 
-			let rooms = await queriesUtil.findRoomsWithSocket(socket.id)
-
-            if (rooms.length > 0){
-                let room = rooms[0];
-                let sockets = rooms[0].sockets; 			
-                sockets = functionsUtil.removeFromArray(sockets, socket.id)
-                room.sockets = sockets;
-                room.save();
-				socket.leave(room.room_name)
-                console.log("user disconnected: "+socket.id);
-            }
+			try{
+				let rooms = await queriesUtil.findRoomsWithSocket(socket.id)
+	
+				if (rooms.length > 0){
+					let room = rooms[0];
+					let sockets = rooms[0].sockets; 			
+					sockets = functionsUtil.removeFromArray(sockets, socket.id)
+					room.sockets = sockets;
+					room.save();
+					socket.leave(room.room_name)
+					console.log("user disconnected: "+socket.id);
+				}
+			}
+			catch(e){
+				let options = {
+					"class": "socket",
+					"function": "disconnect",
+					"e": e
+				}
+				errorHandler.log(options)
+			}
 
 		})	
 
@@ -59,6 +75,11 @@ exports.test = async(network, data)  => {
         message: data.message
     }
     network.io.of(network.socket.id).emit("message_client", return_data)
+}
+
+exports.logClientError = async(network, data)  => {
+	// console.log(data)
+	errorHandler.log(data.options)
 }
 
 
@@ -95,10 +116,18 @@ exports.createRoom = async(network, data)  => {
     try{
         rooms = await queriesUtil.findRooms(data.room_name)
     }
-    catch(err){
-        console.log("Error trying to find rooms")
-        console.log(err)
-    }
+    // catch(err){
+    //     console.log("Error trying to find rooms")
+    //     console.log(err)
+    // }
+	catch(e){
+		let options = {
+			"class": "socket",
+			"function": "createRoom findRoom",
+			"e": e
+		}
+		errorHandler.log(options)
+	}			
 
     try{
         //IF ROOM DOES EXIST
@@ -162,10 +191,18 @@ exports.createRoom = async(network, data)  => {
          
         }
     }
-    catch(err){
-        console.log("Error trying to create room")
-        console.log(err)
-    }
+    // catch(err){
+    //     console.log("Error trying to create room")
+    //     console.log(err)
+	// }
+	catch(e){
+		let options = {
+			"class": "socket",
+			"function": "createRoom",
+			"e": e
+		}
+		errorHandler.log(options)
+	}				
 }
 
 	// ##################################################################################
@@ -187,10 +224,18 @@ exports.joinRoom = async(network, data)  => {
     try{
         rooms = await queriesUtil.findRooms(data.room_name, false)
     }
-    catch(err){
-        console.log("Error trying to find rooms")
-        console.log(err)
-    }
+    // catch(err){
+    //     console.log("Error trying to find rooms")
+    //     console.log(err)
+	// }
+	catch(e){
+		let options = {
+			"class": "socket",
+			"function": "joinRoom findRoom",
+			"e": e
+		}
+		errorHandler.log(options)
+	}				
 
     try{
 
@@ -319,10 +364,18 @@ exports.joinRoom = async(network, data)  => {
 		
 		
     }
-    catch(err){
-        console.log("Error trying to join room")
-        console.log(err)
-    }
+    // catch(err){
+    //     console.log("Error trying to join room")
+    //     console.log(err)
+	// }
+	catch(e){
+		let options = {
+			"class": "socket",
+			"function": "joinRoom",
+			"e": e
+		}
+		errorHandler.log(options)
+	}					
 }
 
 
@@ -344,58 +397,73 @@ exports.joinRoom = async(network, data)  => {
 //USED WHEN WE JUST NEED TO PASS CERTAIN VALUES DIRECTLY BACK TO ALL USERS TO TRIGGER A FUNCTION WITH OPTIONAL PARAEMTERS
 exports.messageAll = (network, data) => {
 
-	let return_data = {
-		functionGroup: data.returnFunctionGroup,
-		function: data.returnFunction,
-		parameters: data.returnParameters,
-		message: data.message,
-	}	
-
-	// console.log(return_data)
-	// if(data.returnFunction === 'woundUnit'){
-	// 	console.log(data.room_name)	
-	// 	console.log(return_data)
-	// }
-	network.io.in(data.room_name).emit("message_client", return_data)     	
-}
-
-// exports.selectArmy = (network, data) => {
-// 	let return_data = {
-// 		functionGroup: "connFunctions",
-// 		function: "test",
-// 		message: "Army Selected"
-// 	}	
+	try{
+		let return_data = {
+			functionGroup: data.returnFunctionGroup,
+			function: data.returnFunction,
+			parameters: data.returnParameters,
+			message: data.message,
+		}	
 	
-// 	network.io.in(data.room_name).emit("message_client", return_data)     	
-// }
+		network.io.in(data.room_name).emit("message_client", return_data)     	
+	}
+	catch(e){
+		let options = {
+			"class": "socket",
+			"function": "messageAll",
+			"e": e
+		}
+		errorHandler.log(options)
+	}				
+}
 
 exports.startGame = async(network, data) => {
 
-	//GET ROOM & ARMIES
-	let room = await queriesUtil.findRoom(data.room_id)			
-	let armies = await queriesUtil.getArmies({forces: room.forces})
-
-	let return_data = {
-		functionGroup: "connFunctions",
-		function: "sceneTransition",
-		scene: data.scene,
-		armies: armies,
-		message: data.message
-	}	
+	try{
+		//GET ROOM & ARMIES
+		let room = await queriesUtil.findRoom(data.room_id)			
+		let armies = await queriesUtil.getArmies({forces: room.forces})
 	
-	network.io.in(room.room_name).emit("message_client", return_data)	
+		let return_data = {
+			functionGroup: "connFunctions",
+			function: "sceneTransition",
+			scene: data.scene,
+			armies: armies,
+			message: data.message
+		}	
+		
+		network.io.in(room.room_name).emit("message_client", return_data)	
+	}
+	catch(e){
+		let options = {
+			"class": "socket",
+			"function": "startGame",
+			"e": e
+		}
+		errorHandler.log(options)
+	}					
 }
 
 exports.sceneTransition = (network, data) => {
 
-	let return_data = {
-		functionGroup: "connFunctions",
-		function: "sceneTransition",
-		scene: data.scene,
-		message: data.message
-	}	
-	
-	network.io.in(data.room_name).emit("message_client", return_data)     	
+	try{
+		let return_data = {
+			functionGroup: "connFunctions",
+			function: "sceneTransition",
+			scene: data.scene,
+			message: data.message
+		}	
+		
+		network.io.in(data.room_name).emit("message_client", return_data)     	
+	}
+	catch(e){
+		let options = {
+			"class": "socket",
+			"function": "sceneTransition",
+			"e": e
+		}
+		errorHandler.log(options)
+	}						
 }
 
 
@@ -421,10 +489,18 @@ exports.updateRoom = async(network, data) => {
     try{
         rooms = await queriesUtil.findRooms(data.room_name)
     }
-    catch(err){
-        console.log("Error trying to find rooms")
-        console.log(err)
-    }
+    // catch(err){
+    //     console.log("Error trying to find rooms")
+    //     console.log(err)
+	// }
+	catch(e){
+		let options = {
+			"class": "socket",
+			"function": "updateRoom findRoom",
+			"e": e
+		}
+		errorHandler.log(options)
+	}						
 	
 	if(rooms){
 		let room = rooms[0];
@@ -534,12 +610,20 @@ exports.updateRoom = async(network, data) => {
 				}
 				
 			}
-			catch(err){
-				console.log("Error trying to update room")
-				// console.log(err)
-				
+			// catch(err){
+			// 	console.log("Error trying to update room")				
+			// 	exports.updateRoom(network, data)
+			// }			
+			catch(e){
+				let options = {
+					"class": "socket",
+					"function": "updateRoom",
+					"e": e
+				}
+				errorHandler.log(options)
+
 				exports.updateRoom(network, data)
-			}			
+			}								
 		}
 	}
 	else{
