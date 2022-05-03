@@ -1,110 +1,67 @@
-const passport = require("passport");
-const User = require("../models/user");
+
+
 const utils = require("../utils");
+const models = require("../models");
 
+const route_info = [
+{
+    "type": "Error",
+    "view": "admin/error/",
+    "description": "return a list of all recent server and client logged errors"
+}
+]
 
-exports.getLanding = (req, res) => {
-	res.render("landing");
+//  #####  ####### #######          #    #       #       
+// #     # #          #            # #   #       #       
+// #       #          #           #   #  #       #       
+// #  #### #####      #    ##### #     # #       #       
+// #     # #          #          ####### #       #       
+// #     # #          #          #     # #       #       
+//  #####  #######    #          #     # ####### ####### 
+                                                      
+
+exports.getAll = async(req,res) => {
+
+    try{
+        let view = "admin/index"
+        res.render(view, {title:"Admin", stylesheet: view, route_info: route_info});
+    }
+    catch(err){
+        console.log(err)
+        req.flash("error", "There was an error trying to get admin data");
+        res.redirect("/")        
+    }
+};
+
+exports.getItem = async(req,res) => {
+
+    try{
+        let item = req.params.item;
+        let route = route_info[item];
+
+        let data = await utils.queries.findData({
+            model: route.type
+            ,search_type: "find"
+        })
+
+        let view = route.view + 'index'
+        res.render(view, {title:route.type, stylesheet: view, data: data[0]});
+    }
+    catch(err){
+        console.log(err)
+        req.flash("error", "There was an error trying to get item data");
+        res.redirect("/")        
+    }    
+
+    let test = 1
 }
 
-
-exports.getFormRegisterUser = (req,res)=> {
-	res.render("register");
-}
-
-exports.getFormLoginUser = (req,res) => {
-	res.render("login");		
-}
-
-
-exports.createSelfUser = (req,res) => {
-
-	// CHECK TO SEE IF THE USERNAME ALREADY EXISTS
-	User.findOne({username: req.body.username}, function(err, user){
-	
-		if (err){
-			req.flash("error", err.message);
-			return res.redirect("/register")
-		}		
-		if(user) {
-			req.flash("error", "Username already exists, please select a new one");
-			return res.redirect("/register")			
-		}
-
-		User.register(
-			new User({username: req.body.username, role:req.body.role}), req.body.password, function(err, user){
-				if (err){
-					// console.log(err)
-					req.flash("error", err.message);
-					return res.redirect("/register")
-				}
-				else{
-					passport.authenticate("local")(req,res,function(){
-						req.flash("success", "Welcome to Site " + user.username);
-						res.redirect("/")
-					})
-				}
-			});
-	});
-}
-
-exports.loginUser = passport.authenticate("local", {
-	successRedirect: "/",
-	failureRedirect: "/login",
-	failureFlash: true
-})
-
-
-exports.logoutUser = (req,res) => {
-	req.logout();
-	req.flash("success", "Logged you out!");
-	res.redirect("/");
-}
-
-
-exports.getRoom = async(req,res) => {
-
-	let data = {
-		address: process.env.SOCKET_ADDRESS,
-		instance_type: process.env.INSTANCE_TYPE,
-	}
-
-	//CREATE ROOM IF THIS IS A DEV INSTANCE
-	switch(process.env.INSTANCE_TYPE){
-		case "DEV":
-			let options = {
-				user: "6069bd7bc7b18a43c84292b4", //a user id we can user as an author
-				user_name: "test",
-				players: 2, //max players
-				room_name: "test room",
-				password: ""
-
-			}
-			let room = await utils.queries.createRoom(options, "network.socket.id")
-
-			let army = await utils.queries.getArmy({name: "Test"})
-
-			room.forces[0].side = 0;
-			room.forces[0].start = 0;
-			room.forces[0].army = army[0]._id;
-
-			room.forces[1].side = 1;			
-			room.forces[1].start = 1;
-			room.forces[1].army = army[0]._id;
-			room.forces[1].user = "6069bd7bc7b18a43c84292b4";
-
-			let armies = await utils.queries.getArmies({forces: room.forces})
-
-			room.save();
-
-			data.room = room;
-			data.armies = armies;
-			break;
-	}
-
-
-	res.render("room", data);
-}
-
+//  #####  ####### #######        #####  ### #     #  #####  #       ####### 
+// #     # #          #          #     #  #  ##    # #     # #       #       
+// #       #          #          #        #  # #   # #       #       #       
+// #  #### #####      #    #####  #####   #  #  #  # #  #### #       #####   
+// #     # #          #                #  #  #   # # #     # #       #       
+// #     # #          #          #     #  #  #    ## #     # #       #       
+//  #####  #######    #           #####  ### #     #  #####  ####### #######
 
 

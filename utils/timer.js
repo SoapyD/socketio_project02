@@ -3,7 +3,8 @@ const queriesUtil = require('./queries');
 
 exports.checkTimer = async() => {
     try{
-        exports.checkRooms()
+        exports.checkItems("Room")
+        exports.checkItems("Error")        
     }    
     catch(err){
         console.log("ERROR TRYING TO RUN TIMER")
@@ -14,7 +15,7 @@ exports.checkTimer = async() => {
 }
 
 
-exports.checkRooms = async() => {
+exports.checkItems = async(model) => {
 
     var cutoff = new Date();
     // cutoff.setDate(cutoff.getDate()-5);
@@ -22,7 +23,7 @@ exports.checkRooms = async() => {
     cutoff.setHours(cutoff.getHours() - 2);
 
 	let rooms = await queriesUtil.findData({
-		model: "Room"
+		model: model
 		,search_type: "find"
 		,params: [
             {
@@ -42,7 +43,7 @@ exports.checkRooms = async() => {
 
         if(ids.length > 0){
             let item = await queriesUtil.destroyData({
-                model: "Room"
+                model: model
                 ,params: ids
             })
         }

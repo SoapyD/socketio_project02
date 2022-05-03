@@ -5,19 +5,19 @@ const controllers = require('../controllers');
 const middleware = require("../middleware");
 
 
-router.get("/", controllers.admin.getLanding)
+router.get("/", controllers.login.getLanding)
 
-router.get("/register", controllers.admin.getFormRegisterUser)
+router.get("/register", controllers.login.getFormRegisterUser)
 
-router.post("/register", controllers.admin.createSelfUser)
+router.post("/register", controllers.login.createSelfUser)
 
-router.get("/login", controllers.admin.getFormLoginUser)
+router.get("/login", controllers.login.getFormLoginUser)
 
-router.post("/login", controllers.admin.loginUser)
+router.post("/login", controllers.login.loginUser)
 
-router.get("/logout", controllers.admin.logoutUser)
+router.get("/logout", controllers.login.logoutUser)
 
-router.get("/room", middleware.user_access, controllers.admin.getRoom)
+router.get("/room", middleware.user_access, controllers.login.getRoom)
 
 
 
