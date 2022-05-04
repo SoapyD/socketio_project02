@@ -184,6 +184,10 @@ selectUnit(single_unit=false) { //
 
 	try{
 
+		if(i==1){
+			
+		}
+
 		let skip = false
 		if(GameScene.online === true){
 			if(this.player !== gameFunctions.params.player_number){

@@ -3,8 +3,8 @@ const queriesUtil = require('./queries');
 
 exports.checkTimer = async() => {
     try{
-        exports.checkItems("Room")
-        exports.checkItems("Error")        
+        exports.checkItems("Room", 2)
+        exports.checkItems("Error", 48)        
     }    
     catch(err){
         console.log("ERROR TRYING TO RUN TIMER")
@@ -15,12 +15,10 @@ exports.checkTimer = async() => {
 }
 
 
-exports.checkItems = async(model) => {
+exports.checkItems = async(model, hours) => {
 
     var cutoff = new Date();
-    // cutoff.setDate(cutoff.getDate()-5);
-    // cutoff.setMinutes(cutoff.getMinutes() - 5);
-    cutoff.setHours(cutoff.getHours() - 2);
+    cutoff.setHours(cutoff.getHours() - hours);
 
 	let rooms = await queriesUtil.findData({
 		model: model

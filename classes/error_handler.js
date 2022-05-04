@@ -32,6 +32,13 @@ const error_handler = class {
 
             console.log(error_message)
 
+            // if(options.e.stack){
+            //     options.e = options.e.stack;
+            // }
+            if(!options.detail){
+                options.detail = "";
+            }
+
             const utils = require("../utils");
 
             utils.queries.createData({

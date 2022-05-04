@@ -32,7 +32,19 @@ const error_handler = class {
 
             console.log(error_message)
             //set the e value
-            options.e = options.e.stack;
+
+            //repackage the error as it doesn't transfer over sockets
+            let message = options.e.message;
+            let stack = options.e.stack;
+            options.e = {
+                "message": message,
+                "stack": stack
+            };
+            options.detail = ''
+
+            options.detail += 'Room Name: ' + gameFunctions.params.room_name + '<br>'
+            options.detail += 'Player Number: ' + gameFunctions.params.player_number + '<br>'
+              
 
             let data = {
                 functionGroup: "socketFunctions",  
