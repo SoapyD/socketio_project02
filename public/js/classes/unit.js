@@ -184,9 +184,9 @@ selectUnit(single_unit=false) { //
 
 	try{
 
-		if(i==1){
+		// if(i==1){
 			
-		}
+		// }
 
 		let skip = false
 		if(GameScene.online === true){
@@ -1146,10 +1146,11 @@ setupDrawLiveTiles() {
 		let startY = gridY - this.movement
 		let endX = gridX + this.movement
 		let endY = gridY + this.movement
-		if(startX < 0) startX = 0
-		if(startY < 0) startY = 0
-		if(endX > GameScene.map.width) endX = GameScene.map.width
-		if(endY > GameScene.map.height) endY = GameScene.map.height
+		//REMOVED THESE ARE THEY AFFECTED THE SPIRAL CALL WHEN NEAR THE END OF A ROOM
+		// if(startX < 0) startX = 0
+		// if(startY < 0) startY = 0
+		// if(endX > GameScene.map.width) endX = GameScene.map.width
+		// if(endY > GameScene.map.height) endY = GameScene.map.height
 
 		//WE NEED TO CHECK MOVEMENT POSITIONS AS A SPIRAL MOVING INWARDS TO GET THE MOST EFFICIENT MOVEMENT CHECKS
 		this.check_tiles = this.getSpiralMatrix((endX - startX) + 1, startX, startY);
@@ -1244,9 +1245,9 @@ saveDrawLiveTiles(process) {
 					acceptable_tile = true;
 				}			
 
+				// this.runDrawLiveTiles();
 				if(found === false && distance <= this.movement && acceptable_tile === true){
 					checking_tile = true;
-					// console.log('before: ',this.check_tiles_position)
 					this.runDrawLiveTiles();
 
 					this.tiles_checked++;
@@ -1283,6 +1284,7 @@ saveDrawLiveTiles(process) {
 			);
 
 			let test;
+			
 			*/
 			this.live_tiles.forEach((tile)=> {
 				this.scene.temp_sprites.push(

@@ -46,13 +46,15 @@ const error_handler = class {
             options.detail += 'Player Number: ' + gameFunctions.params.player_number + '<br>'
               
 
-            let data = {
-                functionGroup: "socketFunctions",  
-                function: "logClientError",
-                message: "log error",
-                options: options 
-            }				
-            connFunctions.messageServer(data)
+            if(GameScene.online === true){
+                let data = {
+                    functionGroup: "socketFunctions",  
+                    function: "logClientError",
+                    message: "log error",
+                    options: options 
+                }				
+                connFunctions.messageServer(data)
+            }
 
         }catch(e){
             console.log("error handler has errored")
