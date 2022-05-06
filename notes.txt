@@ -7,6 +7,8 @@ SBT GAME NOTES
 /////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////
 
+-Make squad coherancy more visible
+
 /////////////////////////////////////////
 END GAME
 /////////////////////////////////////////
@@ -67,6 +69,15 @@ BUGS
 -SMALL BUG -The charge button appears too early if only one unit shoots. Appears normally elsewise, not sure why. Game looks to work normally however
 
 -BUG -When game is abandoned on the "end turn" check (i think) then re-joined, if the "current player" doesn't enter in first, i think this is causing a turn desync.
+
+-BUG -Reloaded game didn't set units in combat, nor did it attribute life properly, everyone started with full life again
+
+-BUG -Bildo tried to dash some units in combat, they moved but the turn never ended
+
+-BUG -Stop other people from being able to see the "can't shoot" popup
+
+-BUG -fight radius was still visible in the last place a unit was before it moved
+
 
 
 /////////////////////////////////////////
