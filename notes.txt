@@ -66,7 +66,7 @@ BUGS
 
 -SMALL BUG -The charge button appears too early if only one unit shoots. Appears normally elsewise, not sure why. Game looks to work normally however
 
-
+-BUG -When game is abandoned on the "end turn" check (i think) then re-joined, if the "current player" doesn't enter in first, i think this is causing a turn desync.
 
 
 /////////////////////////////////////////

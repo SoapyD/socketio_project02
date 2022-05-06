@@ -609,18 +609,14 @@ exports.updateRoom = async(network, data) => {
 						break;	
 				}
 				
-			}
-			// catch(err){
-			// 	console.log("Error trying to update room")				
-			// 	exports.updateRoom(network, data)
-			// }			
+			}			
 			catch(e){
-				let options = {
-					"class": "socket",
-					"function": "updateRoom "+data.type,
-					"e": e
-				}
-				errorHandler.log(options)
+				// let options = {
+				// 	"class": "socket",
+				// 	"function": "updateRoom "+data.type,
+				// 	"e": e
+				// }
+				// errorHandler.log(options)
 
 				exports.updateRoom(network, data)
 			}								
