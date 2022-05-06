@@ -7,7 +7,8 @@ const route_info = [
 {
     "type": "Error",
     "view": "admin/error/",
-    "description": "return a list of all recent server and client logged errors"
+    "description": "return a list of all recent server and client logged errors",
+    "sort": {created_date: 'desc'}
 }
 ]
 
@@ -39,10 +40,16 @@ exports.getItem = async(req,res) => {
         let item = req.params.item;
         let route = route_info[item];
 
-        let data = await utils.queries.findData({
+        let params = {
             model: route.type
             ,search_type: "find"
-        })
+        }
+        if(route.sort){
+            params.sort = route.sort
+        }
+
+        let data = await utils.queries.findData(params)
+
 
         let view = route.view + 'index'
         res.render(view, {title:route.type, stylesheet: view, data: data[0]});
@@ -52,8 +59,6 @@ exports.getItem = async(req,res) => {
         req.flash("error", "There was an error trying to get item data");
         res.redirect("/")        
     }    
-
-    let test = 1
 }
 
 //  #####  ####### #######        #####  ### #     #  #####  #       ####### 

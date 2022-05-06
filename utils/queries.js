@@ -390,7 +390,11 @@ exports.findData = async(list) => {
             }
         }
         else{
-            promises.push(models[list.model][list.search_type]())
+            if(list.sort){
+                promises.push(models[list.model][list.search_type]().sort(list.sort))
+            }else{
+                promises.push(models[list.model][list.search_type]())
+            }
         }
     // })
 

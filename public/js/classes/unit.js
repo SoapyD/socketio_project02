@@ -585,30 +585,34 @@ wound(options){
 			break;
 		}
 		
-		let part_options = {
-			scene: GameScene.scene,
-			text: print_text,
-			text_style: { 
-				font: "16px Arial",
-				fill: "#ff0044",
-				align: "center",
-				stroke: "#000000",
-				strokeThickness: 2
-			},
-			pos: {
-				x: target.sprite.x,
-				y: target.sprite.y
-			},
-			tween:true
-		}
-		new particle(part_options)		
-		
-		target.health -= options.damage;
-		target.drawHealth(this.sprite)
-		if(target.health <= 0){
-			this.killed_by = options.attacker_id;
-			GameUIScene.updatePointsHUD();
-			target.kill();
+		if(target){
+			if(target.alive === true){
+				let part_options = {
+					scene: GameScene.scene,
+					text: print_text,
+					text_style: { 
+						font: "16px Arial",
+						fill: "#ff0044",
+						align: "center",
+						stroke: "#000000",
+						strokeThickness: 2
+					},
+					pos: {
+						x: target.sprite.x,
+						y: target.sprite.y
+					},
+					tween:true
+				}
+				new particle(part_options)		
+				
+				target.health -= options.damage;
+				target.drawHealth(this.sprite)
+				if(target.health <= 0){
+					this.killed_by = options.attacker_id;
+					GameUIScene.updatePointsHUD();
+					target.kill();
+				}
+			}
 		}
 	}catch(e){
 

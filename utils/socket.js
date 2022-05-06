@@ -617,7 +617,7 @@ exports.updateRoom = async(network, data) => {
 			catch(e){
 				let options = {
 					"class": "socket",
-					"function": "updateRoom",
+					"function": "updateRoom "+data.type,
 					"e": e
 				}
 				errorHandler.log(options)
