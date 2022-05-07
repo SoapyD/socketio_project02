@@ -1865,6 +1865,30 @@ move(endFunction="move") {
 							}
 						}
 						catch (e){
+
+							if(this.is_moving === true){
+								this.path_graphic.clear()
+								this.path = [];
+								this.is_moving = false;
+
+								GameScene.active_actions--;
+								if(GameScene.active_actions === 0){
+									GameUIScene.readyAdvanceMode();
+								}
+								
+								if(endFunction){
+									switch(endFunction){
+										case "move":
+											this.moved = true;
+											this.combat_check = this.checkCombat();
+											GameScene.sfx["end_path"].play();
+												
+											break;
+										default:
+									}
+								}								
+							}
+
 							// console.log("ERROR FINISHING PATH")
 							// console.log(error)
 							// console.log(end_path)
@@ -1874,7 +1898,8 @@ move(endFunction="move") {
 							let options = {
 								"class": "unit",
 								"function": "move - finishing path",
-								"e": e
+								"e": e,
+								"detail": "path length"+(this.path.length - 1).toString()
 							}
 							errorHandler.log(options)
 

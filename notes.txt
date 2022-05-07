@@ -78,7 +78,7 @@ BUGS
 
 -BUG -fight radius was still visible in the last place a unit was before it moved
 
-
+-BUG -"cannot move as unit shot" appears if a unit is in combat then moves. Appears on non-current player screen
 
 /////////////////////////////////////////
 THINGS TO DO (EVENTUALLY)
