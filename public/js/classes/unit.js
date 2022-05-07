@@ -1864,13 +1864,20 @@ move(endFunction="move") {
 								}							
 							}
 						}
-						catch (error){
-							console.log("ERROR FINISHING PATH")
-							console.log(error)
-							console.log(end_path)
-							console.log(this.path)
-							console.log(this.path.length - 1)
-							console.log("//////////////////////////////")
+						catch (e){
+							// console.log("ERROR FINISHING PATH")
+							// console.log(error)
+							// console.log(end_path)
+							// console.log(this.path)
+							// console.log(this.path.length - 1)
+							// console.log("//////////////////////////////")
+							let options = {
+								"class": "unit",
+								"function": "move - finishing path",
+								"e": e
+							}
+							errorHandler.log(options)
+
 						}
 					}.bind(this)			
 				}

@@ -40,7 +40,10 @@ const error_handler = class {
                 "message": message,
                 "stack": stack
             };
-            options.detail = ''
+
+            if(!options.detail){
+                options.detail = ''
+            }
 
             options.detail += 'Room Name: ' + gameFunctions.params.room_name + '<br>'
             options.detail += 'Player Number: ' + gameFunctions.params.player_number + '<br>'
