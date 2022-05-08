@@ -431,6 +431,7 @@ GameUIScene.advanceMode = () => {
 
 			case 2:
 				//PASS THE TOTAL ACTIONS TO PLAY TO THE SERVER
+				gameFunctions.mode = ""; //RESET MODE SO ACTIONS CAN'T BE SET WHILE THEY PLAY
 				actions = 0;
 				gameFunctions.units.forEach((unit) => {
 					if(unit.path.length > 0){
@@ -506,6 +507,7 @@ GameUIScene.advanceMode = () => {
 
 			case 8:
 				//PASS THE TOTAL ACTIONS TO PLAY TO THE SERVER
+				gameFunctions.mode = ""; //RESET MODE SO ACTIONS CAN'T BE SET WHILE THEY PLAY
 				actions = 0;
 				gameFunctions.units.forEach((unit) => {
 					if(unit.targets.length > 0){
@@ -572,6 +574,7 @@ GameUIScene.advanceMode = () => {
 
 			case 14:
 				//PASS THE TOTAL ACTIONS TO PLAY TO THE SERVER
+				gameFunctions.mode = ""; //RESET MODE SO ACTIONS CAN'T BE SET WHILE THEY PLAY
 				actions = 0;
 				gameFunctions.units.forEach((unit) => {
 					if(unit.path.length > 0){
@@ -643,6 +646,7 @@ GameUIScene.advanceMode = () => {
 
 			case 20:
 				//PASS THE TOTAL ACTIONS TO PLAY TO THE SERVER
+				gameFunctions.mode = ""; //RESET MODE SO ACTIONS CAN'T BE SET WHILE THEY PLAY
 				actions = 0;
 				gameFunctions.units.forEach((unit) => {
 					if(unit.fight_targets.length > 0){
@@ -1198,7 +1202,7 @@ GameUIScene.setupHUD = () => {
 			},
 			text: [
 
-				{id: 'u_h',label: "unit", x: 0, y: 0, 
+				{id: 'u_h',label: "unit", x: 0, y: 0,
 				font: {height: 22},
 				box: {
 					fill_colour: 0xffffff, fill_alpha: 1, radius: 5, width: 22, height: 1, 
@@ -1207,8 +1211,8 @@ GameUIScene.setupHUD = () => {
 				},
 
 				//ROW 1
-				{id: 'r1_h',label: 'type', x: 0, y: 2, height: 1, 
-				font: {height: 22}
+				{id: 'r1_h',label: '', x: 0, y: 2, height: 1, text_width: 5, align: "left", 
+				font: {height: 16}
 				},
 
 				{id: 'h_m',label: 'M', x: 7, y: 1, height: 1, width: 3, align: "center", 
@@ -1257,9 +1261,10 @@ GameUIScene.setupHUD = () => {
 
 
 				//ROW 2
-				{id: 'r2_h',label: 'gun', x: 0, y: 4, height: 1,
-				font: {height: 22},
+				{id: 'r2_h',label: 'guns', x: 0, y: 4, height: 1, text_width: 5, align: "left", 
+				font: {height: 16},
 				},
+
 
 				{id: 'h_gun_d',label: 'D', x: 7, y: 3, height: 1, width: 3, align: "center",
 				font: {height: 22},
@@ -1296,8 +1301,8 @@ GameUIScene.setupHUD = () => {
 
 
 				//ROW 3
-				{id: 'r3_h',label: 'melee', x: 0, y: 6, height: 1,
-				font: {height: 22},
+				{id: 'r3_h',label: 'melee', x: 0, y: 6, height: 1, text_width: 5, align: "left",
+				font: {height: 16},
 				},
 
 				{id: 'h_mel_d',label: 'D', x: 7, y: 5, height: 1, width: 3, align: "center",
@@ -1536,8 +1541,13 @@ GameUIScene.setChanceHUD = (selected_unit, target_unit) => {
 		let mel_chance = target_unit.armour - (selected_unit.fight_ap + selected_unit.fighting_bonus);
 		let gun_chance = target_unit.armour - (selected_unit.shoot_ap + selected_unit.shooting_bonus);
 
-		mel_chance = Math.round(100-((mel_chance / 20) * 100),2) + '%'
-		gun_chance = Math.round(100-((gun_chance / 20) * 100),2) + '%'
+		let max_roll_value = 20
+		if(selected_unit.cohesion_check === false && selected_unit.cohesion > 0){
+			max_roll_value = 10;
+		}
+
+		mel_chance = Math.round(100-((mel_chance / max_roll_value) * 100),2) + '%'
+		gun_chance = Math.round(100-((gun_chance / max_roll_value) * 100),2) + '%'
 
 		element.setText("f_mel_chance",mel_chance)
 		element.setText("f_gun_chance",gun_chance)

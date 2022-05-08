@@ -64,9 +64,14 @@ const hud = class {
 				font_style = item.font.height + 'px '+default_type
 			}
 		}
+
+		let width = this.width;
+		if(item.text_width){
+			width = item.text_width * this.x_itts
+		}
 		
-		let style = { font: font_style, fill: "#000000", wordWrap: true, wordWrapWidth: this.width, align: "left" };
-		let style_center = { font: font_style, fill: "#000000", wordWrap: true, wordWrapWidth: this.width, align: "center" };
+		let style = { font: font_style, fill: "#000000", wordWrap: {width: width}, align: "left" };
+		let style_center = { font: font_style, fill: "#000000", wordWrap: {width: width}, align: "center" };
 
 
 		let text_item = {};
@@ -146,10 +151,27 @@ const hud = class {
 	}
 
 	setText(id, new_text){
+
+		let text_item;
+		let has_box = false;
+		this.text_items.forEach((item) => {
+			if(item.id === id){
+				text_item = item
+				if(item.box){
+					has_box = true;
+				}
+			}
+		})
+		
 		let text_obj = this["text"][id]["text"];
-		text_obj.x += (text_obj.width / 2)
+		if(has_box === true){
+			text_obj.x += (text_obj.width / 2)			
+		}
+
 		text_obj.setText(new_text)
-		text_obj.x -= (text_obj.width / 2)
+		if(has_box === true){
+			text_obj.x -= (text_obj.width / 2)		
+		}		
 		//NEEDS TO INCLUDE NEW ALIGNMENT OF TEXT TOO
 	}
 

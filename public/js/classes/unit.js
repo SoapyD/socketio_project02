@@ -1751,6 +1751,8 @@ cohesionCheck() {
 
 				unit.drawPath(colours)
 				units_check++;
+			}else{
+				unit.resetCohesionGraphic();
 			}
 		})
 
@@ -1814,79 +1816,38 @@ move(endFunction="move") {
 					{
 						
 						let end_path = this.path[this.path.length - 1];
-
-						//CHECK IF THE UNIT PASSES AN ENEMY UNIT
-						let old_status = this.in_combat
-						this.in_combat = this.checkCombat();
-						
-
-						
-						if(this.in_combat === false && old_status === true){
-
-							if(this.in_combat_with){
-								this.in_combat_with.forEach((unit) => {
-									//allow allow that unit to strike if it has any combat damage to give
-									if(unit.fight_damage > 0){
-										unit.fight_targets.push(this.sprite.parent.id)
-										unit.fight(true);
-									}
-								})
-								
-								this.in_combat_with = [];
-							}
-						}
-						/**/
-					
 						
 						
 						//WHEN THE END OF THE PATH IS REACHED
 						try{
 							if(this.sprite.x / gameFunctions.tile_size === end_path.x && this.sprite.y / gameFunctions.tile_size === end_path.y){
-								this.path_graphic.clear()
-								this.path = [];
-								this.is_moving = false;
+								// this.path_graphic.clear()
+								// this.path = [];
+								// this.is_moving = false;
 
-								GameScene.active_actions--;
-								if(GameScene.active_actions === 0){
-									GameUIScene.readyAdvanceMode();
-								}
+								// GameScene.active_actions--;
+								// if(GameScene.active_actions === 0){
+								// 	GameUIScene.readyAdvanceMode();
+								// }
 								
-								if(endFunction){
-									switch(endFunction){
-										case "move":
-											this.moved = true;
-											this.combat_check = this.checkCombat();
-											GameScene.sfx["end_path"].play();
+								// if(endFunction){
+								// 	switch(endFunction){
+								// 		case "move":
+								// 			this.moved = true;
+								// 			this.combat_check = this.checkCombat();
+								// 			GameScene.sfx["end_path"].play();
 												
-											break;
-										default:
-									}
-								}							
+								// 			break;
+								// 		default:
+								// 	}
+								// }
+								this.endMove();							
 							}
 						}
 						catch (e){
 
 							if(this.is_moving === true){
-								this.path_graphic.clear()
-								this.path = [];
-								this.is_moving = false;
-
-								GameScene.active_actions--;
-								if(GameScene.active_actions === 0){
-									GameUIScene.readyAdvanceMode();
-								}
-								
-								if(endFunction){
-									switch(endFunction){
-										case "move":
-											this.moved = true;
-											this.combat_check = this.checkCombat();
-											GameScene.sfx["end_path"].play();
-												
-											break;
-										default:
-									}
-								}								
+								this.endMove();								
 							}
 
 							// console.log("ERROR FINISHING PATH")
@@ -1926,7 +1887,51 @@ move(endFunction="move") {
 		errorHandler.log(options)
 	}		
 }
+
+endMove() {
+
+	//CHECK IF THE UNIT IS COMING OUT OF COMBAT
+	let old_status = this.in_combat
+	this.in_combat = this.checkCombat();
 	
+	if(this.in_combat === false && old_status === true){
+
+		if(this.in_combat_with){
+			this.in_combat_with.forEach((unit) => {
+				//allow allow that unit to strike if it has any combat damage to give
+				if(unit.fight_damage > 0){
+					unit.fight_targets.push(this.sprite.parent.id)
+					unit.fight(true);
+				}
+			})
+			
+			this.in_combat_with = [];
+		}
+	}
+
+
+	this.path_graphic.clear()
+	this.path = [];
+	this.is_moving = false;
+
+	GameScene.active_actions--;
+	if(GameScene.active_actions === 0){
+		GameUIScene.readyAdvanceMode();
+	}
+	
+	if(endFunction){
+		switch(endFunction){
+			case "move":
+				this.moved = true;
+				this.combat_check = this.checkCombat();
+				GameScene.sfx["end_path"].play();
+					
+				break;
+			default:
+		}
+	}								
+}
+
 	
 //  #####  #     # ####### ####### ####### 
 // #     # #     # #     # #     #    #    
