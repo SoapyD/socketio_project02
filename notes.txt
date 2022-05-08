@@ -73,6 +73,7 @@ BUGS
 -BUG -Reloaded game didn't set units in combat, nor did it attribute life properly, everyone started with full life again
 
 -BUG -Bildo tried to dash some units in combat, they moved but the turn never ended
+    -Think this may be related to when, if you click on an area while a unit is moving, the combat doesn't complete properly for some reason
 
 -BUG -Stop other people from being able to see the "can't shoot" popup
 
