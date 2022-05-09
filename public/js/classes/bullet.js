@@ -103,13 +103,16 @@ const bullet = class {
 	
 	kill(){
 
-		// let test = new barrier({
-		// 	scene: this.scene,
-		// 	x: this.sprite.x,
-		// 	y: this.sprite.y,
-		// 	blast_radius: 2,
-		// 	blast_spritesheet: "smoke"			
-		// })
+		// if(this.player === 0){
+		// 	let test = new barrier({
+		// 		scene: this.scene,
+		// 		x: this.sprite.x,
+		// 		y: this.sprite.y,
+		// 		blast_radius: 2,
+		// 		blast_spritesheet: "smoke",
+		// 		unit: this.unit			
+		// 	})
+		// }
 
 		//WOUND ANY UNITS IF ITS IN THE BLAST RADIUS
 		if(this.blast_radius > 1){

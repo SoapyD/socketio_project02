@@ -737,6 +737,10 @@ const game_setup = class {
 				if(bullet.delete === false){
 					bullets.push(bullet)
 				}
+
+				this.scene_container.barriers.forEach((barrier) => {
+					barrier.checkAction(bullet)
+				})
 			})
 		}
 		
