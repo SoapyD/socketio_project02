@@ -352,6 +352,41 @@ exports.getArmy = (params) => {
 //     }) 
 // }
 
+exports.getPopulateLists = (type) => {
+
+    let populate_list = []
+
+    switch(type){
+        case 'Faction':
+            populate_list.push({
+                path: "squads",
+                model: "Squad",
+                populate: [
+                    {path: 'upgrades',model: "Upgrade"},
+                    {path: 'unit'},
+                    {path: 'gun'},
+                    {path: 'melee'},
+                    {path: 'armour'},
+                ]          
+            })
+            break;
+        case 'Squad':
+            populate_list.push({path: "unit"})
+            populate_list.push({path: "gun"})
+            populate_list.push({path: "melee"})
+            populate_list.push({path: "armour"}) 
+            populate_list.push({path: 'upgrades',model: "Upgrade"})                                   
+            break;
+
+        case 'Upgrade':
+            populate_list.push({path: "unit"})
+            populate_list.push({path: "gun"})                              
+            break;            
+    }
+
+    return populate_list;
+}
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -383,18 +418,23 @@ exports.findData = async(list) => {
 
         if (list.params)
         {
-            if(!list.populate){
+            // if(!list.populate){
                 list.params.forEach((item) => {
                     promises.push(models[list.model][list.search_type](item))
                 })
-            }
+            // }
         }
         else{
+
+            let populate_list = [];
+            populate_list = exports.getPopulateLists(list.model)
+
             if(list.sort){
-                promises.push(models[list.model][list.search_type]().sort(list.sort))
+                promises.push(models[list.model][list.search_type]().sort(list.sort).populate(populate_list))
             }else{
-                promises.push(models[list.model][list.search_type]())
+                promises.push(models[list.model][list.search_type]().populate(populate_list))
             }
+
         }
     // })
 

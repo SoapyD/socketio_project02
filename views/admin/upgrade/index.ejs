@@ -1,0 +1,100 @@
+
+<%- include("../../partials/header") %>
+
+<div class="container">
+
+    <header class="jumbotron">
+
+    
+        <div class="container">
+            
+            <h1>
+                Upgrade Data
+            </h1>
+    
+            <!-- <p>
+                List of units
+            </p> -->
+    
+            <p>
+    
+            </p>
+    
+        </div>
+    </header>    
+
+
+<div class="panel panel-primary">
+
+    <div class="panel-heading">
+        <h4 id="datatype_header">Find Items
+            <input id="myInput" type="text" placeholder="Search..">
+        </h4>
+    </div>
+
+    
+    <div class="panel-body">
+
+        <table id="measurement-form" class="center">
+            
+            <colgroup>
+                <col span="1" style="width: 20%;"> 
+                <col span="1" style="width: 20%;">
+                <col span="1" style="width: 20%;">
+                <col span="1" style="width: 20%;">
+                <col span="1" style="width: 20%;">                               
+            </colgroup>
+            
+            <thead>
+                <tr>
+                    <th><span class="text">Name</span></th>
+                    <th><span class="text">Cost</span></th>
+                    <th><span class="text">Description</span></th>
+                    <th><span class="text">Unit</span></th>
+                    <th><span class="text">Gun</span></th>                   							
+                </tr>
+            </thead>
+            
+            <tbody>	
+                    <% data.forEach((item) =>  { %> 
+                        <tr class="row_data">
+
+                            <td><%- item.name %> </td>  
+                            <td><%- item.cost %> </td> 
+                            <td><%- item.description %> </td> 
+                            <td><%- item.unit.name %> </td>                        
+                            <td><%- item.gun.name %> </td> 
+                            
+                            
+                        </tr>
+                    <% }) %>
+
+            </tbody>
+        </table>
+
+
+
+        </div>
+
+
+</div>
+
+<div class="top-padding">
+    <a href="/">Go Back</a>
+</div>
+
+</div>
+
+
+<script>
+    $(document).ready(function(){
+      $("#myInput").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $(".row_data").filter(function() {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+      });
+    });
+</script>
+
+<%- include("../../partials/footer") %></col>

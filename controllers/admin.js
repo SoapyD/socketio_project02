@@ -9,6 +9,48 @@ const route_info = [
     "view": "admin/error/",
     "description": "return a list of all recent server and client logged errors",
     "sort": {created_date: 'desc'}
+},
+{
+    "type": "Faction",
+    "view": "admin/faction/",
+    "description": "return a list of all current factions",
+    "sort": {created_date: 'desc'}
+},
+{
+    "type": "Squad",
+    "view": "admin/squad/",
+    "description": "return a list of all current squads",
+    "sort": {created_date: 'desc'}
+},
+{
+    "type": "Unit",
+    "view": "admin/unit/",
+    "description": "return a list of all current units",
+    "sort": {created_date: 'desc'}
+},
+{
+    "type": "Armour",
+    "view": "admin/armour/",
+    "description": "return a list of all current armours",
+    "sort": {created_date: 'desc'}
+},
+{
+    "type": "Gun",
+    "view": "admin/gun/",
+    "description": "return a list of all current guns",
+    "sort": {created_date: 'desc'}
+},
+{
+    "type": "Melee",
+    "view": "admin/melee/",
+    "description": "return a list of all current melee weapons",
+    "sort": {created_date: 'desc'}
+},
+{
+    "type": "Upgrade",
+    "view": "admin/upgrade/",
+    "description": "return a list of all current upgrades",
+    "sort": {created_date: 'desc'}
 }
 ]
 
