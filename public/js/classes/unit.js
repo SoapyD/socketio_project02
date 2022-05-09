@@ -12,6 +12,7 @@ const unit = class {
 		this.size = options.size; //the grid size of the object used when plotting movement
 		this.cohesion = options.cohesion; //the maximum distance a unit can be from another member of it's squad
 		this.cost = options.cost;
+		this.special_rules = options.special_rules;
 
 		this.upgrade_id = options.upgrade_id;
 		// this.setup = false;
@@ -1330,6 +1331,15 @@ saveDrawLiveTiles(process) {
 // #       #     # #    ## #     #    #     #  #     # #    ## #     # 
 // #        #####  #     #  #####     #    ### ####### #     #  #####  	
 
+checkSpecialRule(name) {
+	let has_rule = false;
+	if (this.special_rules.find((rule) => rule === name)){
+		has_rule = true;
+	}	
+
+	return has_rule
+}
+
 
 getRandomInt(max) {
 	try{	
@@ -1581,8 +1591,11 @@ usePath(process){
 					
 					//SKIP IF IN CHARGE MODE AND UNIT HAD ALREADY SHOT
 					if(this.shot === true && gameFunctions.mode === "charge"){
-						skip = true;
-						GameScene.showMessage("cannot charge, unit has shot")
+
+						if(this.checkSpecialRule("swift") === false){
+							skip = true;
+							GameScene.showMessage("cannot charge, unit has shot")
+						}
 					}
 					
 					if(this.path.length === 0){
@@ -1895,46 +1908,60 @@ move(endFunction="move") {
 
 endMove() {
 
-	//CHECK IF THE UNIT IS COMING OUT OF COMBAT
-	let old_status = this.in_combat
-	this.in_combat = this.checkCombat();
+	try{
+		//CHECK IF THE UNIT IS COMING OUT OF COMBAT
 	
-	if(this.in_combat === false && old_status === true){
-
-		if(this.in_combat_with){
-			this.in_combat_with.forEach((unit) => {
-				//allow allow that unit to strike if it has any combat damage to give
-				if(unit.fight_damage > 0){
-					unit.fight_targets.push(this.sprite.parent.id)
-					unit.fight(true);
-				}
-			})
+		if(this.checkSpecialRule("sword dance") === false){
+			let old_status = this.in_combat
+			this.in_combat = this.checkCombat();
 			
-			this.in_combat_with = [];
-		}
-	}
-
-
-	this.path_graphic.clear()
-	this.path = [];
-	this.is_moving = false;
-
-	GameScene.active_actions--;
-	if(GameScene.active_actions === 0){
-		GameUIScene.readyAdvanceMode();
-	}
-	
-	if(endFunction){
-		switch(endFunction){
-			case "move":
-				this.moved = true;
-				this.combat_check = this.checkCombat();
-				GameScene.sfx["end_path"].play();
+			if(this.in_combat === false && old_status === true){
+		
+				if(this.in_combat_with){
+					this.in_combat_with.forEach((unit) => {
+						//allow allow that unit to strike if it has any combat damage to give
+						if(unit.fight_damage > 0){
+							unit.fight_targets.push(this.sprite.parent.id)
+							unit.fight(true);
+						}
+					})
 					
-				break;
-			default:
+					this.in_combat_with = [];
+				}
+			}
 		}
-	}								
+	
+	
+		this.path_graphic.clear()
+		this.path = [];
+		this.is_moving = false;
+	
+		GameScene.active_actions--;
+		if(GameScene.active_actions === 0){
+			GameUIScene.readyAdvanceMode();
+		}
+		
+		if(endFunction){
+			switch(endFunction){
+				case "move":
+					this.moved = true;
+					this.combat_check = this.checkCombat();
+					GameScene.sfx["end_path"].play();
+						
+					break;
+				default:
+			}
+		}								
+	}catch(e){
+
+		let options = {
+			"class": "unit",
+			"function": "end move",
+			"e": e
+		}
+		errorHandler.log(options)
+	}	
+
 }
 
 	
@@ -2139,8 +2166,11 @@ shoot() {
 			})
 			if(this.targets.length > 0){
 				this.shot = true;
-				this.sprite_action.setFrame(2)
-				this.sprite_action.visible = true
+
+				if(this.checkSpecialRule("swift") === false){
+					this.sprite_action.setFrame(2)
+					this.sprite_action.visible = true
+				}
 			}
 			
 			this.targets = [];

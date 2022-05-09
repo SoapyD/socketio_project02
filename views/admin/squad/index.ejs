@@ -38,7 +38,7 @@
         <table id="measurement-form" class="center">
             
             <colgroup>
-                <col span="1" style="width: 15%;"> 
+                <col span="1" style="width: 10%;"> 
                 <col span="1" style="width: 10%;">
                 <col span="1" style="width: 10%;">
                 <col span="1" style="width: 10%;">
@@ -46,7 +46,8 @@
                 <col span="1" style="width: 10%;">
                 <col span="1" style="width: 10%;">    
                 <col span="1" style="width: 10%;">    
-                <col span="1" style="width: 15%;">                                 
+                <col span="1" style="width: 10%;">  
+                <col span="1" style="width: 10%;">                                 
             </colgroup>
             
             <thead>
@@ -59,7 +60,8 @@
                     <th><span class="text">Gun</span></th>
                     <th><span class="text">Melee</span></th>  
                     <th><span class="text">Armour</span></th>  
-                    <th><span class="text">Upgrades</span></th>                       							
+                    <th><span class="text">Upgrades</span></th>    
+                    <th><span class="text">Special_Rules</span></th>                     							
                 </tr>
             </thead>
             
@@ -78,6 +80,9 @@
                             <td><% item.upgrades.forEach((upgrade) => { %> 
                                 <%- upgrade.name %> - <%= upgrade.description %> <br>
                             <% }) %>
+                            <td><% item.special_rules.forEach((rule) => { %> 
+                                <%- rule.name %> - <%= rule.description %> <br>
+                            <% }) %>                            
                             </td> 
                             
                             

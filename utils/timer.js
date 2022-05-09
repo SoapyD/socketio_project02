@@ -17,35 +17,44 @@ exports.checkTimer = async() => {
 
 exports.checkItems = async(model, hours) => {
 
-    var cutoff = new Date();
-    cutoff.setHours(cutoff.getHours() - hours);
-
-	let rooms = await queriesUtil.findData({
-		model: model
-		,search_type: "find"
-		,params: [
-            {
-                updateddate: {
-                    $lt: cutoff
+    try{
+        var cutoff = new Date();
+        cutoff.setHours(cutoff.getHours() - hours);
+    
+        let data = await queriesUtil.findData({
+            model: model
+            ,search_type: "find"
+            ,params: 
+                {
+                    updateddate: {
+                        $lt: cutoff
+                    }
+                }
+            
+        })
+    
+    
+        if(data){
+            if(data[0][0]){
+        
+                let ids = [];
+                data[0][0].forEach((item) => {
+                    ids.push({_id: item._id})
+                })
+        
+                if(ids.length > 0){
+                    let item = await queriesUtil.destroyData({
+                        model: model
+                        ,params: ids
+                    })
                 }
             }
-		]
-	})
-
-    if(rooms[0]){
-
-        let ids = [];
-        rooms[0].forEach((room) => {
-            ids.push({_id: room._id})
-        })
-
-        if(ids.length > 0){
-            let item = await queriesUtil.destroyData({
-                model: model
-                ,params: ids
-            })
         }
+    }catch(e){
+        console.log("Error running timer!")
+        console.log(e)
     }
+
 
 
 

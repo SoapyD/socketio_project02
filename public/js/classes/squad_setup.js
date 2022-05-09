@@ -104,6 +104,10 @@ const squad_setup = class {
 		let melee_class = options.squad.melee;
 		let unit_class = options.squad.unit;
 
+		let special_rules = [];
+		options.squad.special_rules.forEach((rule) => {
+			special_rules.push(rule.name)
+		})
 
 		if(options.universal_upgrades) {
 			options.universal_upgrades.forEach((upgrade) => {
@@ -159,6 +163,7 @@ const squad_setup = class {
 			y: options.y,
 			alive: options.alive,
 			cost: cost,
+			special_rules: special_rules,
 			
 			size: unit_class.size, //the grid size of the object used when plotting movement
 			unit_name: unit_class.name,

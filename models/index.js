@@ -11,6 +11,7 @@ models.Faction = require("./faction");
 models.Army = require("./army");
 models.Squad = require("./squad");
 models.Upgrade = require("./upgrade");
+models.SpecialRule = require("./special_rule");
 
 models.Error = require("./error");
 

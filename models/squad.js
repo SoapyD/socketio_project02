@@ -31,6 +31,13 @@ const squadSchema = new mongoose.Schema({
 			ref: "Upgrade"
 		}
 	]
+	,special_rules: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "SpecialRule"
+		}
+
+	]
 });
 
 

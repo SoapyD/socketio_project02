@@ -44,13 +44,26 @@ exports.getSingle = async(req, res) => {
 	let id = req.params.id;
 
 	try{
-		let item = await utils.queries.getArmy({_id: id})		
+		// let item = await utils.queries.getArmy({_id: id})		
 	
-		let faction  = await utils.queries.getFaction({_id: item[0].faction._id})
+		let item = await utils.queries.findData({
+			model: "Army"
+			,search_type: "find"
+			,params: {_id: id}
+		})
+
+		// let faction  = await utils.queries.getFaction({_id: item[0][0].faction._id})
 	
-		res.render("army/show",{army: item[0], squads: faction[0].squads})	
+		let faction = await utils.queries.findData({
+			model: "Faction"
+			,search_type: "find"
+			,params: {_id: item[0][0].faction._id}
+		})
+
+		res.render("army/show",{army: item[0][0], squads: faction[0][0].squads})	
 	}catch(err){
 		req.flash("error", "There was an error trying to retrieve your army list"); 
+		console.log(err)
 		res.redirect("/army/")
 	}
 };
@@ -153,9 +166,7 @@ exports.update = async(req,res) => {
 		let item = await utils.queries.findData({
 			model: "Army"
 			,search_type: "findOne"
-			,params: [
-				{_id: id}
-			]
+			,params: {_id: id}
 		})
 	
 		let options = {
@@ -191,9 +202,7 @@ exports.delete = async(req,res) => {
 	
 		let item = await utils.queries.destroyData({
 			model: "Army"
-			,params: [
-				{_id: id}
-			]
+			,params: {_id: id}
 		})
 	
 		res.redirect("/army/")		

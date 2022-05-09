@@ -51,6 +51,12 @@ const route_info = [
     "view": "admin/upgrade/",
     "description": "return a list of all current upgrades",
     "sort": {created_date: 'desc'}
+},
+{
+    "type": "SpecialRule",
+    "view": "admin/special_rule/",
+    "description": "return a list of all current special rules",
+    "sort": {created_date: 'desc'}
 }
 ]
 

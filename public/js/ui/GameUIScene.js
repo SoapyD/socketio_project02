@@ -219,7 +219,8 @@ GameUIScene.runSelectMode = (options) => {
 								}
 								break;
 								case "charge":
-									if (unit.shot === true){
+
+									if (unit.shot === true && unit.checkSpecialRule("swift") === false){
 										unit.drawFlash(false, true)
 									}
 								break;	

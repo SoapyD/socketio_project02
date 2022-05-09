@@ -20,6 +20,7 @@ exports.seedDB = async() => {
     {model: "Faction"},
     {model: "Squad"} ,
     {model: "Upgrade"},
+    {model: "SpecialRule"},      
 
     {model: "Unit"},
     {model: "Gun"},
@@ -34,7 +35,8 @@ exports.seedDB = async() => {
     await exports.createGuns();
     await exports.createMelee();
     await exports.createArmour();
-    await exports.createUpgrades();    
+    await exports.createUpgrades();  
+    await exports.createSpecialRules();    
     
     await exports.createSquads()
     await exports.createFactions()
@@ -412,6 +414,34 @@ exports.createUpgrades = async() => {
 }
 
 
+    //  #####  ######  #######    #    ####### #######        #####  ######  #######  #####  ###    #    #             ######  #     # #       #######  #####  
+    // #     # #     # #         # #      #    #             #     # #     # #       #     #  #    # #   #             #     # #     # #       #       #     # 
+    // #       #     # #        #   #     #    #             #       #     # #       #        #   #   #  #             #     # #     # #       #       #       
+    // #       ######  #####   #     #    #    #####   #####  #####  ######  #####   #        #  #     # #       ##### ######  #     # #       #####    #####  
+    // #       #   #   #       #######    #    #                   # #       #       #        #  ####### #             #   #   #     # #       #             # 
+    // #     # #    #  #       #     #    #    #             #     # #       #       #     #  #  #     # #             #    #  #     # #       #       #     # 
+    //  #####  #     # ####### #     #    #    #######        #####  #       #######  #####  ### #     # #######       #     #  #####  ####### #######  #####  
+
+
+exports.createSpecialRules = async() => {
+
+    list = {
+        model: "SpecialRule"
+        ,params: [
+           {
+                name: "swift",
+                description:"unit can charge even if they've shot their weapon",
+            },
+            {
+                name: "sword dance",
+                description:"unit can leave combat without suffering opportunity attacks from enemies",
+            },            
+        ]
+    }
+
+    return Promise.all([queries.createData(list)]); 
+}
+
 
 
     //  #####  ######  #######    #    ####### #######        #####   #####  #     #    #    ######   #####  
@@ -432,6 +462,8 @@ exports.createSquads = async() => {
                 gun: "bolter",
                 armour: "basic",
                 melee: "sword",
+                upgrades: [],
+                special_rules: [],                
                 min_size: 1,
                 max_size: 1,
             }
@@ -444,46 +476,64 @@ exports.createSquads = async() => {
             armour: "basic",
             melee: "sword",
             upgrades: [{name:"rocket launcher"},{name:"special weapon"}],
+            special_rules: [],            
             min_size: 5,
             max_size: 10,
         }
-    ),
-    exports.createSquad(
-        {
-            type: "heavy squad",
-            unit: "marine",
-            gun: "rocket launcher",
-            armour: "basic",
-            melee: "none",
-            upgrades: [],
-            min_size: 3,
-            max_size: 5,
-        }
-    ),
-    exports.createSquad(
-        {
-            type: "tank",
-            unit: "tank",
-            gun: "rocket launcher",
-            armour: "heavy",
-            melee: "none",
-            upgrades: [],
-            min_size: 1,
-            max_size: 1,
-        }
-    ), 
-    exports.createSquad(
-        {
-            type: "dread",
-            unit: "dread",
-            gun: "heavy stubber",
-            armour: "heavy",
-            melee: "power fist",
-            upgrades: [],
-            min_size: 1,
-            max_size: 1,
-        }
-    ),        
+        ),
+        exports.createSquad(
+            {
+                type: "heavy squad",
+                unit: "marine",
+                gun: "rocket launcher",
+                armour: "basic",
+                melee: "none",
+                upgrades: [],
+                special_rules: [],                
+                min_size: 3,
+                max_size: 5,
+            }
+        ),
+        exports.createSquad(
+            {
+                type: "tank",
+                unit: "tank",
+                gun: "rocket launcher",
+                armour: "heavy",
+                melee: "none",
+                upgrades: [],
+                special_rules: [],                
+                min_size: 1,
+                max_size: 1,
+            }
+        ), 
+        exports.createSquad(
+            {
+                type: "dread",
+                unit: "dread",
+                gun: "heavy stubber",
+                armour: "heavy",
+                melee: "power fist",
+                upgrades: [],
+                special_rules: [],
+                min_size: 1,
+                max_size: 1,
+            }
+        ),
+        exports.createSquad(
+            {
+                type: "scouts",
+                unit: "marine",
+                gun: "bolter",
+                armour: "basic",
+                melee: "sword",
+                upgrades: [],
+                special_rules: [{name:"swift"},{name:"sword dance"}],
+                min_size: 5,
+                max_size: 10,
+            }
+        ),        
+        
     ]);    
 }
 
@@ -541,6 +591,18 @@ exports.createSquad = async(options) => {
         upgrade_array.push(upgrade._id)
     })
 
+
+	special_rules = await queries.findData({
+		model: "SpecialRule"
+		,search_type: "findOne"
+		,params: options.special_rules
+	})      
+
+    special_rules_array = []
+    special_rules.forEach((rule) => {
+        special_rules_array.push(rule._id)
+    })
+
     list = {
         model: "Squad"
         ,params: [
@@ -554,6 +616,7 @@ exports.createSquad = async(options) => {
                 armour: armour[0]._id,
                 cost_per_unit: cost,
                 upgrades: upgrade_array,
+                special_rules: special_rules_array,                
             },
         ]
     }
@@ -583,6 +646,7 @@ exports.createFactions = async() => {
                     {name:"general"},
                     {name:"heavy squad"},
                     {name:"tactical squad"},
+                    {name:"scouts"},
                     {name:"tank"},   
                     {name:"dread"},                                        
                 ],

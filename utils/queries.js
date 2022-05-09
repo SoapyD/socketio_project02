@@ -315,7 +315,8 @@ exports.getArmy = (params) => {
                                 {path: 'melee'},
                                 {path: 'armour'},
                                 ]                 
-                        }
+                        },
+                        {path: 'special_rules',model: "SpecialRule"},                        
                     ]
             },
             {
@@ -370,12 +371,51 @@ exports.getPopulateLists = (type) => {
                 ]          
             })
             break;
+        case "Army":
+            populate_list.push({
+                path: "squads",
+                populate: [
+                {
+                    path: "squad",
+                    populate: [
+                            {path: 'unit'},  
+                            {path: 'gun'},
+                            {path: 'melee'},
+                            {path: 'armour'},
+                            {
+                                path: 'upgrades',
+                                populate: [
+                                    {path: "upgrade"},
+                                    {path: 'unit'},  
+                                    {path: 'gun'},
+                                    {path: 'melee'},
+                                    {path: 'armour'},
+                                    ]                 
+                            }
+                        ]
+                },
+                {
+                    path: 'upgrades',
+                    populate: {
+                        path: "upgrade",
+                        populate: [
+                            {path: 'unit'},  
+                            {path: 'gun'},
+                            {path: 'melee'},
+                            {path: 'armour'},
+                        ]                    
+                    }          
+                }
+                ]
+            })
+            break;
         case 'Squad':
             populate_list.push({path: "unit"})
             populate_list.push({path: "gun"})
             populate_list.push({path: "melee"})
             populate_list.push({path: "armour"}) 
-            populate_list.push({path: 'upgrades',model: "Upgrade"})                                   
+            populate_list.push({path: 'upgrades',model: "Upgrade"}) 
+            populate_list.push({path: 'special_rules',model: "SpecialRule"})                                   
             break;
 
         case 'Upgrade':
@@ -414,29 +454,25 @@ exports.findData = async(list) => {
 
     let promises = [];
 
-    // find_list.forEach((list) => {
 
-        if (list.params)
-        {
-            // if(!list.populate){
-                list.params.forEach((item) => {
-                    promises.push(models[list.model][list.search_type](item))
-                })
-            // }
+    let populate_list = [];
+    populate_list = exports.getPopulateLists(list.model)
+
+    // if (list.params)
+    // {
+    //         list.params.forEach((item) => {
+    //             promises.push(models[list.model][list.search_type](item).sort(list.sort).populate(populate_list))
+    //         })
+    // }
+    // else{
+
+        if(list.sort){
+            promises.push(models[list.model][list.search_type](list.params).sort(list.sort).populate(populate_list))
+        }else{
+            promises.push(models[list.model][list.search_type](list.params).populate(populate_list))
         }
-        else{
 
-            let populate_list = [];
-            populate_list = exports.getPopulateLists(list.model)
-
-            if(list.sort){
-                promises.push(models[list.model][list.search_type]().sort(list.sort).populate(populate_list))
-            }else{
-                promises.push(models[list.model][list.search_type]().populate(populate_list))
-            }
-
-        }
-    // })
+    // }
 
     return Promise.all(promises)
     .catch((err) => {
