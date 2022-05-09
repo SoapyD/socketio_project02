@@ -14,6 +14,10 @@ const unit = class {
 		this.cost = options.cost;
 		this.special_rules = options.special_rules;
 
+		//status'
+		this.poison = false;
+		this.poison_timer = 0;
+
 		this.upgrade_id = options.upgrade_id;
 		// this.setup = false;
 
@@ -536,6 +540,45 @@ resetDrawInfo(){
 // ██  █  ██ ██    ██ ██    ██ ██ ██  ██ ██   ██ ██ ██ ██  ██ ██   ███ 
 // ██ ███ ██ ██    ██ ██    ██ ██  ██ ██ ██   ██ ██ ██  ██ ██ ██    ██ 
 //  ███ ███   ██████   ██████  ██   ████ ██████  ██ ██   ████  ██████ 
+
+checkStatus(){
+	if(this.poison === true){
+		this.health--;
+		this.poison_timer--;
+		if(this.poison_timer === 0){
+			this.poison = false;
+		}
+
+		let part_options = {
+			scene: GameScene.scene,
+			text: 'poison',
+			text_style: { 
+				font: "16px Arial",
+				fill: "#ff0044",
+				align: "center",
+				stroke: "#000000",
+				strokeThickness: 2
+			},
+			pos: {
+				x: this.sprite.x,
+				y: this.sprite.y
+			},
+			tween:true
+		}
+		new particle(part_options)
+
+		GameScene.sfx['sword'].play();
+	}
+
+	this.drawHealth(this.sprite)
+
+	if(this.health <= 0){
+		// this.killed_by = options.attacker_id;
+		GameUIScene.updatePointsHUD();
+		this.kill();
+	}	
+}
+
 
 wound(options){
 
@@ -1838,6 +1881,10 @@ move(endFunction="move") {
 					onComplete: function ()
 					{
 						
+						GameScene.barriers.forEach((barrier) => {
+							barrier.checkAction(this)
+						})
+
 						let end_path = this.path[this.path.length - 1];
 						
 						
@@ -1864,13 +1911,13 @@ move(endFunction="move") {
 								// 		default:
 								// 	}
 								// }
-								this.endMove();							
+								this.endMove(endFunction);							
 							}
 						}
 						catch (e){
 
 							if(this.is_moving === true){
-								this.endMove();								
+								this.endMove(endFunction);								
 							}
 
 							// console.log("ERROR FINISHING PATH")
@@ -1911,7 +1958,7 @@ move(endFunction="move") {
 	}		
 }
 
-endMove() {
+endMove(endFunction) {
 
 	try{
 		//CHECK IF THE UNIT IS COMING OUT OF COMBAT

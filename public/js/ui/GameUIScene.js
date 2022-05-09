@@ -723,8 +723,8 @@ GameUIScene.advanceMode = () => {
 				gameFunctions.mode_state++;			
 				GameUIScene.readyAdvanceMode();
 
-				GameScene.game_setup.updateBarriers();
 				GameUIScene.nextSide();
+				GameScene.game_setup.updateBarriers();
 				break;
 
 			case 27:
@@ -1054,6 +1054,7 @@ GameUIScene.nextSide = () => {
 		gameFunctions.mode = ""
 		gameFunctions.units.forEach((unit) => {
 			if(unit.alive === true && unit.player === gameFunctions.params.player_number){ //unit.side === gameFunctions.current_side){
+				unit.checkStatus();
 				unit.resetActions();
 				unit.resetLocks();
 			}

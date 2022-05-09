@@ -92,7 +92,8 @@ const game_setup = class {
 		
 		//PARTICLE SPRITES
 		this.scene.load.image('bullet', '../../img/particles/bullet.png');	
-		this.scene.load.image('smoke', '../../img/particles/smoke.png');	
+		this.scene.load.image('smoke', '../../img/particles/smoke.png');
+		this.scene.load.image('barrier', '../../img/particles/barrier.png');	
 		this.scene.load.image('marker', '../../img/particles/marker.png');			
         this.scene.load.spritesheet('explosion', '../../img/particles/explosion7.png', { frameWidth: 256, frameHeight: 256 }); //WEAPON BLAST
         this.scene.load.spritesheet('punch', '../../img/particles/explosion23.png', { frameWidth: 256, frameHeight: 256 });	//CLOSE COMBAT BLAST
@@ -719,7 +720,7 @@ const game_setup = class {
 		let new_list = []
 		this.scene_container.barriers.forEach((barrier) => {
 			barrier.checkDeath();
-			if(barrier.delete === false){
+			if(barrier.alive === true){
 				new_list.push(barrier)
 			}
 		})
@@ -739,7 +740,9 @@ const game_setup = class {
 				}
 
 				this.scene_container.barriers.forEach((barrier) => {
-					barrier.checkAction(bullet)
+					if(barrier.side != bullet.side){
+						barrier.checkAction(bullet)
+					}
 				})
 			})
 		}

@@ -4,9 +4,15 @@ const barrier = class {
 	
         this.id = GameScene.barriers.length;
         this.unit = options.unit
+        this.side = options.unit.side
         this.scene = options.scene
-        this.delete = false;
-        this.life = 2;
+        this.alive = true;
+        this.life = options.life;
+
+        // this.effects = [
+        //     "blunt"
+        // ];
+        this.effects = options.effects
 
         this.text = this.life
         this.style =  { 
@@ -32,7 +38,9 @@ const barrier = class {
 
         this.sprite = options.scene.physics.add.image(this.origin.x,this.origin.y,options.blast_spritesheet)
         this.sprite.setDepth(20);
-        this.sprite.setAlpha(0.5)
+        this.sprite.setAlpha(0.5);
+
+        this.sprite.setTint(this.unit.colour)
 
         if(options.blast_radius){
             this.sprite.displayWidth = options.blast_radius * (gameFunctions.tile_size * 3);
@@ -70,12 +78,14 @@ const barrier = class {
     }
 
 	checkDeath() {
-        this.checkCollisions();
+        // if(this.type === 'unit'){
+        //     this.checkCollisions();
+        // }
 
         this.life--;
         this.updateText()
         if (this.life <= 0){
-            this.delete = true;
+            this.alive = false;
             this.sprite.destroy();
             this.text.destroy();
         }
@@ -89,6 +99,15 @@ const barrier = class {
 		}        
     }    
 
+    checkEffects(name) {
+        let has_rule = false;
+        if (this.effects.find((rule) => rule === name)){
+            has_rule = true;
+        }	
+    
+        return has_rule
+    }
+
     checkAction = (obj) => {
 
         let val = Math.pow(this.sprite.x - obj.sprite.x, 2) + Math.pow(this.sprite.y - obj.sprite.y, 2)
@@ -98,7 +117,38 @@ const barrier = class {
 
         if(dist <= blast_size){    
             // this.applyDamage();
-            obj.kill()
+            // obj.kill()
+
+            if(this.checkEffects("blunt") === true && obj.blunt === false){
+
+                let part_options = {
+                    scene: GameScene.scene,
+                    text: 'blunt',
+                    text_style: { 
+                        font: "16px Arial",
+                        fill: "#ff0044",
+                        align: "center",
+                        stroke: "#000000",
+                        strokeThickness: 2
+                    },
+                    pos: {
+                        x: obj.sprite.x,
+                        y: obj.sprite.y
+                    },
+                    tween:true
+                }
+                new particle(part_options)
+
+                obj.blunt = true;
+                GameScene.sfx['sword'].play();
+            }
+
+            if(this.checkEffects("poison") === true && obj.poison === false && obj.poison_timer < 2){
+                obj.poison = true;
+                obj.poison_timer = 2;
+                GameScene.sfx['sword'].play();
+            }
+
         }
     }
     

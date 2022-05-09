@@ -10,6 +10,9 @@ const bullet = class {
 		this.player = options.unit.player;
 		this.range = options.unit.shoot_range;
 
+		//status'
+		this.blunt = false;
+
 		//IF TARGET IS CLOSER THAN TOTAL RANGE, ADJUST THE RANGE
 		let val = Math.pow(options.unit.sprite.x - options.target.x, 2) + Math.pow(options.unit.sprite.y - options.target.y, 2)		
 		let path_range = Math.sqrt(val)
@@ -69,9 +72,15 @@ const bullet = class {
 			if(bullet.parent.blast_radius === 1){
 				if(bullet.parent.player !== unit.parent.player){
 
+
+					let ap = bullet.parent.unit.shoot_ap
+					if(bullet.parent.blunt === true){
+						ap -= 2;
+					}
+
 					let options = {
 						damage: bullet.parent.damage,
-						ap: bullet.parent.unit.shoot_ap,
+						ap: ap,
 						bonus: bullet.parent.unit.shooting_bonus,
 						random_roll: gameFunctions.getRandomInt(20),
 						attacker_id: bullet.parent.unit.id,
@@ -103,16 +112,30 @@ const bullet = class {
 	
 	kill(){
 
-		// if(this.player === 0){
-		// 	let test = new barrier({
-		// 		scene: this.scene,
-		// 		x: this.sprite.x,
-		// 		y: this.sprite.y,
-		// 		blast_radius: 2,
-		// 		blast_spritesheet: "smoke",
-		// 		unit: this.unit			
-		// 	})
-		// }
+		if(this.player === 0){
+			// new barrier({
+			// 	scene: this.scene,
+			// 	x: this.sprite.x,
+			// 	y: this.sprite.y,
+			// 	blast_radius: 2,
+			// 	blast_spritesheet: "smoke",
+			// 	unit: this.unit,
+			// 	life: 3,
+			// 	effects: ["poison"]			
+			// })
+
+			// new barrier({
+			// 	scene: this.scene,
+			// 	x: this.sprite.x,
+			// 	y: this.sprite.y,
+			// 	blast_radius: 2,
+			// 	blast_spritesheet: "barrier",
+			// 	unit: this.unit,
+			// 	life: 3,
+			// 	effects: ["blunt"]			
+			// })
+
+		}
 
 		//WOUND ANY UNITS IF ITS IN THE BLAST RADIUS
 		if(this.blast_radius > 1){
