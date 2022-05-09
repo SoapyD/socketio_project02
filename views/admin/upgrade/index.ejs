@@ -39,10 +39,11 @@
             
             <colgroup>
                 <col span="1" style="width: 20%;"> 
-                <col span="1" style="width: 20%;">
-                <col span="1" style="width: 20%;">
-                <col span="1" style="width: 20%;">
-                <col span="1" style="width: 20%;">                               
+                <col span="1" style="width: 10%;">
+                <col span="1" style="width: 30%;">
+                <col span="1" style="width: 10%;">
+                <col span="1" style="width: 15%;">
+                <col span="1" style="width: 15%;">                               
             </colgroup>
             
             <thead>
@@ -50,6 +51,7 @@
                     <th><span class="text">Name</span></th>
                     <th><span class="text">Cost</span></th>
                     <th><span class="text">Description</span></th>
+                    <th><span class="text">Upgrades_All?</span></th>
                     <th><span class="text">Unit</span></th>
                     <th><span class="text">Gun</span></th>                   							
                 </tr>
@@ -62,6 +64,7 @@
                             <td><%- item.name %> </td>  
                             <td><%- item.cost %> </td> 
                             <td><%- item.description %> </td> 
+                            <td><%- item.upgrades_all_in_squad %> </td> 
                             <td><%- item.unit.name %> </td>                        
                             <td><%- item.gun.name %> </td> 
                             
