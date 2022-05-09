@@ -22,7 +22,7 @@ NEW ACTIONS
 
 -Barriers
     -cloud: leaves a area of affect that disappears after x turns
-        -radiation status affect
+        -radiation status affect, have a status affect added to player if they pass through the cloud
         -smoke cloud that can't be shot into
     -Shields - Passive ability, reduce the damage of bullets when they pass through them. Can't be stacked
 
