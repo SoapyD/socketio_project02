@@ -859,19 +859,16 @@ drawHealth(sprite)
 			y: sprite.y
 		}		
 		
-		//  Without this the arc will appear closed when stroked
-		this.bar_graphic.beginPath();
-
 		
 		let angle = (270 / this.max_health) * this.health;
 		
 		let fill_colour = 0x2ECC40; //green
-		if (this.health < this.max_health / 2) 
+		if (this.health <= this.max_health / 2) 
 		{
 
 			fill_colour = 0xffdb00; //yellow
 		}
-		if (this.health < this.max_health / 4)
+		if (this.health <= this.max_health / 4)
 		{
 			fill_colour = 0xff0000; //red
 		}
@@ -881,8 +878,16 @@ drawHealth(sprite)
 		this.drawBacking(sprite, width);
 
 		this.bar_graphic.lineStyle(7, fill_colour, 0.75);
-		this.bar_graphic.arc(pos.x, pos.y, width / 2, Phaser.Math.DegToRad(angle), Phaser.Math.DegToRad(0), true) //.setStartAngle(90);
-		this.bar_graphic.strokePath();
+		// this.bar_graphic.arc(pos.x, pos.y, width / 2, Phaser.Math.DegToRad(angle), Phaser.Math.DegToRad(0), true)
+		
+		let segment_size = 270 / this.max_health;
+		for (let i=0;i<this.health;i++){
+			//  Without this the arc will appear closed when stroked
+			this.bar_graphic.beginPath();			
+			this.bar_graphic.arc(pos.x, pos.y, width / 2, Phaser.Math.DegToRad(((i+1) * segment_size) - 10), Phaser.Math.DegToRad(i * segment_size), true)
+			this.bar_graphic.strokePath();
+		}
+
 	}catch(e){
 
 		let options = {

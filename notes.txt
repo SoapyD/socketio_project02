@@ -7,7 +7,26 @@ SBT GAME NOTES
 /////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////
 
--Make squad coherancy more visible
+
+/////////////////////////////////////////
+NEW ACTIONS
+/////////////////////////////////////////
+
+-Action Types
+    -Shields - Passive ability, reduce the damage of bullets when they pass through them. Can't be stacked
+    -Jump packs - jump over terrain
+    -Units that can move, shoot and move again
+    -The ability for a unit to miss it's first movement action so they can shoot then move
+    -agile - leave/pass combat zones without incurring damage
+    -bonus to unit that charges into combat
+    -unit that doesn't move before it shoots get to take 2 shots with their gun
+
+-Weapon Types
+    -Flamer: template that hits all units underneath it
+    -cloud: leaves a area of affect that disappears after x turns
+        -radiation status affect
+        -smoke cloud that can't be shot into
+
 
 /////////////////////////////////////////
 END GAME
@@ -63,6 +82,10 @@ SETUP
 BUGS
 /////////////////////////////////////////
 
+-POSSIBLY FIXED -Bildo tried to dash some units in combat, they moved but the turn never ended
+    -Think this may be related to when, if you click on an area while a unit is moving, the combat doesn't complete properly for some reason
+
+
 -BUG -Desyncs occur if the window isn't visible.
     -Maybe add in a mechanism for numbering saves so when the window becomes active again, check the last save with the current value to see if things need updating.
 
@@ -71,9 +94,6 @@ BUGS
 -BUG -When game is abandoned on the "end turn" check (i think) then re-joined, if the "current player" doesn't enter in first, i think this is causing a turn desync.
 
 -BUG -Reloaded game didn't set units in combat, nor did it attribute life properly, everyone started with full life again
-
--BUG -Bildo tried to dash some units in combat, they moved but the turn never ended
-    -Think this may be related to when, if you click on an area while a unit is moving, the combat doesn't complete properly for some reason
 
 -BUG -Stop other people from being able to see the "can't shoot" popup
 
@@ -102,14 +122,7 @@ THINGS TO DO (EVENTUALLY)
 
 -Add in at least 3 maps to use
 
--Action Types
-    -Shields - Passive ability, reduce the damage of bullets when the pass through them. Can't be stacked
-    -Jump packs - jump over terrain
-    -agile - leave/pass combat zones without incurring damage
 
--Weapon Types
-    -Flamer: template that hits all units underneath it
-    -cloud: leaves a area of affect that disappears after x turns
 
 
 /////////////////////////////////////////
@@ -152,6 +165,8 @@ SELECTION - PAUSED
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+-DONE -Make squad coherancy more visible
 
 -DONE -Need to remove colliders once they're no longer needed
 
