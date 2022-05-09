@@ -187,6 +187,7 @@ const squad_setup = class {
 			fight_damage: melee_class.damage,		
 			fight_max_targets: melee_class.max_targets,
 			
+			gun_class: gun_class,
 			shoot_name: gun_class.name,
 			shoot_range: gun_class.range,
 			shoot_damage: gun_class.damage,

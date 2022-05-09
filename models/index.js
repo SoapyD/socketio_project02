@@ -12,6 +12,7 @@ models.Army = require("./army");
 models.Squad = require("./squad");
 models.Upgrade = require("./upgrade");
 models.SpecialRule = require("./special_rule");
+models.Barrier = require("./barrier");
 
 models.Error = require("./error");
 

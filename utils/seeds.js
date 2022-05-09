@@ -20,7 +20,8 @@ exports.seedDB = async() => {
     {model: "Faction"},
     {model: "Squad"} ,
     {model: "Upgrade"},
-    {model: "SpecialRule"},      
+    {model: "SpecialRule"}, 
+    {model: "Barrier"},      
 
     {model: "Unit"},
     {model: "Gun"},
@@ -32,6 +33,7 @@ exports.seedDB = async() => {
 
 
     await exports.createUnits();
+    await exports.createBarriers();    
     await exports.createGuns();
     await exports.createMelee();
     await exports.createArmour();
@@ -175,6 +177,41 @@ exports.createUnits = async() => {
 
 }
 
+    //  #####  ######  #######    #    ####### #######       ######     #    ######  ######  ### ####### ######   #####  
+    // #     # #     # #         # #      #    #             #     #   # #   #     # #     #  #  #       #     # #     # 
+    // #       #     # #        #   #     #    #             #     #  #   #  #     # #     #  #  #       #     # #       
+    // #       ######  #####   #     #    #    #####   ##### ######  #     # ######  ######   #  #####   ######   #####  
+    // #       #   #   #       #######    #    #             #     # ####### #   #   #   #    #  #       #   #         # 
+    // #     # #    #  #       #     #    #    #             #     # #     # #    #  #    #   #  #       #    #  #     # 
+    //  #####  #     # ####### #     #    #    #######       ######  #     # #     # #     # ### ####### #     #  #####  
+
+    exports.createBarriers = async() => {
+
+        list = {
+            model: "Barrier"
+            ,params: [
+               {
+                    name: "poison",
+                    description:"poison any unit that passes through the cloud",
+                    blast_radius: 2,
+                    blast_sprite: "smoke",
+                    effects: ["poison"],
+                    life: 3
+                },
+                {
+                    name: "blunt",
+                    description:"blunt the effectiveness of any projectile that passes through the barrier",
+                    blast_radius: 2,
+                    blast_sprite: "barrier",
+                    effects: ["blunt"],                    
+                    life: 3                    
+                },            
+            ]
+        }
+    
+        return Promise.all([queries.createData(list)]); 
+    }
+
 
     //  #####  ######  #######    #    ####### #######        #####  #     # #     #  #####  
     // #     # #     # #         # #      #    #             #     # #     # ##    # #     # 
@@ -230,9 +267,49 @@ exports.createGuns = async() => {
                 max_targets: 3,
                 blast_radius: 1,
                 blast_spritesheet: "explosion",
-            },                     
+            },                                           
         ]
     }
+
+	let return_data = await queries.findData({
+		model: "Barrier"
+		,search_type: "findOne"
+		,params: {name: "blunt"}
+	})    
+
+    list.params.push(
+        {
+            name: "shield generator",
+            cost: 100,
+            range: 8 * range,
+            damage: 0,
+            ap: 0,               
+            max_targets: 1,
+            blast_radius: 2,
+            blast_spritesheet: "special_blast",
+            barrier: return_data[0]._id
+        }    
+    )
+
+	return_data = await queries.findData({
+		model: "Barrier"
+		,search_type: "findOne"
+		,params: {name: "poison"}
+	})    
+
+    list.params.push(
+        {
+            name: "rad cannon",
+            cost: 100,
+            range: 16 * range,
+            damage: 2,
+            ap: 0,               
+            max_targets: 1,
+            blast_radius: 2,
+            blast_spritesheet: "explosion",
+            barrier: return_data[0]._id
+        }   
+    )    
 
     return Promise.all([queries.createData(list)]);
 }
@@ -323,17 +400,13 @@ exports.createUpgrades = async() => {
 	let return_data = await queries.findData({
 		model: "Gun"
 		,search_type: "findOne"
-		,params: [
-			{name: "rocket launcher"}
-		]
+		,params: {name: "rocket launcher"}
 	})    
 
 	let unit_data = await queries.findData({
 		model: "Unit"
 		,search_type: "findOne"
-		,params: [
-			{name: "heavy"}
-		]
+		,params: {name: "heavy"}
 	})  
 
     let cost = return_data[0].cost + unit_data[0].cost
@@ -358,16 +431,69 @@ exports.createUpgrades = async() => {
     return_data = await queries.findData({
 		model: "Gun"
 		,search_type: "findOne"
-		,params: [
-			{name: "plasma"}
-		]
+		,params: {name: "shield generator"}
     })    
 	unit_data = await queries.findData({
 		model: "Unit"
 		,search_type: "findOne"
-		,params: [
-			{name: "special"}
-		]
+		,params: {name: "special"}
+	})      
+
+    cost = return_data[0].cost + unit_data[0].cost
+
+    list = {
+        model: "Upgrade"
+        ,params: [
+           {
+                name: "shield generator",
+                description:"outfit one trooper with a shield generator",
+                cost: return_data[0].cost,
+                unit: unit_data[0]._id,
+                gun: return_data[0]._id,
+            },
+        ]
+    }
+    await queries.createData(list);     
+
+
+    return_data = await queries.findData({
+		model: "Gun"
+		,search_type: "findOne"
+		,params: {name: "rad cannon"}
+    })    
+	unit_data = await queries.findData({
+		model: "Unit"
+		,search_type: "findOne"
+		,params: {name: "heavy"}
+	})      
+
+    cost = return_data[0].cost + unit_data[0].cost
+
+    list = {
+        model: "Upgrade"
+        ,params: [
+           {
+                name: "rad cannon",
+                description:"outfit one trooper with a rad cannon",
+                cost: return_data[0].cost,
+                unit: unit_data[0]._id,
+                gun: return_data[0]._id,
+            },
+        ]
+    }
+    await queries.createData(list);  
+
+
+
+    return_data = await queries.findData({
+		model: "Gun"
+		,search_type: "findOne"
+		,params: {name: "plasma"}
+    })    
+	unit_data = await queries.findData({
+		model: "Unit"
+		,search_type: "findOne"
+		,params: {name: "special"}
 	})      
 
     cost = return_data[0].cost + unit_data[0].cost
@@ -387,29 +513,7 @@ exports.createUpgrades = async() => {
         ]
     }
     
-    // return_data = await queries.findData({
-	// 	model: "Gun"
-	// 	,search_type: "findOne"
-	// 	,params: [
-	// 		{name: "plasma"}
-	// 	]
-	// })    
 
-    // list = {
-    //     model: "Upgrade"
-    //     ,params: [
-    //        {
-    //             name: "special weapon",
-    //             description:"outfit one trooper with a special weapon",
-    //             upgrades_all_in_squad: true,
-    //             cost: return_data[0].cost,
-    //             // unit: unit[0]._id,
-    //             gun: return_data[0]._id,
-    //             // melee: melee[0]._id,
-    //             // armour: armour[0]._id,
-    //         },
-    //     ]
-    // }
     return Promise.all([queries.createData(list)]); 
 }
 
@@ -441,6 +545,7 @@ exports.createSpecialRules = async() => {
 
     return Promise.all([queries.createData(list)]); 
 }
+
 
 
 
@@ -527,7 +632,7 @@ exports.createSquads = async() => {
                 gun: "bolter",
                 armour: "basic",
                 melee: "sword",
-                upgrades: [],
+                upgrades: [{name:"shield generator"},{name:"rad cannon"}],
                 special_rules: [{name:"swift"},{name:"sword dance"}],
                 min_size: 5,
                 max_size: 10,
@@ -551,31 +656,23 @@ exports.createSquad = async(options) => {
 	unit = await queries.findData({
 		model: "Unit"
 		,search_type: "findOne"
-		,params: [
-			{name: options.unit}
-		]
+		,params: {name: options.unit}
 	})     
 
 	gun = await queries.findData({
 		model: "Gun"
 		,search_type: "findOne"
-		,params: [
-			{name: options.gun}
-		]
+		,params: {name: options.gun}
 	})    
 	armour = await queries.findData({
-		model: "Armour"
+		model: "Armour" 
 		,search_type: "findOne"
-		,params: [
-			{name: options.armour}
-		]
+		,params: {name: options.armour}
     })
 	melee = await queries.findData({
 		model: "Melee"
 		,search_type: "findOne"
-		,params: [
-			{name: options.melee}
-		]
+		,params: {name: options.melee}
     })
     
     cost = unit[0].cost + gun[0].cost + melee[0].cost + armour[0].cost
@@ -583,7 +680,7 @@ exports.createSquad = async(options) => {
 	upgrades = await queries.findData({
 		model: "Upgrade"
 		,search_type: "findOne"
-		,params: options.upgrades
+		,multiple_search: options.upgrades
 	})      
 
     upgrade_array = []
@@ -595,7 +692,7 @@ exports.createSquad = async(options) => {
 	special_rules = await queries.findData({
 		model: "SpecialRule"
 		,search_type: "findOne"
-		,params: options.special_rules
+		,multiple_search: options.special_rules
 	})      
 
     special_rules_array = []
@@ -668,7 +765,7 @@ exports.createFaction = async(options) => {
 	let squads = await queries.findData({
 		model: "Squad"
 		,search_type: "find"
-		,params: options.squads
+		,multiple_search: options.squads
 	})   
 
     let squad_array = []

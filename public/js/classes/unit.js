@@ -4,6 +4,7 @@ const unit = class {
 		
 		// super(options);
 		this.scene = options.scene;
+		this.type = 'unit'
 		
 		this.id = gameFunctions.units.length;
 		this.side = options.side; //this can be used if each side has multiple players
@@ -43,6 +44,7 @@ const unit = class {
 		this.cohesion_check = true;		
 		this.movement = options.movement;
 		
+		this.gun_class = options.gun_class;
 		this.shoot_name = options.shoot_name;
 		this.shoot_range = options.shoot_range;
 		this.shoot_damage = options.shoot_damage;

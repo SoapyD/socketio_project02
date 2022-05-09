@@ -3,6 +3,7 @@ const bullet = class {
 	constructor(options) {	
 	
 		this.id = GameScene.bullets.length;
+		this.type ='bullet';
 		this.scene = options.scene;
 		this.delete = false;
 		this.unit = options.unit;
@@ -113,28 +114,22 @@ const bullet = class {
 	kill(){
 
 		if(this.player === 0){
-			// new barrier({
-			// 	scene: this.scene,
-			// 	x: this.sprite.x,
-			// 	y: this.sprite.y,
-			// 	blast_radius: 2,
-			// 	blast_spritesheet: "smoke",
-			// 	unit: this.unit,
-			// 	life: 3,
-			// 	effects: ["poison"]			
-			// })
 
-			// new barrier({
-			// 	scene: this.scene,
-			// 	x: this.sprite.x,
-			// 	y: this.sprite.y,
-			// 	blast_radius: 2,
-			// 	blast_spritesheet: "barrier",
-			// 	unit: this.unit,
-			// 	life: 3,
-			// 	effects: ["blunt"]			
-			// })
+			if(this.unit.gun_class.barrier){
 
+				let barrier_info = this.unit.gun_class.barrier;
+
+				new barrier({
+					scene: this.scene,
+					x: this.sprite.x,
+					y: this.sprite.y,
+					blast_radius: barrier_info.blast_radius,
+					blast_spritesheet: barrier_info.blast_sprite,
+					unit: this.unit,
+					life: barrier_info.life,
+					effects: barrier_info.effects			
+				})				
+			}
 		}
 
 		//WOUND ANY UNITS IF ITS IN THE BLAST RADIUS

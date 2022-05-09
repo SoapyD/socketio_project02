@@ -21,10 +21,10 @@ NEW ACTIONS
     -unit that doesn't move before it shoots get to take 2 shots with their gun
 
 -Barriers
-    -cloud: leaves a area of affect that disappears after x turns
-        -radiation status affect, have a status affect added to player if they pass through the cloud
-        -smoke cloud that can't be shot into
-    -Shields - Passive ability, reduce the damage of bullets when they pass through them. Can't be stacked
+    -DONE -cloud: leaves a area of affect that disappears after x turns
+        -DONE -radiation status affect, have a status affect added to player if they pass through the cloud
+        -DONE -smoke cloud that can't be shot into
+    -DONE -Shields - Passive ability, reduce the damage of bullets when they pass through them. Can't be stacked
 
 -Equipment Types
     -Flamer: template that hits all units underneath it

@@ -723,8 +723,8 @@ GameUIScene.advanceMode = () => {
 				gameFunctions.mode_state++;			
 				GameUIScene.readyAdvanceMode();
 
-				GameUIScene.nextSide();
 				GameScene.game_setup.updateBarriers();
+				GameUIScene.nextSide();
 				break;
 
 			case 27:
@@ -1053,10 +1053,12 @@ GameUIScene.nextSide = () => {
 	try{	
 		gameFunctions.mode = ""
 		gameFunctions.units.forEach((unit) => {
-			if(unit.alive === true && unit.player === gameFunctions.params.player_number){ //unit.side === gameFunctions.current_side){
+			if(unit.alive === true){
 				unit.checkStatus();
-				unit.resetActions();
-				unit.resetLocks();
+				if(unit.player === gameFunctions.params.player_number){ //unit.side === gameFunctions.current_side){
+					unit.resetActions();
+					unit.resetLocks();
+				}
 			}
 		})
 		// GameScene.sfx["end_turn"].play();

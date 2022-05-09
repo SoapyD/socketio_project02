@@ -49,7 +49,7 @@ exports.setupApp = async(app) => {
 //     'Content-Security-Policy',
 //     "default-src 'self' "
 //     +";style-src-elem 'self' "
-//     +"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    +"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
 //     +";script-src-elem 'self' "    
 //     +"https://code.jquery.com/jquery-2.2.4.min.js "
 //     +"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js " 

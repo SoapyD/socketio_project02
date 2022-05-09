@@ -12,6 +12,11 @@ const gunSchema = new mongoose.Schema({
 	,blast_spritesheet: String
 	,blast_radius: Number
 	
+	,barrier: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: "Barrier"
+	}
+
 	,created_date: {type: Date, default: Date.now}
 	,updateddate: {type: Date, default: Date.now}	
 	

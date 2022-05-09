@@ -3,6 +3,7 @@ const barrier = class {
 	constructor(options) {	
 	
         this.id = GameScene.barriers.length;
+        this.type = "barrier"
         this.unit = options.unit
         this.side = options.unit.side
         this.scene = options.scene
@@ -79,7 +80,7 @@ const barrier = class {
 
 	checkDeath() {
         // if(this.type === 'unit'){
-        //     this.checkCollisions();
+            this.checkCollisions();
         // }
 
         this.life--;
@@ -119,34 +120,38 @@ const barrier = class {
             // this.applyDamage();
             // obj.kill()
 
-            if(this.checkEffects("blunt") === true && obj.blunt === false){
-
-                let part_options = {
-                    scene: GameScene.scene,
-                    text: 'blunt',
-                    text_style: { 
-                        font: "16px Arial",
-                        fill: "#ff0044",
-                        align: "center",
-                        stroke: "#000000",
-                        strokeThickness: 2
-                    },
-                    pos: {
-                        x: obj.sprite.x,
-                        y: obj.sprite.y
-                    },
-                    tween:true
+            if(obj.type === 'bullet'){
+                if(this.checkEffects("blunt") === true && obj.blunt === false){
+    
+                    let part_options = {
+                        scene: GameScene.scene,
+                        text: 'blunt',
+                        text_style: { 
+                            font: "16px Arial",
+                            fill: "#ff0044",
+                            align: "center",
+                            stroke: "#000000",
+                            strokeThickness: 2
+                        },
+                        pos: {
+                            x: obj.sprite.x,
+                            y: obj.sprite.y
+                        },
+                        tween:true
+                    }
+                    new particle(part_options)
+    
+                    obj.blunt = true;
+                    GameScene.sfx['sword'].play();
                 }
-                new particle(part_options)
-
-                obj.blunt = true;
-                GameScene.sfx['sword'].play();
             }
 
-            if(this.checkEffects("poison") === true && obj.poison === false && obj.poison_timer < 2){
-                obj.poison = true;
-                obj.poison_timer = 2;
-                GameScene.sfx['sword'].play();
+            if(obj.type === 'unit'){
+                if(this.checkEffects("poison") === true && obj.poison === false && obj.poison_timer < 2){
+                    obj.poison = true;
+                    obj.poison_timer = 2;
+                    GameScene.sfx['sword'].play();
+                }
             }
 
         }

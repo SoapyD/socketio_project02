@@ -303,7 +303,12 @@ exports.getArmy = (params) => {
                 // model: "Squad",
                 populate: [
                         {path: 'unit'},  
-                        {path: 'gun'},
+                        {
+                            path: 'gun',                            
+                            populate:[
+                                {path: "barrier"}
+                            ]
+                        },
                         {path: 'melee'},
                         {path: 'armour'},
                         {
@@ -311,7 +316,12 @@ exports.getArmy = (params) => {
                             populate: [
                                 {path: "upgrade"},
                                 {path: 'unit'},  
-                                {path: 'gun'},
+                                {
+                                    path: 'gun',                            
+                                    populate:[
+                                        {path: "barrier"}
+                                    ]
+                                },
                                 {path: 'melee'},
                                 {path: 'armour'},
                                 ]                 
@@ -325,7 +335,12 @@ exports.getArmy = (params) => {
                     path: "upgrade",
                     populate: [
                         {path: 'unit'},  
-                        {path: 'gun'},
+                        {
+                            path: 'gun',                            
+                            populate:[
+                                {path: "barrier"}
+                            ]
+                        },
                         {path: 'melee'},
                         {path: 'armour'},
                     ]                    
@@ -458,13 +473,13 @@ exports.findData = async(list) => {
     let populate_list = [];
     populate_list = exports.getPopulateLists(list.model)
 
-    // if (list.params)
-    // {
-    //         list.params.forEach((item) => {
-    //             promises.push(models[list.model][list.search_type](item).sort(list.sort).populate(populate_list))
-    //         })
-    // }
-    // else{
+    if (list.multiple_search)
+    {
+            list.multiple_search.forEach((item) => {
+                promises.push(models[list.model][list.search_type](item).sort(list.sort).populate(populate_list))
+            })
+    }
+    else{
 
         if(list.sort){
             promises.push(models[list.model][list.search_type](list.params).sort(list.sort).populate(populate_list))
@@ -472,7 +487,7 @@ exports.findData = async(list) => {
             promises.push(models[list.model][list.search_type](list.params).populate(populate_list))
         }
 
-    // }
+    }
 
     return Promise.all(promises)
     .catch((err) => {
