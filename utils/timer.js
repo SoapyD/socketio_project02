@@ -35,10 +35,10 @@ exports.checkItems = async(model, hours) => {
     
     
         if(data){
-            if(data[0][0]){
+            if(data[0]){
         
                 let ids = [];
-                data[0][0].forEach((item) => {
+                data[0].forEach((item) => {
                     ids.push({_id: item._id})
                 })
         

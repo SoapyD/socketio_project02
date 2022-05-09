@@ -723,6 +723,7 @@ GameUIScene.advanceMode = () => {
 				gameFunctions.mode_state++;			
 				GameUIScene.readyAdvanceMode();
 
+				GameScene.game_setup.updateBarriers();
 				GameUIScene.nextSide();
 				break;
 

@@ -13,19 +13,20 @@ NEW ACTIONS
 /////////////////////////////////////////
 
 -Action Types
-    -Shields - Passive ability, reduce the damage of bullets when they pass through them. Can't be stacked
-    -Jump packs - jump over terrain
-    -Units that can move, shoot and move again
+    -DONE -SWIFT - Units that can move, shoot and move again
+    -DONE -SWORD DANCE - leave/pass combat zones without incurring damage
+    
     -The ability for a unit to miss it's first movement action so they can shoot then move
-    -agile - leave/pass combat zones without incurring damage
     -bonus to unit that charges into combat
     -unit that doesn't move before it shoots get to take 2 shots with their gun
 
--Weapon Types
+-Equipment Types
     -Flamer: template that hits all units underneath it
     -cloud: leaves a area of affect that disappears after x turns
         -radiation status affect
         -smoke cloud that can't be shot into
+    -Shields - Passive ability, reduce the damage of bullets when they pass through them. Can't be stacked
+    -Jump packs - jump over terrain
 
 
 /////////////////////////////////////////

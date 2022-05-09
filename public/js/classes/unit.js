@@ -543,15 +543,20 @@ wound(options){
 		let hit_chance = this.armour - (options.ap + options.bonus);
 		// let random_roll = this.getRandomInt(20);
 
-		if(gameFunctions.units[options.attacker_id].cohesion_check === false){
-			options.random_roll = Math.round(options.random_roll / 2,0);
+		if(options.attacker_id){
+			if(gameFunctions.units[options.attacker_id].cohesion_check === false){
+				options.random_roll = Math.round(options.random_roll / 2,0);
+			}
 		}
 		
 		let result = ""
+		if(options.random_roll === -1){
+			result = "pass"
+		}
 		if(options.random_roll >= hit_chance){
 			result = "pass"
 		}
-		if(options.random_roll < hit_chance){
+		if(options.random_roll < hit_chance && options.random_roll >= 0){
 			result = "fail"
 		}		
 		if(options.random_roll === 20){

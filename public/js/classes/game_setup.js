@@ -37,6 +37,7 @@ const game_setup = class {
 
 		this.scene_container.active_actions = 0;
 		this.scene_container.bullets = [];
+		this.scene_container.barriers = [];
 		this.scene_container.selected_unit = [];
 		this.scene_container.left_click = false;
 		this.scene_container.left_click_state = 0;
@@ -91,6 +92,7 @@ const game_setup = class {
 		
 		//PARTICLE SPRITES
 		this.scene.load.image('bullet', '../../img/particles/bullet.png');	
+		this.scene.load.image('smoke', '../../img/particles/smoke.png');	
 		this.scene.load.image('marker', '../../img/particles/marker.png');			
         this.scene.load.spritesheet('explosion', '../../img/particles/explosion7.png', { frameWidth: 256, frameHeight: 256 }); //WEAPON BLAST
         this.scene.load.spritesheet('punch', '../../img/particles/explosion23.png', { frameWidth: 256, frameHeight: 256 });	//CLOSE COMBAT BLAST
@@ -711,6 +713,18 @@ const game_setup = class {
 	// ██    ██ ██████  ██   ██ ███████    ██    █████   █████ █████   ██      █████   ██ ████ ██ █████   ██ ██  ██    ██    ███████ 
 	// ██    ██ ██      ██   ██ ██   ██    ██    ██            ██      ██      ██      ██  ██  ██ ██      ██  ██ ██    ██         ██ 
 	//  ██████  ██      ██████  ██   ██    ██    ███████       ███████ ███████ ███████ ██      ██ ███████ ██   ████    ██    ███████ 
+
+
+	updateBarriers = () => {
+		let new_list = []
+		this.scene_container.barriers.forEach((barrier) => {
+			barrier.checkDeath();
+			if(barrier.delete === false){
+				new_list.push(barrier)
+			}
+		})
+		this.scene_container.barriers = new_list;
+	}
 
 	updateElements = (worldPoint) => {
 																																	  

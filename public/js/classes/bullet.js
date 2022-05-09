@@ -3,6 +3,7 @@ const bullet = class {
 	constructor(options) {	
 	
 		this.id = GameScene.bullets.length;
+		this.scene = options.scene;
 		this.delete = false;
 		this.unit = options.unit;
 		this.side = options.unit.side;
@@ -102,6 +103,14 @@ const bullet = class {
 	
 	kill(){
 
+		// let test = new barrier({
+		// 	scene: this.scene,
+		// 	x: this.sprite.x,
+		// 	y: this.sprite.y,
+		// 	blast_radius: 2,
+		// 	blast_spritesheet: "smoke"			
+		// })
+
 		//WOUND ANY UNITS IF ITS IN THE BLAST RADIUS
 		if(this.blast_radius > 1){
 			gameFunctions.units.forEach((unit) => {
@@ -176,6 +185,7 @@ const bullet = class {
 		// 	console.log("BULLET ALREADY DEAD!")
 		// }
 		this.delete = true;
+
 	}
 	
 	checkRange(bullet){

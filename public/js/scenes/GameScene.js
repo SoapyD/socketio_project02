@@ -124,5 +124,3 @@ GameScene.showMessage = (text) => {
 	}
 	new popup(options)	
 }
-
-
