@@ -57,6 +57,12 @@ const route_info = [
     "view": "admin/special_rule/",
     "description": "return a list of all current special rules",
     "sort": {created_date: 'desc'}
+},
+{
+    "type": "Barrier",
+    "view": "admin/barrier/",
+    "description": "return a list of all current barriers",
+    "sort": {created_date: 'desc'}
 }
 ]
 

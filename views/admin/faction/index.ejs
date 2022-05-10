@@ -65,8 +65,8 @@
                                 <%- squad.name %><br>
                             <% }) %>
                             </td>                    
-                            <td><%- item.created_date %> </td> 
-                            <td><%- item.updateddate %> </td> 
+                            <td><%- item.created_date.toGMTString() %> </td> 
+                            <td><%- item.updateddate.toGMTString() %> </td> 
                            
                             
                         </tr>

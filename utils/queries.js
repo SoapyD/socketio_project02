@@ -433,6 +433,10 @@ exports.getPopulateLists = (type) => {
             populate_list.push({path: 'special_rules',model: "SpecialRule"})                                   
             break;
 
+        case 'Gun':
+            populate_list.push({path: "barrier"})
+            break;   
+
         case 'Upgrade':
             populate_list.push({path: "unit"})
             populate_list.push({path: "gun"})                              

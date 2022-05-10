@@ -89,8 +89,8 @@
                             <td><%- item.spritesheet %> </td> 
                             <td><%- item.death_sfx %> </td> 
                             <td><%- item.symbol_id %> </td> 
-                            <td><%- item.created_date %> </td> 
-                            <td><%- item.updateddate %> </td> 
+                            <td><%- item.created_date.toGMTString() %> </td> 
+                            <td><%- item.updateddate.toGMTString() %> </td> 
                             
                             
                         </tr>

@@ -71,8 +71,8 @@
                             <td><%- item.damage %> </td> 
                             <td><%- item.ap %> </td> 
                             <td><%- item.max_targets %> </td> 
-                            <td><%- item.created_date %> </td>                        
-                            <td><%- item.updateddate %> </td> 
+                            <td><%- item.created_date.toGMTString() %> </td>                        
+                            <td><%- item.updateddate.toGMTString() %> </td> 
                             
                             
                         </tr>
