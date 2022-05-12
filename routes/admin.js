@@ -13,8 +13,8 @@ router.get("/:item", middleware.user_access, controllers.admin.getSingle)
 router.get("/:item/:id/edit", middleware.user_access, controllers.admin.getEdit)
 
 //UPDATE
-// router.put("/:clientid", middleware.user_access, controllers.admin.updateParent)
-// router.put("/:clientid/:item/multiple", middleware.user_access, controllers.admin.updateMultipleChildren)
+router.put("/:item/:id", middleware.user_access, controllers.admin.update)
+
 
 //CREATE
 // router.post("/:clientid/:item", middleware.user_access, controllers.admin.create)
