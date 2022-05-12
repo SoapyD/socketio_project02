@@ -1,4 +1,11 @@
 
+ .rounded_borders {
+	border-radius: 15px;
+	border: 2px solid #FA4616;
+	height: 60px;
+	padding: 10px;
+}
+
 .width-50-percent {
     width: 50%;
     margin: 0;

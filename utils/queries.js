@@ -469,27 +469,36 @@ exports.getPopulateLists = (type) => {
 // #        #  #    ## #     #       #     # #     #    #    #     # 
 // #       ### #     # ######        ######  #     #    #    #     # 
 
-exports.findData = async(list) => {
+exports.findData = async(options) => {
 
     let promises = [];
 
 
     let populate_list = [];
-    populate_list = exports.getPopulateLists(list.model)
+    populate_list = exports.getPopulateLists(options.model)
 
-    if (list.multiple_search)
+    if (options.multiple_search)
     {
-            list.multiple_search.forEach((item) => {
-                promises.push(models[list.model][list.search_type](item).sort(list.sort).populate(populate_list))
-            })
+        options.multiple_search.forEach((item) => {
+
+            let model = options.model
+            if(item.model){
+                model = item.model
+                populate_list = exports.getPopulateLists(model)
+            }
+
+            promises.push(models[model][options.search_type](item.params).sort().populate(populate_list))
+        })
     }
     else{
 
-        if(list.sort){
-            promises.push(models[list.model][list.search_type](list.params).sort(list.sort).populate(populate_list))
-        }else{
-            promises.push(models[list.model][list.search_type](list.params).populate(populate_list))
-        }
+        promises.push(models[options.model][options.search_type](options.params).sort(options.sort).populate(populate_list))
+
+        // if(options.sort){
+        //     promises.push(models[options.model][options.search_type](options.params).sort(options.sort).populate(populate_list))
+        // }else{
+        //     promises.push(models[options.model][options.search_type](options.params).populate(populate_list))
+        // }
 
     }
 

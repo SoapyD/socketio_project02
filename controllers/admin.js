@@ -6,95 +6,106 @@ const models = require("../models");
 
 const route_info = [
     {
-        "type": "Error",
-        "view": "admin/items/",
-        "description": "return a list of all recent server and client logged errors",
-        "sort": {created_date: 'desc'},
-        "index":[
+        type: "Error",
+        description: "return a list of all recent server and client logged errors",
+        sort: {created_date: 'desc'},
+        index:[
             {
-                "column_width": 10,
-                "column_name": "Class",
-                "value": ["class"]
+                column_width: 10,
+                column_name: "Class",
+                value: ["class"]
             },
             {
-                "column_width": 10,
-                "column_name": "Function",
-                "value": ["class"]
+                column_width: 10,
+                column_name: "Function",
+                value: ["class"]
             },
             {
-                "column_width": 10,
-                "column_name": "Created_Date",
-                "value": ["created_date"],
-                "type": "date"
+                column_width: 10,
+                column_name: "Created_Date",
+                value: ["created_date"],
+                type: "date"
             },
             {
-                "column_width": 20,
-                "column_name": "Detail",
-                "value": ["detail"]
+                column_width: 20,
+                column_name: "Detail",
+                value: ["detail"]
             },
             {
-                "column_width": 10,
-                "column_name": "Error",
-                "value": ["e","message"]
+                column_width: 10,
+                column_name: "Error",
+                value: ["e","message"]
             },
             {
-                "column_width": 40,
-                "column_name": "Stack",
-                "value": ["e","stack"]
+                column_width: 40,
+                column_name: "Stack",
+                value: ["e","stack"]
             }                                                 
         ] 
     },
     {
-        "type": "Faction",
-        "view": "admin/items/",
-        "description": "return a list of all current factions",
-        "sort": {created_date: 'desc'},
-        "index":[
+        type: "Faction",
+        description: "return a list of all current factions",
+        sort: {created_date: 'desc'},
+        sub_data: ["Squad"],
+        index:[
             {
-                "column_width": 20,
-                "column_name": "Name",
-                "value": ["name"]
+                column_width: 20,
+                column_name: "Name",
+                value: ["name"],
+                header: "Naming",
+                startrow: 1,
+                endrow: 1
             },
             {
-                "column_width": 20,
-                "column_name": "Description",
-                "value": ["description"]
+                column_width: 20,
+                column_name: "Description",
+                value: ["description"],
+                type: "textarea",
+                startrow: 1,
+                endrow: 1                
             },
             {
-                "column_width": 20,
-                "column_name": "Squads",
-                "value": ["squads"],
-                "foreach": ["name"]
+                column_width: 20,
+                column_name: "Squads",
+                value: ["squads"],
+                foreach: ["name"],
+                sub_data: 'Squad',
+                header: "Composition",
+                startrow: 1,
+                endrow: 1 
             },
             {
-                "column_width": 20,
-                "column_name": "Created",
-                "value": ["created_date"],
-                "type": "date"
+                column_width: 20,
+                column_name: "Created",
+                value: ["created_date"],
+                type: "date",
+                header: "Dates",
+                readonly: 1,
+                startrow: 1,
             },
             {
-                "column_width": 20,
-                "column_name": "Updated",
-                "value": ["updateddate"],
-                "type": "date"
+                column_width: 20,
+                column_name: "Updated",
+                value: ["updateddate"],
+                type: "date",
+                readonly: 1,
+                endrow: 1 
             }      
         ]     
     },
     {
         "type": "Squad",
-        "view": "admin/items/",
         "description": "return a list of all current squads",
         "sort": {created_date: 'desc'},
+        "sub_data": ["Upgrade","SpecialRule"],
         "index":[
             {
                 "column_width": 10,
                 "column_name": "Name",
-                "value": ["name"]
-            },
-            {
-                "column_width": 10,
-                "column_name": "Cost_Per_Unit",
-                "value": ["cost_per_unit"]
+                "value": ["name"],
+                header: "Name and Size",
+                "startrow": 1
             },
             {
                 "column_width": 10,
@@ -104,12 +115,23 @@ const route_info = [
             {
                 "column_width": 10,
                 "column_name": "Max_Size",
-                "value": ["max_size"]
+                "value": ["max_size"],
+                "endrow": 1
+            },
+            {
+                "column_width": 10,
+                "column_name": "Cost_Per_Unit",
+                "value": ["cost_per_unit"],
+                header: "Definition",
+                "startrow": 1,
+                "endrow": 1,
+                readonly: 1,
             },
             {
                 "column_width": 10,
                 "column_name": "Unit",
-                "value": ["unit","name"]
+                "value": ["unit","name"],
+                "startrow": 1
             },
             {
                 "column_width": 10,
@@ -124,25 +146,30 @@ const route_info = [
             {
                 "column_width": 10,
                 "column_name": "Armour",
-                "value": ['armour','name']
+                "value": ['armour','name'],
+                "endrow": 1
             },
             {
                 "column_width": 10,
                 "column_name": "Upgrades",
                 "value": ["upgrades"],
-                "foreach": ["name"]
+                "foreach": ["name"],
+                sub_data: 'Upgrade',
+                header: "Upgrades and Special Rules",
+                "startrow": 1
             },
             {
                 "column_width": 10,
                 "column_name": "Special_Rules",
                 "value": ["special_rules"],
-                "foreach": ["name"]
+                "foreach": ["name"],
+                sub_data: 'SpecialRule',
+                "endrow": 1
             }                                                      
         ]            
     },        
     {
         "type": "Unit",
-        "view": "admin/items/",
         "description": "return a list of all current units",
         "sort": {created_date: 'desc'},
         "index":[
@@ -223,7 +250,6 @@ const route_info = [
     },       
     {
         "type": "Gun",
-        "view": "admin/items/",
         "description": "return a list of all current guns",
         "sort": {created_date: 'desc'},
         "index":[
@@ -288,7 +314,6 @@ const route_info = [
     },
     {
         "type": "Melee",
-        "view": "admin/items/",
         "description": "return a list of all current melee weapons",
         "sort": {created_date: 'desc'},
         "index":[
@@ -338,7 +363,6 @@ const route_info = [
     },
     {
         "type": "Armour",
-        "view": "admin/items/",
         "description": "return a list of all current armour",
         "sort": {created_date: 'desc'},
         "index":[
@@ -373,7 +397,6 @@ const route_info = [
     },
     {
         "type": "Upgrade",
-        "view": "admin/items/",
         "description": "return a list of all current upgrades",
         "sort": {created_date: 'desc'},
         "index":[
@@ -411,7 +434,6 @@ const route_info = [
     },    
     {
         "type": "Barrier",
-        "view": "admin/items/",
         "description": "return a list of all current barriers",
         "sort": {created_date: 'desc'},
         "index":[
@@ -461,7 +483,6 @@ const route_info = [
     },
     {
         "type": "SpecialRule",
-        "view": "admin/items/",
         "description": "return a list of all current special rules",
         "sort": {created_date: 'desc'},
         "index":[
@@ -501,24 +522,32 @@ exports.getAll = async(req,res) => {
     }
 };
 
-exports.getItem = async(req,res) => {
+//  #####  ####### #######        #####  ### #     #  #####  #       ####### 
+// #     # #          #          #     #  #  ##    # #     # #       #       
+// #       #          #          #        #  # #   # #       #       #       
+// #  #### #####      #    #####  #####   #  #  #  # #  #### #       #####   
+// #     # #          #                #  #  #   # # #     # #       #       
+// #     # #          #          #     #  #  #    ## #     # #       #       
+//  #####  #######    #           #####  ### #     #  #####  ####### #######
+
+exports.getSingle = async(req,res) => {
 
     try{
         let item = req.params.item;
         let route = route_info[item];
 
-        let params = {
+        let options = {
             model: route.type
             ,search_type: "find"
         }
         if(route.sort){
-            params.sort = route.sort
+            options.sort = route.sort
         }
 
-        let data = await utils.queries.findData(params)
+        let data = await utils.queries.findData(options)
 
 
-        let view = route.view + 'index'
+        let view = 'admin/show'
         res.render(view, {route_id: item, route:route, stylesheet: view, data: data[0]});
     }
     catch(err){
@@ -528,12 +557,65 @@ exports.getItem = async(req,res) => {
     }    
 }
 
-//  #####  ####### #######        #####  ### #     #  #####  #       ####### 
-// #     # #          #          #     #  #  ##    # #     # #       #       
-// #       #          #          #        #  # #   # #       #       #       
-// #  #### #####      #    #####  #####   #  #  #  # #  #### #       #####   
-// #     # #          #                #  #  #   # # #     # #       #       
-// #     # #          #          #     #  #  #    ## #     # #       #       
-//  #####  #######    #           #####  ### #     #  #####  ####### #######
 
 
+//  #####  ####### #######       ####### ######  ### ####### 
+// #     # #          #          #       #     #  #     #    
+// #       #          #          #       #     #  #     #    
+// #  #### #####      #    ##### #####   #     #  #     #    
+// #     # #          #          #       #     #  #     #    
+// #     # #          #          #       #     #  #     #    
+//  #####  #######    #          ####### ######  ###    #  
+
+exports.getEdit = async(req,res) => {
+    
+    let item = req.params.item;
+    let route = route_info[item];
+    let id = req.params.id;
+    
+    try{
+        let options = {
+            model: route.type
+            ,search_type: "find"
+            ,params: {"_id": id }
+        }
+        if(route.sort){
+            options.sort = route.sort
+        }
+
+        let data = await utils.queries.findData(options)
+
+
+        let multiple_search = []
+        let sub_data = []
+        if(route.sub_data){
+            route.sub_data.forEach( async(model) => {
+                multiple_search.push({
+                    model: model
+                })
+            })
+
+            options = {
+                model: ""
+                ,sort: ""
+                ,search_type: "find"
+                ,multiple_search
+            }
+    
+            sub_data = await utils.queries.findData(options)
+            for(i=0;i<sub_data.length;i++){
+                sub_data[i].model = route.sub_data[i]
+            }
+        }
+
+
+
+        let view = 'admin/edit'
+        res.render(view, {route_id: item, route:route, stylesheet: view, data: data[0][0], sub_data: sub_data});
+    }
+    catch(err){
+        console.log(err)
+        req.flash("error", "There was an error trying to get data");
+        res.redirect("/")        
+    }
+};

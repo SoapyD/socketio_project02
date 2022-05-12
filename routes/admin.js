@@ -7,20 +7,20 @@ const middleware = require("../middleware");
 router.get("/", middleware.user_access, controllers.admin.getAll);
 
 //SHOW
-router.get("/:item", middleware.user_access, controllers.admin.getItem)
+router.get("/:item", middleware.user_access, controllers.admin.getSingle)
 
 //EDIT
-// router.get("/:clientid/:item/edit", middleware.user_access, controllers.client_data.getEdit)
+router.get("/:item/:id/edit", middleware.user_access, controllers.admin.getEdit)
 
 //UPDATE
-// router.put("/:clientid", middleware.user_access, controllers.client_data.updateParent)
-// router.put("/:clientid/:item/multiple", middleware.user_access, controllers.client_data.updateMultipleChildren)
+// router.put("/:clientid", middleware.user_access, controllers.admin.updateParent)
+// router.put("/:clientid/:item/multiple", middleware.user_access, controllers.admin.updateMultipleChildren)
 
 //CREATE
-// router.post("/:clientid/:item", middleware.user_access, controllers.client_data.create)
+// router.post("/:clientid/:item", middleware.user_access, controllers.admin.create)
 
 //NEW
-// router.get("/:clientid/:item/new", middleware.user_access, controllers.client_data.getFormCreate)
+// router.get("/:clientid/:item/new", middleware.user_access, controllers.admin.getFormCreate)
 
 
 /*

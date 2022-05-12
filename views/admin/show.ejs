@@ -1,5 +1,5 @@
 
-<%- include("../../partials/header") %>
+<%- include("../partials/header") %>
 
 <div class="container">
 
@@ -109,13 +109,15 @@
                                 })
                             }
                             %>
-
-                            <% if(column_type === ""){ %>
-                                <td><%- print_value %> </td>
-                            <% } %>
                         
-                            <% if(column_type === "date"){ %>
+                            <% let element_set = false %>
+
+                            <% if(column_type === "date"){ element_set = true %>
                                 <td><%- print_value.toGMTString() %> </td>
+                            <% } %>
+
+                            <% if(element_set === false){ %>
+                                <td><%- print_value %> </td>
                             <% } %>
 
                         <% }) %>  
@@ -155,4 +157,4 @@
     });
 </script>
 
-<%- include("../../partials/footer") %>
+<%- include("../partials/footer") %>
