@@ -15,5 +15,6 @@ models.SpecialRule = require("./special_rule");
 models.Barrier = require("./barrier");
 
 models.Error = require("./error");
+models.DynamicRoute = require("./dynamic_route");
 
 module.exports = models
