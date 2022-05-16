@@ -2093,7 +2093,7 @@ findTarget (options) {
 		}		
 
 		//CHECK THE BULLET PATH TO MAKE SURE THERE'S NO OBJECTS BLOCKING SIGHT
-		let dest = {}
+		let dest = {unit: -1}
 		let skip = false;
 		let add_dest = true;
 		pos.cells.forEach((cell) => {			
@@ -2119,6 +2119,7 @@ findTarget (options) {
 							let check = unit.checkSpriteandPos(cell)
 							if(check === true){
 								add_dest = false;
+								dest.unit = unit.id
 							}	
 						}
 					})	

@@ -9,6 +9,8 @@ const bullet = class {
 		this.unit = options.unit;
 		this.side = options.unit.side;
 		this.player = options.unit.player;
+
+		this.saved_range = options.unit.shoot_range;
 		this.range = options.unit.shoot_range;
 
 		//status'
@@ -210,6 +212,14 @@ const bullet = class {
 	}
 	
 	checkRange(bullet){
+
+		if(this.target.unit !== -1){
+			let target_unit = gameFunctions.units[this.target.unit];
+			if(target_unit.alive === false){
+				this.range = this.saved_range;
+			}
+		}
+
 		let current_range = Math.sqrt(Math.pow(this.origin.x - this.sprite.x, 2) + Math.pow(this.origin.y - this.sprite.y, 2))
 		
 

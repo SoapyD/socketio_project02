@@ -9,8 +9,15 @@ SBT GAME NOTES
 
 -DONE -Adjust the barrier generation so it's the same size as the estimated blast marker
 -DONE -Adjust range checker of barrier so it aligns with new draw size
+-DONE -Add in particle queue so status effects don't overlap any damage take
+-DONE -make bullets, that previously were aimed at a unit, continue on past that unit if they've died so it's not a wasted shot.
+
 
 -Ability to calculate poison chance then send result over socket to others
+-Check for overlapping at the end of each movement action as that'll be when damage like that applies
+-replace unit type sumbol with an area to display statu's effects
+
+
 
 
 /////////////////////////////////////////
