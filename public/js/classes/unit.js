@@ -1059,6 +1059,7 @@ drawTarget(targets, blast_radius) {
 				if(blast_radius > 1){
 					let blast_graphic = this.blast_graphics[i];
 					blast_graphic.fillStyle(0x0000FF, 0.5);
+
 					let circle = new Phaser.Geom.Circle(pos.x, pos.y, (blast_radius / 2) * gameFunctions.tile_size);
 					blast_graphic.fillCircleShape(circle).setDepth(this.depth_explosion);
 

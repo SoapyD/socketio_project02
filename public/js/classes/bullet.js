@@ -113,7 +113,7 @@ const bullet = class {
 	
 	kill(){
 
-		if(this.player === 0){
+		// if(this.player === 0){
 
 			if(this.unit.gun_class.barrier){
 
@@ -130,7 +130,7 @@ const bullet = class {
 					effects: barrier_info.effects			
 				})				
 			}
-		}
+		// }
 
 		//WOUND ANY UNITS IF ITS IN THE BLAST RADIUS
 		if(this.blast_radius > 1){

@@ -44,8 +44,12 @@ const barrier = class {
         this.sprite.setTint(this.unit.colour)
 
         if(options.blast_radius){
-            this.sprite.displayWidth = options.blast_radius * (gameFunctions.tile_size * 3);
-            this.sprite.displayHeight = options.blast_radius * (gameFunctions.tile_size * 3);
+            let size = options.blast_radius  * gameFunctions.tile_size;
+            // console.log("barrier size:",size)
+            this.sprite.displayWidth = size;
+            this.sprite.displayHeight = size;
+            // this.sprite.displayWidth = options.blast_radius * (gameFunctions.tile_size * 2.5);
+            // this.sprite.displayHeight = options.blast_radius * (gameFunctions.tile_size * 2.5);
         }
 
 
@@ -114,7 +118,7 @@ const barrier = class {
         let val = Math.pow(this.sprite.x - obj.sprite.x, 2) + Math.pow(this.sprite.y - obj.sprite.y, 2)
         let dist = Math.round(Math.sqrt(val),0)
         
-        let blast_size = (this.blast_radius+0.5) * gameFunctions.tile_size
+        let blast_size = (this.blast_radius*0.5) * gameFunctions.tile_size
 
         if(dist <= blast_size){    
             // this.applyDamage();
@@ -151,10 +155,32 @@ const barrier = class {
                     obj.poison = true;
                     obj.poison_timer = 2;
                     GameScene.sfx['sword'].play();
+
+                    // this.createPopup(obj.sprite, "poison")
                 }
             }
 
         }
+    }
+
+    createPopup = (obj, string) => {
+		let part_options = {
+			scene: GameScene.scene,
+			text: string,
+			text_style: { 
+				font: "16px Arial",
+				fill: "#ff0044",
+				align: "center",
+				stroke: "#000000",
+				strokeThickness: 2
+			},
+			pos: {
+				x: obj.x,
+				y: obj.y
+			},
+			tween:true
+		}
+		new particle(part_options)        
     }
     
     applyDamage = (unit) => {
