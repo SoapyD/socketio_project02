@@ -166,7 +166,9 @@ const unit = class {
 		this.text = options.scene.add.text(this.sprite.x, this.sprite.y - (this.sprite.displayHeight / 2), "", this.text_style).setDepth(this.depth_text);
 		this.text_graphic = options.scene.add.graphics().setDepth(this.depth_text_box);
 		
-				
+		this.queued_text_particles = [];
+		this.adding_particle = 0
+		
 		this.drawTint()
 		this.drawFlash()
 		this.drawFightRadius()
@@ -551,23 +553,7 @@ checkStatus(){
 			this.poison = false;
 		}
 
-		let part_options = {
-			scene: GameScene.scene,
-			text: 'poison',
-			text_style: { 
-				font: "16px Arial",
-				fill: "#ff0044",
-				align: "center",
-				stroke: "#000000",
-				strokeThickness: 2
-			},
-			pos: {
-				x: this.sprite.x,
-				y: this.sprite.y
-			},
-			tween:true
-		}
-		new particle(part_options)
+		this.drawTextParticle("poison")
 
 		GameScene.sfx['sword'].play();
 	}
@@ -638,23 +624,8 @@ wound(options){
 		
 		if(target){
 			if(target.alive === true){
-				let part_options = {
-					scene: GameScene.scene,
-					text: print_text,
-					text_style: { 
-						font: "16px Arial",
-						fill: "#ff0044",
-						align: "center",
-						stroke: "#000000",
-						strokeThickness: 2
-					},
-					pos: {
-						x: target.sprite.x,
-						y: target.sprite.y
-					},
-					tween:true
-				}
-				new particle(part_options)		
+
+				target.drawTextParticle(print_text)	
 				
 				target.health -= options.damage;
 				target.drawHealth(this.sprite)
@@ -793,6 +764,37 @@ drawFlash(active=true, gray_out=false){
 		}
 		errorHandler.log(options)
 	}		
+}
+
+drawTextParticle(text){
+
+	let part_options = {
+		scene: GameScene.scene,
+		parent_id: this.id,
+		text: text,
+		text_style: { 
+			font: "16px Arial",
+			fill: "#ff0044",
+			align: "center",
+			stroke: "#000000",
+			strokeThickness: 2
+		},
+		pos: {
+			x: this.sprite.x,
+			y: this.sprite.y
+		},
+		tween:true,
+		rise_duration: 500,
+		fadeout_duration: 500
+	}
+
+	if(this.adding_particle === 0){
+
+		this.adding_particle = 1;
+		new particle(part_options)	
+	}else{
+		this.queued_text_particles.push(part_options)
+	}
 }
 
 

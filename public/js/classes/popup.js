@@ -19,10 +19,20 @@ const popup = class {
 
 		this.rectangle = options.scene.add.rectangle(options.pos.x, options.pos.y + (this.text.height / 2), this.text.width, this.text.height, 0xffffff).setDepth(99);
 
+		let delay = 2000;
+		if(options.delay){
+			delay = options.delay
+		}
+
+		let duration = 3000;
+		if(options.duration){
+			duration = options.duration
+		}
+
 		options.scene.tweens.add({
 			targets: [this.rectangle, this.text],
-			delay: 2000,
-			duration: 3000,
+			delay: delay,
+			duration: duration,
 			alpha: 0,
 			ease: 'Power3',
 			onComplete: function ()
