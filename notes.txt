@@ -12,12 +12,15 @@ SBT GAME NOTES
 -DONE -Add in particle queue so status effects don't overlap any damage take
 -DONE -make bullets, that previously were aimed at a unit, continue on past that unit if they've died so it's not a wasted shot.
 
-
+-Add a text box to the admin screen that can turn an object into a string and vis versa to make data entry on the dynamic tab easier to achieve
+-Add status effect change to table and model as well as the admin screen
 -Ability to calculate poison chance then send result over socket to others
 -Check for overlapping at the end of each movement action as that'll be when damage like that applies
 -replace unit type sumbol with an area to display statu's effects
 
+-Add special rules and status effects to the in-game unit data. 
 
+-Have an indicator showing how much longer the status effect will last
 
 
 /////////////////////////////////////////
