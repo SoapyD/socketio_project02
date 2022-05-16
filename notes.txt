@@ -10,6 +10,8 @@ SBT GAME NOTES
 -DONE -Adjust the barrier generation so it's the same size as the estimated blast marker
 -DONE -Adjust range checker of barrier so it aligns with new draw size
 
+-Ability to calculate poison chance then send result over socket to others
+
 
 /////////////////////////////////////////
 NEW ACTIONS
@@ -22,12 +24,6 @@ NEW ACTIONS
     -The ability for a unit to miss it's first movement action so they can shoot then move
     -bonus to unit that charges into combat
     -unit that doesn't move before it shoots get to take 2 shots with their gun
-
--Barriers
-    -DONE -cloud: leaves a area of affect that disappears after x turns
-        -DONE -radiation status affect, have a status affect added to player if they pass through the cloud
-        -DONE -smoke cloud that can't be shot into
-    -DONE -Shields - Passive ability, reduce the damage of bullets when they pass through them. Can't be stacked
 
 -Equipment Types
     -Flamer: template that hits all units underneath it
@@ -136,6 +132,8 @@ THINGS TO DO (EVENTUALLY)
 SELECTION - PAUSED
 /////////////////////////////////////////
 
+-Make a flow field when a region is selected then plot the movement of those units to get as close to that position as possible.
+
 -Create a means of selecting multiple units at the same times
     -DONE -Add in a "mouse selection class" to handle the mouse selection process
     -DONE -Change the selected_unit code so it can handle an array of selected units instead of just one
@@ -172,6 +170,12 @@ SELECTION - PAUSED
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+-DONE -Barriers
+    -DONE -cloud: leaves a area of affect that disappears after x turns
+        -DONE -radiation status affect, have a status affect added to player if they pass through the cloud
+        -DONE -smoke cloud that can't be shot into
+    -DONE -Shields - Passive ability, reduce the damage of bullets when they pass through them. Can't be stacked
 
 -DONE -Make squad coherancy more visible
 
