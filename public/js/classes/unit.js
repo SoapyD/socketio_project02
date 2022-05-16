@@ -546,33 +546,73 @@ resetDrawInfo(){
 //  ███ ███   ██████   ██████  ██   ████ ██████  ██ ██   ████  ██████ 
 
 checkStatus(){
-	if(this.poison === true){
-		this.health--;
-		this.poison_timer--;
-		if(this.poison_timer === 0){
-			this.poison = false;
+
+	try{
+		if(this.poison === true){
+			// this.health--;
+	
+			this.poison_timer--;
+			if(this.poison_timer === 0){
+				this.poison = false;
+			}
+	
+			this.drawTextParticle("poison")
+	
+			let options = {
+				damage: 1,
+				random_roll: gameFunctions.getRandomInt(20),
+				// attacker_id: bullet.parent.unit.id,
+				defender_id: this.id,
+				hit_override: 18
+			}				
+			
+			if(GameScene.online === false){
+				this.wound(options);
+			}else{
+				//ONLY SEND THE WOUND MESSAGE IF THIS IS THE ATTACKING PLAYER
+				if(gameFunctions.params.player_number === this.player){
+					let data = {
+						functionGroup: "socketFunctions",  
+						function: "messageAll",
+						room_name: gameFunctions.params.room_name,
+						returnFunctionGroup: "connFunctions",
+						returnFunction: "woundUnit",
+						returnParameters: options,
+						message: "Wound Unit"
+					}				
+					connFunctions.messageServer(data)
+				}
+			}
+	
+			GameScene.sfx['sword'].play();
 		}
+	
+		// this.drawHealth(this.sprite)
+	
+		// if(this.health <= 0){
+			// this.killed_by = options.attacker_id;
+			// GameUIScene.updatePointsHUD();
+			// this.kill();
+		// }	
+	}catch(e){
 
-		this.drawTextParticle("poison")
-
-		GameScene.sfx['sword'].play();
-	}
-
-	this.drawHealth(this.sprite)
-
-	if(this.health <= 0){
-		// this.killed_by = options.attacker_id;
-		GameUIScene.updatePointsHUD();
-		this.kill();
-	}	
+		let options = {
+			"class": "unit",
+			"function": "wound",
+			"e": e
+		}
+		errorHandler.log(options)
+	}		
 }
 
 
 wound(options){
 
 	try{	
-		let hit_chance = this.armour - (options.ap + options.bonus);
-		// let random_roll = this.getRandomInt(20);
+		let min_roll_needed = this.armour - (options.ap + options.bonus);
+		if(options.hit_override !== undefined){
+			min_roll_needed = options.hit_override;
+		}
 
 		if(options.attacker_id){
 			if(gameFunctions.units[options.attacker_id].cohesion_check === false){
@@ -584,10 +624,10 @@ wound(options){
 		if(options.random_roll === -1){
 			result = "pass"
 		}
-		if(options.random_roll >= hit_chance){
+		if(options.random_roll >= min_roll_needed){
 			result = "pass"
 		}
-		if(options.random_roll < hit_chance && options.random_roll >= 0){
+		if(options.random_roll < min_roll_needed && options.random_roll >= 0){
 			result = "fail"
 		}		
 		if(options.random_roll === 20){

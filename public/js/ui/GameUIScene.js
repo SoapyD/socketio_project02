@@ -423,7 +423,8 @@ GameUIScene.advanceMode = () => {
 				else{
 					GameUIScene.readyAdvanceMode();
 				}
-				gameFunctions.mode_state++;	
+				gameFunctions.mode_state++;
+				GameScene.game_setup.checkCollisionsBarriers();	
 				break;
 
 			case 1:
@@ -500,6 +501,7 @@ GameUIScene.advanceMode = () => {
 				connFunctions.saveGame("shoot");
 
 				gameFunctions.mode_state++;
+				GameScene.game_setup.checkCollisionsBarriers();
 				break;
 
 			case 7:
@@ -567,6 +569,7 @@ GameUIScene.advanceMode = () => {
 
 				connFunctions.saveGame("charge");			
 				gameFunctions.mode_state++;
+				GameScene.game_setup.checkCollisionsBarriers();
 				break;
 
 			case 13:
@@ -639,6 +642,7 @@ GameUIScene.advanceMode = () => {
 				GameUIScene.checkAllCombat();
 				connFunctions.saveGame("fight");
 				gameFunctions.mode_state++;
+				GameScene.game_setup.checkCollisionsBarriers();
 				break;
 
 			case 19:
@@ -711,6 +715,7 @@ GameUIScene.advanceMode = () => {
 				GameUIScene.checkAllCombat();
 				connFunctions.saveGame("end turn");
 				gameFunctions.mode_state++;
+				GameScene.game_setup.checkCollisionsBarriers();
 				break;
 
 			case 25:
@@ -1331,7 +1336,7 @@ GameUIScene.setupHUD = () => {
 					border: {width: 1, colour: 0xe000000, alpha: 1}
 					}
 				},				
-
+				//
 				{id: 'h_mel_r',label: 'Range', x: 15, y: 5, height: 1, width: 7, align: "center",
 				font: {height: 22},
 				},
@@ -1350,11 +1355,47 @@ GameUIScene.setupHUD = () => {
 
 
 		//SETUP HUD ITEM THAT DISPLAYS THE CURRENT TURN NUMBER
-		GameUIScene.hud_chance = new hud({
+		GameUIScene.hud_special = new hud({
 			scene: GameUIScene.scene,
 			// grid: true,
 
 			x: 2, y: 2+250,
+			x_itts: 6, y_itts: 8,
+			x_indent: 10, y_indent: 6,			
+			width: hud_width, height: 100,
+
+			fill_colour: 0xe6ffff,
+			fill_alpha: 0.9,
+			radius: { tl: 0, tr: 12, bl: 12, br: 12 },
+			border: {
+				width: 4,
+				colour: 000000,
+				alpha: 1
+			},
+			text: [
+				{id: 'h_special',label: 'Special Rules:', x: 0, y: 0, height: 3,
+				font: {height: 16},
+				},
+				{id: 'f_special',label: 'melee', x: 3, y: 0, height: 1, text_width: 5, align: "left",
+				font: {height: 16},
+				},
+				
+				{id: 'h_status',label: 'Status Effects:', x: 0, y: 4, height: 3,
+				font: {height: 16},
+				},
+				{id: 'f_status',label: 'melee', x: 3, y: 4, height: 1, text_width: 5, height: 3, align: "left",
+				font: {height: 16},
+				},				
+			]
+		});
+
+
+		//SETUP HUD ITEM THAT DISPLAYS THE CURRENT TURN NUMBER
+		GameUIScene.hud_chance = new hud({
+			scene: GameUIScene.scene,
+			// grid: true,
+
+			x: 2, y: 2+350,
 			x_itts: 6, y_itts: 8,
 			x_indent: 10, y_indent: 6,			
 			width: hud_width, height: 100,
@@ -1511,6 +1552,21 @@ GameUIScene.setUnitHUD = (unit) => {
 		element.setText("f_mel_d",unit.fight_damage)
 		element.setText("f_mel_ap",unit.fight_ap)
 		element.setText("f_mel_r",unit.fight_max_targets+'x'+unit.fight_range)		
+
+		if(unit.alive === true){
+			element = GameUIScene.hud_special
+			element.setVisible(true);		
+	
+			element.setText("f_special",unit.special_rules)
+	
+			let status = ''
+			if(unit.poison){
+				status += 'poisoned'
+			}
+	
+			element.setText("f_status",status)
+		}
+
 	}catch(e){
 
 		let options = {
@@ -1525,6 +1581,9 @@ GameUIScene.setUnitHUD = (unit) => {
 GameUIScene.hideUnitHUD = () => {
 	try{	
 		let element = GameUIScene.hud_unit
+		element.setVisible(false);
+
+		element = GameUIScene.hud_special
 		element.setVisible(false);
 	}catch(e){
 

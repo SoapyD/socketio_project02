@@ -716,6 +716,12 @@ const game_setup = class {
 	//  ██████  ██      ██████  ██   ██    ██    ███████       ███████ ███████ ███████ ██      ██ ███████ ██   ████    ██    ███████ 
 
 
+	checkCollisionsBarriers = () => {
+		this.scene_container.barriers.forEach((barrier) => {
+			barrier.checkCollisions();
+		})
+	}
+
 	updateBarriers = () => {
 		let new_list = []
 		this.scene_container.barriers.forEach((barrier) => {

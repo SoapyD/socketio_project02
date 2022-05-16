@@ -7,19 +7,9 @@ SBT GAME NOTES
 /////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////
 
--DONE -Adjust the barrier generation so it's the same size as the estimated blast marker
--DONE -Adjust range checker of barrier so it aligns with new draw size
--DONE -Add in particle queue so status effects don't overlap any damage take
--DONE -make bullets, that previously were aimed at a unit, continue on past that unit if they've died so it's not a wasted shot.
-
 -Add a text box to the admin screen that can turn an object into a string and vis versa to make data entry on the dynamic tab easier to achieve
 -Add status effect change to table and model as well as the admin screen
--Ability to calculate poison chance then send result over socket to others
--Check for overlapping at the end of each movement action as that'll be when damage like that applies
--replace unit type sumbol with an area to display statu's effects
-
--Add special rules and status effects to the in-game unit data. 
-
+-replace unit type symbol with an area to display statu's effects
 -Have an indicator showing how much longer the status effect will last
 
 
@@ -54,18 +44,6 @@ END GAME
 -Play a tune to show the game has ended,
 
 -Add in a final UI screen to show the details of who wins, point scores etc.
-
-
-/////////////////////////////////////////
-UNIT MAKER
-/////////////////////////////////////////
-
--CRUD for units
--CRUD for shooting weapons
--CRUD for melee weapons
--CRUD for armour
--CRUD for upgrades
--CRUD for squads
 
 
 /////////////////////////////////////////
@@ -154,19 +132,6 @@ SELECTION - PAUSED
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
@@ -180,6 +145,27 @@ SELECTION - PAUSED
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////
+UNIT MAKER
+/////////////////////////////////////////
+
+-DONE -CRUD for units
+-DONE -CRUD for shooting weapons
+-DONE -CRUD for melee weapons
+-DONE -CRUD for armour
+-DONE -CRUD for upgrades
+-DONE -CRUD for squads
+
+-DONE -Adjust the barrier generation so it's the same size as the estimated blast marker
+-DONE -Adjust range checker of barrier so it aligns with new draw size
+-DONE -Add in particle queue so status effects don't overlap any damage take
+-DONE -make bullets, that previously were aimed at a unit, continue on past that unit if they've died so it's not a wasted shot.
+-DONE -Add special rules and status effects to the in-game unit data. 
+-DONE -Ability to calculate poison chance then send result over socket to others
+-DONE -Check for overlapping at the end of each movement action as that'll be when damage like that applies
+
 
 -DONE -Barriers
     -DONE -cloud: leaves a area of affect that disappears after x turns

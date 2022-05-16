@@ -151,7 +151,12 @@ const barrier = class {
             }
 
             if(obj.type === 'unit'){
-                if(this.checkEffects("poison") === true && obj.poison === false && obj.poison_timer < 2){
+                if(this.checkEffects("poison") === true && obj.poison_timer < 2){
+
+                    if(obj.poison === false){
+                        obj.drawTextParticle("poisoned!")
+                    }
+
                     obj.poison = true;
                     obj.poison_timer = 2;
                     GameScene.sfx['sword'].play();
