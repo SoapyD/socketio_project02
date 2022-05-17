@@ -7,6 +7,8 @@ SBT GAME NOTES
 /////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////
 
+-effects on boundaries should maybe be saved as special rules instead of a sepetate string array
+
 -Add a text box to the admin screen that can turn an object into a string and vis versa to make data entry on the dynamic tab easier to achieve
 -Add status effect change to table and model as well as the admin screen
 -replace unit type symbol with an area to display statu's effects

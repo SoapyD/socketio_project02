@@ -116,6 +116,10 @@ const game_setup = class {
 		this.scene.load.audio('sword', [ 'sword.mp3' ])
 		this.scene.load.audio('shot', [ 'shot.mp3' ])
 		this.scene.load.audio('blast', [ 'blast.mp3' ])	
+
+		this.scene.load.audio('blunt', [ 'blunt.mp3' ])	
+		this.scene.load.audio('poison', [ 'poison.mp3' ])	
+		this.scene.load.audio('shield', [ 'shield.mp3' ])							
 		
 		this.scene.load.audio('death_man', [ 'death_man.mp3' ])
 		this.scene.load.audio('death_machine', [ 'death_machine.mp3' ])
@@ -156,6 +160,10 @@ const game_setup = class {
 		this.scene_container.sfx.blast = this.scene.sound.add('blast', {volume: 0.2 * this.scene_container.master_sfx_volume});
 		this.scene_container.sfx.shot = this.scene.sound.add('shot', {volume: 0.2 * this.scene_container.master_sfx_volume});
 		
+		this.scene_container.sfx.shield = this.scene.sound.add('shield', {volume: 0.05 * this.scene_container.master_sfx_volume});
+		this.scene_container.sfx.poison = this.scene.sound.add('poison', {volume: 0.2 * this.scene_container.master_sfx_volume});
+		this.scene_container.sfx.blunt = this.scene.sound.add('blunt', {volume: 0.2 * this.scene_container.master_sfx_volume});				
+
 		this.scene_container.sfx.death_man = this.scene.sound.add('death_man', {volume: 0.3 * this.scene_container.master_sfx_volume});
 		this.scene_container.sfx.death_machine = this.scene.sound.add('death_machine', {volume: 0.3 * this.scene_container.master_sfx_volume});
 		

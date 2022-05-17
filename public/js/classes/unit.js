@@ -584,7 +584,7 @@ checkStatus(){
 				}
 			}
 	
-			GameScene.sfx['sword'].play();
+			GameScene.sfx['poison'].play();
 		}
 	
 		// this.drawHealth(this.sprite)

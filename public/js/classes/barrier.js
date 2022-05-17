@@ -126,27 +126,9 @@ const barrier = class {
 
             if(obj.type === 'bullet'){
                 if(this.checkEffects("blunt") === true && obj.blunt === false){
-    
-                    let part_options = {
-                        scene: GameScene.scene,
-                        text: 'blunt',
-                        text_style: { 
-                            font: "16px Arial",
-                            fill: "#ff0044",
-                            align: "center",
-                            stroke: "#000000",
-                            strokeThickness: 2
-                        },
-                        pos: {
-                            x: obj.sprite.x,
-                            y: obj.sprite.y
-                        },
-                        tween:true
-                    }
-                    new particle(part_options)
-    
+                    this.drawTextParticle(obj.sprite, "blunt")
                     obj.blunt = true;
-                    GameScene.sfx['sword'].play();
+                    GameScene.sfx['blunt'].play();
                 }
             }
 
@@ -156,19 +138,16 @@ const barrier = class {
                     if(obj.poison === false){
                         obj.drawTextParticle("poisoned!")
                     }
-
                     obj.poison = true;
                     obj.poison_timer = 2;
-                    GameScene.sfx['sword'].play();
-
-                    // this.createPopup(obj.sprite, "poison")
+                    GameScene.sfx['poison'].play();
                 }
             }
 
         }
     }
 
-    createPopup = (obj, string) => {
+    drawTextParticle = (obj, string) => {
 		let part_options = {
 			scene: GameScene.scene,
 			text: string,
@@ -183,7 +162,9 @@ const barrier = class {
 				x: obj.x,
 				y: obj.y
 			},
-			tween:true
+			tween:true,
+            rise_duration: 500,
+            fadeout_duration: 500
 		}
 		new particle(part_options)        
     }
