@@ -77,6 +77,95 @@ exports.getSingle = async(req,res) => {
     }    
 }
 
+//  #####  ####### #######       ####### ####### ######  #     #        #####  ######  #######    #    ####### ####### 
+// #     # #          #          #       #     # #     # ##   ##       #     # #     # #         # #      #    #       
+// #       #          #          #       #     # #     # # # # #       #       #     # #        #   #     #    #       
+// #  #### #####      #    ##### #####   #     # ######  #  #  # ##### #       ######  #####   #     #    #    #####   
+// #     # #          #          #       #     # #   #   #     #       #       #   #   #       #######    #    #       
+// #     # #          #          #       #     # #    #  #     #       #     # #    #  #       #     #    #    #       
+//  #####  #######    #          #       ####### #     # #     #        #####  #     # ####### #     #    #    ####### 
+
+exports.getFormCreate = async(req,res) => {
+    
+    try{
+
+        let find_options = {
+            model: 'DynamicRoute'
+            ,search_type: "find"
+        }
+        let route_info = await utils.queries.findData(find_options)
+
+        let item = req.params.item;
+        let route = route_info[0][item];
+
+
+        let multiple_search = []
+        let sub_data = []
+        if(route.sub_data){
+            route.sub_data.forEach( async(model) => {
+                multiple_search.push({
+                    model: model
+                })
+            })
+
+            options = {
+                model: ""
+                ,sort: ""
+                ,search_type: "find"
+                ,multiple_search
+            }
+    
+            sub_data = await utils.queries.findData(options)
+            for(i=0;i<sub_data.length;i++){
+                sub_data[i].model = route.sub_data[i]
+            }
+        }
+
+        let view = 'admin/edit'
+        res.render(view, {route_id: item, route:route, stylesheet: view, data: undefined, sub_data: sub_data});
+    }
+    catch(err){
+        console.log(err)
+        req.flash("error", "There was an error trying to get data");
+        res.redirect("/")        
+    }
+};
+
+//  #####  ######  #######    #    ####### ####### 
+// #     # #     # #         # #      #    #       
+// #       #     # #        #   #     #    #       
+// #       ######  #####   #     #    #    #####   
+// #       #   #   #       #######    #    #       
+// #     # #    #  #       #     #    #    #       
+//  #####  #     # ####### #     #    #    ####### 
+
+exports.create = async(req,res) => {
+	
+	try{
+
+        let find_options = {
+            model: 'DynamicRoute'
+            ,search_type: "find"
+        }
+        let route_info = await utils.queries.findData(find_options)
+
+        let item = req.params.item;
+        let route = route_info[0][item];
+
+		let data = await utils.queries.createData({
+			model: route.model
+			,params: [
+				req.body
+			]
+		})
+	
+		res.redirect("/admin/show/"+ item)  	
+	}catch(err){
+		req.flash("error", "There was an error trying to create your army list"); 
+		res.redirect("/admin/show/"+ item)
+	}
+
+};
 
 
 //  #####  ####### #######       ####### ######  ### ####### 
@@ -136,8 +225,6 @@ exports.getEdit = async(req,res) => {
             }
         }
 
-
-
         let view = 'admin/edit'
         res.render(view, {route_id: item, route:route, stylesheet: view, data: data[0][0], sub_data: sub_data});
     }
@@ -158,6 +245,8 @@ exports.getEdit = async(req,res) => {
 
 exports.update = async(req,res) => {
 
+    let item = req.params.item;
+
 	try{
     
         let find_options = {
@@ -166,7 +255,6 @@ exports.update = async(req,res) => {
         }
         let route_info = await utils.queries.findData(find_options)        
 
-        let item = req.params.item;
         let route = route_info[0][item];
         let id = req.params.id;
         
@@ -195,3 +283,40 @@ exports.update = async(req,res) => {
 
 }
 
+
+// ######  ####### #       ####### ####### ####### 
+// #     # #       #       #          #    #       
+// #     # #       #       #          #    #       
+// #     # #####   #       #####      #    #####   
+// #     # #       #       #          #    #       
+// #     # #       #       #          #    #       
+// ######  ####### ####### #######    #    ####### 
+
+
+exports.delete = async(req,res) => {
+
+    let item = req.params.item;
+
+	try{
+    
+        let find_options = {
+            model: 'DynamicRoute'
+            ,search_type: "find"
+        }
+        let route_info = await utils.queries.findData(find_options)        
+
+        let route = route_info[0][item];
+        let id = req.params.id;        
+
+		let data = await utils.queries.destroyData({
+			model: route.model
+			,params: [{_id: id}]
+		})
+	
+		res.redirect("/admin/" +item)	
+	}catch(err){
+        req.flash("error", "There was an error trying to delete your army list"); 
+        console.log(err)
+		res.redirect("/admin/" +item)
+	}
+};

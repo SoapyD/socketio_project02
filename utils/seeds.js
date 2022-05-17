@@ -821,17 +821,19 @@ exports.createUnits = async() => {
                {
                     name: "poison",
                     description:"poison any unit that passes through the cloud",
-                    blast_radius: 2,
+                    blast_radius: 3,
                     blast_sprite: "smoke",
                     effects: ["poison"],
+                    // modifier: 20 - ((20 /100) * 20), //TOTAL 20% CHANCE OF POISON HITTING
                     life: 3
                 },
                 {
                     name: "blunt",
                     description:"blunt the effectiveness of any projectile that passes through the barrier",
-                    blast_radius: 2,
+                    blast_radius: 3,
                     blast_sprite: "barrier",
-                    effects: ["blunt"],                    
+                    effects: ["blunt"],
+                    // modifier: 20 - ((20 /100) * 20), //TOTAL 20% EFFECT on AP      
                     life: 3                    
                 },            
             ]
@@ -913,7 +915,7 @@ exports.createGuns = async() => {
             damage: 0,
             ap: 0,               
             max_targets: 1,
-            blast_radius: 2,
+            blast_radius: 3,
             blast_spritesheet: "special_blast",
             barrier: return_data[0]._id
         }    
@@ -930,10 +932,10 @@ exports.createGuns = async() => {
             name: "rad cannon",
             cost: 100,
             range: 16 * range,
-            damage: 2,
+            damage: 1,
             ap: 0,               
             max_targets: 1,
-            blast_radius: 2,
+            blast_radius: 3,
             blast_spritesheet: "explosion",
             barrier: return_data[0]._id
         }   
@@ -1167,7 +1169,19 @@ exports.createSpecialRules = async() => {
             {
                 name: "sword dance",
                 description:"unit can leave combat without suffering opportunity attacks from enemies",
-            },            
+            }, 
+            {
+                name: "quickshot",
+                description:"unit that doesn't move can shoot then move",
+            },
+            {
+                name: "firing drills",
+                description:"unit that doesn't move can shoot twice",
+            }, 
+            {
+                name: "whirling dervish",
+                description:"unit that doesn't move can shoot twice",
+            },                        
         ]
     }
 

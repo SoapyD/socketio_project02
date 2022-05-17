@@ -9,6 +9,7 @@ const barrierSchema = new mongoose.Schema({
     ,blast_radius: Number
     ,blast_sprite: String
     ,life: Number
+    // ,modifier: Number
     ,effects: [String]
 	
 	,created_date: {type: Date, default: Date.now}

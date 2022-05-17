@@ -6,16 +6,36 @@
 
         <div class="container">
 			<h1 style="text-align:center;">
-				Edit <%= data.name.replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase()))); %>
+				<% if(data) { %>
+					Edit <%= data.name.replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase()))); %>
+				<% }else{ %>
+					Create <%= route.model.replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase()))); %>
+				<% } %>
 			</h1>
 		
-        </div>
+		</div>
+		
+		<% if(data){ %>
+			<form action="/admin/<%= route_id %>/<%= data.id %>?_method=DELETE" method="POST" class="right-button"
+				onsubmit="return confirm('Are you sure you want to delete this report?');">
+				<button class="btn btn-primary left-margin-5">
+					Delete
+				</button>
+			</form>		
+		<% } %>		
+
     </header>    
 
 
 	<div class="row">		
-	
-		<form action="/admin/<%= route_id %>/<%= data._id %>?_method=PUT" method="POST">
+
+
+
+		<% if(data) { %>
+			<form action="/admin/<%= route_id %>/<%= data._id %>?_method=PUT" method="POST">
+		<% }else{ %>
+			<form action="/admin/<%= route_id %>" method="POST">
+		<% } %>				
 
 			<% route.index.forEach((route_item) => { %>
 
@@ -38,13 +58,19 @@
 					//GET THE VALUE THAT'LL BE PRINTED, WHICH MAY BE NESTED WITHIN AN OBJECT
 					let column_value = data;
 					route_item.value.forEach((e) => {
-
-						if(column_value[e]  !== undefined){
-							column_value = column_value[e];
+						
+						if(column_value  !== undefined){
+							if(column_value[e]  !== undefined){
+								column_value = column_value[e];
+							}
+							else{
+								column_value = ''
+							}
 						}
 						else{
 							column_value = ''
-						}
+						}						
+						
 					})
 
 					let print_value = column_value
@@ -172,7 +198,8 @@
 			</div>				
 
         </form>
-        
+		
+
 		<a href="/admin/<%= route_id %>">Go Back</a>
 
 		

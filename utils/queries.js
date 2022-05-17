@@ -574,9 +574,11 @@ exports.destroyData = async(list) => {
     let promises = [];
 
     // destroy_list.forEach((list) => {
+    if(list.params){
         list.params.forEach((item) => {
             promises.push(models[list.model].deleteOne(item))
         })
+    }
     // })  
 
     return Promise.all(promises)

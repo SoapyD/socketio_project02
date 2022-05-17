@@ -17,16 +17,18 @@ router.put("/:item/:id", middleware.user_access, controllers.admin.update)
 
 
 //CREATE
-// router.post("/:clientid/:item", middleware.user_access, controllers.admin.create)
+router.post("/:item", middleware.user_access, controllers.admin.create)
 
 //NEW
-// router.get("/:clientid/:item/new", middleware.user_access, controllers.admin.getFormCreate)
+router.get("/:item/new", middleware.user_access, controllers.admin.getFormCreate)
+
+//DESTOY
+router.delete("/:item/:id", middleware.user_access, controllers.admin.delete)
 
 
 /*
 
-//DESTOY
-router.delete("/:reportid", middleware.user_access, controllers.reports.deleteReport)
+
 */
 
 module.exports = router;

@@ -9,6 +9,7 @@ const barrier = class {
         this.scene = options.scene
         this.alive = true;
         this.life = options.life;
+        this.modifier = options.modifier;
 
         // this.effects = [
         //     "blunt"
@@ -140,6 +141,7 @@ const barrier = class {
                     }
                     obj.poison = true;
                     obj.poison_timer = 2;
+                    obj.poison_caused_by = this.unit.id;
                     GameScene.sfx['poison'].play();
                 }
             }

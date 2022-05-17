@@ -78,7 +78,7 @@ const bullet = class {
 
 					let ap = bullet.parent.unit.shoot_ap
 					if(bullet.parent.blunt === true){
-						ap -= 2;
+						ap -= 4;
 					}
 
 					let options = {

@@ -18,6 +18,7 @@ const unit = class {
 		//status'
 		this.poison = false;
 		this.poison_timer = 0;
+		this.poison_caused_by = -1;
 
 		this.upgrade_id = options.upgrade_id;
 		// this.setup = false;
@@ -167,7 +168,8 @@ const unit = class {
 		this.text_graphic = options.scene.add.graphics().setDepth(this.depth_text_box);
 		
 		this.queued_text_particles = [];
-		this.adding_particle = 0
+		this.adding_particle = 0;
+
 		
 		this.drawTint()
 		this.drawFlash()
@@ -561,9 +563,9 @@ checkStatus(){
 			let options = {
 				damage: 1,
 				random_roll: gameFunctions.getRandomInt(20),
-				// attacker_id: bullet.parent.unit.id,
+				attacker_id: this.poison_caused_by,
 				defender_id: this.id,
-				hit_override: 18
+				hit_override: 16
 			}				
 			
 			if(GameScene.online === false){
