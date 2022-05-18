@@ -80,6 +80,10 @@ const bullet = class {
 					if(bullet.parent.blunt === true){
 						ap -= 4;
 					}
+					if(bullet.parent.unit.checkSpecialRule("sniper") === false){
+						ap += 4;
+					}
+
 
 					let options = {
 						damage: bullet.parent.damage,
@@ -143,9 +147,17 @@ const bullet = class {
 				// console.log("WOUNDING2",dist)
 				if(unit.in_combat === false && dist <= (this.blast_radius / 2) * gameFunctions.tile_size){
 					
+					let ap = bullet.parent.unit.shoot_ap
+					if(bullet.parent.blunt === true){
+						ap -= 4;
+					}
+					if(bullet.parent.unit.checkSpecialRule("sniper") === true){
+						ap += 4;
+					}					
+
 					let options = {
 						damage: this.damage,
-						ap: this.unit.shoot_ap,
+						ap: ap,
 						bonus: this.unit.shooting_bonus,	
 						// attacker: this.unit,
 						random_roll: gameFunctions.getRandomInt(20),

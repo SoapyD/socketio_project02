@@ -727,8 +727,6 @@ GameUIScene.advanceMode = () => {
 				GameScene.game_setup.sfxHandler("end_turn")
 				gameFunctions.mode_state++;			
 				GameUIScene.readyAdvanceMode();
-
-				GameScene.game_setup.updateBarriers();
 				GameUIScene.nextSide();
 				break;
 
@@ -924,7 +922,7 @@ GameUIScene.activateCharging = () => {
 						if(GameScene.online === false){
 							
 							if(unit.path.length > 0){
-								unit.move("checkCombat");
+								unit.move("charge");
 							}
 							
 						}else{
@@ -941,7 +939,7 @@ GameUIScene.activateCharging = () => {
 										id: unit.id, 
 										path: unit.path,
 										function: "move",
-										function_parameter: "checkCombat" 
+										function_parameter: "charge" 
 									},
 									message: "charge units"
 								}
@@ -1056,6 +1054,11 @@ GameUIScene.activateFighting = () => {
 
 GameUIScene.nextSide = () => {
 	try{	
+
+		//APPLY ANY STATUS EFFECTS CAUSED BY A BARRIER
+		GameScene.game_setup.updateBarriers();
+
+
 		gameFunctions.mode = ""
 		gameFunctions.units.forEach((unit) => {
 			if(unit.alive === true){
@@ -1070,6 +1073,40 @@ GameUIScene.nextSide = () => {
 		GameScene.game_setup.sfxHandler("end_turn")
 		
 		GameUIScene.advanceSide()
+
+		//RUN REGEN CHECK WHEN THE SIDE ADVANCES
+		gameFunctions.units.forEach((unit) => {
+			if(gameFunctions.current_side === unit.side){
+				if(unit.checkSpecialRule("regen") === true){
+
+					let roll = gameFunctions.getRandomInt(20);
+					options = {
+						random_roll: roll
+					}			
+					
+					
+					if(GameScene.online === false){			
+						unit.regen(options);
+					}else{
+						//ONLY SEND THE WOUND MESSAGE IF THIS IS THE ATTACKING PLAYER
+						if(gameFunctions.params.player_number === unit.player){
+							let data = {
+									functionGroup: "socketFunctions",  
+									function: "messageAll",
+									room_name: gameFunctions.params.room_name,
+									returnFunctionGroup: "connFunctions",
+									returnFunction: "regen",
+									returnParameters: options,
+									message: "Check Regen"
+								}				
+							connFunctions.messageServer(data)
+						}
+					}		
+
+
+				}				
+			}
+		})
 
 		// if(GameScene.online === false){
 		// 	GameUIScene.advanceSide()

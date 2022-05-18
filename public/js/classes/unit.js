@@ -31,6 +31,7 @@ const unit = class {
 
 
 		this.moved = false;
+		this.charged = false;		
 		this.shot = false;
 		this.fought = false;
 		
@@ -344,6 +345,7 @@ resetColours(){
 resetLocks() {
 	try{	
 		this.moved = false;
+		this.charged = false;
 		this.shot = false;
 		this.fought = false;		
 
@@ -546,6 +548,21 @@ resetDrawInfo(){
 // ██  █  ██ ██    ██ ██    ██ ██ ██  ██ ██   ██ ██ ██ ██  ██ ██   ███ 
 // ██ ███ ██ ██    ██ ██    ██ ██  ██ ██ ██   ██ ██ ██  ██ ██ ██    ██ 
 //  ███ ███   ██████   ██████  ██   ████ ██████  ██ ██   ████  ██████ 
+
+regen(options){
+
+	if(this.alive === true && this.health < this.max_health){
+		let print_text = 'failed regen'
+		if(options.random_roll >= 16){
+			print_text = "regen +1 wound"
+			this.health += 1;
+		}
+	
+		this.drawTextParticle(print_text)	
+
+		this.drawHealth(this.sprite)
+	}
+}
 
 checkStatus(){
 
@@ -1687,6 +1704,7 @@ usePath(process){
 					//SKIP IF IN CHARGE MODE AND UNIT HAD ALREADY SHOT
 					if(this.shot === true && gameFunctions.mode === "charge"){
 
+						//CANNOT SHOOT AND MOVE UNLESS UNIT HAS SWIFT SPECIAL ABILITY
 						if(this.checkSpecialRule("swift") === false){
 							skip = true;
 							GameScene.showMessage("cannot charge, unit has shot")
@@ -2048,6 +2066,12 @@ endMove(endFunction) {
 					GameScene.sfx["end_path"].play();
 						
 					break;
+				case "charge":
+					this.charged = true;
+					this.combat_check = this.checkCombat();
+					GameScene.sfx["end_path"].play();
+						
+					break;					
 				default:
 			}
 		}								
@@ -2201,7 +2225,13 @@ findTarget (options) {
 		
 		
 		//ONLY ADD SHOT IF THE TARGETS ARRAY IS UNDER MAX SHOTS
-		if(dest.x && dest.y && skip === false && this.targets.length < this.max_targets){
+
+		let max_targets = this.max_targets
+		if(this.checkSpecialRule("firing drills") === true && this.moved === false){
+			max_targets = this.max_targets * 2
+		}		
+
+		if(dest.x && dest.y && skip === false && this.targets.length < max_targets){
 
 			this.targets.push(dest);
 			this.drawTarget(this.targets, this.blast_radius);
@@ -2418,8 +2448,13 @@ findFightTarget (options) {
 			}
 		})
 		
+		let max_targets = this.fight_max_targets;
+		if(this.checkSpecialRule("berserker") === true && (this.moved === true || this.charged === true)){
+			max_targets = this.fight_max_targets * 2;
+		}
+
 		//ONLY ADD SHOT IF THE TARGETS ARRAY IS UNDER MAX SHOTS
-		if(found_unit && skip === false && this.fight_targets.length < this.fight_max_targets){
+		if(found_unit && skip === false && this.fight_targets.length < max_targets){
 
 			this.fight_targets.push(found_unit.id);
 			this.drawTarget(this.fight_targets, 0);
@@ -2551,11 +2586,16 @@ fight(opportunity=false){
 			new particle(options)		
 
 
+			let ap = this.fight_a
+			if(this.checkSpecialRule("whirling dervish") === true && (this.moved === true || this.charged === true)){
+				ap += 4;
+			}
+
 			
 			let roll = gameFunctions.getRandomInt(20);
 			options = {
 				damage: this.fight_damage,
-				ap: this.fight_ap,
+				ap: ap,
 				bonus: this.fighting_bonus,
 				// attacker: this,
 				random_roll: roll,

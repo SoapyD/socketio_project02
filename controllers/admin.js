@@ -140,7 +140,9 @@ exports.getFormCreate = async(req,res) => {
 //  #####  #     # ####### #     #    #    ####### 
 
 exports.create = async(req,res) => {
-	
+
+    let item = req.params.item;    
+
 	try{
 
         let find_options = {
@@ -149,7 +151,6 @@ exports.create = async(req,res) => {
         }
         let route_info = await utils.queries.findData(find_options)
 
-        let item = req.params.item;
         let route = route_info[0][item];
 
 		let data = await utils.queries.createData({
@@ -159,10 +160,10 @@ exports.create = async(req,res) => {
 			]
 		})
 	
-		res.redirect("/admin/show/"+ item)  	
+		res.redirect("/admin/"+ item)  	
 	}catch(err){
 		req.flash("error", "There was an error trying to create your army list"); 
-		res.redirect("/admin/show/"+ item)
+		res.redirect("/admin/"+ item)
 	}
 
 };

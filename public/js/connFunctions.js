@@ -546,6 +546,12 @@ connFunctions.woundUnit = (data) => {
 	unit.wound(data.parameters)
 }
 
+connFunctions.regenUnit = (data) => {
+	// console.log(data)
+	let unit = gameFunctions.units[data.parameters.defender_id]
+	unit.regen(data.parameters)
+}
+
 	// ##################################################################################
 	// ##################################################################################
 	// ##################################################################################
