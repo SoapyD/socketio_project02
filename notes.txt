@@ -75,7 +75,18 @@ SBT GAME NOTES
 /////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////
 
--effects on boundaries should maybe be saved as special rules instead of a sepetate string array
+-DONE -Show a message if the unit disconnects from the game
+    -When a player reconnects, get a refresh of data from the server
+
+-Need to add a loop of the saved unit keys from the server that replace values in the unit class before the unit is created when it's reloaded.
+That should then allow for any additions to the server to be automatically passed back to the unit when reloaded.
+
+-Need to remove all the individual weapon and armour variables and instead do two things:
+    -Save an array of classes
+    -create a "selected item" variable to store the currently select weapon etc class data
+    -use those selected item variables throughout the unit.
+
+-effects on boundaries should maybe be saved as special rules instead of a seperatate string array
 
 -Add a text box to the admin screen that can turn an object into a string and vis versa to make data entry on the dynamic tab easier to achieve
 -Add status effect change to table and model as well as the admin screen
@@ -86,14 +97,6 @@ SBT GAME NOTES
 /////////////////////////////////////////
 NEW ACTIONS
 /////////////////////////////////////////
-
--Action Types
-    -DONE -SWIFT - Units that can move, shoot and move again
-    -DONE -SWORD DANCE - leave/pass combat zones without incurring damage
-    
-    -The ability for a unit to miss it's first movement action so they can shoot then move
-    -bonus to unit that charges into combat
-    -unit that doesn't move before it shoots get to take 2 shots with their gun
 
 -Equipment Types
     -Flamer: template that hits all units underneath it
@@ -168,8 +171,6 @@ THINGS TO DO (EVENTUALLY)
 
 -Need an exception for vehicles so they can shoot and be shot at even if in combat
 
--Show a message if the unit disconnects from the game
-
 -Generate a list of rooms belonging to the player / that they're in as well as a global room list
 
 -animations
@@ -216,6 +217,13 @@ SELECTION - PAUSED
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 
+-Action Types
+    -DONE -SWIFT - Units that can move, shoot and move again
+    -DONE -SWORD DANCE - leave/pass combat zones without incurring damage
+    
+    -DONE -The ability for a unit to miss it's first movement action so they can shoot then move
+    -DONE -bonus to unit that charges into combat
+    -DONE -unit that doesn't move before it shoots get to take 2 shots with their gun
 
 /////////////////////////////////////////
 UNIT MAKER

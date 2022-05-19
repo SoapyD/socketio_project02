@@ -172,7 +172,7 @@ const squad_setup = class {
 			spritesheet: unit_class.spritesheet,
 			sprite_offset: unit_class.sprite_offset,
 			health: unit_class.health,
-			max_health: unit_class.max_health,
+			max_health: unit_class.health,
 			movement: unit_class.movement,
 			cohesion: unit_class.cohesion, //the maximum distance a unit can be from another member of it's squad						
 			fighting_bonus: unit_class.fighting_bonus,

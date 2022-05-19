@@ -2,52 +2,60 @@
 const unit = class {
 	constructor(options) {
 		
-		// super(options);
-		this.scene = options.scene;
-		this.type = 'unit'
-		
+		//ELEMENTS SAVED BY THE SERVER
+		let x = options.x;
+		let y = options.y;
 		this.id = gameFunctions.units.length;
 		this.side = options.side; //this can be used if each side has multiple players
 		this.player = options.player; //this is the specific owner of the unit
-		this.squad = options.squad;; //this can be used for squad checks like unit cohesion
-		this.size = options.size; //the grid size of the object used when plotting movement
-		this.cohesion = options.cohesion; //the maximum distance a unit can be from another member of it's squad
-		this.cost = options.cost;
-		this.special_rules = options.special_rules;
-
-		//status'
-		this.poison = false;
-		this.poison_timer = 0;
-		this.poison_caused_by = -1;
-
+		this.squad = options.squad; //this can be used for squad checks like unit cohesion
 		this.upgrade_id = options.upgrade_id;
-		// this.setup = false;
-
+		this.unit_name = options.unit_name;
+		this.shoot_name = options.shoot_name;
+		this.fight_name = options.fight_name;
+		this.armour_name = options.armour_name;
+		this.health = options.health;
 		this.alive = options.alive;
 		this.killed_by = -1;
+		this.in_combat = false;
 		
-		this.path = [];
-		this.is_moving = false;
-
+		//NEED TO BE ADDED
+		this.poison = false;
+		this.poison_caused_by = -1;
+		this.poison_timer = 0;
 
 		this.moved = false;
 		this.charged = false;		
 		this.shot = false;
 		this.fought = false;
-		
-		this.unit_name = options.unit_name;
-		this.health = options.health;
-		this.max_health = options.health;
+
+		if(options.in_combat){
+			this.in_combat = options.in_combat;
+		}
+
+
+		//UNIT CLASS		
+		this.max_health = options.max_health;
 		this.death_sfx = options.death_sfx;
 		this.shooting_bonus = options.shooting_bonus,
 		this.fighting_bonus =  options.fighting_bonus,
-		
-		
-		this.cohesion_check = true;		
 		this.movement = options.movement;
-		
+		this.size = options.size; //the grid size of the object used when plotting movement
+		this.cohesion = options.cohesion; //the maximum distance a unit can be from another member of it's squad
+		this.cost = options.cost;
+		this.special_rules = options.special_rules;		
+		this.symbol_id = options.symbol_id;		
+
+		this.sprite_offset = options.sprite_offset;
+		if(options.loaded){
+			//don't add offset
+		}else{
+			x += gameFunctions.tile_size * this.sprite_offset;
+			y += gameFunctions.tile_size * this.sprite_offset;			
+		}
+
+		//GUN CLASS
 		this.gun_class = options.gun_class;
-		this.shoot_name = options.shoot_name;
 		this.shoot_range = options.shoot_range;
 		this.shoot_damage = options.shoot_damage;
 		this.shoot_ap = options.shoot_ap;
@@ -55,34 +63,26 @@ const unit = class {
 		this.blast_radius = options.blast_radius;		
 		this.max_targets = options.max_targets;
 		this.targets = [];
-		
-		this.fight_name = options.fight_name;
+
+		//FIGHT CLASS
 		this.fight_range = options.fight_range ; //* (options.size + 1);
 		this.fight_ap = options.fight_ap;
 		this.fight_damage = options.fight_damage;
-		this.in_combat = false;
-		if(options.in_combat){
-			this.in_combat = options.in_combat;
-		}
-
-		this.in_combat_with = [];
 		this.fight_max_targets = options.fight_max_targets;		
-		this.fight_targets = [];
-		
-		this.armour_name = options.armour_name;
+
+		//ARMOUR CLASS
 		this.armour = options.armour;
 		
 
-		this.sprite_offset = options.sprite_offset;
-		
-		let x = options.x;
-		let y = options.y;
-		if(options.loaded){
-			//don't add offset
-		}else{
-			x += gameFunctions.tile_size * this.sprite_offset;
-			y += gameFunctions.tile_size * this.sprite_offset;			
-		}
+		//ALL OTHER ELEMENTS
+		this.scene = options.scene;
+		this.type = 'unit'
+
+		this.path = [];
+		this.is_moving = false;
+		this.cohesion_check = true;				
+		this.in_combat_with = [];
+		this.fight_targets = [];
 
 		this.depth_sprite_flash = 6;		
 		this.depth_sprite = 4;
@@ -105,23 +105,18 @@ const unit = class {
 		this.sprite.setDepth(this.depth_sprite);
 		this.sprite.angle = options.angle;
 		this.sprite.parent = this
-
-		// this.sprite.enableBody(true, this.sprite.x, this.sprite.y, true, true);
 		GameScene.unit_collisions[this.side].add(this.sprite)
-		// this.sprite.on('pointerup', this.selectHander)
 		
-		
-		// if(GameScene.online === false || (GameScene.online === true && this.player === gameFunctions.params.player_number)){
-			this.sprite_ghost = options.scene.add.image(x,y,options.spritesheet).setInteractive().setScale(0.8);
-			this.sprite_ghost.alpha = 1; //0.5;
-			this.sprite_ghost.angle = options.angle;
-			this.sprite_ghost.parent = this;
-			this.sprite_ghost.is_ghost = true;
-			this.sprite_ghost.setDepth(this.depth_sprite_ghost);
-			this.sprite_ghost.on('pointerup', this.selectHander)
-		// }
 
-		this.symbol_id = options.symbol_id;
+		this.sprite_ghost = options.scene.add.image(x,y,options.spritesheet).setInteractive().setScale(0.8);
+		this.sprite_ghost.alpha = 1; //0.5;
+		this.sprite_ghost.angle = options.angle;
+		this.sprite_ghost.parent = this;
+		this.sprite_ghost.is_ghost = true;
+		this.sprite_ghost.setDepth(this.depth_sprite_ghost);
+		this.sprite_ghost.on('pointerup', this.selectHander)
+
+
 		this.sprite_symbol = options.scene.add.image(x,y,"symbols").setScale(0.05 * (this.size + 1))
 		this.sprite_symbol.x += (this.sprite.displayWidth / 2) - (this.sprite_symbol.displayWidth / 2)
 		this.sprite_symbol.y -= (this.sprite.displayHeight / 2) + (this.sprite_symbol.displayHeight / 2)
@@ -135,6 +130,7 @@ const unit = class {
 		this.sprite_action.alpha = 0.4
 		this.sprite_action.visible = false
 		
+
 		//THIS EXPLOSION
 		options.scene.anims.create({
 		key: 'hit',
@@ -167,9 +163,9 @@ const unit = class {
 		},		
 		this.text = options.scene.add.text(this.sprite.x, this.sprite.y - (this.sprite.displayHeight / 2), "", this.text_style).setDepth(this.depth_text);
 		this.text_graphic = options.scene.add.graphics().setDepth(this.depth_text_box);
-		
+	
 		this.queued_text_particles = [];
-		this.adding_particle = 0;
+		this.adding_particle = 0;		
 
 		
 		this.drawTint()
@@ -178,8 +174,6 @@ const unit = class {
 
 		this.updateElements(this.sprite);
 	
-
-
 		this.selectHander = this.selectHander.bind(this);
 	}
 

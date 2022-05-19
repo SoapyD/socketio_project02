@@ -1,6 +1,36 @@
 
 const socket = io(socket_address, {transports: ["websocket"]})
 
+socket.on('disconnect', function () { 
+
+	gameFunctions.disconnected = true;
+	let options = {
+		scene: gameFunctions.current_scene,
+		pos: {
+			x: gameFunctions.config.width / 2,
+			y: gameFunctions.config.height / 2
+		},
+		text: "Disconnected from Server"
+	}
+	new popup(options)	
+});
+
+socket.on('connect', function () { 
+
+	if(gameFunctions.disconnected === true){		
+		gameFunctions.disconnected = false;
+		let options = {
+			scene: gameFunctions.current_scene,
+			pos: {
+				x: gameFunctions.config.width / 2,
+				y: gameFunctions.config.height / 2
+			},
+			text: "Reconnected to Server"
+		}
+		new popup(options)	
+	}
+});
+
 
 
 const connFunctions = [];
