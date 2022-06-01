@@ -509,7 +509,7 @@ const game_setup = class {
 								let used_pointer = worldPoint
 								if(this.scene_container.mouse_selection){
 									if(this.scene_container.mouse_selection.selection_info){
-										let info = this.scene_container.mouse_selection.selection_info[selected_unit.id];
+										let info = this.scene_container.mouse_selection.selection_info[selected_unit.core.id];
 										used_pointer.x += info.offset.x
 										used_pointer.y += info.offset.y
 									}
@@ -525,7 +525,7 @@ const game_setup = class {
 									returnFunctionGroup: "connFunctions",
 									returnFunction: "runUnitFunction", //test
 									returnParameters: {
-										id: selected_unit.id, 
+										id: selected_unit.core.id, 
 										function: "findPath",
 										function_parameter: {pointer: worldPoint}
 									},
@@ -547,7 +547,7 @@ const game_setup = class {
 									returnFunctionGroup: "connFunctions",
 									returnFunction: "runUnitFunction", //test
 									returnParameters: {
-										id: selected_unit.id, 
+										id: selected_unit.core.id, 
 										function: "findTarget",
 										function_parameter: {pointer: worldPoint}
 									},
@@ -569,7 +569,7 @@ const game_setup = class {
 									returnFunctionGroup: "connFunctions",
 									returnFunction: "runUnitFunction", //test
 									returnParameters: {
-										id: selected_unit.id, 
+										id: selected_unit.core.id, 
 										function: "findPath",
 										function_parameter: {pointer: worldPoint}
 									},
@@ -591,7 +591,7 @@ const game_setup = class {
 									returnFunctionGroup: "connFunctions",
 									returnFunction: "runUnitFunction", //test
 									returnParameters: {
-										id: selected_unit.id, 
+										id: selected_unit.core.id, 
 										function: "findFightTarget",
 										function_parameter: {pointer: worldPoint}
 									},
@@ -629,7 +629,7 @@ const game_setup = class {
 									returnFunctionGroup: "connFunctions",
 									returnFunction: "runUnitFunction", //test
 									returnParameters: {
-										id: selected_unit.id, 
+										id: selected_unit.core.id, 
 										function: "resetMove",
 									},
 									message: "reset path"
@@ -651,7 +651,7 @@ const game_setup = class {
 									returnFunctionGroup: "connFunctions",
 									returnFunction: "runUnitFunction", //test
 									returnParameters: {
-										id: selected_unit.id, 
+										id: selected_unit.core.id, 
 										function: "removeTarget",
 									},
 									message: "remove target"
@@ -672,7 +672,7 @@ const game_setup = class {
 									returnFunctionGroup: "connFunctions",
 									returnFunction: "runUnitFunction", //test
 									returnParameters: {
-										id: selected_unit.id, 
+										id: selected_unit.core.id, 
 										function: "resetMove",
 									},
 									message: "reset path"
@@ -693,7 +693,7 @@ const game_setup = class {
 									returnFunctionGroup: "connFunctions",
 									returnFunction: "runUnitFunction", //test
 									returnParameters: {
-										id: selected_unit.id, 
+										id: selected_unit.core.id, 
 										function: "removeFightTarget",
 									},
 									message: "remove fight target"
@@ -774,7 +774,7 @@ const game_setup = class {
 		let touching_unit = false;
 		if(gameFunctions.units){
 			gameFunctions.units.forEach((unit) => {
-				if(unit.side === gameFunctions.current_side){
+				if(unit.core.side === gameFunctions.current_side){
 
 					if(unit.is_moving === true){
 						// unit.draw_health()
@@ -791,13 +791,13 @@ const game_setup = class {
 
 				if(clash === true){
 					touching_unit = true;
-					if(this.scene_container.hovered_unit_id !== unit.id){
-						this.scene_container.hovered_unit_id = unit.id
+					if(this.scene_container.hovered_unit_id !== unit.core.id){
+						this.scene_container.hovered_unit_id = unit.core.id
 						GameUIScene.setUnitHUD(unit)
 
 						if(this.scene_container.selected_unit.length > 0){
 							let selected_unit = this.scene_container.selected_unit[0];
-							if(selected_unit.side !== unit.side){
+							if(selected_unit.core.side !== unit.core.side){
 								GameUIScene.setChanceHUD(selected_unit, unit)
 							}
 						}						

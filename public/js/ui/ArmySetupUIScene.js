@@ -232,10 +232,10 @@ ArmySetupUIScene.checkMode = () => {
             ArmySetupUIScene.unit_id = -1
 			gameFunctions.units.forEach((unit) => {
 
-                if((unit.player === gameFunctions.params.player_number || GameScene.online === false) && unit.alive === false){ //&& ArmySetupUIScene.unit_id === -1
-                    ArmySetupUIScene.unit_id = unit.id;
+                if((unit.core.player === gameFunctions.params.player_number || GameScene.online === false) && unit.core.alive === false){ //&& ArmySetupUIScene.unit_id === -1
+                    ArmySetupUIScene.unit_id = unit.core.id;
 
-                    ArmySetupUIScene.setForcesHUD(gameFunctions.params.player_number, "squad "+unit.squad, true, false)
+                    ArmySetupUIScene.setForcesHUD(gameFunctions.params.player_number, "squad "+unit.core.squad, true, false)
                 }
             })
             
@@ -255,8 +255,8 @@ ArmySetupUIScene.checkMode = () => {
                 
                 options = {
                     unit_id: ArmySetupUIScene.unit_id,
-                    x: GameScene.marker.x + (gameFunctions.tile_size * current_unit.sprite_offset),
-                    y: GameScene.marker.y + (gameFunctions.tile_size * current_unit.sprite_offset),                    
+                    x: GameScene.marker.x + (gameFunctions.tile_size * current_unit.unit_class.sprite_offset),
+                    y: GameScene.marker.y + (gameFunctions.tile_size * current_unit.unit_class.sprite_offset),                    
                 }
     
 
@@ -293,7 +293,7 @@ ArmySetupUIScene.checkMode = () => {
                             //CHECK TO SEE IF THERE'S A CLASH WITH A TERRAIN TILE
                             let process = {
                                 parent: current_unit,
-                                obj_size: current_unit.size,
+                                obj_size: current_unit.unit_class.size,
                             }
                             let node = {
                                 cell: cell,
@@ -386,7 +386,7 @@ ArmySetupUIScene.moveUnit = (options) => {
 
     if(options.unit_id !== -1){
         let current_unit = gameFunctions.units[options.unit_id];
-        current_unit.alive = true;
+        current_unit.core.alive = true;
     
         current_unit.sprite.x = options.x;
         current_unit.sprite.y = options.y;

@@ -497,28 +497,28 @@ connFunctions.saveGame = (mode) => {
 
 	data.units = [];
 	gameFunctions.units.forEach((unit) => {
-		let unit_data = {
-			id: unit.id
-			,side: unit.side
-			,player: unit.player
-			,squad: unit.squad		
+		// let unit_data = {
+			// id: unit.id
+			// ,side: unit.side
+			// ,player: unit.player
+			// ,squad: unit.squad		
 			
-			,upgrade_id: unit.upgrade_id
-			,unit_name: unit.unit_name
-			,shoot_name: unit.shoot_name
-			,fight_name: unit.fight_name
-			,armour_name: unit.armour_name
+			// ,health: unit.health
+			// ,alive: unit.alive
+			// ,killed_by: unit.killed_by
+			// ,in_combat: unit.in_combat
 			
-			,health: unit.health
-			,alive: unit.alive
-			,killed_by: unit.killed_by
-			,in_combat: unit.in_combat
-			
-			,x: unit.sprite.x
-			,y: unit.sprite.y
-			,rotation: unit.sprite.angle		
-		}
-		data.units.push(unit_data)
+			// ,x: unit.sprite.x
+			// ,y: unit.sprite.y
+			// ,rotation: unit.sprite.angle	
+
+			// ,upgrade_id: unit.upgrade_id
+			// ,unit_name: unit.unit_name
+			// ,shoot_name: unit.shoot_name
+			// ,fight_name: unit.fight_name
+			// ,armour_name: unit.armour_name	
+		// }
+		data.units.push(unit.core)
 	})
 
 	if(gameFunctions.params.player_side === gameFunctions.current_side){

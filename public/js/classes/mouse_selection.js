@@ -103,13 +103,13 @@ const mouse_selection = class {
                     unit.selectUnit();
 
                     let info = {
-                        id: unit.id,
+                        id: unit.core.id,
                         offset: {
                             x: unit.sprite.x - this.center.x,
                             y: unit.sprite.y - this.center.y,                            
                         }
                     }
-                    this.selection_info[unit.id] = info;
+                    this.selection_info[unit.core.id] = info;
                 })
             }
             GameScene.multi_select_pause = true;

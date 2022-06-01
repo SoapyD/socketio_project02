@@ -5,7 +5,7 @@ const barrier = class {
         this.id = GameScene.barriers.length;
         this.type = "barrier"
         this.unit = options.unit
-        this.side = options.unit.side
+        this.side = options.unit.core.side
         this.scene = options.scene
         this.alive = true;
         this.life = options.life;
@@ -53,25 +53,12 @@ const barrier = class {
             // this.sprite.displayHeight = options.blast_radius * (gameFunctions.tile_size * 2.5);
         }
 
-
-		// this.colliders = [];
-
-		// GameScene.unit_collisions.forEach((collider, i) => {
-		// 	if(i !== this.unit.side){
-		// 		this.colliders.push(options.scene.physics.add.collider(this.sprite, GameScene.unit_collisions[i], this.checkHit))
-		// 	}
-		// })
-
-
         this.sprite.parent = this;
 
 
 		GameScene.barriers.push(this)
     }
 
-    // checkHit(barrier, unit) {
-    //     console.log("hits "+unit.parent.id)
-    // }
     
     updateText() {
         this.text.x += (this.text.width / 2)
@@ -141,7 +128,7 @@ const barrier = class {
                     }
                     obj.poison = true;
                     obj.poison_timer = 2;
-                    obj.poison_caused_by = this.unit.id;
+                    obj.poison_caused_by = this.unit.core.id;
                     GameScene.sfx['poison'].play();
                 }
             }
@@ -177,7 +164,7 @@ const barrier = class {
             ap: 0,
             bonus: 0,	
             random_roll: -1,
-            defender_id: unit.id
+            defender_id: unit.core.id
         }
 
         if(GameScene.online === false){
@@ -185,7 +172,7 @@ const barrier = class {
         }else{
             //ONLY SEND THE WOUND MESSAGE IF THIS IS THE ATTACKING PLAYER
             
-            if(gameFunctions.params.player_number === this.unit.player){
+            if(gameFunctions.params.player_number === this.unit.core.player){
                 let data = {
                     functionGroup: "socketFunctions",  
                     function: "messageAll",

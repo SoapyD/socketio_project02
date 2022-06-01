@@ -80,16 +80,6 @@ var GameUIScene = new Phaser.Class({
 		console_text += 'Mode: '+gameFunctions.mode_state+'\r'
 		console_text += 'Actions: '+GameScene.active_actions+'\r\r'
 
-		// console_text += 'Forces:\r'
-		// gameFunctions.params.forces.forEach((force, id) => {
-		// 	console_text += id+') | Side: '+force.side+' | Ready: '+force.ready+'\r'		
-		// })
-
-		// console_text += 'Ready:\r'
-		// gameFunctions.units.forEach((unit, id) => {
-		// 	console_text += id+') | ready: '+unit.sprite.body.enable+'\r'
-		// })		
-
 		GameUIScene.debug_console.updateText(console_text)
 
 
@@ -206,7 +196,7 @@ GameUIScene.runSelectMode = (options) => {
 			//RESET ALL PLAYER ACTIONS
 			if(gameFunctions.units){
 				gameFunctions.units.forEach((unit) => {
-					if(unit.alive === true && unit.side === gameFunctions.current_side){
+					if(unit.core.alive === true && unit.core.side === gameFunctions.current_side){
 						unit.resetActions();
 						
 						unit.drawFlash(false)
@@ -214,7 +204,7 @@ GameUIScene.runSelectMode = (options) => {
 
 						switch(options.mode){
 							case "shoot":
-								if (unit.in_combat === true){
+								if (unit.core.in_combat === true){
 									unit.drawFlash(false, true)
 								}
 								break;
@@ -225,7 +215,7 @@ GameUIScene.runSelectMode = (options) => {
 									}
 								break;	
 								case "fight":
-									if (unit.fight_damage === 0){
+									if (unit.melee_class[unit.selected_melee].damage === 0){
 										unit.drawFlash(false, true)
 									}
 								break;														
@@ -280,12 +270,6 @@ GameUIScene.checkGameEnd = () => {
 		// let force_check = [];
 		let max_sides = 0;
 		gameFunctions.params.forces.forEach((force) => {
-			// let info = {
-			// 	player: force.player_number,
-			// 	side: force.side,
-			// 	live_units: 0			
-			// }
-			// force_check.push(info)
 			if(force.side > max_sides){
 				max_sides = force.side
 			}
@@ -299,9 +283,9 @@ GameUIScene.checkGameEnd = () => {
 		//loop through units and count live units per force / side
 		gameFunctions.units.forEach((unit) => {
 			// let force = force_check[unit.player]
-			if(unit.alive === true){
+			if(unit.core.alive === true){
 				// force.live_units++;
-				sides[unit.side] += 1;  
+				sides[unit.core.side] += 1;  
 			}
 		})
 
@@ -334,19 +318,6 @@ GameUIScene.readyAdvanceMode = (actions=-1) => {
 
 	try{	
 		let cohesion_check = true;
-
-		// switch(gameFunctions.mode){
-		// 	case "move":
-		// 	case "charge":
-		// 		gameFunctions.units.forEach((unit) => {
-		// 			if(gameFunctions.params.player_side === gameFunctions.current_side){
-		// 				if(unit.cohesion_check === false && unit.cohesion > 0){
-		// 					cohesion_check = false;		
-		// 				}
-		// 			}
-		// 		})				
-		// 	break;
-		// }	
 
 
 		if(cohesion_check === true){
@@ -438,7 +409,7 @@ GameUIScene.advanceMode = () => {
 				gameFunctions.units.forEach((unit) => {
 					if(unit.path.length > 0){
 						//unit.path.length > 0 &&
-						if(unit.player === gameFunctions.params.player_number){
+						if(unit.core.player === gameFunctions.params.player_number){
 							actions++;
 						}
 					}
@@ -515,7 +486,7 @@ GameUIScene.advanceMode = () => {
 				gameFunctions.units.forEach((unit) => {
 					if(unit.targets.length > 0){
 						//unit.path.length > 0 &&
-						if(unit.player === gameFunctions.params.player_number){
+						if(unit.core.player === gameFunctions.params.player_number){
 							actions += unit.targets.length;
 						}
 					}
@@ -583,7 +554,7 @@ GameUIScene.advanceMode = () => {
 				gameFunctions.units.forEach((unit) => {
 					if(unit.path.length > 0){
 						//unit.path.length > 0 &&
-						if(unit.player === gameFunctions.params.player_number){
+						if(unit.core.player === gameFunctions.params.player_number){
 							actions++;
 						}
 					}
@@ -656,7 +627,7 @@ GameUIScene.advanceMode = () => {
 				gameFunctions.units.forEach((unit) => {
 					if(unit.fight_targets.length > 0){
 						//unit.path.length > 0 &&
-						if(unit.player === gameFunctions.params.player_number){
+						if(unit.core.player === gameFunctions.params.player_number){
 							actions += unit.fight_targets.length;
 						}
 					}
@@ -781,7 +752,7 @@ GameUIScene.activateMovement = () => {
 			gameFunctions.units.forEach((unit) => {
 				if(unit.path.length > 0){
 					//unit.path.length > 0 &&
-					if(unit.player === gameFunctions.params.player_number){
+					if(unit.core.player === gameFunctions.params.player_number){
 						if(GameScene.online === false){
 							unit.move();
 						}else{
@@ -792,7 +763,7 @@ GameUIScene.activateMovement = () => {
 								returnFunctionGroup: "connFunctions",
 								returnFunction: "runUnitFunction",
 								returnParameters: {
-									id: unit.id, 
+									id: unit.core.id, 
 									path: unit.path,
 									function: "move"
 								},
@@ -848,7 +819,7 @@ GameUIScene.activateShooting = () => {
 		gameFunctions.units.forEach((unit) => {
 			
 			if(unit.targets.length > 0){
-				if(unit.player === gameFunctions.params.player_number){
+				if(unit.core.player === gameFunctions.params.player_number){
 
 					if(GameScene.online === false){
 						unit.shoot();
@@ -861,7 +832,7 @@ GameUIScene.activateShooting = () => {
 							returnFunctionGroup: "connFunctions",
 							returnFunction: "runUnitFunction",
 							returnParameters: {
-								id: unit.id, 
+								id: unit.core.id, 
 								targets: unit.targets,
 								function: "shoot"
 							},
@@ -918,7 +889,7 @@ GameUIScene.activateCharging = () => {
 			gameFunctions.units.forEach((unit) => {
 				
 				if(unit.path.length > 0){
-					if(unit.player === gameFunctions.params.player_number){
+					if(unit.core.player === gameFunctions.params.player_number){
 						if(GameScene.online === false){
 							
 							if(unit.path.length > 0){
@@ -936,7 +907,7 @@ GameUIScene.activateCharging = () => {
 									returnFunctionGroup: "connFunctions",
 									returnFunction: "runUnitFunction",
 									returnParameters: {
-										id: unit.id, 
+										id: unit.core.id, 
 										path: unit.path,
 										function: "move",
 										function_parameter: "charge" 
@@ -999,7 +970,7 @@ GameUIScene.activateFighting = () => {
 		gameFunctions.units.forEach((unit) => {
 
 			if(unit.fight_targets.length > 0){
-				if(unit.player === gameFunctions.params.player_number){
+				if(unit.core.player === gameFunctions.params.player_number){
 					if(GameScene.online === false){
 		
 						unit.fight()
@@ -1013,7 +984,7 @@ GameUIScene.activateFighting = () => {
 							returnFunctionGroup: "connFunctions",
 							returnFunction: "runUnitFunction",
 							returnParameters: {
-								id: unit.id, 
+								id: unit.core.id, 
 								fight_targets: unit.fight_targets,
 								function: "fight"
 							},
@@ -1061,9 +1032,9 @@ GameUIScene.nextSide = () => {
 
 		gameFunctions.mode = ""
 		gameFunctions.units.forEach((unit) => {
-			if(unit.alive === true){
+			if(unit.core.alive === true){
 				unit.checkStatus();
-				if(unit.player === gameFunctions.params.player_number){ //unit.side === gameFunctions.current_side){
+				if(unit.core.player === gameFunctions.params.player_number){
 					unit.resetActions();
 					unit.resetLocks();
 				}
@@ -1076,7 +1047,7 @@ GameUIScene.nextSide = () => {
 
 		//RUN REGEN CHECK WHEN THE SIDE ADVANCES
 		gameFunctions.units.forEach((unit) => {
-			if(gameFunctions.current_side === unit.side){
+			if(gameFunctions.current_side === unit.core.side){
 				if(unit.checkSpecialRule("regen") === true){
 
 					let roll = gameFunctions.getRandomInt(20);
@@ -1089,7 +1060,7 @@ GameUIScene.nextSide = () => {
 						unit.regen(options);
 					}else{
 						//ONLY SEND THE WOUND MESSAGE IF THIS IS THE ATTACKING PLAYER
-						if(gameFunctions.params.player_number === unit.player){
+						if(gameFunctions.params.player_number === unit.core.player){
 							let data = {
 									functionGroup: "socketFunctions",  
 									function: "messageAll",
@@ -1108,23 +1079,7 @@ GameUIScene.nextSide = () => {
 			}
 		})
 
-		// if(GameScene.online === false){
-		// 	GameUIScene.advanceSide()
-		// }else{
 
-		// 	let data = {
-		// 		functionGroup: "socketFunctions",  
-		// 		function: "updateRoom",
-		// 		type: "end turn",
-		// 		room_name: gameFunctions.params.room_name,
-		// 		player_number: gameFunctions.params.player_number,
-		// 		player_side: gameFunctions.params.player_side
-		// 		// params: {
-		// 		// }
-		// 	}
-
-		// 	connFunctions.messageServer(data)		
-		// }
 	}catch(e){
 
 		let options = {
@@ -1151,10 +1106,7 @@ GameUIScene.advanceSide = () => {
 
 		// CHANGE THE PARAMS SIDE IF THIS IS A LOCAL GAME
 		if(GameScene.online === false && gameFunctions.current_side !== -1){
-			// gameFunctions.params.player_side += 1
-			// if(gameFunctions.params.player_side >= sides){
-			// 	gameFunctions.params.player_side = 0
-			// }	
+	
 			GameScene.offline_force++;
 			if(GameScene.offline_force >= gameFunctions.params.forces.length){
 				GameScene.offline_force = 0;
@@ -1573,24 +1525,24 @@ GameUIScene.setUnitHUD = (unit) => {
 		let element = GameUIScene.hud_unit
 		element.setVisible(true);
 
-		element.setText("u_h",unit.unit_name)
+		element.setText("u_h",unit.unit_class.name)
 
-		element.setText("f_m",unit.movement)
-		element.setText("f_sb",unit.shooting_bonus)
-		element.setText("f_fb",unit.fighting_bonus)
+		element.setText("f_m",unit.unit_class.movement)
+		element.setText("f_sb",unit.unit_class.shooting_bonus)
+		element.setText("f_fb",unit.unit_class.fighting_bonus)
 		element.setText("f_a",unit.armour)
 
-		element.setText("r2_h",unit.shoot_name)
-		element.setText("f_gun_d",unit.shoot_damage)
-		element.setText("f_gun_ap",unit.shoot_ap)
-		element.setText("f_gun_r",unit.max_targets+'x'+unit.shoot_range)
+		element.setText("r2_h",unit.melee_class[unit.selected_melee].name)
+		element.setText("f_gun_d",unit.gun_class[unit.selected_gun].damage)
+		element.setText("f_gun_ap",unit.gun_class[unit.selected_gun].ap)
+		element.setText("f_gun_r",unit.gun_class[unit.selected_gun].max_targets+'x'+unit.gun_class[unit.selected_gun].range)
 
-		element.setText("r3_h",unit.fight_name)
-		element.setText("f_mel_d",unit.fight_damage)
-		element.setText("f_mel_ap",unit.fight_ap)
-		element.setText("f_mel_r",unit.fight_max_targets+'x'+unit.fight_range)		
+		element.setText("r3_h",unit.melee_class[unit.selected_melee].name)
+		element.setText("f_mel_d",unit.melee_class[unit.selected_melee].damage)
+		element.setText("f_mel_ap",unit.melee_class[unit.selected_melee].ap)
+		element.setText("f_mel_r",unit.melee_class[unit.selected_melee].max_targets+'x'+unit.melee_class[unit.selected_melee].range)		
 
-		if(unit.alive === true){
+		if(unit.core.alive === true){
 			element = GameUIScene.hud_special
 			element.setVisible(true);		
 	
@@ -1639,8 +1591,8 @@ GameUIScene.setChanceHUD = (selected_unit, target_unit) => {
 		let element = GameUIScene.hud_chance
 		element.setVisible(true);
 
-		let mel_chance = target_unit.armour - (selected_unit.fight_ap + selected_unit.fighting_bonus);
-		let gun_chance = target_unit.armour - (selected_unit.shoot_ap + selected_unit.shooting_bonus);
+		let mel_chance = target_unit.armour_class.value - (selected_unit.melee_class[selected_unit.selected_melee].ap + selected_unit.unit_class.fighting_bonus);
+		let gun_chance = target_unit.armour_class.value - (selected_unit.gun_class[selected_unit.selected_gun].ap + selected_unit.unit_class.shooting_bonus);
 
 		let max_roll_value = 20
 		if(selected_unit.cohesion_check === false && selected_unit.cohesion > 0){
@@ -1725,10 +1677,10 @@ GameUIScene.updatePointsHUD = () => {
 
 			let points = 0;
 			gameFunctions.units.forEach((unit) => {
-				if(unit.killed_by !== -1){
-					let killing_unit = gameFunctions.units[unit.killed_by]
-					if(killing_unit.player === force.player_number){
-						points+= unit.cost;
+				if(unit.core.killed_by !== -1){
+					let killing_unit = gameFunctions.units[unit.core.killed_by]
+					if(killing_unit.core.player === force.player_number){
+						points+= unit.unit_class.cost;
 					}
 				}
 			})
@@ -1759,7 +1711,7 @@ GameUIScene.checkAllCombat = () => {
 	try{	
 		// RESET ALL COMBAT STATUS'
 		gameFunctions.units.forEach((unit) => {
-			unit.in_combat = false;
+			unit.core.in_combat = false;
 			if(unit.sprite.body){
 				unit.sprite.body.enable = true; //
 			}

@@ -7,11 +7,11 @@ const bullet = class {
 		this.scene = options.scene;
 		this.delete = false;
 		this.unit = options.unit;
-		this.side = options.unit.side;
+		this.side = options.unit.core.side;
 		this.player = options.unit.player;
 
-		this.saved_range = options.unit.shoot_range;
-		this.range = options.unit.shoot_range;
+		this.saved_range = options.unit.gun_class[options.unit.selected_gun].range;
+		this.range = options.unit.gun_class[options.unit.selected_gun].range;
 
 		//status'
 		this.blunt = false;
@@ -26,9 +26,9 @@ const bullet = class {
 		}
 		
 		this.speed = 200;
-		this.damage =  options.unit.shoot_damage;
-		this.blast_spritesheet = options.unit.blast_spritesheet;
-		this.blast_radius = options.unit.blast_radius;	
+		this.damage =  options.unit.gun_class[options.unit.selected_gun].damage;
+		this.blast_spritesheet = options.unit.gun_class[options.unit.selected_gun].blast_spritesheet;
+		this.blast_radius = options.unit.gun_class[options.unit.selected_gun].blast_radius;	
 		
 		this.origin = {
 			x: options.unit.sprite.x,
@@ -60,7 +60,6 @@ const bullet = class {
 
 		//PLAY SHOT SOUND
 		GameScene.sfx['shot'].play();
-
 		
 	}
 
@@ -70,13 +69,14 @@ const bullet = class {
 		if(unit.parent.in_combat === false){
 
 			bullet.parent.kill();
+			// console.log(bullet.parent)			
 
 			//DEAL DAMAGE IF IT'S NOT A BLAST WEAPON
 			if(bullet.parent.blast_radius === 1){
 				if(bullet.parent.player !== unit.parent.player){
 
 
-					let ap = bullet.parent.unit.shoot_ap
+					let ap = bullet.parent.unit.gun_class[bullet.parent.unit.selected_gun].ap
 					if(bullet.parent.blunt === true){
 						ap -= 4;
 					}
@@ -88,12 +88,11 @@ const bullet = class {
 					let options = {
 						damage: bullet.parent.damage,
 						ap: ap,
-						bonus: bullet.parent.unit.shooting_bonus,
+						bonus: bullet.parent.unit.unit_class.shooting_bonus,
 						random_roll: gameFunctions.getRandomInt(20),
-						attacker_id: bullet.parent.unit.id,
-						defender_id: unit.parent.id
-					}				
-					
+						attacker_id: bullet.parent.unit.core.id,
+						defender_id: unit.parent.core.id
+					}			
 					
 					if(GameScene.online === false){
 						unit.parent.wound(options);
@@ -147,7 +146,7 @@ const bullet = class {
 				// console.log("WOUNDING2",dist)
 				if(unit.in_combat === false && dist <= (this.blast_radius / 2) * gameFunctions.tile_size){
 					
-					let ap = bullet.parent.unit.shoot_ap
+					let ap = bullet.parent.unit.gun_class[bullet.parent.unit.selected_gun].ap
 					if(bullet.parent.blunt === true){
 						ap -= 4;
 					}
@@ -158,11 +157,11 @@ const bullet = class {
 					let options = {
 						damage: this.damage,
 						ap: ap,
-						bonus: this.unit.shooting_bonus,	
+						bonus: this.unit.unit_class.shooting_bonus,	
 						// attacker: this.unit,
 						random_roll: gameFunctions.getRandomInt(20),
-						attacker_id: this.unit.id,
-						defender_id: unit.id
+						attacker_id: this.unit.core.id,
+						defender_id: unit.core.id
 					}
 
 

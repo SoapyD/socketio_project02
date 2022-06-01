@@ -36,22 +36,6 @@ var GameScene = new Phaser.Class({
 
 		GameScene.game_setup.setupSquads();		
 	
-		/*
-		let options = {
-			scene: GameScene.scene,
-			unit_list: gameFunctions.units,
-			forces: gameFunctions.params.forces,
-			tile_size: gameFunctions.tile_size
-		}
-		GameScene.squad_setup = new squad_setup(options)
-
-		//SETUP THE SQUADS IF THE GAME ISN'T BEING LOADED FROM A PREVIOUS SAVE
-		if(gameFunctions.units_preload.length === 0){
-			GameScene.squad_setup.placeSquads();	
-		}else{
-			GameScene.squad_setup.reloadSquads();
-		}		
-		*/
     },
 
     update: function (time, delta)

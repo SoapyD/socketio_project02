@@ -51,7 +51,7 @@ const pathfinder = class {
 	
 	setup(options) {
 		
-		this.bound_unit = options.parent.id;
+		this.bound_unit = options.parent.core.id;
         let process = new pathProcess(options)
 
 		//add start pos to open list, first needs converting into a node
@@ -72,7 +72,7 @@ const pathfinder = class {
 
 		while(i--){
 			let process = this.process_list[i]
-			if(process.running === true && process.parent.id === this.bound_unit
+			if(process.running === true && process.parent.core.id === this.bound_unit
 				&& (gameFunctions.mode === 'move' || gameFunctions.mode === "charge")){
 				// console.log("running")
 				//only run the pathfinding process if the check number hasn't been reached yet
@@ -192,12 +192,12 @@ const pathfinder = class {
 
 			}
 			
-			process.path = process.path.slice(0,process.parent.movement + 1)
+			process.path = process.path.slice(0,process.parent.unit_class.movement + 1)
 
 			// //OFFSET PATH SO THEY'RE IN THE MIDDLE OF EACH TILE
 			process.path.forEach((pos) => {
-				pos.x += process.parent.sprite_offset;
-				pos.y += process.parent.sprite_offset;
+				pos.x += process.parent.unit_class.sprite_offset;
+				pos.y += process.parent.unit_class.sprite_offset;
 			})
 
 			process.running = false;
@@ -299,7 +299,7 @@ const pathfinder = class {
 			
 			//CHECK CELL CHECK SLIGHTLY DIFFERENTLY DEPENDING ON THE SPRITE OFFSET VALUE
 
-			if(process.parent.sprite_offset === 0){
+			if(process.parent.unit_class.sprite_offset === 0){
 				for(let x=-process.obj_size;x<=0;x++){
 					for(let y=-process.obj_size;y<=0;y++){
 						let pos = {
@@ -324,7 +324,7 @@ const pathfinder = class {
 				}				
 			}			
 			
-			if(process.parent.sprite_offset === 0.5){
+			if(process.parent.unit_class.sprite_offset === 0.5){
 				for(let x=-process.obj_size;x<=process.obj_size;x++){
 					for(let y=-process.obj_size;y<=process.obj_size;y++){
 						let pos = {

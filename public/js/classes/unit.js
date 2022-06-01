@@ -3,75 +3,52 @@ const unit = class {
 	constructor(options) {
 		
 		//ELEMENTS SAVED BY THE SERVER
-		let x = options.x;
-		let y = options.y;
-		this.id = gameFunctions.units.length;
-		this.side = options.side; //this can be used if each side has multiple players
-		this.player = options.player; //this is the specific owner of the unit
-		this.squad = options.squad; //this can be used for squad checks like unit cohesion
-		this.upgrade_id = options.upgrade_id;
-		this.unit_name = options.unit_name;
-		this.shoot_name = options.shoot_name;
-		this.fight_name = options.fight_name;
-		this.armour_name = options.armour_name;
-		this.health = options.health;
-		this.alive = options.alive;
-		this.killed_by = -1;
-		this.in_combat = false;
+		// this.upgrade_id = options.upgrade_id;
+
+		// let x = options.x;
+		// let y = options.y;
+
+		this.core = options.core
+		// this.id = gameFunctions.units.length;
+		// this.side = options.side; //this can be used if each side has multiple players
+		// this.player = options.player; //this is the specific owner of the unit
+		// this.squad = options.squad; //this can be used for squad checks like unit cohesion
+
+		// this.health = options.unit_class.health;
+		// this.alive = options.alive;
+		// this.killed_by = -1;
+		// this.in_combat = false;
 		
-		//NEED TO BE ADDED
-		this.poison = false;
-		this.poison_caused_by = -1;
-		this.poison_timer = 0;
+		// //NEED TO BE ADDED
+		// this.poison = false;
+		// this.poison_caused_by = -1;
+		// this.poison_timer = 0;
 
-		this.moved = false;
-		this.charged = false;		
-		this.shot = false;
-		this.fought = false;
-
-		if(options.in_combat){
-			this.in_combat = options.in_combat;
-		}
+		// this.moved = false;
+		// this.charged = false;		
+		// this.shot = false;
+		// this.fought = false;
 
 
-		//UNIT CLASS		
-		this.max_health = options.max_health;
-		this.death_sfx = options.death_sfx;
-		this.shooting_bonus = options.shooting_bonus,
-		this.fighting_bonus =  options.fighting_bonus,
-		this.movement = options.movement;
-		this.size = options.size; //the grid size of the object used when plotting movement
-		this.cohesion = options.cohesion; //the maximum distance a unit can be from another member of it's squad
-		this.cost = options.cost;
-		this.special_rules = options.special_rules;		
-		this.symbol_id = options.symbol_id;		
 
-		this.sprite_offset = options.sprite_offset;
-		if(options.loaded){
-			//don't add offset
-		}else{
-			x += gameFunctions.tile_size * this.sprite_offset;
-			y += gameFunctions.tile_size * this.sprite_offset;			
-		}
+		//CLASS DATA		
+		this.special_rules = options.special_rules;
+
+		//UNIT CLASS	
+		this.unit_class = options.unit_class	
 
 		//GUN CLASS
-		this.gun_class = options.gun_class;
-		this.shoot_range = options.shoot_range;
-		this.shoot_damage = options.shoot_damage;
-		this.shoot_ap = options.shoot_ap;
-		this.blast_spritesheet = options.blast_spritesheet;
-		this.blast_radius = options.blast_radius;		
-		this.max_targets = options.max_targets;
-		this.targets = [];
+		this.gun_class = []
+		this.gun_class.push(options.gun_class);
+		this.selected_gun = 0;
 
 		//FIGHT CLASS
-		this.fight_range = options.fight_range ; //* (options.size + 1);
-		this.fight_ap = options.fight_ap;
-		this.fight_damage = options.fight_damage;
-		this.fight_max_targets = options.fight_max_targets;		
+		this.melee_class = []
+		this.melee_class.push(options.melee_class);
+		this.selected_melee = 0;				
 
 		//ARMOUR CLASS
-		this.armour = options.armour;
+		this.armour_class = options.armour_class
 		
 
 		//ALL OTHER ELEMENTS
@@ -80,7 +57,8 @@ const unit = class {
 
 		this.path = [];
 		this.is_moving = false;
-		this.cohesion_check = true;				
+		this.cohesion_check = true;
+		this.targets = [];						
 		this.in_combat_with = [];
 		this.fight_targets = [];
 
@@ -97,35 +75,41 @@ const unit = class {
 		this.depth_text_box = 10;
 		
 		
-		
+		if(options.loaded){
+			//don't add offset
+		}else{
+			unit.core.x += gameFunctions.tile_size * this.unit_class.sprite_offset;
+			unit.core.y += gameFunctions.tile_size * this.unit_class.sprite_offset;			
+		}		
+
 		//SPRITES
-		this.spritesheet = options.spritesheet;
-		this.sprite = options.scene.physics.add.image(x,y,options.spritesheet).setScale(0.8); //.setInteractive();
+		this.spritesheet = this.unit_class.spritesheet;
+		this.sprite = options.scene.physics.add.image(this.core.x,this.core.y,this.spritesheet).setScale(0.8); //.setInteractive();
 		this.sprite.setImmovable(true)
 		this.sprite.setDepth(this.depth_sprite);
-		this.sprite.angle = options.angle;
+		this.sprite.angle = this.core.angle;
 		this.sprite.parent = this
-		GameScene.unit_collisions[this.side].add(this.sprite)
+		GameScene.unit_collisions[this.core.side].add(this.sprite)
 		
 
-		this.sprite_ghost = options.scene.add.image(x,y,options.spritesheet).setInteractive().setScale(0.8);
+		this.sprite_ghost = options.scene.add.image(this.core.x,this.core.y,this.spritesheet).setInteractive().setScale(0.8);
 		this.sprite_ghost.alpha = 1; //0.5;
-		this.sprite_ghost.angle = options.angle;
+		this.sprite_ghost.angle = this.core.angle;
 		this.sprite_ghost.parent = this;
 		this.sprite_ghost.is_ghost = true;
 		this.sprite_ghost.setDepth(this.depth_sprite_ghost);
 		this.sprite_ghost.on('pointerup', this.selectHander)
 
 
-		this.sprite_symbol = options.scene.add.image(x,y,"symbols").setScale(0.05 * (this.size + 1))
+		this.sprite_symbol = options.scene.add.image(this.core.x,this.core.y,"symbols").setScale(0.05 * (this.unit_class.size + 1))
 		this.sprite_symbol.x += (this.sprite.displayWidth / 2) - (this.sprite_symbol.displayWidth / 2)
 		this.sprite_symbol.y -= (this.sprite.displayHeight / 2) + (this.sprite_symbol.displayHeight / 2)
-		this.sprite_symbol.setFrame(options.symbol_id).setDepth(this.depth_sprite_symbol);
+		this.sprite_symbol.setFrame(this.unit_class.symbol_id).setDepth(this.depth_sprite_symbol);
 		this.sprite_symbol.alpha = 0.5
 		
 
 		//action sprite
-		this.sprite_action = options.scene.add.image(x,y,"symbols").setScale(0.08 * (this.size + 1))		
+		this.sprite_action = options.scene.add.image(this.core.x,this.core.y,"symbols").setScale(0.08 * (this.unit_class.size + 1))		
 		this.sprite_action.setFrame(0).setDepth(this.depth_sprite_symbol);
 		this.sprite_action.alpha = 0.4
 		this.sprite_action.visible = false
@@ -144,7 +128,6 @@ const unit = class {
 		this.bar_back_graphic = options.scene.add.graphics().setDepth(this.depth_health);
 
 		this.fight_graphic = options.scene.add.graphics().setDepth(this.depth_fight_radius);
-		// GameScene.fight_collisions[this.side].add(this.sprite)
 
 		this.path_graphic = options.scene.add.graphics().setDepth(this.depth_path);
 		this.cohesion_graphic = options.scene.add.graphics().setDepth(this.depth_cohesion);
@@ -196,12 +179,12 @@ selectUnit(single_unit=false) { //
 
 		let skip = false
 		if(GameScene.online === true){
-			if(this.player !== gameFunctions.params.player_number){
+			if(this.core.player !== gameFunctions.params.player_number){
 				skip = true;
 			}
 		}
 
-		if (this.side === gameFunctions.current_side && skip === false){
+		if (this.core.side === gameFunctions.current_side && skip === false){
 			//TURN OLD SELECTED PLAYER MARKER, WHITE
 
 			if(GameScene.selected_unit){
@@ -283,7 +266,7 @@ unselectHandler() {
 		this.drawFlash(true)
 		
 		if(gameFunctions.mode === "move" || gameFunctions.mode === "charge"){
-			if(this.cohesion > 0){
+			if(this.unit_class.cohesion > 0){
 				this.cohesionCheck();	
 			}
 		}
@@ -345,7 +328,7 @@ resetLocks() {
 
 
 		this.checkCombat()
-		if(this.in_combat === false){
+		if(this.core.in_combat === false){
 			this.sprite_action.visible = false;
 			this.sprite.body.enable = true;
 		}		
@@ -418,9 +401,8 @@ resetMove() {
 		//CHECK TO SEE IF THE RESET AFFECTS ANY OTHER UNITS THAT'VE MOVED
 		//IF SO, RESET THOSE UNIT MOVES AS WELL
 		gameFunctions.units.forEach((unit) => {
-			if(unit.id !== this.id && unit.path.length > 0){
+			if(unit.core.id !== this.core.id && unit.path.length > 0){
 				let check = this.checkSpriteOverlap(this.sprite_ghost, unit.sprite_ghost)
-				// console.log(check,unit.id,this.id)
 				
 				if(check === true){
 					unit.resetMove();
@@ -466,7 +448,7 @@ resetGhost() {
 		this.drawFightRadius();
 		
 		if(gameFunctions.mode === "move" || gameFunctions.mode === "charge"){
-			if(this.cohesion > 0){
+			if(this.unit_class.cohesion > 0){
 				this.cohesionCheck();	
 			}
 		}
@@ -487,7 +469,7 @@ removeTarget() {
 		this.blast_graphics.forEach((graphic) => {
 			graphic.clear();
 		})		
-		this.drawTarget(this.targets, this.blast_radius);
+		this.drawTarget(this.targets, this.gun_class[this.selected_gun].blast_radius);
 		// this.drawInfo(this.sprite);
 		this.updateElements(this.sprite);
 	}catch(e){
@@ -545,11 +527,11 @@ resetDrawInfo(){
 
 regen(options){
 
-	if(this.alive === true && this.health < this.max_health){
+	if(this.core.alive === true && this.core.health < this.unit_class.health){
 		let print_text = 'failed regen'
 		if(options.random_roll >= 16){
 			print_text = "regen +1 wound"
-			this.health += 1;
+			this.core.health += 1;
 		}
 	
 		this.drawTextParticle(print_text)	
@@ -562,7 +544,6 @@ checkStatus(){
 
 	try{
 		if(this.poison === true){
-			// this.health--;
 	
 			this.poison_timer--;
 			if(this.poison_timer === 0){
@@ -575,7 +556,7 @@ checkStatus(){
 				damage: 1,
 				random_roll: gameFunctions.getRandomInt(20),
 				attacker_id: this.poison_caused_by,
-				defender_id: this.id,
+				defender_id: this.core.id,
 				hit_override: 16
 			}				
 			
@@ -583,7 +564,7 @@ checkStatus(){
 				this.wound(options);
 			}else{
 				//ONLY SEND THE WOUND MESSAGE IF THIS IS THE ATTACKING PLAYER
-				if(gameFunctions.params.player_number === this.player){
+				if(gameFunctions.params.player_number === this.core.player){
 					let data = {
 						functionGroup: "socketFunctions",  
 						function: "messageAll",
@@ -600,13 +581,6 @@ checkStatus(){
 			GameScene.sfx['poison'].play();
 		}
 	
-		// this.drawHealth(this.sprite)
-	
-		// if(this.health <= 0){
-			// this.killed_by = options.attacker_id;
-			// GameUIScene.updatePointsHUD();
-			// this.kill();
-		// }	
 	}catch(e){
 
 		let options = {
@@ -622,7 +596,7 @@ checkStatus(){
 wound(options){
 
 	try{	
-		let min_roll_needed = this.armour - (options.ap + options.bonus);
+		let min_roll_needed = this.armour_class.value - (options.ap + options.bonus);
 		if(options.hit_override !== undefined){
 			min_roll_needed = options.hit_override;
 		}
@@ -676,14 +650,14 @@ wound(options){
 		}
 		
 		if(target){
-			if(target.alive === true){
+			if(target.core.alive === true){
 
 				target.drawTextParticle(print_text)	
 				
-				target.health -= options.damage;
+				target.core.health -= options.damage;
 				target.drawHealth(this.sprite)
-				if(target.health <= 0){
-					this.killed_by = options.attacker_id;
+				if(target.core.health <= 0){
+					this.core.killed_by = options.attacker_id;
 					GameUIScene.updatePointsHUD();
 					target.kill();
 				}
@@ -702,9 +676,9 @@ wound(options){
 
 kill(){	
 	try{	
-		this.alive = false;
+		this.core.alive = false;
 
-		GameScene.sfx[this.death_sfx].play();
+		GameScene.sfx[this.unit_class.death_sfx].play();
 		this.sprite.destroy();
 		if(this.sprite_ghost){
 			this.sprite_ghost.destroy();
@@ -747,7 +721,7 @@ kill(){
 drawTint(){
 
 	try{	
-		let colour = GameScene.game_setup.getSideColour(this.side);
+		let colour = GameScene.game_setup.getSideColour(this.core.side);
 		this.colour = colour.colour
 		this.colour_gray = colour.colour_gray;
 		this.colour_info = colour.colour_info;
@@ -775,7 +749,7 @@ drawTint(){
 
 drawFlash(active=true, gray_out=false){
 	try{	
-		if(active === true && this.player === gameFunctions.params.player_number){
+		if(active === true && this.core.player === gameFunctions.params.player_number){
 			this.flash_tween = this.scene.tweens.addCounter({
 				targets: this, 
 				from: 0,
@@ -823,7 +797,7 @@ drawTextParticle(text){
 
 	let part_options = {
 		scene: GameScene.scene,
-		parent_id: this.id,
+		parent_id: this.core.id,
 		text: text,
 		text_style: { 
 			font: "16px Arial",
@@ -894,10 +868,10 @@ drawInfo(sprite)
 		let string = ""
 		switch(gameFunctions.mode){
 			case "shoot":
-				string = this.targets.length + "/" + this.max_targets
+				string = this.targets.length + "/" + this.gun_class[this.selected_gun].max_targets
 				break;
 			case "fight":
-				string = this.fight_targets.length + "/" + this.fight_max_targets
+				string = this.fight_targets.length + "/" + this.melee_class[this.selected_melee].max_targets
 				break;				
 		}
 
@@ -950,12 +924,12 @@ drawHealth(sprite)
 	try{	
 		this.bar_graphic.clear();
 
-		let width = gameFunctions.tile_size * (this.size * 3)
+		let width = gameFunctions.tile_size * (this.unit_class.size * 3)
 		if(width === 0){
 			width = gameFunctions.tile_size
 		}
-		if(this.sprite_offset === 0){
-			width = gameFunctions.tile_size * (this.size * 2)
+		if(this.unit_class.sprite_offset === 0){
+			width = gameFunctions.tile_size * (this.unit_class.size * 2)
 		}
 		width *= 0.8
 		
@@ -966,15 +940,15 @@ drawHealth(sprite)
 		}		
 		
 		
-		let angle = (270 / this.max_health) * this.health;
+		let angle = (270 / this.unit_class.health) * this.core.health;
 		
 		let fill_colour = 0x2ECC40; //green
-		if (this.health <= this.max_health / 2) 
+		if (this.core.health <= this.unit_class.health / 2) 
 		{
 
 			fill_colour = 0xffdb00; //yellow
 		}
-		if (this.health <= this.max_health / 4)
+		if (this.core.health <= this.unit_class.health / 4)
 		{
 			fill_colour = 0xff0000; //red
 		}
@@ -986,8 +960,8 @@ drawHealth(sprite)
 		this.bar_graphic.lineStyle(7, fill_colour, 0.75);
 		// this.bar_graphic.arc(pos.x, pos.y, width / 2, Phaser.Math.DegToRad(angle), Phaser.Math.DegToRad(0), true)
 		
-		let segment_size = 270 / this.max_health;
-		for (let i=0;i<this.health;i++){
+		let segment_size = 270 / this.unit_class.health;
+		for (let i=0;i<this.core.health;i++){
 			//  Without this the arc will appear closed when stroked
 			this.bar_graphic.beginPath();			
 			this.bar_graphic.arc(pos.x, pos.y, width / 2, Phaser.Math.DegToRad(((i+1) * segment_size) - 10), Phaser.Math.DegToRad(i * segment_size), true)
@@ -1064,7 +1038,7 @@ drawPath(colours) {
 		
 		this.cohesion_graphic.lineStyle(colours.line_width, colours.line_colour, colours.circle_alpha);
 		this.cohesion_graphic.fillStyle(colours.fill_colour, colours.fill_alpha);
-		let circle = new Phaser.Geom.Circle(last_pos.x * gameFunctions.tile_size, last_pos.y * gameFunctions.tile_size, this.cohesion / 2);
+		let circle = new Phaser.Geom.Circle(last_pos.x * gameFunctions.tile_size, last_pos.y * gameFunctions.tile_size, this.unit_class.cohesion / 2);
 		this.cohesion_graphic.fillCircleShape(circle);
 
 		this.cohesion_graphic.strokePath();		
@@ -1106,8 +1080,8 @@ drawTarget(targets, blast_radius) {
 				
 				
 				//OFFSET PATH POSITION TO MIDDLE OF TILE
-				pos.x += this.sprite_offset;
-				pos.y += this.sprite_offset;	
+				pos.x += this.unit_class.sprite_offset;
+				pos.y += this.unit_class.sprite_offset;	
 				
 				this.path_graphic.lineTo(pos.x, pos.y);
 				
@@ -1144,7 +1118,7 @@ drawFightRadius(){
 		let radius_graphic = this.fight_graphic;
 		radius_graphic.lineStyle(2, this.colour, 0.5);
 		radius_graphic.fillStyle(this.colour, 0.05);
-		let circle = new Phaser.Geom.Circle(this.sprite_ghost.x, this.sprite_ghost.y, (this.fight_range));
+		let circle = new Phaser.Geom.Circle(this.sprite_ghost.x, this.sprite_ghost.y, (this.melee_class[this.selected_melee].range));
 		radius_graphic.fillCircleShape(circle).setDepth(this.depth_fight_radius);
 
 		radius_graphic.strokePath();		
@@ -1258,10 +1232,10 @@ setupDrawLiveTiles() {
 		let gridX = Math.floor(this.sprite.x/gameFunctions.tile_size);
 		let gridY = Math.floor(this.sprite.y/gameFunctions.tile_size);	
 
-		let startX = gridX - this.movement
-		let startY = gridY - this.movement
-		let endX = gridX + this.movement
-		let endY = gridY + this.movement
+		let startX = gridX - this.unit_class.movement
+		let startY = gridY - this.unit_class.movement
+		let endX = gridX + this.unit_class.movement
+		let endY = gridY + this.unit_class.movement
 		//REMOVED THESE ARE THEY AFFECTED THE SPIRAL CALL WHEN NEAR THE END OF A ROOM
 		// if(startX < 0) startX = 0
 		// if(startY < 0) startY = 0
@@ -1347,22 +1321,22 @@ saveDrawLiveTiles(process) {
 
 			try{
 				let check_tile = this.check_tiles[this.check_tiles_position]
-				let check_x = (check_tile.pointer.x / GameScene.map.tileWidth) + this.sprite_offset
-				let check_y = (check_tile.pointer.y / GameScene.map.tileHeight) + this.sprite_offset
+				let check_x = (check_tile.pointer.x / GameScene.map.tileWidth) + this.unit_class.sprite_offset
+				let check_y = (check_tile.pointer.y / GameScene.map.tileHeight) + this.unit_class.sprite_offset
 					
 				let found = this.live_tiles.some(i => i.x === check_x && i.y === check_y);
 
 				//NO NEED TO CHECK POSITIONS THAT AREN'T CLOSE ENOUGH TO REACH
 				let distance = gameFunctions.twoPointDistance({x: this.sprite.x / gameFunctions.tile_size, y: this.sprite.y / gameFunctions.tile_size}, {x: check_x,y: check_y});
 
-				let cell = GameScene.grid[check_y - this.sprite_offset][check_x - this.sprite_offset];
+				let cell = GameScene.grid[check_y - this.unit_class.sprite_offset][check_x - this.unit_class.sprite_offset];
 				let acceptable_tile = false
 				if(GameScene.acceptable_tiles.includes(cell)){
 					acceptable_tile = true;
 				}			
 
 				// this.runDrawLiveTiles();
-				if(found === false && distance <= this.movement && acceptable_tile === true){
+				if(found === false && distance <= this.unit_class.movement && acceptable_tile === true){
 					checking_tile = true;
 					this.runDrawLiveTiles();
 
@@ -1589,7 +1563,7 @@ generatePath(options, callback, fail_callback) {
 			var fromX = Math.floor(this.sprite.x/gameFunctions.tile_size);
 			var fromY = Math.floor(this.sprite.y/gameFunctions.tile_size);		
 
-			// let path = GameScene.pathfinder.findPath(this, fromX, fromY, toX, toY, this.size)
+			// let path = GameScene.pathfinder.findPath(this, fromX, fromY, toX, toY, this.unit_class.size)
 
 			GameScene.pathfinder.setup({
 				parent:this, 
@@ -1598,7 +1572,7 @@ generatePath(options, callback, fail_callback) {
 				y_start: fromY, 
 				x_end: toX, 
 				y_end: toY, 
-				obj_size: this.size,
+				obj_size: this.unit_class.size,
 				callback: callback,
 				fail_callback: fail_callback
 			})
@@ -1665,7 +1639,7 @@ usePath(process){
 						let check = false;				
 						gameFunctions.units.forEach((unit) => {
 							
-							if(unit.id !== this.id && unit.alive === true){
+							if(unit.core.id !== this.core.id && unit.core.alive === true){
 								
 								this.sprite_ghost.x = pos.x * gameFunctions.tile_size;
 								this.sprite_ghost.y = pos.y * gameFunctions.tile_size;
@@ -1731,7 +1705,7 @@ usePath(process){
 					else{
 						
 						//if there's any cohesion needed, check it, otherwise just draw path
-						if(this.cohesion > 0){
+						if(this.unit_class.cohesion > 0){
 							this.cohesionCheck()
 							GameScene.sfx['action'].play();
 						}
@@ -1772,7 +1746,7 @@ cohesionCheck2() {
 		//GET THE UNITS IN THE SQUAD
 		let open = [];
 		gameFunctions.units.forEach((unit) => {
-			if(unit.alive === true && unit.id !== this.id && unit.player === this.player && unit.squad === this.squad) //
+			if(unit.core.alive === true && unit.core.id !== this.core.id && unit.core.player === this.core.player && unit.core.squad === this.core.squad) //
 			{
 				open.push(unit);
 			}
@@ -1838,7 +1812,7 @@ cohesionCheck() {
 	try{	
 		let units_check = 0;
 		gameFunctions.units.forEach((unit) => {
-			if(unit.alive === true && unit.player === this.player && unit.squad === this.squad) //unit.id !== this.id && 
+			if(unit.core.alive === true && unit.core.player === this.core.player && unit.core.squad === this.core.squad)
 			{		
 		
 				unit.cohesion_check = unit.cohesionCheck2();
@@ -1862,7 +1836,7 @@ cohesionCheck() {
 					colours.fill_alpha = 0.5;
 				}
 
-				if(unit.id !== this.id || GameScene.selected_unit.length === 0){
+				if(unit.core.id !== this.core.id || GameScene.selected_unit.length === 0){
 					colours.circle_alpha = 0.4,
 					colours.fill_alpha = 0.35,
 					colours.line_colour = 0x808080; //grey
@@ -1910,11 +1884,6 @@ move(endFunction="move") {
 		}
 		
 		if (this.path.length > 1 && this.is_moving === false){
-			
-			// GameScene.active_actions++;
-			// if(unit.player === gameFunctions.params.player){
-			// 	GameScene.active_actions++;	
-			// }
 			
 			this.is_moving = true;
 			
@@ -2023,16 +1992,16 @@ endMove(endFunction) {
 		//CHECK IF THE UNIT IS COMING OUT OF COMBAT
 	
 		if(this.checkSpecialRule("sword dance") === false){
-			let old_status = this.in_combat
-			this.in_combat = this.checkCombat();
+			let old_status = this.core.in_combat
+			this.core.in_combat = this.checkCombat();
 			
 			if(this.in_combat === false && old_status === true){
 		
-				if(this.in_combat_with){
-					this.in_combat_with.forEach((unit) => {
+				if(this.core.in_combat_with){
+					this.core.in_combat_with.forEach((unit) => {
 						//allow allow that unit to strike if it has any combat damage to give
-						if(unit.fight_damage > 0){
-							unit.fight_targets.push(this.sprite.parent.id)
+						if(unit.melee_class[unit.selected_melee].damage > 0){
+							unit.fight_targets.push(this.sprite.parent.core.id)
 							unit.fight(true);
 						}
 					})
@@ -2126,7 +2095,7 @@ findTarget (options) {
 				pos.cells.push(cell)
 				
 				let current_range = Math.sqrt(Math.pow(this.sprite.x - cell.x, 2) + Math.pow(this.sprite.y - cell.y, 2))
-				if(current_range >= this.shoot_range){ break; }				
+				if(current_range >= this.gun_class[this.selected_gun].range){ break; }				
 			}
 		}else{
 			for (let y=0; y<pos.y_norm; y+=1){
@@ -2138,7 +2107,7 @@ findTarget (options) {
 				
 				// let current_range = Math.sqrt(Math.pow(this.sprite.x - cell.x, 2) + Math.pow(this.sprite.y - cell.y, 2))
 				let current_range = gameFunctions.twoPointDistance(this.sprite, cell)
-				if(current_range >= this.shoot_range){ break; }						
+				if(current_range >= this.gun_class[this.selected_gun].range){ break; }						
 			}			
 		}
 
@@ -2174,12 +2143,12 @@ findTarget (options) {
 				if(add_dest === true){
 					gameFunctions.units.forEach((unit) => {
 	
-						if(unit.alive === true && unit.id !== this.id 
-							&& unit.side !== this.side && unit.in_combat === false){
+						if(unit.core.alive === true && unit.core.id !== this.core.id 
+							&& unit.core.side !== this.core.side && unit.core.in_combat === false){
 							let check = unit.checkSpriteandPos(cell)
 							if(check === true){
 								add_dest = false;
-								dest.unit = unit.id
+								dest.unit = unit.core.id
 							}	
 						}
 					})	
@@ -2196,11 +2165,11 @@ findTarget (options) {
 		})		
 		
 		//SKIP IF IN COMBAT
-		if(this.in_combat === true){
+		if(this.core.in_combat === true){
 			//DOUBLE CHECK THE UNIT IS STILL IN COMBAT
-			this.in_combat = this.checkCombat();
+			this.core.in_combat = this.checkCombat();
 
-			if(this.in_combat === true){
+			if(this.core.in_combat === true){
 				skip = true;
 				GameScene.showMessage("Cannot shoot while in combat.")
 			}
@@ -2220,15 +2189,15 @@ findTarget (options) {
 		
 		//ONLY ADD SHOT IF THE TARGETS ARRAY IS UNDER MAX SHOTS
 
-		let max_targets = this.max_targets
+		let max_targets = this.gun_class[this.selected_gun].max_targets
 		if(this.checkSpecialRule("firing drills") === true && this.moved === false){
-			max_targets = this.max_targets * 2
+			max_targets = this.gun_class[this.selected_gun].max_targets * 2
 		}		
 
 		if(dest.x && dest.y && skip === false && this.targets.length < max_targets){
 
 			this.targets.push(dest);
-			this.drawTarget(this.targets, this.blast_radius);
+			this.drawTarget(this.targets, this.gun_class[this.selected_gun].blast_radius);
 			GameScene.sfx['action'].play();
 			
 			// this.drawInfo(this.sprite)
@@ -2336,7 +2305,7 @@ checkClickPosition (pointer) {
 
 			//CHECK TO SEE IF THE UNIT CLASHES WITH THE CLICK POSITION
 			let clash = false;
-			if(unit.alive === true && this.alive === true && unit.id !== this.id && unit.player !== this.player && unit.side !== this.side){
+			if(unit.core.alive === true && this.core.alive === true && unit.core.id !== this.core.id && unit.core.player !== this.core.player && unit.core.side !== this.core.side){
 				
 				click_circle = new u_circle({
 					x: pointer.x,
@@ -2351,7 +2320,7 @@ checkClickPosition (pointer) {
 					let fight_circle = new u_circle({
 						x: this.sprite.x,
 						y: this.sprite.y,
-						r: this.fight_range
+						r: this.melee_class[this.selected_melee].range
 					});
 					
 					clash = GameScene.u_collisions.circleCircle(fight_circle, unit_circle);
@@ -2397,7 +2366,7 @@ findFightTarget (options) {
 
 		// let current_range = Math.sqrt(Math.pow(this.sprite.x - pos.end_x, 2) + Math.pow(this.sprite.y - pos.end_y, 2))
 		
-		// if(current_range > (this.fight_range) && skip === false){
+		// if(current_range > (this.melee_class[this.selected_melee].range) && skip === false){
 		// 	skip = true;
 		// 	GameScene.showMessage("target out of range")	
 		// }
@@ -2412,7 +2381,7 @@ findFightTarget (options) {
 			GameScene.showMessage("unit out of range")
 		}		
 		
-		if(this.fight_damage === 0){
+		if(this.melee_class[this.selected_melee].damage === 0){
 			skip = true
 			GameScene.showMessage("cannot fight, unit has no fight damage")
 		}
@@ -2436,15 +2405,15 @@ findFightTarget (options) {
 		let found_unit;
 		gameFunctions.units.forEach((unit) => {
 			check = unit.checkSpriteandPos(pointer);
-			if(unit.alive === true && check === true && unit.id !== this.id){
+			if(unit.core.alive === true && check === true && unit.core.id !== this.core.id){
 				found_unit = unit
 				return
 			}
 		})
 		
-		let max_targets = this.fight_max_targets;
+		let max_targets = this.melee_class[this.selected_melee].max_targets;
 		if(this.checkSpecialRule("berserker") === true && (this.moved === true || this.charged === true)){
-			max_targets = this.fight_max_targets * 2;
+			max_targets = this.melee_class[this.selected_melee].max_targets * 2;
 		}
 
 		//ONLY ADD SHOT IF THE TARGETS ARRAY IS UNDER MAX SHOTS
@@ -2485,7 +2454,7 @@ checkCombat() {
 
 
 			let clash = false;
-			if(unit.alive === true && this.alive === true && unit.id !== this.id && unit.player !== this.player && unit.side !== this.side){
+			if(unit.core.alive === true && this.core.alive === true && unit.core.id !== this.core.id && unit.core.player !== this.core.player && unit.core.side !== this.core.side){
 				
 				if(this.path.length > 0 && this.is_moving === false){
 					//check to see if movement ends in an attack
@@ -2494,7 +2463,7 @@ checkCombat() {
 						fight_circle = new u_circle({
 							x: this.ghost_sprite.x,
 							y: this.ghost_sprite.y,
-							r: this.fight_range
+							r: this.melee_class[this.selected_melee].range
 						});
 						clash = GameScene.u_collisions.circleCircle(fight_circle, unit_circle);						
 						
@@ -2505,14 +2474,14 @@ checkCombat() {
 					fight_circle = new u_circle({
 						x: this.sprite.x,
 						y: this.sprite.y,
-						r: this.fight_range
+						r: this.melee_class[this.selected_melee].range
 					});
 					clash = GameScene.u_collisions.circleCircle(fight_circle, unit_circle);					
 				}
 
 				if(clash === true){				
 
-					const found = this.in_combat_with.some(el => el.id === unit.id);
+					const found = this.in_combat_with.some(el => el.core.id === unit.core.id);
 					// if (!found) arr.push({ id, username: name });
 					if(found === false){
 						this.in_combat_with.push(unit)						
@@ -2523,8 +2492,8 @@ checkCombat() {
 					//SET BOTH UNITS AS FIGHTING EACH OTHER
 					//only set fighting if the opponent has any capacity to fight
 					// if(unit.fight_damage > 0){
-						this.in_combat = true;
-						unit.in_combat = true;
+						this.core.in_combat = true;
+						unit.core.in_combat = true;
 
 						this.sprite.body.enable = false;
 						if(unit.sprite.body){
@@ -2566,7 +2535,7 @@ fight(opportunity=false){
 			
 			let options = {
 				scene: GameScene.scene,
-				key: "sword"+this.id+"_"+target_unit.id,
+				key: "sword"+this.core.id+"_"+target_unit.core.id,
 				spritesheet: "punch",
 				framerate: 30,
 				sfx: "sword",
@@ -2580,7 +2549,7 @@ fight(opportunity=false){
 			new particle(options)		
 
 
-			let ap = this.fight_a
+			let ap = this.melee_class[this.selected_melee].ap
 			if(this.checkSpecialRule("whirling dervish") === true && (this.moved === true || this.charged === true)){
 				ap += 4;
 			}
@@ -2588,12 +2557,12 @@ fight(opportunity=false){
 			
 			let roll = gameFunctions.getRandomInt(20);
 			options = {
-				damage: this.fight_damage,
+				damage: this.melee_class[this.selected_melee].damage,
 				ap: ap,
-				bonus: this.fighting_bonus,
+				bonus: this.unit_class.fighting_bonus,
 				// attacker: this,
 				random_roll: roll,
-				attacker_id: this.id,
+				attacker_id: this.core.id,
 				defender_id: target
 			}			
 			
@@ -2603,7 +2572,7 @@ fight(opportunity=false){
 				unit.wound(options);
 			}else{
 				//ONLY SEND THE WOUND MESSAGE IF THIS IS THE ATTACKING PLAYER
-				if(gameFunctions.params.player_number === this.player){
+				if(gameFunctions.params.player_number === this.core.player){
 					let data = {
 							functionGroup: "socketFunctions",  
 							function: "messageAll",
