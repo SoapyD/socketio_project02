@@ -66,14 +66,15 @@ const bullet = class {
 	checkHit(bullet, unit) {
 		
 		//run kill function on bullet
-		if(unit.parent.in_combat === false){
+		if(unit.parent.core.in_combat === false){
 
 			bullet.parent.kill();
 			// console.log(bullet.parent)			
 
 			//DEAL DAMAGE IF IT'S NOT A BLAST WEAPON
 			if(bullet.parent.blast_radius === 1){
-				if(bullet.parent.player !== unit.parent.player){
+
+				if(bullet.parent.player !== unit.parent.core.player){
 
 
 					let ap = bullet.parent.unit.gun_class[bullet.parent.unit.selected_gun].ap
@@ -93,12 +94,15 @@ const bullet = class {
 						attacker_id: bullet.parent.unit.core.id,
 						defender_id: unit.parent.core.id
 					}			
+
+					
+
 					
 					if(GameScene.online === false){
 						unit.parent.wound(options);
 					}else{
 						//ONLY SEND THE WOUND MESSAGE IF THIS IS THE ATTACKING PLAYER
-						if(gameFunctions.params.player_number === bullet.parent.unit.player){
+						if(gameFunctions.params.player_number === bullet.parent.unit.core.player){
 							let data = {
 								functionGroup: "socketFunctions",  
 								function: "messageAll",
@@ -170,7 +174,7 @@ const bullet = class {
 					}else{
 						//ONLY SEND THE WOUND MESSAGE IF THIS IS THE ATTACKING PLAYER
 						
-						if(gameFunctions.params.player_number === this.unit.player){
+						if(gameFunctions.params.player_number === this.unit.core.player){
 							let data = {
 								functionGroup: "socketFunctions",  
 								function: "messageAll",

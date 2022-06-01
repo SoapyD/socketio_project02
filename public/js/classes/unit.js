@@ -59,7 +59,7 @@ const unit = class {
 		this.is_moving = false;
 		this.cohesion_check = true;
 		this.targets = [];						
-		this.in_combat_with = [];
+		
 		this.fight_targets = [];
 
 		this.depth_sprite_flash = 6;		
@@ -78,8 +78,8 @@ const unit = class {
 		if(options.loaded){
 			//don't add offset
 		}else{
-			unit.core.x += gameFunctions.tile_size * this.unit_class.sprite_offset;
-			unit.core.y += gameFunctions.tile_size * this.unit_class.sprite_offset;			
+			this.core.x += gameFunctions.tile_size * this.unit_class.sprite_offset;
+			this.core.y += gameFunctions.tile_size * this.unit_class.sprite_offset;			
 		}		
 
 		//SPRITES
@@ -321,10 +321,10 @@ resetColours(){
 
 resetLocks() {
 	try{	
-		this.moved = false;
-		this.charged = false;
-		this.shot = false;
-		this.fought = false;		
+		this.core.moved = false;
+		this.core.charged = false;
+		this.core.shot = false;
+		this.core.fought = false;		
 
 
 		this.checkCombat()
@@ -543,11 +543,11 @@ regen(options){
 checkStatus(){
 
 	try{
-		if(this.poison === true){
+		if(this.core.poison === true){
 	
-			this.poison_timer--;
-			if(this.poison_timer === 0){
-				this.poison = false;
+			this.core.poison_timer--;
+			if(this.core.poison_timer === 0){
+				this.core.poison = false;
 			}
 	
 			this.drawTextParticle("poison")
@@ -555,7 +555,7 @@ checkStatus(){
 			let options = {
 				damage: 1,
 				random_roll: gameFunctions.getRandomInt(20),
-				attacker_id: this.poison_caused_by,
+				attacker_id: this.core.poison_caused_by,
 				defender_id: this.core.id,
 				hit_override: 16
 			}				
@@ -1065,7 +1065,7 @@ drawTarget(targets, blast_radius) {
 			this.path_graphic.lineStyle(8, 0x00cccc, 0.5);	
 			this.path_graphic.beginPath();
 			
-			
+			console.log(targets)
 			targets.forEach((target, i) => {
 				
 				let pos = {x:0,y:0};
@@ -1670,7 +1670,7 @@ usePath(process){
 
 					
 					//SKIP IF IN CHARGE MODE AND UNIT HAD ALREADY SHOT
-					if(this.shot === true && gameFunctions.mode === "charge"){
+					if(this.core.shot === true && gameFunctions.mode === "charge"){
 
 						//CANNOT SHOOT AND MOVE UNLESS UNIT HAS SWIFT SPECIAL ABILITY
 						if(this.checkSpecialRule("swift") === false){
@@ -1995,7 +1995,7 @@ endMove(endFunction) {
 			let old_status = this.core.in_combat
 			this.core.in_combat = this.checkCombat();
 			
-			if(this.in_combat === false && old_status === true){
+			if(this.core.in_combat === false && old_status === true){
 		
 				if(this.core.in_combat_with){
 					this.core.in_combat_with.forEach((unit) => {
@@ -2006,7 +2006,7 @@ endMove(endFunction) {
 						}
 					})
 					
-					this.in_combat_with = [];
+					this.core.in_combat_with = [];
 				}
 			}
 		}
@@ -2024,13 +2024,13 @@ endMove(endFunction) {
 		if(endFunction){
 			switch(endFunction){
 				case "move":
-					this.moved = true;
+					this.core.moved = true;
 					this.combat_check = this.checkCombat();
 					GameScene.sfx["end_path"].play();
 						
 					break;
 				case "charge":
-					this.charged = true;
+					this.core.charged = true;
 					this.combat_check = this.checkCombat();
 					GameScene.sfx["end_path"].play();
 						
@@ -2190,7 +2190,7 @@ findTarget (options) {
 		//ONLY ADD SHOT IF THE TARGETS ARRAY IS UNDER MAX SHOTS
 
 		let max_targets = this.gun_class[this.selected_gun].max_targets
-		if(this.checkSpecialRule("firing drills") === true && this.moved === false){
+		if(this.checkSpecialRule("firing drills") === true && this.core.moved === false){
 			max_targets = this.gun_class[this.selected_gun].max_targets * 2
 		}		
 
@@ -2258,7 +2258,7 @@ shoot() {
 				// }
 			})
 			if(this.targets.length > 0){
-				this.shot = true;
+				this.core.shot = true;
 
 				if(this.checkSpecialRule("swift") === false){
 					this.sprite_action.setFrame(2)
@@ -2412,14 +2412,14 @@ findFightTarget (options) {
 		})
 		
 		let max_targets = this.melee_class[this.selected_melee].max_targets;
-		if(this.checkSpecialRule("berserker") === true && (this.moved === true || this.charged === true)){
+		if(this.checkSpecialRule("berserker") === true && (this.core.moved === true || this.core.charged === true)){
 			max_targets = this.melee_class[this.selected_melee].max_targets * 2;
 		}
 
 		//ONLY ADD SHOT IF THE TARGETS ARRAY IS UNDER MAX SHOTS
 		if(found_unit && skip === false && this.fight_targets.length < max_targets){
 
-			this.fight_targets.push(found_unit.id);
+			this.fight_targets.push(found_unit.core.id);
 			this.drawTarget(this.fight_targets, 0);
 			GameScene.sfx['action'].play();
 			
@@ -2481,10 +2481,10 @@ checkCombat() {
 
 				if(clash === true){				
 
-					const found = this.in_combat_with.some(el => el.core.id === unit.core.id);
+					const found = this.core.in_combat_with.some(el => el.core.id === unit.core.id);
 					// if (!found) arr.push({ id, username: name });
 					if(found === false){
-						this.in_combat_with.push(unit)						
+						this.core.in_combat_with.push(unit)						
 					}
 
 					in_combat_range = true;
@@ -2550,7 +2550,7 @@ fight(opportunity=false){
 
 
 			let ap = this.melee_class[this.selected_melee].ap
-			if(this.checkSpecialRule("whirling dervish") === true && (this.moved === true || this.charged === true)){
+			if(this.checkSpecialRule("whirling dervish") === true && (this.core.moved === true || this.core.charged === true)){
 				ap += 4;
 			}
 
@@ -2598,7 +2598,7 @@ fight(opportunity=false){
 		})
 		
 		if(this.fight_targets.length > 0){
-			this.fought = true;
+			this.core.fought = true;
 		}		
 		this.fight_targets = [];
 	}catch(e){

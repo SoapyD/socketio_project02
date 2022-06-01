@@ -481,6 +481,7 @@ connFunctions.checkReadyUp = (check_side_only=true) => {
 
 connFunctions.saveGame = (mode) => {
 	
+	/*
 	let data = {
 		functionGroup: "socketFunctions",  
 		function: "updateRoom", //saveGame
@@ -494,6 +495,7 @@ connFunctions.saveGame = (mode) => {
 		mode_state: gameFunctions.mode_state
 		// units: gameFunctions.units
 	}
+	
 
 	data.units = [];
 	gameFunctions.units.forEach((unit) => {
@@ -524,6 +526,7 @@ connFunctions.saveGame = (mode) => {
 	if(gameFunctions.params.player_side === gameFunctions.current_side){
 		connFunctions.messageServer(data)	
 	}
+	*/
 }
 
 

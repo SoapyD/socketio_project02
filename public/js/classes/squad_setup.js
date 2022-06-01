@@ -168,6 +168,7 @@ const squad_setup = class {
 
 				killed_by: -1,
 				in_combat: false,
+				in_combat_with: [],
 				
 				//NEED TO BE ADDED
 				poison: false,

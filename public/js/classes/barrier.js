@@ -121,14 +121,14 @@ const barrier = class {
             }
 
             if(obj.type === 'unit'){
-                if(this.checkEffects("poison") === true && obj.poison_timer < 2){
+                if(this.checkEffects("poison") === true && obj.core.poison_timer < 2){
 
-                    if(obj.poison === false){
+                    if(obj.core.poison === false){
                         obj.drawTextParticle("poisoned!")
                     }
-                    obj.poison = true;
-                    obj.poison_timer = 2;
-                    obj.poison_caused_by = this.unit.core.id;
+                    obj.core.poison = true;
+                    obj.core.poison_timer = 2;
+                    obj.core.poison_caused_by = this.unit.core.id;
                     GameScene.sfx['poison'].play();
                 }
             }

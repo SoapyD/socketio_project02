@@ -210,7 +210,7 @@ GameUIScene.runSelectMode = (options) => {
 								break;
 								case "charge":
 
-									if (unit.shot === true && unit.checkSpecialRule("swift") === false){
+									if (unit.core.shot === true && unit.checkSpecialRule("swift") === false){
 										unit.drawFlash(false, true)
 									}
 								break;	
@@ -1549,7 +1549,7 @@ GameUIScene.setUnitHUD = (unit) => {
 			element.setText("f_special",unit.special_rules)
 	
 			let status = ''
-			if(unit.poison){
+			if(unit.core.poison){
 				status += 'poisoned'
 			}
 	
