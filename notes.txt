@@ -1,5 +1,5 @@
 
--Need to set the shot symbol on a unit when it's reloaded
+-DONE -Need to set the shot symbol on a unit when it's reloaded
 -need to see if "single_upgrade" on squad setup needs to be saved and passed back
 
 /////////////////////////////////////////////////////////////////////////////////////

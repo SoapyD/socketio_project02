@@ -34,7 +34,7 @@ socket.on('connect', function () {
 
 
 const connFunctions = [];
-let availableFunctions = {}
+connFunctions.availableFunctions = {}
 
 
 connFunctions.messageServer = (data) => {	
@@ -207,7 +207,7 @@ connFunctions.checkMessages = (socket) => {
 		// }
 		
 		if(data.functionGroup && data.function){
-        	availableFunctions[data.functionGroup][data.function](data);  			
+        	connFunctions.availableFunctions[data.functionGroup][data.function](data);  			
 		}
 
     })
@@ -435,7 +435,7 @@ connFunctions.readyUp = (data) => {
 		}
 
 		if(data.parameters.options.completion_function_group){
-			availableFunctions[data.parameters.options.completion_function_group][data.parameters.options.completion_function](); 
+			connFunctions.availableFunctions[data.parameters.options.completion_function_group][data.parameters.options.completion_function](); 
 		}
 	}
 }
@@ -497,27 +497,7 @@ connFunctions.saveGame = (mode) => {
 
 		data.units = [];
 		gameFunctions.units.forEach((unit) => {
-			// let unit_data = {
-				// id: unit.id
-				// ,side: unit.side
-				// ,player: unit.player
-				// ,squad: unit.squad		
-				
-				// ,health: unit.health
-				// ,alive: unit.alive
-				// ,killed_by: unit.killed_by
-				// ,in_combat: unit.in_combat
-				
-				// ,x: unit.sprite.x
-				// ,y: unit.sprite.y
-				// ,rotation: unit.sprite.angle	
 
-				// ,upgrade_id: unit.upgrade_id
-				// ,unit_name: unit.unit_name
-				// ,shoot_name: unit.shoot_name
-				// ,fight_name: unit.fight_name
-				// ,armour_name: unit.armour_name	
-			// }
 			unit.core.x = unit.sprite.x
 			unit.core.y = unit.sprite.y		
 			unit.core.x -= gameFunctions.tile_size * unit.unit_class.sprite_offset;
@@ -607,12 +587,14 @@ connFunctions.test = (data) => {
 
 
 
-
-availableFunctions = {
-    connFunctions: connFunctions,
-	GameScene: GameScene,
-	ArmySetupUIScene: ArmySetupUIScene,
-	GameUIScene: GameUIScene,
+connFunctions.setAvailableFunctions = () => {
+	connFunctions.availableFunctions = {
+		connFunctions: connFunctions,
+		GameScene: GameScene,
+		ArmySetupUIScene: ArmySetupUIScene,
+		GameUIScene: GameUIScene,
+		modeHandler: modeHandler,
+	}
 }
 
 connFunctions.checkMessages(socket)

@@ -498,7 +498,7 @@ const game_setup = class {
 				// ██      ██      ██         ██          ██      ██      ██ ██      ██  ██  
 				// ███████ ███████ ██         ██           ██████ ███████ ██  ██████ ██   ██ 
 
-				if(this.scene_container.left_click === true){ // && GameUIScene.mode_check_state === 0){
+				if(this.scene_container.left_click === true){
 
 					switch(gameFunctions.mode) {
 						case "move":
@@ -612,7 +612,7 @@ const game_setup = class {
 				// ██   ██ ██ ██    ██ ██   ██    ██          ██      ██      ██ ██      ██  ██  
 				// ██   ██ ██  ██████  ██   ██    ██           ██████ ███████ ██  ██████ ██   ██ 			
 				
-				if(this.scene_container.right_click === true) { // && GameUIScene.mode_check_state === 0){
+				if(this.scene_container.right_click === true) {
 					
 					this.scene_container.sfx['clear'].play();
 					switch(gameFunctions.mode) {
@@ -811,6 +811,39 @@ const game_setup = class {
 			GameUIScene.hideChanceHUD();
 			this.scene_container.hovered_unit_id = -1;
 		}
+	}
+
+// ███████ ██    ██ ███    ██  ██████ ████████ ██  ██████  ███    ██ ███████ 
+// ██      ██    ██ ████   ██ ██         ██    ██ ██    ██ ████   ██ ██      
+// █████   ██    ██ ██ ██  ██ ██         ██    ██ ██    ██ ██ ██  ██ ███████ 
+// ██      ██    ██ ██  ██ ██ ██         ██    ██ ██    ██ ██  ██ ██      ██ 
+// ██       ██████  ██   ████  ██████    ██    ██  ██████  ██   ████ ███████ 
+
+	checkAllCombat = () => {
+		try{	
+			// RESET ALL COMBAT STATUS'
+			gameFunctions.units.forEach((unit) => {
+				unit.core.in_combat = false;
+				if(unit.sprite.body){
+					unit.sprite.body.enable = true; //
+				}
+				// unit.sprite_action.visible = false;
+				unit.drawSymbol();
+			})
+	
+			//RERUN COMBAT CHECKS
+			gameFunctions.units.forEach((unit) => {
+				unit.checkCombat()
+			})
+		}catch(e){
+	
+			let options = {
+				"class": "GameSetup",
+				"function": "checkAllCombat",
+				"e": e
+			}
+			errorHandler.log(options)
+		}			
 	}
 
 }

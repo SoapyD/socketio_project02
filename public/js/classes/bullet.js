@@ -217,7 +217,7 @@ const bullet = class {
 		GameScene.active_actions--;
 
 		if(GameScene.active_actions === 0){
-			GameUIScene.readyAdvanceMode();
+			modeHandler.readyAdvanceMode();
 		}		
 		// if(this.delete === true){
 		// 	console.log("BULLET ALREADY DEAD!")

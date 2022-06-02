@@ -17,7 +17,7 @@ var GameScene = new Phaser.Class({
 		GameScene.scene = this.scene.get('GameScene')
 		gameFunctions.current_scene = this.scene.get('GameScene');
 
-		GameScene.loading_screen = new loading_screen({scene: GameScene.scene, launch_uiscene: "ArmySetupUIScene"}) //GameUIScene
+		GameScene.loading_screen = new loading_screen({scene: GameScene.scene, launch_uiscene: "ArmySetupUIScene"}) 
 		GameScene.game_setup = new game_setup({scene: GameScene.scene, scene_container: GameScene})
 
 		// let max_sides = 6;

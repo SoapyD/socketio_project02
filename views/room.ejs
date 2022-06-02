@@ -103,6 +103,8 @@
 <script src="/js/classes/collisions.js"></script>
 <script src="/js/classes/debug_console.js"></script>
 
+<script src="/js/classes/mode_handler.js"></script>
+
 <script src="/js/classes/unit.js"></script>
 <script src="/js/classes/bullet.js"></script>
 <script src="/js/classes/barrier.js"></script>
@@ -121,17 +123,21 @@
 
 
 <script src="/js/seeder.js"></script>
-<script src="/js/connFunctions.js"></script>
+
 
 
 <script src="/js/main.js"></script>
 <script src="/js/functions.js"></script>
+<script src="/js/connFunctions.js"></script>
+
 
 <script>
 
-<% if(typeof room !== 'undefined') { %>
+const errorHandler = new error_handler({});
+const modeHandler = new mode_handler();	
+connFunctions.setAvailableFunctions()
 
-        const errorHandler = new error_handler({});	
+<% if(typeof room !== 'undefined') { %>
 
         let room_data = <%- JSON.stringify(room) %>
         let army_data = <%- JSON.stringify(armies) %>  

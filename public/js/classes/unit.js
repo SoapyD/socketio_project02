@@ -127,6 +127,7 @@ const unit = class {
 		this.updateElements(this.sprite);
 	
 		this.selectHander = this.selectHander.bind(this);
+		this.drawSymbol();
 	}
 
 
@@ -288,7 +289,8 @@ resetLocks() {
 
 		this.checkCombat()
 		if(this.core.in_combat === false){
-			this.sprite_action.visible = false;
+			// this.sprite_action.visible = false;
+			this.drawSymbol();
 			this.sprite.body.enable = true;
 		}		
 	}catch(e){
@@ -657,7 +659,7 @@ kill(){
 		})
 		this.delete = true;
 
-		GameUIScene.checkGameEnd();
+		modeHandler.checkGameEnd();
 	}catch(e){
 
 		let options = {
@@ -1024,7 +1026,6 @@ drawTarget(targets, blast_radius) {
 			this.path_graphic.lineStyle(8, 0x00cccc, 0.5);	
 			this.path_graphic.beginPath();
 			
-			console.log(targets)
 			targets.forEach((target, i) => {
 				
 				let pos = {x:0,y:0};
@@ -1092,6 +1093,32 @@ drawFightRadius(){
 		errorHandler.log(options)
 	}		
 }	
+
+drawSymbol(){
+
+	let draw_symbol = -1;
+	let shot_symbol = 2;
+	let fight_symbol = 0;
+
+	if(this.core.shot === true){
+
+		if(this.checkSpecialRule("swift") === false){
+			draw_symbol = shot_symbol
+		}
+	}
+
+	if(this.core.in_combat === true){
+		draw_symbol = fight_symbol		
+	}
+
+	if(draw_symbol !== -1){
+		this.sprite_action.setFrame(draw_symbol)
+		this.sprite_action.visible = true
+	}else{
+		this.sprite_action.visible = false
+	}
+
+}
 
 
 	// ██████  ██████   █████  ██     ██       ██      ██ ██    ██ ███████       ████████ ██ ██      ███████ ███████ 
@@ -1869,26 +1896,7 @@ move(endFunction="move") {
 						//WHEN THE END OF THE PATH IS REACHED
 						try{
 							if(this.sprite.x / gameFunctions.tile_size === end_path.x && this.sprite.y / gameFunctions.tile_size === end_path.y){
-								// this.path_graphic.clear()
-								// this.path = [];
-								// this.is_moving = false;
 
-								// GameScene.active_actions--;
-								// if(GameScene.active_actions === 0){
-								// 	GameUIScene.readyAdvanceMode();
-								// }
-								
-								// if(endFunction){
-								// 	switch(endFunction){
-								// 		case "move":
-								// 			this.moved = true;
-								// 			this.combat_check = this.checkCombat();
-								// 			GameScene.sfx["end_path"].play();
-												
-								// 			break;
-								// 		default:
-								// 	}
-								// }
 								this.endMove(endFunction);							
 							}
 						}
@@ -1969,7 +1977,7 @@ endMove(endFunction) {
 	
 		GameScene.active_actions--;
 		if(GameScene.active_actions === 0){
-			GameUIScene.readyAdvanceMode();
+			modeHandler.readyAdvanceMode();
 		}
 		
 		if(endFunction){
@@ -2211,10 +2219,7 @@ shoot() {
 			if(this.targets.length > 0){
 				this.core.shot = true;
 
-				if(this.checkSpecialRule("swift") === false){
-					this.sprite_action.setFrame(2)
-					this.sprite_action.visible = true
-				}
+				this.drawSymbol()
 			}
 			
 			this.targets = [];
@@ -2452,8 +2457,10 @@ checkCombat() {
 							unit.sprite.body.enable = false;						
 						}
 
-						this.sprite_action.visible = true
-						unit.sprite_action.visible = true
+						// this.sprite_action.visible = true
+						this.drawSymbol();
+						// unit.sprite_action.visible = true
+						unit.drawSymbol();
 					// }
 				}
 			}
@@ -2541,7 +2548,7 @@ fight(opportunity=false){
 			if(opportunity === false){
 				GameScene.active_actions--;	
 				if(GameScene.active_actions === 0){
-					GameUIScene.readyAdvanceMode();		
+					modeHandler.readyAdvanceMode();		
 				}
 			}
 
