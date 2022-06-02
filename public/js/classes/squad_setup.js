@@ -29,10 +29,6 @@ const squad_setup = class {
 				})  
 
 				for(let i=0;i<squad_data.size; i++){
-					let single_upgrade;
-					if(single_upgrades.length > i){
-						single_upgrade = single_upgrades[i];
-					}
 
 					let core = {
 						id: gameFunctions.units.length,
@@ -45,8 +41,6 @@ const squad_setup = class {
 						y: -2 * this.tile_size,
 						
 						alive: false,
-						// cost: cost,
-						// health: unit_class.health,
 		
 						killed_by: -1,
 						in_combat: false,
@@ -60,6 +54,13 @@ const squad_setup = class {
 						charged: false,		
 						shot: false,
 						fought: false,
+					}
+
+
+					let single_upgrade;
+					if(single_upgrades.length > i){
+						single_upgrade = single_upgrades[i];
+						core.upgrade_id = i
 					}
 
 
@@ -86,11 +87,11 @@ const squad_setup = class {
 			//CHECK TO SEE IF ANY OF THE UPPGRADES NEED TO GET APPLIED TO ALL UNITS IN THE SQUAD
 			let universal_upgrades = [];
 			let single_upgrades = [];
-			squad_data.upgrades.forEach((upgrade) => {
-				if(upgrade.upgrades_all_in_squad === false){
-					single_upgrades.push(upgrade);
+			squad_data.upgrades.forEach((item) => {
+				if(item.upgrade.upgrades_all_in_squad === false){
+					single_upgrades.push(item.upgrade);
 				}else{
-					universal_upgrades.push(upgrade);
+					universal_upgrades.push(item.upgrade);
 				}
 			})  
 

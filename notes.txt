@@ -1,6 +1,11 @@
 
 -DONE -Need to set the shot symbol on a unit when it's reloaded
+-DONE -coherancy is broken at the moment
+
 -need to see if "single_upgrade" on squad setup needs to be saved and passed back
+-reloading units isn't correctly reloading single upgrades
+-template weapons don't cause any damage
+-need to test out barriers effect on bullets and poisoning
 
 /////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////

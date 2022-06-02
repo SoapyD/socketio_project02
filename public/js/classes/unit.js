@@ -1717,8 +1717,15 @@ usePath(process){
 	}		
 }
 
+//  #####  ####### #     # #######  #####  ### ####### #     #        #####  #     # #######  #####  #    # 
+// #     # #     # #     # #       #     #  #  #     # ##    #       #     # #     # #       #     # #   #  
+// #       #     # #     # #       #        #  #     # # #   #       #       #     # #       #       #  #   
+// #       #     # ####### #####    #####   #  #     # #  #  # ##### #       ####### #####   #       ###    
+// #       #     # #     # #             #  #  #     # #   # #       #       #     # #       #       #  #   
+// #     # #     # #     # #       #     #  #  #     # #    ##       #     # #     # #       #     # #   #  
+//  #####  ####### #     # #######  #####  ### ####### #     #        #####  #     # #######  #####  #    # 
 
-cohesionCheck2() {
+cohesionCheckSquad() {
 	try{	
 		//GET THE UNITS IN THE SQUAD
 		let open = [];
@@ -1743,7 +1750,7 @@ cohesionCheck2() {
 				closed.forEach((closed_unit) => {
 					if(this.sprite_ghost){
 						let distance = gameFunctions.twoPointDistance(open_unit.sprite_ghost, closed_unit.sprite_ghost);
-						if(distance <= open_unit.cohesion){
+						if(distance <= open_unit.unit_class.cohesion){
 							add_closed = true;
 						}
 					}
@@ -1778,7 +1785,7 @@ cohesionCheck2() {
 
 		let options = {
 			"class": "unit",
-			"function": "cohesionCheck2",
+			"function": "cohesionCheckSquad",
 			"e": e
 		}
 		errorHandler.log(options)
@@ -1792,7 +1799,7 @@ cohesionCheck() {
 			if(unit.core.alive === true && unit.core.player === this.core.player && unit.core.squad === this.core.squad)
 			{		
 		
-				unit.cohesion_check = unit.cohesionCheck2();
+				unit.cohesion_check = unit.cohesionCheckSquad();
 
 				let colours = {
 					line_colour: 0x00cccc,

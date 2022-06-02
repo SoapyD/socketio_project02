@@ -148,13 +148,13 @@ const bullet = class {
 				let val = Math.pow(this.sprite.x - unit.sprite.x, 2) + Math.pow(this.sprite.y - unit.sprite.y, 2)
 				let dist = Math.round(Math.sqrt(val),0)
 				// console.log("WOUNDING2",dist)
-				if(unit.in_combat === false && dist <= (this.blast_radius / 2) * gameFunctions.tile_size){
+				if(unit.core.in_combat === false && dist <= (this.blast_radius / 2) * gameFunctions.tile_size){
 					
-					let ap = bullet.parent.unit.gun_class[bullet.parent.unit.selected_gun].ap
-					if(bullet.parent.blunt === true){
+					let ap = this.unit.gun_class[this.unit.selected_gun].ap
+					if(this.blunt === true){
 						ap -= 4;
 					}
-					if(bullet.parent.unit.checkSpecialRule("sniper") === true){
+					if(this.unit.checkSpecialRule("sniper") === true){
 						ap += 4;
 					}					
 

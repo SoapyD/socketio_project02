@@ -396,7 +396,7 @@ ArmySetupUIScene.moveUnit = (options) => {
         current_unit.sprite_ghost.y = options.y;
         current_unit.updateElements(current_unit.sprite_ghost)
         
-        if(current_unit.cohesion > 0){
+        if(current_unit.unit_class.cohesion > 0){
             current_unit.cohesionCheck();
         }       
     } 

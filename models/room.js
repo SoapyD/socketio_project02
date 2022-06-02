@@ -67,6 +67,7 @@ const roomSchema = new mongoose.Schema({
 		,side: Number
 		,player: Number
 		,squad: Number	
+		,upgrade_id: Number
 
 		,x: {type: Number, default: 0}
 		,y: {type: Number, default: 0}
