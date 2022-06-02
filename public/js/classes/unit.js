@@ -1522,6 +1522,14 @@ checkAngle(start_pos, end_pos) {
 // #     # #     #   # #   #       
 // #     # #######    #    ####### 	
 
+//  #####  ####### #     # ####### ######     #    ####### #######       ######     #    ####### #     # 
+// #     # #       ##    # #       #     #   # #      #    #             #     #   # #      #    #     # 
+// #       #       # #   # #       #     #  #   #     #    #             #     #  #   #     #    #     # 
+// #  #### #####   #  #  # #####   ######  #     #    #    #####   ##### ######  #     #    #    ####### 
+// #     # #       #   # # #       #   #   #######    #    #             #       #######    #    #     # 
+// #     # #       #    ## #       #    #  #     #    #    #             #       #     #    #    #     # 
+//  #####  ####### #     # ####### #     # #     #    #    #######       #       #     #    #    #     # 
+
 generatePath(options, callback, fail_callback) {
 	try{	
 		let scene = this.scene;
@@ -1855,6 +1863,14 @@ cohesionCheck() {
 }
 
 
+// #     # ####### #     # ####### 
+// ##   ## #     # #     # #       
+// # # # # #     # #     # #       
+// #  #  # #     # #     # #####   
+// #     # #     #  #   #  #       
+// #     # #     #   # #   #       
+// #     # #######    #    ####### 	
+
 move(endFunction="move") {
 
 	try{	
@@ -1951,6 +1967,14 @@ move(endFunction="move") {
 	}		
 }
 
+// ####### #     # ######        #     # ####### #     # ####### 
+// #       ##    # #     #       ##   ## #     # #     # #       
+// #       # #   # #     #       # # # # #     # #     # #       
+// #####   #  #  # #     # ##### #  #  # #     # #     # #####   
+// #       #   # # #     #       #     # #     #  #   #  #       
+// #       #    ## #     #       #     # #     #   # #   #       
+// ####### #     # ######        #     # #######    #    ####### 
+
 endMove(endFunction) {
 
 	try{
@@ -2024,7 +2048,15 @@ endMove(endFunction) {
 //       # #     # #     # #     #    #    
 // #     # #     # #     # #     #    #    
 //  #####  #     # ####### #######    #   	
-	
+
+// ####### ### #     # ######        #######    #    ######   #####  ####### #######  #####  
+// #        #  ##    # #     #          #      # #   #     # #     # #          #    #     # 
+// #        #  # #   # #     #          #     #   #  #     # #       #          #    #       
+// #####    #  #  #  # #     # #####    #    #     # ######  #  #### #####      #     #####  
+// #        #  #   # # #     #          #    ####### #   #   #     # #          #          # 
+// #        #  #    ## #     #          #    #     # #    #  #     # #          #    #     # 
+// #       ### #     # ######           #    #     # #     #  #####  #######    #     #####
+
 findTarget (options) {
 	
 	try{	
@@ -2122,7 +2154,7 @@ findTarget (options) {
 	
 			}		
 
-
+			//IF THE BULLET HASN'T HIT A IMPASSABLE TILE OR UNIT, DON'T SAVE THE BULLET PATH
 			if(add_dest === true){
 				//RETURN THE GRID CELL POSITION SO WE CAN CHECK IT'S EMPTY
 				dest.x = cell.x
@@ -2180,6 +2212,13 @@ findTarget (options) {
 	}		
 }
 	
+//  #####  #     # ####### ####### ####### 
+// #     # #     # #     # #     #    #    
+// #       #     # #     # #     #    #    
+//  #####  ####### #     # #     #    #    
+//       # #     # #     # #     #    #    
+// #     # #     # #     # #     #    #    
+//  #####  #     # ####### #######    #   
 	
 shoot() {
 	try{		
@@ -2188,40 +2227,29 @@ shoot() {
 			this.targets.forEach( async(target, i) => {
 
 				let angle = Phaser.Math.Angle.BetweenPoints(this.sprite, target);
-				// if(angle > -1){				
 
-					// GameScene.active_actions++;
-
-					await this.delay(2000 * i)
+				await this.delay(2000 * i)
+			
+				this.sprite.angle = Phaser.Math.RadToDeg(angle);
 				
-					this.sprite.angle = Phaser.Math.RadToDeg(angle);
-					
-					if(this.sprite_ghost){
-						this.sprite_ghost.angle = this.sprite.angle;
-					}
-					if(this.flash_graphic){
-						this.flash_graphic.angle = this.sprite.angle;
-					}					
-					
-					let options = {
-						scene: GameScene.scene,
-						spritesheet: "bullet",
-						angle: angle,
-						unit: this,
-						target: target
-					}
+				if(this.sprite_ghost){
+					this.sprite_ghost.angle = this.sprite.angle;
+				}
+				if(this.flash_graphic){
+					this.flash_graphic.angle = this.sprite.angle;
+				}					
+				
+				let options = {
+					scene: GameScene.scene,
+					spritesheet: "bullet",
+					angle: angle,
+					unit: this,
+					target: target
+				}
 
-					GameScene.bullets.push(new bullet(options))
-					//BULLET DEATH KILLS THE GRAPHIC
-				// }
-				// else
-				// {
-				// 	console.log("--------------------------")					
-				// 	console.log("Shooting angle is Zero")
-				// 	console.log(this.sprite)
-				// 	console.log(target)
-				// 	console.log("--------------------------")
-				// }
+				GameScene.bullets.push(new bullet(options))
+				//BULLET DEATH KILLS THE GRAPHIC
+
 			})
 			if(this.targets.length > 0){
 				this.core.shot = true;
@@ -2251,6 +2279,14 @@ shoot() {
 // #        #  #     # #     #    #    
 // #       ###  #####  #     #    #    		
 	
+//  #####  #     # #######  #####  #    #        #####  #       ###  #####  #    # 
+// #     # #     # #       #     # #   #        #     # #        #  #     # #   #  
+// #       #     # #       #       #  #         #       #        #  #       #  #   
+// #       ####### #####   #       ###    ##### #       #        #  #       ###    
+// #       #     # #       #       #  #         #       #        #  #       #  #   
+// #     # #     # #       #     # #   #        #     # #        #  #     # #   #  
+//  #####  #     # #######  #####  #    #        #####  ####### ###  #####  #    # 
+
 checkClickPosition (pointer) {
 
 	try{	
@@ -2310,6 +2346,13 @@ checkClickPosition (pointer) {
 	}
 }
 
+// ####### ###  #####  #     # #######       #######    #    ######   #####  ####### #######  #####  
+// #        #  #     # #     #    #             #      # #   #     # #     # #          #    #     # 
+// #        #  #       #     #    #             #     #   #  #     # #       #          #    #       
+// #####    #  #  #### #######    #    #####    #    #     # ######  #  #### #####      #     #####  
+// #        #  #     # #     #    #             #    ####### #   #   #     # #          #          # 
+// #        #  #     # #     #    #             #    #     # #    #  #     # #          #    #     # 
+// #       ###  #####  #     #    #             #    #     # #     #  #####  #######    #     #####  
 	
 findFightTarget (options) {
 
@@ -2400,6 +2443,13 @@ findFightTarget (options) {
 		
 }	
 
+//  #####  #     # #######  #####  #    #        #####  ####### #     # ######     #    ####### 
+// #     # #     # #       #     # #   #        #     # #     # ##   ## #     #   # #      #    
+// #       #     # #       #       #  #         #       #     # # # # # #     #  #   #     #    
+// #       ####### #####   #       ###    ##### #       #     # #  #  # ######  #     #    #    
+// #       #     # #       #       #  #         #       #     # #     # #     # #######    #    
+// #     # #     # #       #     # #   #        #     # #     # #     # #     # #     #    #    
+//  #####  #     # #######  #####  #    #        #####  ####### #     # ######  #     #    #   
 	
 checkCombat() {
 	try{		
@@ -2484,8 +2534,15 @@ checkCombat() {
 		errorHandler.log(options)
 	}
 }
-	/**/	
+
 	
+// ####### ###  #####  #     # ####### 
+// #        #  #     # #     #    #    
+// #        #  #       #     #    #    
+// #####    #  #  #### #######    #    
+// #        #  #     # #     #    #    
+// #        #  #     # #     #    #    
+// #       ###  #####  #     #    #    			
 	
 fight(opportunity=false){
 

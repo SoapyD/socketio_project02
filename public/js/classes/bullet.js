@@ -124,9 +124,9 @@ const bullet = class {
 
 		// if(this.player === 0){
 
-			if(this.unit.gun_class.barrier){
+			if(this.unit.gun_class[this.unit.selected_gun].barrier){
 
-				let barrier_info = this.unit.gun_class.barrier;
+				let barrier_info = this.unit.gun_class[this.unit.selected_gun].barrier;
 
 				new barrier({
 					scene: this.scene,

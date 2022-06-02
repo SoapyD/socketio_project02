@@ -1189,7 +1189,11 @@ exports.createSpecialRules = async() => {
             { //done
                 name: "regen",
                 description:"20% chance of the unit regenerating any lost wounds suffered",
-            },                          
+            },  
+            { //done
+                name: "barrage",
+                description:"you may fire a shot with a weapon indirectly",
+            },                                      
             
         ]
     }

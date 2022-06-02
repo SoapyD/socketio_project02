@@ -189,6 +189,14 @@ GameUIScene.setupHUD = () => {
 		});
 
 
+		// #     # #     # ### #######       #     # #     # ######  
+		// #     # ##    #  #     #          #     # #     # #     # 
+		// #     # # #   #  #     #          #     # #     # #     # 
+		// #     # #  #  #  #     #    ##### ####### #     # #     # 
+		// #     # #   # #  #     #          #     # #     # #     # 
+		// #     # #    ##  #     #          #     # #     # #     # 
+		//  #####  #     # ###    #          #     #  #####  ######  
+
 		//
 		GameUIScene.hud_unit = new hud({
 			scene: GameUIScene.scene,
@@ -350,6 +358,14 @@ GameUIScene.setupHUD = () => {
 
 		GameUIScene.hud_unit.setVisible(false);
 
+		//  #####  ######  #######  #####  ###    #    #             #     # #     # ######  
+		// #     # #     # #       #     #  #    # #   #             #     # #     # #     # 
+		// #       #     # #       #        #   #   #  #             #     # #     # #     # 
+		//  #####  ######  #####   #        #  #     # #       ##### ####### #     # #     # 
+		// 	     # #       #       #        #  ####### #             #     # #     # #     # 
+		// #     # #       #       #     #  #  #     # #             #     # #     # #     # 
+		//  #####  #       #######  #####  ### #     # #######       #     #  #####  ######  
+
 
 		//SETUP HUD ITEM THAT DISPLAYS THE CURRENT TURN NUMBER
 		GameUIScene.hud_special = new hud({
@@ -386,6 +402,13 @@ GameUIScene.setupHUD = () => {
 			]
 		});
 
+		//  #####  #     #    #    #     #  #####  #######       #     # #     # ######  
+		// #     # #     #   # #   ##    # #     # #             #     # #     # #     # 
+		// #       #     #  #   #  # #   # #       #             #     # #     # #     # 
+		// #       ####### #     # #  #  # #       #####   ##### ####### #     # #     # 
+		// #       #     # ####### #   # # #       #             #     # #     # #     # 
+		// #     # #     # #     # #    ## #     # #             #     # #     # #     # 
+		//  #####  #     # #     # #     #  #####  #######       #     #  #####  ######  
 
 		//SETUP HUD ITEM THAT DISPLAYS THE CURRENT TURN NUMBER
 		GameUIScene.hud_chance = new hud({
@@ -423,9 +446,14 @@ GameUIScene.setupHUD = () => {
 			]
 		});
 
-		// GameUIScene.hideChanceHUD(false);
 
-
+		// ####### ####### ######   #####  #######       #     # #     # ######  
+		// #       #     # #     # #     # #             #     # #     # #     # 
+		// #       #     # #     # #       #             #     # #     # #     # 
+		// #####   #     # ######  #       #####   ##### ####### #     # #     # 
+		// #       #     # #   #   #       #             #     # #     # #     # 
+		// #       #     # #    #  #     # #             #     # #     # #     # 
+		// #       ####### #     #  #####  #######       #     #  #####  ######  
 
 		//SETUP A HUD ITEM FOR EACH FORCE AVAILABLE
 		if(gameFunctions.params.forces){
@@ -462,6 +490,7 @@ GameUIScene.setupHUD = () => {
 						]
 					})
 
+				//THIS ONE CONTAINS THE POINTS EARNED
 				GameUIScene.forces_hud[i]["body"] =
 					new hud({
 						scene: GameUIScene.scene,
@@ -506,7 +535,7 @@ GameUIScene.setupHUD = () => {
 							alpha: 1
 						},
 						text: [
-							{id: i,label: '', x: 1, y: 1, height: 2, width: 2, align: "center", font: {height: 12}},
+							{id: i,label: 'unready', x: 1, y: 1, height: 2, width: 2, align: "center", font: {height: 12}},
 						]
 					})					
 		
@@ -527,6 +556,13 @@ GameUIScene.setupHUD = () => {
 	}		
 }
 
+//  #####  ####### #######       #     # #     # ### #######       #     # #     # ######  
+// #     # #          #          #     # ##    #  #     #          #     # #     # #     # 
+// #       #          #          #     # # #   #  #     #          #     # #     # #     # 
+//  #####  #####      #    ##### #     # #  #  #  #     #    ##### ####### #     # #     # 
+//       # #          #          #     # #   # #  #     #          #     # #     # #     # 
+// #     # #          #          #     # #    ##  #     #          #     # #     # #     # 
+//  #####  #######    #           #####  #     # ###    #          #     #  #####  ###### 
 
 GameUIScene.setUnitHUD = (unit) => {
 	try{	
@@ -540,7 +576,7 @@ GameUIScene.setUnitHUD = (unit) => {
 		element.setText("f_fb",unit.unit_class.fighting_bonus)
 		element.setText("f_a",unit.armour)
 
-		element.setText("r2_h",unit.melee_class[unit.selected_melee].name)
+		element.setText("r2_h",unit.gun_class[unit.selected_gun].name)
 		element.setText("f_gun_d",unit.gun_class[unit.selected_gun].damage)
 		element.setText("f_gun_ap",unit.gun_class[unit.selected_gun].ap)
 		element.setText("f_gun_r",unit.gun_class[unit.selected_gun].max_targets+'x'+unit.gun_class[unit.selected_gun].range)
@@ -593,6 +629,13 @@ GameUIScene.hideUnitHUD = () => {
 	}		
 }
 
+//  #####  ####### #######        #####  #     #    #    #     #  #####  ####### 
+// #     # #          #          #     # #     #   # #   ##    # #     # #       
+// #       #          #          #       #     #  #   #  # #   # #       #       
+//  #####  #####      #    ##### #       ####### #     # #  #  # #       #####   
+//       # #          #          #       #     # ####### #   # # #       #       
+// #     # #          #          #     # #     # #     # #    ## #     # #       
+//  #####  #######    #           #####  #     # #     # #     #  #####  ####### 
 
 GameUIScene.setChanceHUD = (selected_unit, target_unit) => {
 	try{	
@@ -638,6 +681,14 @@ GameUIScene.hideChanceHUD = () => {
 	}		
 }
 
+// ####### ####### ######   #####  #######       #     # #     # ######  
+// #       #     # #     # #     # #             #     # #     # #     # 
+// #       #     # #     # #       #             #     # #     # #     # 
+// #####   #     # ######  #       #####   ##### ####### #     # #     # 
+// #       #     # #   #   #       #             #     # #     # #     # 
+// #       #     # #    #  #     # #             #     # #     # #     # 
+// #       ####### #     #  #####  #######       #     #  #####  ######  
+
 GameUIScene.setForcesHUD = (i, text, is_visible, is_gray) => {
 	try{	
 		if(GameUIScene.forces_hud){
@@ -676,6 +727,14 @@ GameUIScene.setAllWaitingHUD = () => {
 		errorHandler.log(options)
 	}		
 }
+
+// ######  ####### ### #     # #######  #####        #     # #     # ######  
+// #     # #     #  #  ##    #    #    #     #       #     # #     # #     # 
+// #     # #     #  #  # #   #    #    #             #     # #     # #     # 
+// ######  #     #  #  #  #  #    #     #####  ##### ####### #     # #     # 
+// #       #     #  #  #   # #    #          #       #     # #     # #     # 
+// #       #     #  #  #    ##    #    #     #       #     # #     # #     # 
+// #       ####### ### #     #    #     #####        #     #  #####  ###### 
 
 GameUIScene.updatePointsHUD = () => {
 	try{	

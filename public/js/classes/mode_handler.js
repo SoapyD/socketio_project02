@@ -296,7 +296,7 @@ const mode_handler = class {
                     case "move":     
                     case "charge":                                 
                         if(unit.path.length > 0){
-                            this.runAction(unit, mode, mode)
+                            this.runAction(unit, 'move', mode)
                             activated = 1
                         }
                     break;
