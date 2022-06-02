@@ -52,11 +52,14 @@ const bullet = class {
 		
 		this.colliders = [];
 
-		GameScene.unit_collisions.forEach((collider, i) => {
-			if(i !== this.side){
-				this.colliders.push(options.scene.physics.add.collider(this.sprite, GameScene.unit_collisions[i], this.checkHit))
-			}
-		})
+		//ADD COLLISION CHECK TO THE BULLET AGAINST ALL OTHER UNIT COLLISIONS IF IT'S NOT A BARRAGE WEAPON
+		if(this.unit.checkSpecialRule("barrage") === false){
+			GameScene.unit_collisions.forEach((collider, i) => {
+				if(i !== this.side){
+					this.colliders.push(options.scene.physics.add.collider(this.sprite, GameScene.unit_collisions[i], this.checkHit))
+				}
+			})
+		}
 
 		//PLAY SHOT SOUND
 		GameScene.sfx['shot'].play();
@@ -219,15 +222,14 @@ const bullet = class {
 		if(GameScene.active_actions === 0){
 			modeHandler.readyAdvanceMode();
 		}		
-		// if(this.delete === true){
-		// 	console.log("BULLET ALREADY DEAD!")
-		// }
+
 		this.delete = true;
 
 	}
 	
 	checkRange(bullet){
 
+		//RESET THE RANGE TO MAXIMUM RANGE IF THE ORIGINAL TARGET IS A UNIT THAT'S NOW DEAD
 		if(this.target.unit !== -1){
 			let target_unit = gameFunctions.units[this.target.unit];
 			if(target_unit.alive === false){
@@ -235,22 +237,25 @@ const bullet = class {
 			}
 		}
 
+		//CHECK THE CURRENT RANGE AND KILL THE BULLET IF IT GOES BEYOND IT'S MAXIMUM RANGE
 		let current_range = Math.sqrt(Math.pow(this.origin.x - this.sprite.x, 2) + Math.pow(this.origin.y - this.sprite.y, 2))
 		
-
 		if (current_range >= this.range && this.delete === false){
 			// console.log("THIS IS A RANGE KILL!!!!!!!!")
 			this.kill(); 
 		}
 		
+		//GET THE CURRENT GRID POSITION OF THE BULLET
 		let gridX = Math.floor(this.sprite.x/gameFunctions.tile_size);
 		let gridY = Math.floor(this.sprite.y/gameFunctions.tile_size);	
 		
 		let cell = GameScene.grid[gridY][gridX]
 		
-
-		if(!GameScene.pathfinder.acceptable_tiles.includes(cell) && this.delete === false){		
-			this.kill();
+		//KILL THE BULLET IF IT HITS A BLOCKING TILE AND ISN'T DEAD ALREADY NOR A BARRAGE WEAPON
+		if(this.unit.checkSpecialRule("barrage") === false){
+			if(!GameScene.pathfinder.acceptable_tiles.includes(cell) && this.delete === false){		
+				this.kill();
+			}
 		}
 	}
 }

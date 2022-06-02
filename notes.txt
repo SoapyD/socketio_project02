@@ -71,6 +71,9 @@ SPECIAL RULES:
     name: "regen",
     description:"20% chance of the unit regenerating any lost wounds suffered",
 
+    name: "barrage",
+    description: "you may fire a shot with a weapon indirectly"
+
 
 Any of the above can be combined together as a squad or an upgrade
 

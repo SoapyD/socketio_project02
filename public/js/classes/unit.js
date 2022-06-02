@@ -2151,6 +2151,10 @@ findTarget (options) {
 						}
 					})	
 				}
+
+				if(this.checkSpecialRule("barrage") === true){
+					add_dest = true;
+				}
 	
 			}		
 
