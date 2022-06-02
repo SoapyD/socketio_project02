@@ -481,52 +481,56 @@ connFunctions.checkReadyUp = (check_side_only=true) => {
 
 connFunctions.saveGame = (mode) => {
 	
-	/*
-	let data = {
-		functionGroup: "socketFunctions",  
-		function: "updateRoom", //saveGame
-		message: "save game",
-		type: "save room",
-		room_name: gameFunctions.params.room_name,
-		turn_number: gameFunctions.params.turn_number,
-		current_side: gameFunctions.current_side,
-		// current_player: gameFunctions.current_player,
-		mode: mode,
-		mode_state: gameFunctions.mode_state
-		// units: gameFunctions.units
-	}
-	
+	if(GameScene.online === true){
+		let data = {
+			functionGroup: "socketFunctions",  
+			function: "updateRoom", //saveGame
+			message: "save game",
+			type: "save room",
+			room_name: gameFunctions.params.room_name,
+			turn_number: gameFunctions.params.turn_number,
+			current_side: gameFunctions.current_side,
+			mode: mode,
+			mode_state: gameFunctions.mode_state
+		}
+		
 
-	data.units = [];
-	gameFunctions.units.forEach((unit) => {
-		// let unit_data = {
-			// id: unit.id
-			// ,side: unit.side
-			// ,player: unit.player
-			// ,squad: unit.squad		
+		data.units = [];
+		gameFunctions.units.forEach((unit) => {
+			// let unit_data = {
+				// id: unit.id
+				// ,side: unit.side
+				// ,player: unit.player
+				// ,squad: unit.squad		
+				
+				// ,health: unit.health
+				// ,alive: unit.alive
+				// ,killed_by: unit.killed_by
+				// ,in_combat: unit.in_combat
+				
+				// ,x: unit.sprite.x
+				// ,y: unit.sprite.y
+				// ,rotation: unit.sprite.angle	
+
+				// ,upgrade_id: unit.upgrade_id
+				// ,unit_name: unit.unit_name
+				// ,shoot_name: unit.shoot_name
+				// ,fight_name: unit.fight_name
+				// ,armour_name: unit.armour_name	
+			// }
+			unit.core.x = unit.sprite.x
+			unit.core.y = unit.sprite.y		
+			unit.core.x -= gameFunctions.tile_size * unit.unit_class.sprite_offset;
+			unit.core.y -= gameFunctions.tile_size * unit.unit_class.sprite_offset;				
 			
-			// ,health: unit.health
-			// ,alive: unit.alive
-			// ,killed_by: unit.killed_by
-			// ,in_combat: unit.in_combat
-			
-			// ,x: unit.sprite.x
-			// ,y: unit.sprite.y
-			// ,rotation: unit.sprite.angle	
+			data.units.push(unit.core)
+		})
 
-			// ,upgrade_id: unit.upgrade_id
-			// ,unit_name: unit.unit_name
-			// ,shoot_name: unit.shoot_name
-			// ,fight_name: unit.fight_name
-			// ,armour_name: unit.armour_name	
-		// }
-		data.units.push(unit.core)
-	})
-
-	if(gameFunctions.params.player_side === gameFunctions.current_side){
-		connFunctions.messageServer(data)	
+		if(gameFunctions.params.player_side === gameFunctions.current_side){
+			connFunctions.messageServer(data)	
+		}
 	}
-	*/
+
 }
 
 

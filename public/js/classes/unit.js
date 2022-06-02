@@ -2,34 +2,7 @@
 const unit = class {
 	constructor(options) {
 		
-		//ELEMENTS SAVED BY THE SERVER
-		// this.upgrade_id = options.upgrade_id;
-
-		// let x = options.x;
-		// let y = options.y;
-
 		this.core = options.core
-		// this.id = gameFunctions.units.length;
-		// this.side = options.side; //this can be used if each side has multiple players
-		// this.player = options.player; //this is the specific owner of the unit
-		// this.squad = options.squad; //this can be used for squad checks like unit cohesion
-
-		// this.health = options.unit_class.health;
-		// this.alive = options.alive;
-		// this.killed_by = -1;
-		// this.in_combat = false;
-		
-		// //NEED TO BE ADDED
-		// this.poison = false;
-		// this.poison_caused_by = -1;
-		// this.poison_timer = 0;
-
-		// this.moved = false;
-		// this.charged = false;		
-		// this.shot = false;
-		// this.fought = false;
-
-
 
 		//CLASS DATA		
 		this.special_rules = options.special_rules;
@@ -75,12 +48,8 @@ const unit = class {
 		this.depth_text_box = 10;
 		
 		
-		if(options.loaded){
-			//don't add offset
-		}else{
-			this.core.x += gameFunctions.tile_size * this.unit_class.sprite_offset;
-			this.core.y += gameFunctions.tile_size * this.unit_class.sprite_offset;			
-		}		
+		this.core.x += gameFunctions.tile_size * this.unit_class.sprite_offset;
+		this.core.y += gameFunctions.tile_size * this.unit_class.sprite_offset;				
 
 		//SPRITES
 		this.spritesheet = this.unit_class.spritesheet;
@@ -173,10 +142,6 @@ selectUnit(single_unit=false) { //
 
 	try{
 
-		// if(i==1){
-			
-		// }
-
 		let skip = false
 		if(GameScene.online === true){
 			if(this.core.player !== gameFunctions.params.player_number){
@@ -217,10 +182,6 @@ selectUnit(single_unit=false) { //
 			if(!this.is_ghost){
 				this.resetGhost();
 			}
-			
-			// if(gameFunctions.mode === "fight"){
-			// 	this.drawFightRadius()
-			// }
 		}
 
 	}catch(e){
@@ -261,8 +222,6 @@ selectHander (pointer) {
 unselectHandler() {
 	
 	try{		
-		// GameScene.selected_unit.drawFlash(true)
-		// GameScene.selected_unit = undefined;
 		this.drawFlash(true)
 		
 		if(gameFunctions.mode === "move" || gameFunctions.mode === "charge"){
@@ -1236,11 +1195,6 @@ setupDrawLiveTiles() {
 		let startY = gridY - this.unit_class.movement
 		let endX = gridX + this.unit_class.movement
 		let endY = gridY + this.unit_class.movement
-		//REMOVED THESE ARE THEY AFFECTED THE SPIRAL CALL WHEN NEAR THE END OF A ROOM
-		// if(startX < 0) startX = 0
-		// if(startY < 0) startY = 0
-		// if(endX > GameScene.map.width) endX = GameScene.map.width
-		// if(endY > GameScene.map.height) endY = GameScene.map.height
 
 		//WE NEED TO CHECK MOVEMENT POSITIONS AS A SPIRAL MOVING INWARDS TO GET THE MOST EFFICIENT MOVEMENT CHECKS
 		this.check_tiles = this.getSpiralMatrix((endX - startX) + 1, startX, startY);
@@ -1385,10 +1339,6 @@ saveDrawLiveTiles(process) {
 			})			
 		}
 
-
-		// if(checking_tile === false){
-		// 	console.log("tiles checked:",this.tiles_checked)
-		// }
 	}catch(e){
 
 		let options = {
@@ -1998,7 +1948,8 @@ endMove(endFunction) {
 			if(this.core.in_combat === false && old_status === true){
 		
 				if(this.core.in_combat_with){
-					this.core.in_combat_with.forEach((unit) => {
+					this.core.in_combat_with.forEach((id) => {
+						let unit = gameFunctions.units[id];
 						//allow allow that unit to strike if it has any combat damage to give
 						if(unit.melee_class[unit.selected_melee].damage > 0){
 							unit.fight_targets.push(this.sprite.parent.core.id)
@@ -2481,10 +2432,11 @@ checkCombat() {
 
 				if(clash === true){				
 
-					const found = this.core.in_combat_with.some(el => el.core.id === unit.core.id);
+					// const found = this.core.in_combat_with.some(el => el.core.id === unit.core.id);
+					const found = this.core.in_combat_with.includes(unit.core.id);
 					// if (!found) arr.push({ id, username: name });
 					if(found === false){
-						this.core.in_combat_with.push(unit)						
+						this.core.in_combat_with.push(unit.core.id)						
 					}
 
 					in_combat_range = true;

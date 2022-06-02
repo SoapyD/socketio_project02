@@ -66,25 +66,35 @@ const roomSchema = new mongoose.Schema({
 		id: Number
 		,side: Number
 		,player: Number
-		,squad: Number		
-		
-		,upgrade_id: Number
-		,unit_name: String
-		,shoot_name: String
-		,fight_name: String
-		,armour_name: String
-		
-		,health: Number
-		,alive: Boolean
-		,killed_by: Number
-		,in_combat: Boolean
-		
+		,squad: Number	
+
 		,x: {type: Number, default: 0}
 		,y: {type: Number, default: 0}
-		,rotation: {type: Number, default: 0}
+		,angle: {type: Number, default: 0}
+		
+		,alive: Boolean
+		,cost: Number		
+		,health: Number
+
+		,killed_by: Number
+		,in_combat: Boolean
+		,in_combat_with: [Number]
+		
+		,poison: Boolean
+		,poison_caused_by: Number
+		,poison_timer: Number
+
+		,moved: Boolean
+		,charged: Boolean
+		,shot: Boolean
+		,fought: Boolean								
 	}]
 	
-
+	// ,upgrade_id: Number
+	// ,unit_name: String
+	// ,shoot_name: String
+	// ,fight_name: String
+	// ,armour_name: String
 
    ,created_date: {type: Date, default: Date.now}
    ,updateddate: {type: Date, default: Date.now}	

@@ -181,34 +181,8 @@ exports.updateRoom = (room, data) => {
 	room.config.current_player = data.current_player
     room.config.mode = data.mode
     room.config.mode_state = data.mode_state
-	room.units = [];
+	room.units = data.units;
 	
-	data.units.forEach((unit) => {
-		
-		let info = {
-			id: unit.id
-			,side: unit.side
-			,player: unit.player
-			,squad: unit.squad		
-
-            ,upgrade_id: unit.upgrade_id
-			,unit_name: unit.unit_name
-			,shoot_name: unit.shoot_name
-			,fight_name: unit.fight_name
-			,armour_name: unit.armour_name
-
-			,health: unit.health
-            ,alive: unit.alive
-            ,killed_by: unit.killed_by
-			,in_combat: unit.in_combat
-
-			,x: unit.x
-			,y: unit.y
-			,rotation: unit.rotation
-		}
-		
-		room.units.push(info)
-	})
 	
 	room.markModified('config');
 	room.markModified('units');	
