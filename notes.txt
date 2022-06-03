@@ -8,7 +8,7 @@
 -DONE -need to test out barriers effect on bullets and poisoning
 
 -Check Regen works
-
+-add "special rules" to upgrade selection then make sure they apply
 
 /////////////////////////////////////////////////////////////////////////////////////
 UNITS
