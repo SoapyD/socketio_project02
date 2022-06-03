@@ -17,7 +17,11 @@ UNITS
 -General
     -Assault Focus
     -Range Focus
--Bikers Ranged
+-Engineer
+    -Shield gun
+-Apothocary
+    -regen       
+-SPRITE -Bikers Ranged
     -Swift
     -good firepower
 -Bikers Close-Combat
@@ -29,30 +33,27 @@ UNITS
     -Heavy armour
 -Tactical squad
     -Bolters
-    -Firing Drills
-    -Engineer
-        -Shield gun
-    -Apothocary
-        -regen    
+    -Firing Drills 
 -Scout squad
     -Snipers
     -Assault cannon
     -swift
     -low armour
+    
 -Heavy squad
-    -Rocket Launcher
-    -Laser Cannon
-    -Radiation Cannon
-    -Assault Cannon
--Regular Tank 
+    -SPRITE -Rocket Launcher
+    -SPRITE -Laser Cannon
+    -SPRITE -Radiation Cannon
+    -SPRITE -Assault Cannon
+-SPRITE -Regular Tank 
     -good firepower
     -heavy armour
     -medium speed
--Barrage Tank
+-SPRITE -Barrage Tank
     -low armour
     -barrage weapon, large radius
     -slow speed
--Assault Tank 
+-SPRITE -Assault Tank 
     -assault firepower
     -medium armour
     -fast speed

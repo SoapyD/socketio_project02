@@ -82,11 +82,12 @@ const game_setup = class {
 		this.scene.load.image('squad_leader', '../../img/units/squad_leader.png');
 		this.scene.load.image('heavy', '../../img/units/heavy.png');	
 		this.scene.load.image('special', '../../img/units/special.png');			
-		this.scene.load.image('unit', '../../img/units/trooper_bolter.png');
-		this.scene.load.image('tank', '../../img/units/tank_normal.png');
 		this.scene.load.image('dread', '../../img/units/dread.png');
 		this.scene.load.image('biker', '../../img/units/biker.png');		
 
+
+		this.scene.load.image('unit', '../../img/units/trooper_blaster.png');
+		this.scene.load.image('tank', '../../img/units/tank_normal.png');
 
 		this.scene.load.image('white', '../../img/white_texture.jpg');
 		
