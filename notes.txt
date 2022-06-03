@@ -2,10 +2,61 @@
 -DONE -Need to set the shot symbol on a unit when it's reloaded
 -DONE -coherancy is broken at the moment
 
--need to see if "single_upgrade" on squad setup needs to be saved and passed back
--reloading units isn't correctly reloading single upgrades
--template weapons don't cause any damage
--need to test out barriers effect on bullets and poisoning
+-DONE -need to see if "single_upgrade" on squad setup needs to be saved and passed back
+-DONE -reloading units isn't correctly reloading single upgrades
+-DONE -template weapons don't cause any damage
+-DONE -need to test out barriers effect on bullets and poisoning
+
+-Check Regen works
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+UNITS
+/////////////////////////////////////////////////////////////////////////////////////
+
+-General
+    -Assault Focus
+    -Range Focus
+-Bikers Ranged
+    -Swift
+    -good firepower
+-Bikers Close-Combat
+    -Sword Dance
+-Assault squad
+    -berzerk
+-Elites
+    -whirling dervish
+    -Heavy armour
+-Tactical squad
+    -Bolters
+    -Firing Drills
+    -Engineer
+        -Shield gun
+    -Apothocary
+        -regen    
+-Scout squad
+    -Snipers
+    -Assault cannon
+    -swift
+    -low armour
+-Heavy squad
+    -Rocket Launcher
+    -Laser Cannon
+    -Radiation Cannon
+    -Assault Cannon
+-Regular Tank 
+    -good firepower
+    -heavy armour
+    -medium speed
+-Barrage Tank
+    -low armour
+    -barrage weapon, large radius
+    -slow speed
+-Assault Tank 
+    -assault firepower
+    -medium armour
+    -fast speed
+
 
 /////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////

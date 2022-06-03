@@ -646,7 +646,7 @@ GameUIScene.setChanceHUD = (selected_unit, target_unit) => {
 		let gun_chance = target_unit.armour_class.value - (selected_unit.gun_class[selected_unit.selected_gun].ap + selected_unit.unit_class.shooting_bonus);
 
 		let max_roll_value = 20
-		if(selected_unit.cohesion_check === false && selected_unit.cohesion > 0){
+		if(selected_unit.cohesion_check === false && selected_unit.unit_class.cohesion > 0){
 			max_roll_value = 10;
 		}
 
