@@ -141,7 +141,11 @@ const squad_setup = class {
 				}
 				if(upgrade.unit){
 					unit_class = {...upgrade.unit};
-				}					
+				}
+				
+				if(upgrade.spritesheet){
+					unit_class.spritesheet = upgrade.spritesheet
+				}
 			})
 		}	
 
@@ -159,7 +163,11 @@ const squad_setup = class {
 			}
 			if(single_upgrade.unit){
 				unit_class = {...single_upgrade.unit};
-			}									
+			}				
+			
+			if(single_upgrade.spritesheet){
+				unit_class.spritesheet = single_upgrade.spritesheet
+			}			
 		}
 
 		let cost = 0;

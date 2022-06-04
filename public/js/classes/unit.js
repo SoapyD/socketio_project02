@@ -70,11 +70,11 @@ const unit = class {
 		this.sprite_ghost.on('pointerup', this.selectHander)
 
 
-		this.sprite_symbol = options.scene.add.image(this.core.x,this.core.y,"symbols").setScale(0.05 * (this.unit_class.size + 1))
-		this.sprite_symbol.x += (this.sprite.displayWidth / 2) - (this.sprite_symbol.displayWidth / 2)
-		this.sprite_symbol.y -= (this.sprite.displayHeight / 2) + (this.sprite_symbol.displayHeight / 2)
-		this.sprite_symbol.setFrame(this.unit_class.symbol_id).setDepth(this.depth_sprite_symbol);
-		this.sprite_symbol.alpha = 0.5
+		// this.sprite_symbol = options.scene.add.image(this.core.x,this.core.y,"symbols").setScale(0.05 * (this.unit_class.size + 1))
+		// this.sprite_symbol.x += (this.sprite.displayWidth / 2) - (this.sprite_symbol.displayWidth / 2)
+		// this.sprite_symbol.y -= (this.sprite.displayHeight / 2) + (this.sprite_symbol.displayHeight / 2)
+		// this.sprite_symbol.setFrame(this.unit_class.symbol_id).setDepth(this.depth_sprite_symbol);
+		// this.sprite_symbol.alpha = 0.5
 		
 
 		//action sprite
@@ -645,7 +645,7 @@ kill(){
 			this.sprite_ghost.destroy();
 		}
 		this.sprite_action.destroy();
-		this.sprite_symbol.destroy();
+		// this.sprite_symbol.destroy();
 		this.text_graphic.destroy();
 		this.text.destroy();
 
@@ -806,8 +806,8 @@ updateElements(sprite){
 updateUnitElements(sprite){
 	try{	
 		this.drawHealth(sprite);
-		this.sprite_symbol.x = sprite.x + (this.sprite.displayWidth / 2) - (this.sprite_symbol.displayWidth / 2)
-		this.sprite_symbol.y = sprite.y - (this.sprite.displayHeight / 2) + (this.sprite_symbol.displayHeight / 2)
+		// this.sprite_symbol.x = sprite.x + (this.sprite.displayWidth / 2) - (this.sprite_symbol.displayWidth / 2)
+		// this.sprite_symbol.y = sprite.y - (this.sprite.displayHeight / 2) + (this.sprite_symbol.displayHeight / 2)
 
 		this.sprite_action.x = sprite.x //+ (this.sprite.displayWidth / 2)
 		this.sprite_action.y = sprite.y //+ (this.sprite.displayHeight / 2)

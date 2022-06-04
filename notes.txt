@@ -1,5 +1,5 @@
 
--Make the spritesheet it's own model or at least seperate in some way so it isn't tied up with the unit. This should mean swapping this value out will be a lot easier
+-DONE -Make the spritesheet it's own model or at least seperate in some way so it isn't tied up with the unit. This should mean swapping this value out will be a lot easier
 
 
 

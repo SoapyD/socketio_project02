@@ -21,12 +21,34 @@ const queries = require("../queries");
                     gun: "blaster",
                     armour: "basic",
                     melee: "sword",
-                    // upgrades: [{params:{name:"rocket launcher"}},{params:{name:"special weapon"}}],
+                    upgrades: [
+                        {params:{name:"rocket launcher"}},
+                        {params:{name:"assault cannon"}}
+                    ],
                     special_rules: [],            
                     min_size: 5,
                     max_size: 10,
                 }
             ),
+            exports.createSquad(
+                {
+                    type: "heavy squad",
+                    unit: "trooper",
+                    gun: "rocket launcher",
+                    armour: "basic",
+                    melee: "none",
+                    upgrades: [
+                        {params:{name:"laser cannon"}},
+                        {params:{name:"rad cannon"}},
+                        {params:{name:"assault cannon"}}
+                    ],
+                    special_rules: [],                
+                    min_size: 3,
+                    max_size: 5,
+                }
+            ),
+
+
             /*
             exports.createSquad(
                 {
@@ -43,19 +65,7 @@ const queries = require("../queries");
             ),
 
             
-            exports.createSquad(
-                {
-                    type: "heavy squad",
-                    unit: "trooper",
-                    gun: "rocket launcher",
-                    armour: "basic",
-                    melee: "none",
-                    upgrades: [],
-                    special_rules: [],                
-                    min_size: 3,
-                    max_size: 5,
-                }
-            ),
+
             exports.createSquad(
                 {
                     type: "tank",

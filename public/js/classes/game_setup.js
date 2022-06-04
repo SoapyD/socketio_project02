@@ -78,16 +78,20 @@ const game_setup = class {
 		this.scene.load.tilemapTiledJSON('map', '../../img/maps/map2.json');
 		
 		//UNIT SPRITES
-		this.scene.load.image('general', '../../img/units/general.png');
-		this.scene.load.image('squad_leader', '../../img/units/squad_leader.png');
-		this.scene.load.image('heavy', '../../img/units/heavy.png');	
-		this.scene.load.image('special', '../../img/units/special.png');			
-		this.scene.load.image('dread', '../../img/units/dread.png');
-		this.scene.load.image('biker', '../../img/units/biker.png');		
+		this.scene.load.image('trooper_blaster', '../../img/units/trooper_blaster.png');
+		this.scene.load.image('trooper_rocket', '../../img/units/trooper_rocket.png');
+		this.scene.load.image('trooper_laser_cannon', '../../img/units/trooper_laser_cannon.png');
+		this.scene.load.image('trooper_assault_cannon', '../../img/units/trooper_assault_cannon.png');
+		this.scene.load.image('trooper_rad_cannon', '../../img/units/trooper_rad_cannon.png');						
 
 
-		this.scene.load.image('unit', '../../img/units/trooper_blaster.png');
-		this.scene.load.image('tank', '../../img/units/tank_normal.png');
+		// this.scene.load.image('general', '../../img/units/general.png');
+		// this.scene.load.image('squad_leader', '../../img/units/squad_leader.png');
+		// this.scene.load.image('heavy', '../../img/units/heavy.png');	
+		// this.scene.load.image('special', '../../img/units/special.png');			
+		// this.scene.load.image('dread', '../../img/units/dread.png');
+		// this.scene.load.image('biker', '../../img/units/biker.png');		
+		// this.scene.load.image('tank', '../../img/units/tank_normal.png');
 
 		this.scene.load.image('white', '../../img/white_texture.jpg');
 		
