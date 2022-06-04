@@ -19,11 +19,11 @@ const queries = require("../queries");
                     type: "tactical squad",
                     unit: "trooper",
                     gun: "blaster",
-                    armour: "basic",
-                    melee: "sword",
+                    armour: "mid-tier",
+                    melee: "bare-hands",
                     upgrades: [
-                        {params:{name:"rocket launcher"}},
-                        {params:{name:"assault cannon"}}
+                        {params:{name:"trooper rocket launcher"}},
+                        {params:{name:"trooper assault cannon"}}
                     ],
                     special_rules: [],            
                     min_size: 5,
@@ -35,16 +35,34 @@ const queries = require("../queries");
                     type: "heavy squad",
                     unit: "trooper",
                     gun: "rocket launcher",
-                    armour: "basic",
+                    armour: "mid-tier",
                     melee: "none",
                     upgrades: [
-                        {params:{name:"laser cannon"}},
-                        {params:{name:"rad cannon"}},
-                        {params:{name:"assault cannon"}}
+                        {params:{name:"trooper laser cannon"}},
+                        {params:{name:"trooper rad cannon"}},
+                        {params:{name:"trooper assault cannon"}}
                     ],
                     special_rules: [],                
                     min_size: 3,
                     max_size: 5,
+                }
+            ),
+
+            exports.createSquad(
+                {
+                    type: "elite squad",
+                    unit: "elite",
+                    gun: "blaster",
+                    armour: "elite",
+                    melee: "bare-hands",
+                    upgrades: [
+                        {params:{name:"elite assault cannon"}},
+                        {params:{name:"elite squad leader"}},
+                        {params:{name:"elite claws"}},
+                    ],
+                    special_rules: [],                
+                    min_size: 5,
+                    max_size: 10,
                 }
             ),
 

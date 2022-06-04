@@ -13,7 +13,8 @@ const queries = require("../queries");
     exports.run = async() => {
 
         await exports.heavy_weapons();
-
+        await exports.melee_weapons();
+        await exports.squad_leaders();
 
 
         /*
@@ -80,6 +81,13 @@ const queries = require("../queries");
         return Promise.all([queries.createData(list)]); 
     }
 
+    // #     # #######    #    #     # #     #       #     # #######    #    ######  ####### #     #  #####  
+    // #     # #         # #   #     #  #   #        #  #  # #         # #   #     # #     # ##    # #     # 
+    // #     # #        #   #  #     #   # #         #  #  # #        #   #  #     # #     # # #   # #       
+    // ####### #####   #     # #     #    #    ##### #  #  # #####   #     # ######  #     # #  #  #  #####  
+    // #     # #       #######  #   #     #          #  #  # #       ####### #       #     # #   # #       # 
+    // #     # #       #     #   # #      #          #  #  # #       #     # #       #     # #    ## #     # 
+    // #     # ####### #     #    #       #           ## ##  ####### #     # #       ####### #     #  ##### 
 
     exports.heavy_weapons = async() => {
         let return_data;
@@ -101,7 +109,7 @@ const queries = require("../queries");
             model: "Upgrade"
             ,params: [
                {
-                    name: "rocket launcher",
+                    name: "trooper rocket launcher",
                     description:"outfit one trooper with a rocket launcher",
                     cost: cost,
                     gun: return_data[0]._id,
@@ -127,7 +135,7 @@ const queries = require("../queries");
             model: "Upgrade"
             ,params: [
                {
-                    name: "laser cannon",
+                    name: "trooper laser cannon",
                     description:"outfit one trooper with a laser cannon",
                     cost: cost,
                     gun: return_data[0]._id,
@@ -153,12 +161,19 @@ const queries = require("../queries");
             model: "Upgrade"
             ,params: [
                {
-                    name: "assault cannon",
+                    name: "trooper assault cannon",
                     description:"outfit one trooper with a assault cannon",
                     cost: cost,
                     gun: return_data[0]._id,
                     spritesheet: "trooper_assault_cannon"
                 },
+                {
+                    name: "elite assault cannon",
+                    description:"outfit one elite with a assault cannon",
+                    cost: cost,
+                    gun: return_data[0]._id,
+                    spritesheet: "elite_assault_cannon"
+                },                
             ]
         }
         await queries.createData(list);
@@ -179,7 +194,7 @@ const queries = require("../queries");
             model: "Upgrade"
             ,params: [
                {
-                    name: "rad cannon",
+                    name: "trooper rad cannon",
                     description:"outfit one trooper with a rad cannon",
                     cost: cost,
                     gun: return_data[0]._id,
@@ -191,4 +206,123 @@ const queries = require("../queries");
 
 
         // return Promise.all([queries.createData(list)]);
+    }
+
+    // #     # ####### #       ####### #######       #     # #######    #    ######  ####### #     #  #####  
+    // ##   ## #       #       #       #             #  #  # #         # #   #     # #     # ##    # #     # 
+    // # # # # #       #       #       #             #  #  # #        #   #  #     # #     # # #   # #       
+    // #  #  # #####   #       #####   #####   ##### #  #  # #####   #     # ######  #     # #  #  #  #####  
+    // #     # #       #       #       #             #  #  # #       ####### #       #     # #   # #       # 
+    // #     # #       #       #       #             #  #  # #       #     # #       #     # #    ## #     # 
+    // #     # ####### ####### ####### #######        ## ##  ####### #     # #       ####### #     #  #####  
+
+
+    exports.melee_weapons = async() => {
+        let return_data;
+        let cost;
+
+        ///////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////
+
+        return_data = await queries.findData({
+            model: "Melee"
+            ,search_type: "findOne"
+            ,params: {name: "claws"}
+        })    
+    
+        cost = return_data[0].cost
+    
+        list = {
+            model: "Upgrade"
+            ,params: [
+               {
+                    name: "elite claws",
+                    description:"outfit one elite with claws",
+                    cost: cost,
+                    melee: return_data[0]._id,
+                    spritesheet: "elite_claws"
+                },
+            ]
+        }
+        await queries.createData(list);   
+    }
+
+
+    //  #####   #####  #     #    #    ######        #       #######    #    ######  ####### ######   #####  
+    // #     # #     # #     #   # #   #     #       #       #         # #   #     # #       #     # #     # 
+    // #       #     # #     #  #   #  #     #       #       #        #   #  #     # #       #     # #       
+    //  #####  #     # #     # #     # #     # ##### #       #####   #     # #     # #####   ######   #####  
+    //       # #   # # #     # ####### #     #       #       #       ####### #     # #       #   #         # 
+    // #     # #    #  #     # #     # #     #       #       #       #     # #     # #       #    #  #     # 
+    //  #####   #### #  #####  #     # ######        ####### ####### #     # ######  ####### #     #  #####    
+
+
+    exports.squad_leaders = async() => {
+        let return_data;
+        let cost;
+
+        ///////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////
+
+        let melee = await queries.findData({
+            model: "Melee"
+            ,search_type: "findOne"
+            ,params: {name: "sword"}
+        })    
+        let gun = await queries.findData({
+            model: "Gun"
+            ,search_type: "findOne"
+            ,params: {name: "pistol"}
+        })            
+    
+        cost = melee[0].cost + gun[0].cost
+    
+        list = {
+            model: "Upgrade"
+            ,params: [
+               {
+                    name: "trooper squad leader",
+                    description:"outfit one trooper as a squad leader",
+                    cost: cost,
+                    gun: gun[0]._id,
+                    melee: melee[0]._id,
+                    spritesheet: "trooper_leader"
+                },
+            ]
+        }
+        await queries.createData(list);   
+
+        list = {
+            model: "Upgrade"
+            ,params: [
+               {
+                    name: "elite squad leader",
+                    description:"outfit one elite as a squad leader",
+                    cost: cost,
+                    gun: gun[0]._id,
+                    melee: melee[0]._id,    
+                    spritesheet: "elite_leader"
+                },
+            ]
+        }
+        await queries.createData(list);   
+
+        list = {
+            model: "Upgrade"
+            ,params: [
+               {
+                    name: "assault squad leader",
+                    description:"outfit one assault as a squad leader",
+                    cost: cost,
+                    gun: gun[0]._id,
+                    melee: melee[0]._id,                    
+                    spritesheet: "assault_leader"
+                },
+            ]
+        }
+        await queries.createData(list);   
+
+
     }

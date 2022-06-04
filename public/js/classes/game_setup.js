@@ -82,7 +82,13 @@ const game_setup = class {
 		this.scene.load.image('trooper_rocket', '../../img/units/trooper_rocket.png');
 		this.scene.load.image('trooper_laser_cannon', '../../img/units/trooper_laser_cannon.png');
 		this.scene.load.image('trooper_assault_cannon', '../../img/units/trooper_assault_cannon.png');
-		this.scene.load.image('trooper_rad_cannon', '../../img/units/trooper_rad_cannon.png');						
+		this.scene.load.image('trooper_rad_cannon', '../../img/units/trooper_rad_cannon.png');
+		this.scene.load.image('trooper_leader', '../../img/units/trooper_leader.png');							
+
+		this.scene.load.image('elite_blaster', '../../img/units/elite_blaster.png');
+		this.scene.load.image('elite_assault_cannon', '../../img/units/elite_assault_cannon.png');
+		this.scene.load.image('elite_leader', '../../img/units/elite_leader.png');	
+		this.scene.load.image('elite_claws', '../../img/units/elite_claws.png');						
 
 
 		// this.scene.load.image('general', '../../img/units/general.png');

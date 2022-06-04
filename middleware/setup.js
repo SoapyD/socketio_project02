@@ -71,7 +71,7 @@ exports.setupApp = async(app) => {
 
     //CONNECT TO DATABASE
     utils.database.connect();
-    utils.seeder.run();
+    // utils.seeder.run();
     // utils.seeds.resetRooms();
 
 }

@@ -21,8 +21,9 @@ exports.run = async() => {
                 description: "big, burley, bruising murder men",
                 squads: [
                     {params:{name:"tactical squad"}},
+                    {params:{name:"heavy squad"}},
+                    {params:{name:"elite squad"}},
                     // {params:{name:"general"}},
-                    // {params:{name:"heavy squad"}},
                     // {params:{name:"scouts"}},
                     // {params:{name:"tank"}},   
                     // {params:{name:"dread"}},                                        
