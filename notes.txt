@@ -1,11 +1,7 @@
 
--DONE -Need to set the shot symbol on a unit when it's reloaded
--DONE -coherancy is broken at the moment
+-Make the spritesheet it's own model or at least seperate in some way so it isn't tied up with the unit. This should mean swapping this value out will be a lot easier
 
--DONE -need to see if "single_upgrade" on squad setup needs to be saved and passed back
--DONE -reloading units isn't correctly reloading single upgrades
--DONE -template weapons don't cause any damage
--DONE -need to test out barriers effect on bullets and poisoning
+
 
 -Check Regen works
 -add "special rules" to upgrade selection then make sure they apply
@@ -279,6 +275,15 @@ SELECTION - PAUSED
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+-DONE -Need to set the shot symbol on a unit when it's reloaded
+-DONE -coherancy is broken at the moment
+
+-DONE -need to see if "single_upgrade" on squad setup needs to be saved and passed back
+-DONE -reloading units isn't correctly reloading single upgrades
+-DONE -template weapons don't cause any damage
+-DONE -need to test out barriers effect on bullets and poisoning
+
 
 -Action Types
     -DONE -SWIFT - Units that can move, shoot and move again
