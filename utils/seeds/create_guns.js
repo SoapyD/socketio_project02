@@ -20,6 +20,16 @@ const queries = require("../queries");
             ,params: [
                 //REGULAR WEAPONS
                 {
+                    name: "none",
+                    cost: 0,
+                    range: 0 * range,
+                    damage: 0,
+                    ap: 0,
+                    max_targets: 0,
+                    blast_radius: 0,
+                    blast_spritesheet: "explosion",
+                },                  
+                {
                     name: "pistol",
                     cost: 4,
                     range: 5 * range,

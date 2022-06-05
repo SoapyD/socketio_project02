@@ -218,34 +218,59 @@ const queries = require("../queries");
 
 
     exports.melee_weapons = async() => {
-        let return_data;
+        let melee;
+        let gun;
         let cost;
 
         ///////////////////////////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////////////
 
-        return_data = await queries.findData({
+        melee = await queries.findData({
             model: "Melee"
             ,search_type: "findOne"
             ,params: {name: "claws"}
-        })    
+        })  
+        gun = await queries.findData({
+            model: "Gun"
+            ,search_type: "findOne"
+            ,params: {name: "none"}
+        })            
     
-        cost = return_data[0].cost
+        cost = melee[0].cost
     
         list = {
             model: "Upgrade"
             ,params: [
                {
                     name: "elite claws",
-                    description:"outfit one elite with claws",
+                    description:"outfit all elite troopers with claws",
                     cost: cost,
-                    melee: return_data[0]._id,
-                    spritesheet: "elite_claws"
+                    melee: melee[0]._id,
+                    gun: gun[0]._id,                    
+                    spritesheet: "elite_claws",
+                    upgrades_all_in_squad: true
                 },
             ]
         }
-        await queries.createData(list);   
+        await queries.createData(list);  
+        
+        
+        list = {
+            model: "Upgrade"
+            ,params: [
+               {
+                    name: "assault claws",
+                    description:"outfit all assault troopers with claws",
+                    cost: cost,
+                    melee: melee[0]._id,
+                    gun: gun[0]._id,                    
+                    spritesheet: "assault_claws",
+                    upgrades_all_in_squad: true
+                },
+            ]
+        }
+        await queries.createData(list);          
     }
 
 

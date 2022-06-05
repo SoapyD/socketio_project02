@@ -66,6 +66,22 @@ const queries = require("../queries");
                 }
             ),
 
+            exports.createSquad(
+                {
+                    type: "assault squad",
+                    unit: "assault",
+                    armour: "basic",
+                    melee: "sword",
+                    gun: "pistol",                    
+                    upgrades: [
+                        {params:{name:"assault claws"}},
+                    ],
+                    special_rules: [],                
+                    min_size: 5,
+                    max_size: 10,
+                }
+            ),            
+
 
             /*
             exports.createSquad(
